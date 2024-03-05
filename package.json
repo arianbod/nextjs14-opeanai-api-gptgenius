@@ -13,7 +13,7 @@
     "@prisma/client": "^5.5.2",
     "@tanstack/react-query": "^5.8.1",
     "@tanstack/react-query-devtools": "^5.8.1",
-    "axios": "^1.6.1",
+    "axios": "^1.6.7",
     "highlight.js": "^11.9.0",
     "nanoid": "^5.0.6",
     "next": "14.1.1",

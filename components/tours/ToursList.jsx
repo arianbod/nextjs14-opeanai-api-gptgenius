@@ -6,9 +6,11 @@ const ToursList = ({ data }) => {
 
 	return (
 		<div className='grid sm:grid-cols-2 lg:grid-cols-4 gap-8'>
-			{data.map((tour) => {
+			{data.map((tour, index) => {
+				index = index + 1;
 				return (
 					<TourCard
+						index={index}
 						{...tour}
 						key={tour.id}
 					/>

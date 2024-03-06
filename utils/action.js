@@ -1,9 +1,8 @@
 'use server'
 import prisma from "@/prisma/db";
-import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 import OpenAI from "openai";
-const { userId } = auth()
+
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 })
@@ -11,17 +10,17 @@ const openai = new OpenAI({
 export const generateChatResponse = async (chatMessages) => {
     try {
 
+        // Then, inside an async function where you have access to the request object:
         const response = await openai.chat.completions.create({
             messages: [
                 { role: 'system', content: 'you are a helpful assistant' },
                 ...chatMessages
             ],
             model: 'gpt-3.5-turbo',
-            temperature: 0.2,
+            temperature: 1,
             max_tokens: 100
         })
-        subtractTokens(userId, response.usage.total_tokens)
-        return response.choices[0].message
+        return { message: response.choices[0].message, tokens: response.usage.total_tokens }
     } catch (error) {
         console.log(error);
         return null
@@ -50,10 +49,10 @@ Once you have a list, create a one-day tour. Response should be  in the followin
     "country": "${country}",
     "title": "title of the tour",
     "description": "short description of the city and tour",
-    "stops": ["short paragraph on the stop 1 ", "short paragraph on the stop 2","short paragraph on the stop 3"]
+    "stops": ["stop name 1", "stop name 2","stop name 3,stop name 4,stop name 5"]
   }
 }
-"stops" property should include only three stops.
+"stops" property should include only five stops.
 If you can't find info on exact ${city}, or ${city} does not exist, or it's population is less than 1, or it is not located in the following ${country},   return { "tour": null }, with no additional characters.`;
     try {
         const response = await openai.chat.completions.create({
@@ -85,7 +84,7 @@ export const getAllTours = async (searchTerm) => {
     if (!searchTerm) {
         const tours = await prisma.tour.findMany({
             orderBy: {
-                city: "asc"
+                country: "asc"
             }
 
         })

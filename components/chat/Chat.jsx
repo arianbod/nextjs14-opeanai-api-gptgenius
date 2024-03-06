@@ -1,5 +1,9 @@
 'use client';
-import { generateChatResponse } from '@/utils/action';
+import {
+	fetchUserTokensById,
+	generateChatResponse,
+	subtractTokens,
+} from '@/utils/action';
 import { useMutation } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
 import React, { useEffect, useRef, useState } from 'react';
@@ -7,18 +11,29 @@ import toast from 'react-hot-toast';
 import { IoMdSend } from 'react-icons/io';
 import { FaUserLarge } from 'react-icons/fa6';
 import { BsChatRightText } from 'react-icons/bs';
+import { useAuth, currentUser } from '@clerk/nextjs';
+import GetFirstname from './getFirstname';
+
 const Chat = () => {
+	const { userId } = useAuth();
 	const [text, setText] = useState('');
 	const [messages, setMessages] = useState([]);
 	const messagesEndRef = useRef(null); // Ref for the container's bottom
 	const { mutate, isPending } = useMutation({
-		mutationFn: (query) => generateChatResponse([...messages, query]),
-		onSuccess: (data) => {
-			if (!data) {
+		mutationFn: async (query) => {
+			const currentTokens = fetchUserTokensById(userId);
+			if (currentTokens > 100) {
+				toast.error('token balance is insufficient');
+				return;
+			}
+			const response = await generateChatResponse([...messages, query]);
+			if (!response) {
 				toast.error('there is no data');
 				return;
 			}
-			setMessages((prev) => [...prev, data]);
+			setMessages((prev) => [...prev, response.message]);
+			const newToken = await subtractTokens(userId, response.tokens);
+			toast.success(`${newToken} is remaining tokens`);
 		},
 	});
 
@@ -38,6 +53,7 @@ const Chat = () => {
 		<div className='min-h-[calc(100vh-6rem)] grid grid-rows-[1fr,auto] -mx-8'>
 			<div className='max-h-[calc(100vh-12rem)] overflow-y-auto overflow-x-hidden'>
 				<ul>
+					<GetFirstname />
 					{messages.map(({ role, content }, index) => {
 						const id = nanoid();
 						return (

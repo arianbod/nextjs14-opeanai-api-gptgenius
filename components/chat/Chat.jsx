@@ -65,8 +65,8 @@ const Chat = () => {
 	};
 
 	return (
-		<div className='min-h-[calc(100vh)] grid grid-rows-[1fr,auto] -mx-8 dark:bg-gray-900 dark:text-gray-100'>
-			<div className='max-h-[calc(100vh-11rem)] overflow-y-auto overflow-x-hidden'>
+		<div className='min-h-[calc(100vh-12rem)] grid grid-rows-[1fr,auto] -mx-8b '>
+			<div className='max-h-[calc(100vh-10rem)] overflow-y-auto overflow-x-hidden'>
 				<ul>
 					<GetFirstname />
 					{messages.map(({ role, content }, index) => {
@@ -76,9 +76,7 @@ const Chat = () => {
 							<li
 								key={id}
 								className={`flex items-baseline gap-3 py-6 px-4 text-lg leading-loose border-b border-gray-300 ${
-									role === 'assistant'
-										? 'bg-gray-100 dark:bg-gray-800 px-12'
-										: ''
+									role === 'assistant' ? 'px-12' : ''
 								} ${directionClass}`}>
 								<span className='flex-shrink-0'>
 									{role === 'user' && <FaUserLarge />}

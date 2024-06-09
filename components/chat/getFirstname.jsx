@@ -14,7 +14,7 @@ const GetFirstname = () => {
 		}
 	}, [user]); // Re-run effect if the user object changes
 	return (
-		<li className='flex items-baseline gap-3 py-6 px-4 text-lg leading-loose border-b border-base-300 bg-base-100 px-12'>
+		<li className='flex items-baseline gap-3 py-6 px-4 text-lg leading-loose px-12'>
 			<span className='avatar'>
 				<BsChatRightText />
 			</span>

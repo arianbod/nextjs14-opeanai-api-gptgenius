@@ -1,18 +1,19 @@
 'use client';
+import React, { useEffect, useRef, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { nanoid } from 'nanoid';
+import toast from 'react-hot-toast';
+import { IoMdSend } from 'react-icons/io';
+import { FaUserLarge } from 'react-icons/fa6';
+import { BsChatRightText } from 'react-icons/bs';
+import { useAuth } from '@clerk/nextjs';
+import GetFirstname from './getFirstname';
+import MarkdownComponent from './MarkdownComponent';
 import {
 	fetchUserTokensById,
 	generateChatResponse,
 	subtractTokens,
 } from '@/utils/action';
-import { useMutation } from '@tanstack/react-query';
-import { nanoid } from 'nanoid';
-import React, { useEffect, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
-import { IoMdSend } from 'react-icons/io';
-import { FaUserLarge } from 'react-icons/fa6';
-import { BsChatRightText } from 'react-icons/bs';
-import { useAuth, currentUser } from '@clerk/nextjs';
-import GetFirstname from './getFirstname';
 
 const Chat = () => {
 	const { userId } = useAuth();
@@ -21,19 +22,19 @@ const Chat = () => {
 	const messagesEndRef = useRef(null); // Ref for the container's bottom
 	const { mutate, isPending } = useMutation({
 		mutationFn: async (query) => {
-			const currentTokens = fetchUserTokensById(userId);
-			if (currentTokens > 100) {
-				toast.error('token balance is insufficient');
+			const currentTokens = await fetchUserTokensById(userId);
+			if (currentTokens <= 100) {
+				toast.error('Token balance is insufficient');
 				return;
 			}
 			const response = await generateChatResponse([...messages, query]);
 			if (!response) {
-				toast.error('there is no data');
+				toast.error('There is no data');
 				return;
 			}
 			setMessages((prev) => [...prev, response.message]);
 			const newToken = await subtractTokens(userId, response.tokens);
-			toast.success(`${newToken} is remaining tokens`);
+			toast.success(`${newToken} remaining tokens`);
 		},
 	});
 
@@ -44,6 +45,7 @@ const Chat = () => {
 		setMessages((prev) => [...prev, query]);
 		setText('');
 	};
+
 	useEffect(() => {
 		// Scroll to the bottom of the messages container
 		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -59,14 +61,14 @@ const Chat = () => {
 						return (
 							<li
 								key={id}
-								className={` flex items-baseline gap-3 py-6 px-4 text-lg leading-loose border-b border-base-300 ${
-									role === 'assistant' && 'bg-base-100  px-12'
+								className={`chat-message flex items-baseline gap-3 py-6 px-4 text-lg leading-loose border-b border-base-300 ${
+									role === 'assistant' && 'bg-base-100 px-12'
 								}`}>
 								<span className='avatar'>
 									{role === 'user' && <FaUserLarge />}
 									{role === 'assistant' && <BsChatRightText />}
 								</span>
-								<p className='max-w-3xl'>{content}</p>
+								<MarkdownComponent content={content} />
 								{isPending && messages.length === index + 1 && (
 									<span className='loading'></span>
 								)}

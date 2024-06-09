@@ -11,7 +11,8 @@ import { useAuth } from '@clerk/nextjs';
 import GetFirstname from './getFirstname';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { dark as darkStyle } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { getTextDirection } from '@/utils/utils';
 
 const Chat = () => {
 	const { userId } = useAuth();
@@ -47,7 +48,7 @@ const Chat = () => {
 			const match = /language-(\w+)/.exec(className || '');
 			return !inline && match ? (
 				<SyntaxHighlighter
-					style={dark}
+					style={darkStyle}
 					language={match[1]}
 					PreTag='div'
 					{...props}>
@@ -64,18 +65,21 @@ const Chat = () => {
 	};
 
 	return (
-		<div className='min-h-[calc(100vh-9rem)] grid grid-rows-[1fr,auto] -mx-8'>
+		<div className='min-h-[calc(100vh)] grid grid-rows-[1fr,auto] -mx-8 dark:bg-gray-900 dark:text-gray-100'>
 			<div className='max-h-[calc(100vh-11rem)] overflow-y-auto overflow-x-hidden'>
 				<ul>
 					<GetFirstname />
 					{messages.map(({ role, content }, index) => {
 						const id = nanoid();
+						const directionClass = getTextDirection(content);
 						return (
 							<li
 								key={id}
 								className={`flex items-baseline gap-3 py-6 px-4 text-lg leading-loose border-b border-gray-300 ${
-									role === 'assistant' ? 'bg-gray-100 px-12' : ''
-								}`}>
+									role === 'assistant'
+										? 'bg-gray-100 dark:bg-gray-800 px-12'
+										: ''
+								} ${directionClass}`}>
 								<span className='flex-shrink-0'>
 									{role === 'user' && <FaUserLarge />}
 									{role === 'assistant' && <BsChatRightText />}
@@ -102,7 +106,7 @@ const Chat = () => {
 					<input
 						type='text'
 						placeholder='text me here 😎'
-						className='flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring focus:border-blue-300'
+						className='flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring focus:border-blue-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-blue-500'
 						value={text}
 						onChange={(e) => {
 							setText(e.target.value);

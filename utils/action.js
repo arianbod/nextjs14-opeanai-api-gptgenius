@@ -60,7 +60,7 @@ If you can't find info on exact ${city}, or ${city} does not exist, or it's popu
                 { role: 'system', content: 'you are a tour guide' },
                 { role: 'user', content: query }
             ]
-            , model: 'gpt-3.5-turbo'
+            , model: 'gpt-4o-2024-05-13'
             , temperature: 0.5,
 
         })

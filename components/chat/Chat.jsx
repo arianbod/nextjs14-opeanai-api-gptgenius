@@ -1,19 +1,17 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import { generateChatResponse } from '@/utils/action';
 import { useMutation } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
+import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { IoMdSend } from 'react-icons/io';
 import { FaUserLarge } from 'react-icons/fa6';
 import { BsChatRightText } from 'react-icons/bs';
 import { useAuth } from '@clerk/nextjs';
 import GetFirstname from './getFirstname';
-import MarkdownComponent from './MarkdownComponent';
-import {
-	fetchUserTokensById,
-	generateChatResponse,
-	subtractTokens,
-} from '@/utils/action';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const Chat = () => {
 	const { userId } = useAuth();
@@ -22,19 +20,12 @@ const Chat = () => {
 	const messagesEndRef = useRef(null); // Ref for the container's bottom
 	const { mutate, isPending } = useMutation({
 		mutationFn: async (query) => {
-			const currentTokens = await fetchUserTokensById(userId);
-			if (currentTokens <= 100) {
-				toast.error('Token balance is insufficient');
-				return;
-			}
 			const response = await generateChatResponse([...messages, query]);
 			if (!response) {
-				toast.error('There is no data');
+				toast.error('there is no data');
 				return;
 			}
 			setMessages((prev) => [...prev, response.message]);
-			const newToken = await subtractTokens(userId, response.tokens);
-			toast.success(`${newToken} remaining tokens`);
 		},
 	});
 
@@ -51,9 +42,30 @@ const Chat = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
 	}, [messages]); // Dependency array ensures effect runs when messages change
 
+	const renderers = {
+		code({ node, inline, className, children, ...props }) {
+			const match = /language-(\w+)/.exec(className || '');
+			return !inline && match ? (
+				<SyntaxHighlighter
+					style={dark}
+					language={match[1]}
+					PreTag='div'
+					{...props}>
+					{String(children).replace(/\n$/, '')}
+				</SyntaxHighlighter>
+			) : (
+				<code
+					className={className}
+					{...props}>
+					{children}
+				</code>
+			);
+		},
+	};
+
 	return (
-		<div className='min-h-[calc(100vh-6rem)] grid grid-rows-[1fr,auto] -mx-8'>
-			<div className='max-h-[calc(100vh-12rem)] overflow-y-auto overflow-x-hidden'>
+		<div className='min-h-[calc(100vh-9rem)] grid grid-rows-[1fr,auto] -mx-8'>
+			<div className='max-h-[calc(100vh-11rem)] overflow-y-auto overflow-x-hidden'>
 				<ul>
 					<GetFirstname />
 					{messages.map(({ role, content }, index) => {
@@ -61,14 +73,18 @@ const Chat = () => {
 						return (
 							<li
 								key={id}
-								className={`chat-message flex items-baseline gap-3 py-6 px-4 text-lg leading-loose border-b border-base-300 ${
-									role === 'assistant' && 'bg-base-100 px-12'
+								className={`flex items-baseline gap-3 py-6 px-4 text-lg leading-loose border-b border-gray-300 ${
+									role === 'assistant' ? 'bg-gray-100 px-12' : ''
 								}`}>
-								<span className='avatar'>
+								<span className='flex-shrink-0'>
 									{role === 'user' && <FaUserLarge />}
 									{role === 'assistant' && <BsChatRightText />}
 								</span>
-								<MarkdownComponent content={content} />
+								<div className='max-w-3xl'>
+									<ReactMarkdown components={renderers}>
+										{content}
+									</ReactMarkdown>
+								</div>
 								{isPending && messages.length === index + 1 && (
 									<span className='loading'></span>
 								)}
@@ -82,21 +98,21 @@ const Chat = () => {
 			<form
 				onSubmit={handleSubmit}
 				className='max-w-4xl px-8 pt-12'>
-				<div className='join w-full'>
+				<div className='flex w-full'>
 					<input
 						type='text'
-						placeholder='Message GeniusGPT'
-						className='input input-bordered join-item w-full'
+						placeholder='text me here 😎'
+						className='flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring focus:border-blue-300'
 						value={text}
 						onChange={(e) => {
 							setText(e.target.value);
 						}}
 					/>
 					<button
-						className='btn btn-primary join-item'
+						className='px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 focus:outline-none focus:ring focus:bg-blue-700'
 						type='submit'
 						disabled={isPending}>
-						{isPending ? 'wait...' : <IoMdSend />}
+						{isPending ? 'Wait...' : <IoMdSend />}
 					</button>
 				</div>
 			</form>

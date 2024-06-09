@@ -16,9 +16,9 @@ export const generateChatResponse = async (chatMessages) => {
                 { role: 'system', content: 'you are a helpful assistant' },
                 ...chatMessages
             ],
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4o-2024-05-13',
             temperature: 1,
-            max_tokens: 100
+            max_tokens: 1000
         })
         return { message: response.choices[0].message, tokens: response.usage.total_tokens }
     } catch (error) {

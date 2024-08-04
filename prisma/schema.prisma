@@ -28,3 +28,18 @@ model Token{
   clerkId String @id
   tokens Int @default(3000)
 }
+model Chat {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  messages  Message[]
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  role      String
+  content   String
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+}

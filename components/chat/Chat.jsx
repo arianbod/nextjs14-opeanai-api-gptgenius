@@ -21,12 +21,16 @@ const Chat = () => {
 	const messagesEndRef = useRef(null); // Ref for the container's bottom
 	const { mutate, isPending } = useMutation({
 		mutationFn: async (query) => {
-			const response = await generateChatResponse([...messages, query]);
+			const response = await generateChatResponse([...messages, query], userId);
 			if (!response) {
-				toast.error('there is no data');
+				toast.error('There is no data');
 				return;
 			}
-			setMessages((prev) => [...prev, response.message]);
+			if (response.tokens === 0) {
+				toast.error(response.message);
+			} else {
+				setMessages((prev) => [...prev, response.message]);
+			}
 		},
 	});
 
@@ -103,7 +107,7 @@ const Chat = () => {
 				<div className='flex w-full'>
 					<input
 						type='text'
-						placeholder='text me here 😎'
+						placeholder='Text me here 😎'
 						className='flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring focus:border-blue-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-blue-500'
 						value={text}
 						onChange={(e) => {

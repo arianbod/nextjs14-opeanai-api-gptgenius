@@ -7,10 +7,38 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 })
 
-export const generateChatResponse = async (chatMessages) => {
-    try {
 
-        // Then, inside an async function where you have access to the request object:
+
+
+export const subtractTokens = async (clerkId, tokens) => {
+    const currentTokens = await fetchUserTokensById(clerkId);
+    if (currentTokens <= 0) {
+        return { tokens: 0, warning: 'Your tokens have been finished. You should recharge to use.' };
+    }
+    const result = await prisma.token.update({
+        where: {
+            clerkId,
+        },
+        data: {
+            tokens: {
+                decrement: tokens,
+            },
+        },
+    });
+    revalidatePath('/profile');
+    return { tokens: result.tokens };
+};
+
+
+
+
+export const generateChatResponse = async (chatMessages, clerkId) => {
+    try {
+        const tokens = await fetchOrGenerateTokens(clerkId);
+        if (tokens <= 0) {
+            return { message: 'Your tokens have been finished. You should recharge to use.', tokens: 0 };
+        }
+
         const response = await openai.chat.completions.create({
             messages: [
                 { role: 'system', content: 'you are a helpful assistant' },
@@ -19,13 +47,17 @@ export const generateChatResponse = async (chatMessages) => {
             model: 'gpt-4o-2024-05-13',
             temperature: 1,
             max_tokens: 1000
-        })
-        return { message: response.choices[0].message, tokens: response.usage.total_tokens }
+        });
+
+        await subtractTokens(clerkId, response.usage.total_tokens);
+
+        return { message: response.choices[0].message, tokens: response.usage.total_tokens };
     } catch (error) {
         console.log(error);
-        return null
+        return null;
     }
-}
+};
+
 
 export const getExistingTour = async ({ city, country }) => {
 
@@ -114,14 +146,26 @@ export const getSingleTour = async (id) => {
     })
 }
 export const fetchUserTokensById = async (clerkId) => {
-    const result = await prisma.token.findUnique({
-        where: {
-            clerkId,
-        },
-    });
+    if (!clerkId) {
+        console.log("No clerkId provided");
+        return undefined;
+    }
 
-    return result?.tokens;
+    try {
+        const result = await prisma.token.findUnique({
+            where: {
+                clerkId,
+            },
+        });
+
+        console.log("fetchUserTokensById result:", result);
+        return result?.tokens;
+    } catch (error) {
+        console.error("Error fetching user tokens:", error);
+        return undefined;
+    }
 };
+
 
 export const generateUserTokensForId = async (clerkId) => {
     const result = await prisma.token.create({
@@ -140,18 +184,4 @@ export const fetchOrGenerateTokens = async (clerkId) => {
     return (await generateUserTokensForId(clerkId)).tokens;
 };
 
-export const subtractTokens = async (clerkId, tokens) => {
-    const result = await prisma.token.update({
-        where: {
-            clerkId,
-        },
-        data: {
-            tokens: {
-                decrement: tokens,
-            },
-        },
-    });
-    revalidatePath('/profile');
-    // Return the new token value
-    return result.tokens;
-};
+

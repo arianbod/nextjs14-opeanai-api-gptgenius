@@ -1,4 +1,5 @@
-import Chat from '@/components/chat/Chat'
+"use client"
+import Chat from '@/components/chat/EnhancedChat'
 import React from 'react'
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 const chatPage = () => {

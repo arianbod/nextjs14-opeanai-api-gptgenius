@@ -1,12 +1,18 @@
-import React from 'react';
-import { userButton, currentUser, auth, UserButton } from '@clerk/nextjs';
-const MemberProfile = async () => {
-	const user = await currentUser();
-	const { userId } = auth();
+'use client';
+
+import { UserButton, useUser } from '@clerk/nextjs';
+
+const MemberProfile = () => {
+	const { user, isLoaded } = useUser();
+
+	if (!isLoaded) {
+		return <div>Loading...</div>;
+	}
+
 	return (
 		<div className='px-4 flex items-center gap-2 mr-auto'>
 			<UserButton afterSignOutUrl='/' />
-			<p>{user.firstName}</p>
+			{user && <p>{user.firstName}</p>}
 		</div>
 	);
 };

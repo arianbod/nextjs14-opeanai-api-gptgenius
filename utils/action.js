@@ -5,183 +5,213 @@ import OpenAI from "openai";
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-})
+});
 
-
-
+const TOKEN_COSTS = {
+    CHAT: 1,
+    IMAGE: 50,
+    TRANSLATION: 5,
+    TOUR: 10,
+};
 
 export const subtractTokens = async (clerkId, tokens) => {
     const currentTokens = await fetchUserTokensById(clerkId);
-    if (currentTokens <= 0) {
-        return { tokens: 0, warning: 'Your tokens have been finished. You should recharge to use.' };
+    if (currentTokens < tokens) {
+        return { tokens: currentTokens, warning: 'Insufficient tokens. Please recharge to continue using the service.' };
     }
     const result = await prisma.token.update({
-        where: {
-            clerkId,
-        },
-        data: {
-            tokens: {
-                decrement: tokens,
-            },
-        },
+        where: { clerkId },
+        data: { tokens: { decrement: tokens } },
     });
     revalidatePath('/profile');
     return { tokens: result.tokens };
 };
 
-
-
-
-export const generateChatResponse = async (chatMessages, clerkId) => {
+export const generateChatResponse = async (chatMessagesJson, clerkId, personaJson) => {
     try {
-        const tokens = await fetchOrGenerateTokens(clerkId);
-        if (tokens <= 0) {
-            return { message: 'Your tokens have been finished. You should recharge to use.', tokens: 0 };
+        const { tokens, warning } = await subtractTokens(clerkId, TOKEN_COSTS.CHAT);
+        if (warning) {
+            return { message: warning, tokens };
         }
+
+        const chatMessages = JSON.parse(chatMessagesJson);
+        const persona = JSON.parse(personaJson);
+
+        // Create a system message based on the persona
+        const systemMessage = {
+            role: 'system',
+            content: `You are ${persona.name}, a ${persona.role}. Respond to queries in a manner consistent with your role and expertise. Always stay in character.`
+        };
 
         const response = await openai.chat.completions.create({
             messages: [
-                { role: 'system', content: 'you are a helpful assistant' },
+                systemMessage,
                 ...chatMessages
             ],
-            model: 'gpt-4o-2024-05-13',
-            temperature: 1,
+            model: 'gpt-4-1106-preview',
+            temperature: 0.7,
             max_tokens: 1000
         });
 
-        await subtractTokens(clerkId, response.usage.total_tokens);
-
         return { message: response.choices[0].message, tokens: response.usage.total_tokens };
     } catch (error) {
-        console.log(error);
-        return null;
+        console.error('Error in generateChatResponse:', error);
+        return { message: { role: 'assistant', content: 'I apologize, but I encountered an error. Please try again later.' }, tokens: 0 };
     }
 };
 
-
-export const getExistingTour = async ({ city, country }) => {
-
-    return prisma.tour.findUnique({
-        where: {
-            city_country: {
-                city, country
-            }
-        }
-    })
-
-
-}
-export const generateTourResponse = async ({ city, country }) => {
-    const query = `Find a exact ${city} in this exact ${country}.
-If ${city} and ${country} exist, create a list of things families can do in this ${city},${country}. 
-Once you have a list, create a one-day tour. Response should be  in the following JSON format: 
-{
-  "tour": {
-    "city": "${city}",
-    "country": "${country}",
-    "title": "title of the tour",
-    "description": "short description of the city and tour",
-    "stops": ["stop name 1", "stop name 2"]
-  }
-}
-"stops" property should include only two stops.
-If you can't find info on exact ${city}, or ${city} does not exist, or it's population is less than 1, or it is not located in the following ${country},   return { "tour": null }, with no additional characters.`;
+export const generateImage = async (prompt, clerkId) => {
     try {
+        const { tokens, warning } = await subtractTokens(clerkId, TOKEN_COSTS.IMAGE);
+        if (warning) {
+            return { error: warning, tokens };
+        }
+
+        const response = await openai.images.generate({
+            model: "dall-e-3",
+            prompt: prompt,
+            n: 1,
+            size: "1024x1024",
+        });
+
+        if (response.data && response.data[0] && response.data[0].url) {
+            return { imageUrl: response.data[0].url, tokens };
+        } else {
+            throw new Error('Image URL not found in the response');
+        }
+    } catch (error) {
+        console.error('Error in generateImage:', error);
+        return { error: 'Failed to generate image. Please try again later.', tokens: 0 };
+    }
+};
+
+export const translateText = async (text, targetLang, clerkId) => {
+    try {
+        const { tokens, warning } = await subtractTokens(clerkId, TOKEN_COSTS.TRANSLATION);
+        if (warning) {
+            return { error: warning, tokens };
+        }
+
         const response = await openai.chat.completions.create({
             messages: [
-                { role: 'system', content: 'you are a tour guide' },
-                { role: 'user', content: query }
-            ]
-            , model: 'gpt-4o-2024-05-13'
-            , temperature: 0.5,
+                { role: 'system', content: `You are a highly skilled translator. Translate the following text to ${targetLang}. Maintain the original meaning, tone, and style as closely as possible.` },
+                { role: 'user', content: text }
+            ],
+            model: 'gpt-4-1106-preview',
+            temperature: 0.3,
+            max_tokens: 1000
+        });
 
-        })
-        const tourData = JSON.parse(response.choices[0].message.content)
-        if (!tourData.tour) {
-            return null
-        }
-        subtractTokens();
-        return tourData.tour
+        const translatedText = response.choices[0].message.content.trim();
+
+        return { translatedText, tokens: response.usage.total_tokens };
     } catch (error) {
-        console.log(error);
+        console.error('Error in translateText:', error);
+        return { error: 'Translation failed. Please try again later.', tokens: 0 };
     }
-}
+};
+
+export const generateTourResponse = async ({ city, country }, clerkId) => {
+    try {
+        const { tokens, warning } = await subtractTokens(clerkId, TOKEN_COSTS.TOUR);
+        if (warning) {
+            return { error: warning, tokens };
+        }
+
+        const query = `Create a one-day tour for families visiting ${city}, ${country}. Include:
+        1. A brief description of the city (50 words max)
+        2. A catchy title for the tour
+        3. Four interesting stops, each with a short description (30 words max per stop)
+        4. A fun fact about the city or country
+
+        Format the response as a JSON object. If the city doesn't exist or isn't in the specified country, return { "tour": null }.`;
+
+        const response = await openai.chat.completions.create({
+            messages: [
+                { role: 'system', content: 'You are an expert tour guide with extensive knowledge of global destinations.' },
+                { role: 'user', content: query }
+            ],
+            model: 'gpt-4-1106-preview',
+            temperature: 0.7,
+        });
+
+        const tourData = JSON.parse(response.choices[0].message.content);
+        if (!tourData.tour) {
+            return { tour: null, tokens };
+        }
+
+        return { tour: tourData.tour, tokens: response.usage.total_tokens };
+    } catch (error) {
+        console.error('Error in generateTourResponse:', error);
+        return { error: 'Failed to generate tour. Please try again later.', tokens: 0 };
+    }
+};
+
 export const createNewTour = async (tour) => {
-    return prisma.tour.create({
-        data: tour
-    })
-}
+    return prisma.tour.create({ data: tour });
+};
 
 export const getAllTours = async (searchTerm) => {
-    if (!searchTerm) {
-        const tours = await prisma.tour.findMany({
-            orderBy: {
-                country: "asc"
-            }
-
-        })
-        return tours
-    }
-    const tours = await prisma.tour.findMany({
-        where: {
+    const whereClause = searchTerm
+        ? {
             OR: [
-                { city: { contains: searchTerm } },
-                { country: { contains: searchTerm } }
+                { city: { contains: searchTerm, mode: 'insensitive' } },
+                { country: { contains: searchTerm, mode: 'insensitive' } }
             ]
         }
-        ,
-        orderBy: {
-            city: "asc"
-        }
-    })
-    return tours
-}
+        : {};
+
+    return prisma.tour.findMany({
+        where: whereClause,
+        orderBy: { country: "asc" },
+    });
+};
 
 export const getSingleTour = async (id) => {
+    return prisma.tour.findUnique({ where: { id } });
+};
 
-    return prisma.tour.findUnique({
-        where: {
-            id,
-        }
-    })
-}
 export const fetchUserTokensById = async (clerkId) => {
     if (!clerkId) {
         console.log("No clerkId provided");
-        return undefined;
+        return 0;
     }
 
     try {
         const result = await prisma.token.findUnique({
-            where: {
-                clerkId,
-            },
+            where: { clerkId },
         });
 
-        console.log("fetchUserTokensById result:", result);
-        return result?.tokens;
+        return result?.tokens || 0;
     } catch (error) {
         console.error("Error fetching user tokens:", error);
-        return undefined;
+        return 0;
     }
 };
-
 
 export const generateUserTokensForId = async (clerkId) => {
     const result = await prisma.token.create({
         data: {
             clerkId,
+            tokens: 100, // Start with 100 tokens for new users
         },
     });
-    return result?.tokens;
+    return result.tokens;
 };
 
 export const fetchOrGenerateTokens = async (clerkId) => {
-    const result = await fetchUserTokensById(clerkId);
-    if (result) {
-        return result.tokens;
+    let tokens = await fetchUserTokensById(clerkId);
+    if (tokens === 0) {
+        tokens = await generateUserTokensForId(clerkId);
     }
-    return (await generateUserTokensForId(clerkId)).tokens;
+    return tokens;
 };
 
-
+export const rechargeTokens = async (clerkId, amount) => {
+    const result = await prisma.token.update({
+        where: { clerkId },
+        data: { tokens: { increment: amount } },
+    });
+    revalidatePath('/profile');
+    return result.tokens;
+};

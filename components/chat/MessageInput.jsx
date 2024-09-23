@@ -7,8 +7,7 @@ const MessageInput = ({ inputText, setInputText, handleSubmit, isPending }) => (
 		onSubmit={handleSubmit}
 		className='border-t border-base-300 p-4 bg-base-100'>
 		<div className='flex items-center gap-2'>
-			<input
-				type='text'
+			<textarea
 				value={inputText}
 				onChange={(e) => setInputText(e.target.value)}
 				placeholder='Type your message here...'

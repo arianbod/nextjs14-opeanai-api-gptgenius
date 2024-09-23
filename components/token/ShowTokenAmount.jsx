@@ -28,11 +28,9 @@ const ShowTokenAmount = () => {
 
 	return (
 		<div>
-			<h2 className='mb-8 ml-8 text-xl font-extrabold'>
-				Token Amount: {currentTokens}
-			</h2>
+			<h2 className=' text-white font-extrabold'>🪙{currentTokens}</h2>
 			{currentTokens <= 0 && (
-				<div className='mb-8 ml-8 text-red-600'>
+				<div className=' text-red-600'>
 					Your tokens have been finished. You should recharge to use.
 				</div>
 			)}

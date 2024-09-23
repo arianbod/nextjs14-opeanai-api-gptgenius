@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fa';
 import { SiOpenai } from 'react-icons/si';
 import ThemeToggle from '../sidebar/ThemeToggle';
+import ShowTokenAmount from '../token/ShowTokenAmount';
 
 const AIPersonas = [
 	{
@@ -87,7 +88,10 @@ const ModelSelection = ({ onSelect }) => (
 				<h1 className='text-4xl font-extrabold text-gray-800 dark:text-white'>
 					Choose Your AI Companion
 				</h1>
-				<ThemeToggle />
+				<div className='flex gap-4 place-items-center'>
+					<ShowTokenAmount />
+					<ThemeToggle />
+				</div>
 			</div>
 			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
 				{AIPersonas.map((persona) => (

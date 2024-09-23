@@ -1,3 +1,49 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Custom scrollbar styles with fully rounded thumb and no buttons */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 4px; /* Adjust as needed for visibility */
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);
+  border-radius: 9999px; /* Fully rounded */
+  border: transparent;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(155, 155, 155, 0.8);
+}
+
+/* Remove up and down buttons */
+*::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Optional: Hide scrollbar when not scrolling */
+*::-webkit-scrollbar-thumb {
+  visibility: hidden;
+}
+
+*:hover::-webkit-scrollbar-thumb,
+*:focus::-webkit-scrollbar-thumb,
+*:active::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+
+/* Ensure the scrollbar doesn't affect layout */
+* {
+  scrollbar-gutter: stable;
+}

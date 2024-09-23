@@ -1,27 +1,121 @@
-// MessageInput.js
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { IoMdSend } from 'react-icons/io';
 
-const MessageInput = ({ inputText, setInputText, handleSubmit, isPending }) => (
-	<form
-		onSubmit={handleSubmit}
-		className='border-t border-base-300 p-4 bg-base-100'>
-		<div className='flex items-center gap-2'>
-			<textarea
-				value={inputText}
-				onChange={(e) => setInputText(e.target.value)}
-				placeholder='Type your message here...'
-				className='input input-bordered flex-1'
-				disabled={isPending}
-			/>
-			<button
-				type='submit'
-				className='btn btn-primary'
-				disabled={isPending}>
-				<IoMdSend />
-			</button>
-		</div>
-	</form>
-);
+const MessageInput = ({ inputText, setInputText, handleSubmit, isPending }) => {
+	const textareaRef = useRef(null);
+	const [maxHeight, setMaxHeight] = useState('none');
+
+	// Function to determine if the device is mobile based on viewport width
+	const isMobile = () => window.innerWidth < 768; // Tailwind's md breakpoint
+
+	// Debounce function to limit how often a function can fire
+	const debounce = (func, delay) => {
+		let timer;
+		return (...args) => {
+			if (timer) clearTimeout(timer);
+			timer = setTimeout(() => {
+				func(...args);
+			}, delay);
+		};
+	};
+
+	// Function to set maxHeight based on viewport size
+	const calculateMaxHeight = () => {
+		const vh = window.innerHeight;
+		if (isMobile()) {
+			return `${vh * 0.5}px`; // 50% of viewport height on mobile
+		} else {
+			return `${vh * 0.3}px`; // 30% of viewport height on desktop
+		}
+	};
+
+	// Function to resize the textarea
+	const resizeTextarea = () => {
+		const textarea = textareaRef.current;
+		if (textarea) {
+			textarea.style.height = 'auto'; // Reset height to auto to get the correct scrollHeight
+			const newHeight = Math.min(textarea.scrollHeight, parseInt(maxHeight));
+			textarea.style.height = `${newHeight}px`;
+		}
+	};
+
+	// Debounced version of resizeTextarea for performance
+	const debouncedResizeTextarea = debounce(resizeTextarea, 100);
+
+	// Update maxHeight and resize on mount and when window resizes
+	useEffect(() => {
+		const updateMaxHeight = () => {
+			const newMaxHeight = calculateMaxHeight();
+			setMaxHeight(newMaxHeight);
+			resizeTextarea();
+		};
+
+		updateMaxHeight();
+
+		const handleResize = debounce(updateMaxHeight, 100);
+		window.addEventListener('resize', handleResize);
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	// Resize textarea when inputText changes
+	useEffect(() => {
+		resizeTextarea();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [inputText]);
+
+	const handleKeyDown = (e) => {
+		if (e.key === 'Enter' && !e.shiftKey) {
+			e.preventDefault();
+			handleSubmit(e);
+		}
+	};
+
+	const onSubmit = (e) => {
+		e.preventDefault();
+		handleSubmit(e);
+		// Clear input and resize
+		setInputText('');
+		setTimeout(() => {
+			resizeTextarea();
+		}, 0);
+	};
+
+	return (
+		<form
+			onSubmit={onSubmit}
+			className='border-t border-gray-200 p-4 bg-white'>
+			<div className='flex items-end gap-2'>
+				<div className='relative flex-1'>
+					<textarea
+						ref={textareaRef}
+						value={inputText}
+						onChange={(e) => setInputText(e.target.value)}
+						onKeyDown={handleKeyDown}
+						placeholder='Type your message here...'
+						className='w-full p-3 bg-gray-100 rounded-lg resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out'
+						style={{
+							maxHeight: maxHeight,
+							minHeight: '3rem', // Adjust based on your design
+							height: 'auto',
+						}}
+						disabled={isPending}
+						rows={1} // Start with one row
+					/>
+				</div>
+				<button
+					type='submit'
+					className='bg-blue-500 text-white rounded-full p-2 h-10 w-10 flex items-center justify-center hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 ease-in-out'
+					disabled={isPending || inputText.trim() === ''}
+					aria-label='Send Message'>
+					<IoMdSend className='text-xl' />
+				</button>
+			</div>
+		</form>
+	);
+};
 
 export default MessageInput;

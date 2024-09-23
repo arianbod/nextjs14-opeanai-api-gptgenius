@@ -1,5 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { IoMdSend } from 'react-icons/io';
+import { FiSend } from 'react-icons/fi'; // Using Feather Icons for a sleek send icon
+// If using a custom SVG, you can import it instead
+// import { ReactComponent as CustomSendIcon } from './path-to-your-icon.svg';
+
+// Optional: Import Inter font if installed via npm
+// import '@fontsource/inter';
 
 const MessageInput = ({ inputText, setInputText, handleSubmit, isPending }) => {
 	const textareaRef = useRef(null);
@@ -87,20 +92,21 @@ const MessageInput = ({ inputText, setInputText, handleSubmit, isPending }) => {
 	return (
 		<form
 			onSubmit={onSubmit}
-			className='border-t border-gray-200 p-4 bg-white'>
-			<div className='flex items-end gap-2'>
-				<div className='relative flex-1'>
+			className='border-t border-gray-200 bg-gray-100'>
+			<div className='flex items-end gap-2 '>
+				<div className='relative flex-1 pr-1 '>
 					<textarea
 						ref={textareaRef}
 						value={inputText}
 						onChange={(e) => setInputText(e.target.value)}
 						onKeyDown={handleKeyDown}
 						placeholder='Type your message here...'
-						className='w-full p-3 bg-gray-100 rounded-lg resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out'
+						className='w-full p-3 rounded-3xl resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-blue-500 transition-[height] duration-200 ease-in-out font-sans text-base leading-relaxed' // Updated font styles
 						style={{
 							maxHeight: maxHeight,
 							minHeight: '3rem', // Adjust based on your design
 							height: 'auto',
+							transition: 'height 0.2s ease-in-out', // Smooth height transition
 						}}
 						disabled={isPending}
 						rows={1} // Start with one row
@@ -108,10 +114,12 @@ const MessageInput = ({ inputText, setInputText, handleSubmit, isPending }) => {
 				</div>
 				<button
 					type='submit'
-					className='bg-blue-500 text-white rounded-full p-2 h-10 w-10 flex items-center justify-center hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 ease-in-out'
+					className='bg-blue-500 mb-2 mr-1 text-white rounded-full  h-10 w-10 flex items-center justify-center hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 ease-in-out'
 					disabled={isPending || inputText.trim() === ''}
 					aria-label='Send Message'>
-					<IoMdSend className='text-xl' />
+					<FiSend className='text-xl' /> {/* Using Feather Icons' Send Icon */}
+					{/* If using a custom SVG, replace the above line with: */}
+					{/* <CustomSendIcon className="h-6 w-6 text-white" /> */}
 				</button>
 			</div>
 		</form>

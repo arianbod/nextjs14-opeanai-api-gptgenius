@@ -38,7 +38,6 @@ const ProfilePage = () => {
                     Your tokens have been finished. You should recharge to use.
                 </div>
             )}
-            <UserProfile />
         </div>
     );
 };

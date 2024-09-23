@@ -43,9 +43,9 @@ app/layout.js
 
 ```js
 export const metadata = {
-	title: 'GPTGenius',
+	title: 'aieva',
 	description:
-		'GPTGenius: Your AI language companion. Powered by OpenAI, it enhances your conversations, content creation, and more!',
+		'aieva: Your AI language companion. Powered by OpenAI, it enhances your conversations, content creation, and more!',
 };
 ```
 
@@ -58,10 +58,10 @@ const HomePage = () => {
 		<div className='hero min-h-screen bg-base-200'>
 			<div className='hero-content text-center'>
 				<div className='max-w-md'>
-					<h1 className='text-6xl font-bold text-primary'>GPTGenius</h1>
+					<h1 className='text-6xl font-bold text-primary'>aieva</h1>
 					<p className='py-6 text-lg leading-loose'>
-						GPTGenius: Your AI language companion. Powered by OpenAI, it
-						enhances your conversations, content creation, and more!
+						aieva: Your AI language companion. Powered by OpenAI, it enhances
+						your conversations, content creation, and more!
 					</p>
 					<Link
 						href='/chat'
@@ -279,7 +279,7 @@ const SidebarHeader = () => {
 	return (
 		<div className='flex items-center mb-4 gap-4 px-4'>
 			<SiOpenaigym className='w-10 h-10 text-primary' />
-			<h2 className='text-xl font-extrabold text-primary mr-auto'>GPTGenius</h2>
+			<h2 className='text-xl font-extrabold text-primary mr-auto'>aieva</h2>
 			<ThemeToggle />
 		</div>
 	);

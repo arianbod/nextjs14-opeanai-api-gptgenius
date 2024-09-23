@@ -6,6 +6,7 @@ import EnhancedChat from '@/components/chat/EnhancedChat';
 const ChatPage = () => {
     const queryClient = new QueryClient();
 
+    
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
             <EnhancedChat />

@@ -2,13 +2,14 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Providers from "./providers";
+import { global } from "@/lib/dic/en";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: 'GPTGenius',
+  title: global.title,
   description:
-    'GPTGenius: Your AI language companion. Powered by OpenAI, it enhances your conversations, content creation, and more!',
+    global.description,
 };
 
 export default function RootLayout({ children }) {

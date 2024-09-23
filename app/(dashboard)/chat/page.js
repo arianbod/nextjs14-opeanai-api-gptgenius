@@ -1,14 +1,16 @@
 "use client"
-import Chat from '@/components/chat/EnhancedChat'
-import React from 'react'
-import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query'
-const chatPage = () => {
-    const queryClient = new QueryClient()
+import React from 'react';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
+import EnhancedChat from '@/components/chat/EnhancedChat';
+
+const ChatPage = () => {
+    const queryClient = new QueryClient();
+
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <Chat />
+            <EnhancedChat />
         </HydrationBoundary>
-    )
-}
+    );
+};
 
-export default chatPage
+export default ChatPage;

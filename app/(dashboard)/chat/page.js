@@ -4,10 +4,17 @@ import { useRouter } from 'next/navigation';
 import { nanoid } from 'nanoid';
 import ModelSelection from '@/components/chat/ModelSelection';
 import MessageInput from '@/components/chat/MessageInput';
+import { SiOpenai } from 'react-icons/si';
 
 const ChatPage = () => {
     const router = useRouter();
-    const [selectedModel, setSelectedModel] = useState(null);
+    const [selectedModel, setSelectedModel] = useState({
+        key: 'CHATGPT',
+        name: 'ChatGPT',
+        role: 'AI Assistant',
+        icon: SiOpenai,
+        color: 'from-green-400 to-blue-500',
+    });
     const [inputText, setInputText] = useState('');
 
     const createNewChat = (model, initialMessage = null) => {

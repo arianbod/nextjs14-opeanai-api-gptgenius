@@ -8,9 +8,9 @@ import MessageInput from './MessageInput';
 import { useUser } from '@clerk/nextjs';
 import AILoadingIndicator from './AILoadingIndicator';
 
-const ChatInterface = ({ persona }) => {
+const ChatInterface = ({ persona, chatId, initialMessages }) => {
 	const { user } = useUser();
-	const [messages, setMessages] = useState([]);
+	const [messages, setMessages] = useState(initialMessages || []);
 	const [inputText, setInputText] = useState('');
 	const messagesEndRef = useRef(null);
 
@@ -20,32 +20,36 @@ const ChatInterface = ({ persona }) => {
 
 	useEffect(scrollToBottom, [messages]);
 
-	useEffect(() => {
-		setMessages([
-			{
-				id: nanoid(),
-				role: 'assistant',
-				content: `Hello! I'm ${persona.name}, your ${persona.role}. How can I assist you today?`,
-			},
-		]);
-	}, [persona]);
-
 	const chatMutation = useMutation({
 		mutationFn: async (content) => {
 			if (!user) throw new Error('User not authenticated');
 			const response = await generateChatResponse(
 				JSON.stringify([...messages, { role: 'user', content }]),
 				user.id,
-				JSON.stringify(persona)
+				JSON.stringify(persona),
+				chatId
 			);
 			return response;
 		},
 		onSuccess: (data) => {
 			if (data.message) {
-				setMessages((prev) => [
-					...prev,
-					{ id: nanoid(), role: 'assistant', content: data.message.content },
-				]);
+				const newMessage = {
+					id: nanoid(),
+					role: 'assistant',
+					content: data.message.content,
+					timestamp: new Date().toISOString(),
+				};
+				setMessages((prev) => {
+					const updatedMessages = [...prev, newMessage];
+					localStorage.setItem(
+						chatId,
+						JSON.stringify({
+							model: persona,
+							messages: updatedMessages,
+						})
+					);
+					return updatedMessages;
+				});
 			} else if (data.error) {
 				toast.error(data.error);
 			}
@@ -56,8 +60,23 @@ const ChatInterface = ({ persona }) => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (!inputText.trim()) return;
-		const newMessage = { id: nanoid(), role: 'user', content: inputText };
-		setMessages((prev) => [...prev, newMessage]);
+		const newMessage = {
+			id: nanoid(),
+			role: 'user',
+			content: inputText,
+			timestamp: new Date().toISOString(),
+		};
+		setMessages((prev) => {
+			const updatedMessages = [...prev, newMessage];
+			localStorage.setItem(
+				chatId,
+				JSON.stringify({
+					model: persona,
+					messages: updatedMessages,
+				})
+			);
+			return updatedMessages;
+		});
 		chatMutation.mutate(inputText);
 		setInputText('');
 	};

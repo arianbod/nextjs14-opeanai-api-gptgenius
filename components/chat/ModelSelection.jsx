@@ -9,10 +9,8 @@ import {
 	FaChalkboardTeacher,
 } from 'react-icons/fa';
 import { SiOpenai } from 'react-icons/si';
-import ThemeToggle from '../sidebar/ThemeToggle';
-import ShowTokenAmount from '../token/ShowTokenAmount';
 
-const AIPersonas = [
+export const AIPersonas = [
 	{
 		key: 'CHATGPT',
 		name: 'ChatGPT',
@@ -64,13 +62,17 @@ const AIPersonas = [
 	},
 ];
 
-const ModelCard = ({ persona, onSelect }) => {
+const ModelCard = ({ persona, onSelect, isSelected }) => {
 	const Icon = persona.icon;
 	return (
 		<motion.div
 			whileHover={{ scale: 1.05 }}
 			whileTap={{ scale: 0.95 }}
-			className={`bg-gradient-to-br ${persona.color} rounded-xl shadow-lg overflow-hidden cursor-pointer`}
+			className={`bg-gradient-to-br ${
+				persona.color
+			} rounded-xl shadow-lg overflow-hidden cursor-pointer ${
+				isSelected ? 'ring-4 ring-blue-500' : ''
+			}`}
 			onClick={() => onSelect(persona)}>
 			<div className='p-6 flex flex-col items-center text-white'>
 				<Icon className='w-16 h-16 mb-4' />
@@ -81,29 +83,24 @@ const ModelCard = ({ persona, onSelect }) => {
 	);
 };
 
-const ModelSelection = ({ onSelect }) => (
-	<div className='min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 p-8'>
-		<div className='max-w-6xl mx-auto'>
-			<div className='flex justify-between items-center mb-12'>
-				<h1 className='text-4xl font-extrabold text-gray-800 dark:text-white'>
-					Choose Your AI Companion
-				</h1>
-				<div className='flex gap-4 place-items-center'>
-					<ShowTokenAmount />
-					<ThemeToggle />
-				</div>
-			</div>
+const ModelSelection = ({ onSelect, selectedModel }) => {
+	return (
+		<div className='p-4'>
+			<h2 className='text-2xl font-bold mb-4 text-center'>
+				Choose Your AI Companion
+			</h2>
 			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
 				{AIPersonas.map((persona) => (
 					<ModelCard
 						key={persona.key}
 						persona={persona}
 						onSelect={onSelect}
+						isSelected={selectedModel && selectedModel.key === persona.key}
 					/>
 				))}
 			</div>
 		</div>
-	</div>
-);
+	);
+};
 
 export default ModelSelection;

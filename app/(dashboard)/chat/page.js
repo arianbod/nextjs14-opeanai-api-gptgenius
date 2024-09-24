@@ -55,11 +55,10 @@ const ChatPage = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
-            <div className="flex-grow overflow-auto p-4">
+        <div className="flex flex-col h-screen w-full">
+            <div className="flex-grow overflow-auto">
                 <ModelSelection onSelect={handleModelSelect} selectedModel={selectedModel} />
             </div>
-            <div className="p-4">
                 <MessageInput
                     inputText={inputText}
                     setInputText={setInputText}
@@ -67,7 +66,6 @@ const ChatPage = () => {
                     isPending={false}
                     isDisabled={!selectedModel}
                 />
-            </div>
         </div>
     );
 };

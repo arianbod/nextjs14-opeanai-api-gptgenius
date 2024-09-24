@@ -24,7 +24,6 @@ const EnhancedChat = ({ chatId }) => {
 				setChatData(parsedChatData);
 				setSelectedModel(parsedChatData.model);
 			} else {
-				// Handle case where chatId is provided but no data found
 				router.push('/chat');
 			}
 		}
@@ -86,13 +85,11 @@ const EnhancedChat = ({ chatId }) => {
 	// For new chat page
 	if (!chatId) {
 		return (
-			<div className='flex flex-col h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900'>
-				<div className='flex-grow overflow-auto'>
-					<ModelSelection
-						onSelect={handleModelSelect}
-						selectedModel={selectedModel}
-					/>
-				</div>
+			<div className='flex flex-col no-scrollbar '>
+				<ModelSelection
+					onSelect={handleModelSelect}
+					selectedModel={selectedModel}
+				/>
 				<div className='p-4'>
 					<MessageInput
 						inputText={inputText}
@@ -113,8 +110,8 @@ const EnhancedChat = ({ chatId }) => {
 
 	return (
 		<div className='min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900'>
-			<div className='max-w-6xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden'>
-				<div className='h-[calc(100vh-2rem)] md:h-[calc(100vh-4rem)] flex flex-col'>
+			<div className='max-w-6xl mx-auto bg-white dark:bg-gray-800 rounded-xl overflow-hidden no-scrollbar'>
+				<div className='h-[calc(100vh-3rem)] md:h-[calc(100vh-4rem)] flex flex-col overflow-hidden'>
 					<Header
 						selectedPersona={chatData.model}
 						onChangeModel={handleChangeModel}

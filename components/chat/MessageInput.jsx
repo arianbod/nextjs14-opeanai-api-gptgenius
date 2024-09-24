@@ -97,7 +97,7 @@ const MessageInput = ({
 	return (
 		<form
 			onSubmit={onSubmit}
-			className='border-t border-gray-200 bg-gray-100'>
+			className=''>
 			<div className='flex items-end gap-2 '>
 				<div className='relative flex-1 pr-1 '>
 					<textarea

@@ -1,5 +1,5 @@
 import TourInfo from '@/components/tours/TourInfo';
-import { getSingleTour } from '@/utils/action';
+import { getSingleTour } from '@/server/action';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import React from 'react'

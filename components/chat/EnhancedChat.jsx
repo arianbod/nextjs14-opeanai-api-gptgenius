@@ -128,6 +128,7 @@ const EnhancedChat = ({ chatId }) => {
 							persona={chatData.model}
 							chatId={chatId}
 							initialMessages={chatData.messages}
+							isPerplexity={chatData.model.engine === 'Perplexity'}
 						/>
 					)}
 				</div>

@@ -1,5 +1,5 @@
 'use client';
-import { fetchOrGenerateTokens, fetchUserTokensById } from '@/utils/action';
+import { fetchOrGenerateTokens, fetchUserTokensById } from '@/server/action';
 import { UserProfile, useAuth } from '@clerk/nextjs';
 import React, { useEffect, useState } from 'react';
 const ShowTokenAmount = () => {

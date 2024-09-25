@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { generateImage } from '@/utils/action';
+import { generateImage } from '@/server/action';
 
 const ImageGenerationInterface = ({ userId }) => {
 	const [inputText, setInputText] = useState('');

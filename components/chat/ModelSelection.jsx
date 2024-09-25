@@ -13,8 +13,8 @@ import {
 	FaCamera,
 	FaChartLine,
 } from 'react-icons/fa';
-import { SiOpenai, SiDalle, SiJina, SiClaude } from 'react-icons/si';
-import { Tooltip } from 'react-tooltip'; // Install this package
+import { SiOpenai } from 'react-icons/si';
+import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 
 export const AIPersonas = [
@@ -84,6 +84,15 @@ export const AIPersonas = [
 		icon: FaMusic,
 		color: 'from-purple-400 to-indigo-500',
 		engine: 'Jina',
+	},
+	// Perplexity Persona
+	{
+		key: 'PERPLEXITY',
+		name: 'Perplexity',
+		role: 'AI Assistant',
+		icon: FaHardHat,
+		color: 'from-blue-400 to-purple-500',
+		engine: 'Perplexity',
 	},
 	// Custom Personas
 	{
@@ -162,14 +171,12 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 const ModelSelection = ({ onSelect, selectedModel }) => {
 	const [searchTerm, setSearchTerm] = useState('');
 
-	// Filter personas based on search term
 	const filteredPersonas = AIPersonas.filter(
 		(persona) =>
 			persona.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			persona.role.toLowerCase().includes(searchTerm.toLowerCase())
 	);
 
-	// Group filtered personas by engine
 	const groupedPersonas = filteredPersonas.reduce((groups, persona) => {
 		const { engine } = persona;
 		if (!groups[engine]) {

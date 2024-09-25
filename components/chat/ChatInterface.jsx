@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
 import toast from 'react-hot-toast';
-import { generateChatResponse } from '@/utils/action';
+import { generateChatResponse } from '@/server/action';
+import { fetchPerplexity } from '@/server/perplexity';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import { useUser } from '@clerk/nextjs';
 import AILoadingIndicator from './AILoadingIndicator';
 
-const ChatInterface = ({ persona, chatId, initialMessages }) => {
+const ChatInterface = ({ persona, chatId, initialMessages, isPerplexity }) => {
 	const { user } = useUser();
 	const [messages, setMessages] = useState(initialMessages || []);
 	const [inputText, setInputText] = useState('');
@@ -23,13 +24,19 @@ const ChatInterface = ({ persona, chatId, initialMessages }) => {
 	const chatMutation = useMutation({
 		mutationFn: async (content) => {
 			if (!user) throw new Error('User not authenticated');
-			const response = await generateChatResponse(
-				JSON.stringify([...messages, { role: 'user', content }]),
-				user.id,
-				JSON.stringify(persona),
-				chatId
-			);
-			return response;
+
+			if (isPerplexity) {
+				const response = await fetchPerplexity(content);
+				return { message: { content: response } };
+			} else {
+				const response = await generateChatResponse(
+					JSON.stringify([...messages, { role: 'user', content }]),
+					user.id,
+					JSON.stringify(persona),
+					chatId
+				);
+				return response;
+			}
 		},
 		onSuccess: (data) => {
 			if (data.message) {

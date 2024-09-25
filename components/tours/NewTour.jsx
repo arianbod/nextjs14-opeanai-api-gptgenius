@@ -5,7 +5,7 @@ import {
 	getExistingTour,
 	generateTourResponse,
 	createNewTour,
-} from '@/utils/action';
+} from '@/server/action';
 import toast from 'react-hot-toast';
 import TourInfo from './TourInfo';
 

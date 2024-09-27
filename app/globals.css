@@ -2,48 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /* Custom scrollbar styles with fully rounded thumb and no buttons */
 * {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
 }
 
 *::-webkit-scrollbar {
-  width: 4px; /* Adjust as needed for visibility */
+	width: 4px; /* Adjust as needed for visibility */
 }
 
 *::-webkit-scrollbar-track {
-  background: transparent;
+	background: transparent;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: rgba(155, 155, 155, 0.5);
-  border-radius: 9999px; /* Fully rounded */
-  border: transparent;
+	background-color: rgba(155, 155, 155, 0.5);
+	border-radius: 9999px; /* Fully rounded */
+	border: transparent;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(155, 155, 155, 0.8);
+	background-color: rgba(155, 155, 155, 0.8);
 }
 
 /* Remove up and down buttons */
 *::-webkit-scrollbar-button {
-  display: none;
+	display: none;
 }
 
 /* Optional: Hide scrollbar when not scrolling */
 *::-webkit-scrollbar-thumb {
-  visibility: hidden;
+	visibility: hidden;
 }
 
 *:hover::-webkit-scrollbar-thumb,
 *:focus::-webkit-scrollbar-thumb,
 *:active::-webkit-scrollbar-thumb {
-  visibility: visible;
+	visibility: visible;
 }
 
 /* Ensure the scrollbar doesn't affect layout */
 * {
-  scrollbar-gutter: stable;
+	scrollbar-gutter: stable;
+}
+.dot-flashing {
+	position: relative;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #9880ff;
+	color: #9880ff;
+	animation: dot-flashing 1s infinite linear alternate;
+	animation-delay: 0.5s;
+}
+.dot-flashing::before,
+.dot-flashing::after {
+	content: '';
+	display: inline-block;
+	position: absolute;
+	top: 0;
+}
+.dot-flashing::before {
+	left: -15px;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #9880ff;
+	color: #9880ff;
+	animation: dot-flashing 1s infinite alternate;
+	animation-delay: 0s;
+}
+.dot-flashing::after {
+	left: 15px;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #9880ff;
+	color: #9880ff;
+	animation: dot-flashing 1s infinite alternate;
+	animation-delay: 1s;
+}
+
+@keyframes dot-flashing {
+	0% {
+		background-color: #9880ff;
+	}
+	50%,
+	100% {
+		background-color: rgba(152, 128, 255, 0.2);
+	}
 }

@@ -1,16 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
-import toast from 'react-hot-toast';
-import { generateChatResponse } from '@/server/action';
+import { toast } from 'react-hot-toast';
+import { generateChatResponse, addMessageToChat } from '@/server/chat';
 import { fetchPerplexity } from '@/server/perplexity';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
-import { useUser } from '@clerk/nextjs';
 import AILoadingIndicator from './AILoadingIndicator';
 
-const ChatInterface = ({ persona, chatId, initialMessages, isPerplexity }) => {
-	const { user } = useUser();
+const ChatInterface = ({
+	clerkId,
+	persona,
+	chatId,
+	initialMessages,
+	isPerplexity,
+}) => {
 	const [messages, setMessages] = useState(initialMessages || []);
 	const [inputText, setInputText] = useState('');
 	const messagesEndRef = useRef(null);
@@ -23,15 +27,18 @@ const ChatInterface = ({ persona, chatId, initialMessages, isPerplexity }) => {
 
 	const chatMutation = useMutation({
 		mutationFn: async (content) => {
-			if (!user) throw new Error('User not authenticated');
+			if (!clerkId) throw new Error('User not authenticated');
+
+			// Add user message to the database
+			await addMessageToChat(clerkId, chatId, content, 'user');
 
 			if (isPerplexity) {
 				const response = await fetchPerplexity(content);
 				return { message: { content: response } };
 			} else {
 				const response = await generateChatResponse(
+					clerkId,
 					JSON.stringify([...messages, { role: 'user', content }]),
-					user.id,
 					JSON.stringify(persona),
 					chatId
 				);
@@ -46,22 +53,15 @@ const ChatInterface = ({ persona, chatId, initialMessages, isPerplexity }) => {
 					content: data.message.content,
 					timestamp: new Date().toISOString(),
 				};
-				setMessages((prev) => {
-					const updatedMessages = [...prev, newMessage];
-					localStorage.setItem(
-						chatId,
-						JSON.stringify({
-							model: persona,
-							messages: updatedMessages,
-						})
-					);
-					return updatedMessages;
-				});
+				setMessages((prev) => [...prev, newMessage]);
 			} else if (data.error) {
 				toast.error(data.error);
 			}
 		},
-		onError: (error) => toast.error(error.message),
+		onError: (error) => {
+			console.error('Error in chat mutation:', error);
+			toast.error('Failed to send message. Please try again.');
+		},
 	});
 
 	const handleSubmit = (e) => {
@@ -73,17 +73,7 @@ const ChatInterface = ({ persona, chatId, initialMessages, isPerplexity }) => {
 			content: inputText,
 			timestamp: new Date().toISOString(),
 		};
-		setMessages((prev) => {
-			const updatedMessages = [...prev, newMessage];
-			localStorage.setItem(
-				chatId,
-				JSON.stringify({
-					model: persona,
-					messages: updatedMessages,
-				})
-			);
-			return updatedMessages;
-		});
+		setMessages((prev) => [...prev, newMessage]);
 		chatMutation.mutate(inputText);
 		setInputText('');
 	};

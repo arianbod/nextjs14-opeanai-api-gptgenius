@@ -43,9 +43,9 @@ app/layout.js
 
 ```js
 export const metadata = {
-	title: 'aieva',
+	title: 'babaGPT',
 	description:
-		'aieva: Your AI language companion. Powered by OpenAI, it enhances your conversations, content creation, and more!',
+		'babaGPT: Your AI language companion. Powered by OpenAI, it enhances your conversations, content creation, and more!',
 };
 ```
 
@@ -58,9 +58,9 @@ const HomePage = () => {
 		<div className='hero min-h-screen bg-base-200'>
 			<div className='hero-content text-center'>
 				<div className='max-w-md'>
-					<h1 className='text-6xl font-bold text-primary'>aieva</h1>
+					<h1 className='text-6xl font-bold text-primary'>babaGPT</h1>
 					<p className='py-6 text-lg leading-loose'>
-						aieva: Your AI language companion. Powered by OpenAI, it enhances
+						babaGPT: Your AI language companion. Powered by OpenAI, it enhances
 						your conversations, content creation, and more!
 					</p>
 					<Link
@@ -279,7 +279,7 @@ const SidebarHeader = () => {
 	return (
 		<div className='flex items-center mb-4 gap-4 px-4'>
 			<SiOpenaigym className='w-10 h-10 text-primary' />
-			<h2 className='text-xl font-extrabold text-primary mr-auto'>aieva</h2>
+			<h2 className='text-xl font-extrabold text-primary mr-auto'>babaGPT</h2>
 			<ThemeToggle />
 		</div>
 	);

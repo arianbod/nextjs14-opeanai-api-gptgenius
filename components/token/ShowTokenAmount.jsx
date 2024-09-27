@@ -1,37 +1,45 @@
 'use client';
-import { fetchOrGenerateTokens, fetchUserTokensById } from '@/server/action';
-import { UserProfile, useAuth } from '@clerk/nextjs';
+import { manageUserTokens } from '@/server/chat';
+import { useUser } from '@clerk/nextjs';
 import React, { useEffect, useState } from 'react';
+
 const ShowTokenAmount = () => {
-	const { userId } = useAuth();
+	const { isLoaded, isSignedIn, user } = useUser();
 	const [currentTokens, setCurrentTokens] = useState(undefined);
 
 	useEffect(() => {
 		const fetchTokens = async () => {
-			if (userId) {
-				const tokens = await fetchUserTokensById(userId);
-				console.log(tokens);
-
-				setCurrentTokens(tokens);
-				console.log('Fetched tokens:', tokens);
-			} else {
-				console.log('User ID is not available');
+			if (isSignedIn && user) {
+				try {
+					const tokens = await manageUserTokens(user.id, 0); // Fetch tokens without changing the amount
+					setCurrentTokens(tokens);
+				} catch (error) {
+					console.error('Error fetching tokens:', error);
+					setCurrentTokens(0);
+				}
 			}
 		};
 
-		fetchTokens();
-	}, [userId]);
+		if (isLoaded) {
+			fetchTokens();
+		}
+	}, [isLoaded, isSignedIn, user]);
 
-	if (currentTokens === undefined) {
+	if (!isLoaded || currentTokens === undefined) {
 		return <div>Loading...</div>;
+	}
+
+	if (!isSignedIn) {
+		return <div>Please sign in to view your tokens.</div>;
 	}
 
 	return (
 		<div>
-			<h2 className=' text-white font-extrabold'>🪙{currentTokens}</h2>
+			<h2 className='text-white font-extrabold'>🪙{currentTokens}</h2>
 			{currentTokens <= 0 && (
-				<div className=' text-red-600'>
-					Your tokens have been finished. You should recharge to use.
+				<div className='text-red-600'>
+					Your tokens have been depleted. Please recharge to continue using the
+					service.
 				</div>
 			)}
 		</div>

@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
-import { nanoid } from 'nanoid';
+import { toast } from 'react-hot-toast';
 import ModelSelection, { AIPersonas } from './ModelSelection';
 import ChatInterface from './ChatInterface';
 import ImageGenerationInterface from './ImageGenerationInterface';
 import Header from './Header';
 import MessageInput from './MessageInput';
+import { createChat, getChatMessages, addMessageToChat } from '@/server/chat';
 
 const EnhancedChat = ({ chatId }) => {
 	const router = useRouter();
@@ -15,66 +16,104 @@ const EnhancedChat = ({ chatId }) => {
 	const [chatData, setChatData] = useState(null);
 	const [selectedModel, setSelectedModel] = useState(null);
 	const [inputText, setInputText] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
-		if (chatId) {
-			const storedChat = localStorage.getItem(chatId);
-			if (storedChat) {
-				const parsedChatData = JSON.parse(storedChat);
-				setChatData(parsedChatData);
-				setSelectedModel(parsedChatData.model);
-			} else {
-				router.push('/chat');
-			}
+		if (chatId && isSignedIn && user) {
+			const fetchChatData = async () => {
+				try {
+					setIsLoading(true);
+					const messages = await getChatMessages(user.id, chatId);
+					if (messages.length > 0) {
+						const model =
+							AIPersonas.find(
+								(p) => p.name === messages[0].content.split(',')[0].trim()
+							) || AIPersonas[0];
+						setChatData({ model, messages });
+						setSelectedModel(model);
+					} else {
+						// If no messages, treat as a new chat
+						setSelectedModel(AIPersonas[0]);
+						setChatData({ model: AIPersonas[0], messages: [] });
+					}
+				} catch (error) {
+					console.error('Error fetching chat data:', error);
+					toast.error('Failed to load chat data. Please try again.');
+					// Instead of redirecting, set up for a new chat
+					setSelectedModel(AIPersonas[0]);
+					setChatData({ model: AIPersonas[0], messages: [] });
+				} finally {
+					setIsLoading(false);
+				}
+			};
+			fetchChatData();
+		} else if (!chatId) {
+			// If no chatId, set up for a new chat
+			setSelectedModel(AIPersonas[0]);
+			setChatData({ model: AIPersonas[0], messages: [] });
 		}
-	}, [chatId, router]);
+	}, [chatId, isSignedIn, user]);
 
 	const handleModelSelect = (model) => {
 		setSelectedModel(model);
+		setChatData((prev) => ({ ...prev, model }));
 	};
 
-	const createNewChat = (model, initialMessage = null) => {
-		const newChatId = nanoid();
-		const chatHistory = [
-			{
-				id: nanoid(),
+	const createNewChat = async (model, initialMessage = null) => {
+		if (!isSignedIn || !user) return;
+
+		try {
+			setIsLoading(true);
+			const chatTitle = initialMessage
+				? initialMessage.substring(0, 30) + '...'
+				: 'New Chat';
+			const newChat = await createChat(user.id, chatTitle);
+
+			const systemMessage = {
 				role: 'system',
-				content: `You are ${model.name}, a ${model.role}.`,
-				timestamp: new Date().toISOString(),
-			},
-		];
+				content: `${model.name}, ${model.role}`,
+			};
+			await addMessageToChat(
+				user.id,
+				newChat.id,
+				systemMessage.content,
+				systemMessage.role
+			);
 
-		if (initialMessage) {
-			chatHistory.push({
-				id: nanoid(),
-				role: 'user',
-				content: initialMessage,
-				timestamp: new Date().toISOString(),
+			if (initialMessage) {
+				await addMessageToChat(user.id, newChat.id, initialMessage, 'user');
+			}
+
+			setChatData({
+				model,
+				messages: [
+					systemMessage,
+					...(initialMessage
+						? [{ role: 'user', content: initialMessage }]
+						: []),
+				],
 			});
+			setSelectedModel(model);
+			router.push(`/chat/${newChat.id}`);
+		} catch (error) {
+			console.error('Error creating new chat:', error);
+			toast.error('Failed to create a new chat. Please try again.');
+		} finally {
+			setIsLoading(false);
 		}
-
-		const newChatData = {
-			model: model,
-			messages: chatHistory,
-		};
-
-		localStorage.setItem(newChatId, JSON.stringify(newChatData));
-		setChatData(newChatData);
-		setSelectedModel(model);
-		router.push(`/chat/${newChatId}`);
 	};
 
-	const handleNewChatSubmit = (e) => {
+	const handleNewChatSubmit = async (e) => {
 		e.preventDefault();
-		if (!inputText.trim() || !selectedModel) return;
-		createNewChat(selectedModel, inputText);
+		if (!inputText.trim() || !selectedModel || !isSignedIn || !user) return;
+		await createNewChat(selectedModel, inputText);
 	};
 
-	const handleChangeModel = (newModel) => {
-		createNewChat(newModel);
+	const handleChangeModel = async (newModel) => {
+		await createNewChat(newModel);
 	};
 
-	if (!isLoaded) {
+	if (!isLoaded || isLoading) {
 		return <div>Loading...</div>;
 	}
 
@@ -82,10 +121,9 @@ const EnhancedChat = ({ chatId }) => {
 		return <div>Please sign in to use the chat.</div>;
 	}
 
-	// For new chat page
-	if (!chatId) {
+	if (!chatId || !chatData) {
 		return (
-			<div className='flex flex-col no-scrollbar '>
+			<div className='flex flex-col no-scrollbar'>
 				<ModelSelection
 					onSelect={handleModelSelect}
 					selectedModel={selectedModel}
@@ -95,17 +133,12 @@ const EnhancedChat = ({ chatId }) => {
 						inputText={inputText}
 						setInputText={setInputText}
 						handleSubmit={handleNewChatSubmit}
-						isPending={false}
+						isPending={isLoading}
 						isDisabled={!selectedModel}
 					/>
 				</div>
 			</div>
 		);
-	}
-
-	// For existing chat page
-	if (!chatData) {
-		return <div>Loading chat data...</div>;
 	}
 
 	return (
@@ -120,13 +153,14 @@ const EnhancedChat = ({ chatId }) => {
 
 					{chatData.model.name === 'DALL-E' ? (
 						<ImageGenerationInterface
-							userId={user.id}
-							chatId={chatId}
+							clerkId={user.id}
+							chatId={chatId.toString()} // Ensure chatId is a string
 						/>
 					) : (
 						<ChatInterface
+							clerkId={user.id}
 							persona={chatData.model}
-							chatId={chatId}
+							chatId={chatId.toString()} // Ensure chatId is a string
 							initialMessages={chatData.messages}
 							isPerplexity={chatData.model.engine === 'Perplexity'}
 						/>

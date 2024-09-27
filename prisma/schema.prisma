@@ -10,36 +10,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Tour {
-  id String @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  city String
-  country String
-  title String
-  description String @db.Text
-  image String? @db.Text
-  stops Json
-  @@unique([city,country])
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  city        String
+  country     String
+  title       String
+  description String   @db.Text
+  image       String?  @db.Text
+  stops       Json
+  @@unique([city, country])
 }
 
-model Token{
-  clerkId String @id
-  tokens Int @default(3000)
-}
-model Chat {
-  id        String   @id @default(uuid())
+model User {
+  id        String   @id
+  chats     Chat[]
+  token     Token?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Token {
+  clerkId String @id
+  tokens  Int    @default(3000)
+  user    User   @relation(fields: [clerkId], references: [id])
+}
+
+model Chat {
+  id        String    @id @default(uuid())
+  title     String
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
   messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Message {
   id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
+  content   String   @db.Text
   role      String
-  content   String
   chatId    String
-  chat      Chat     @relation(fields: [chatId], references: [id])
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }

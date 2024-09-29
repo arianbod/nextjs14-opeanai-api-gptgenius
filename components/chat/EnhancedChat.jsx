@@ -156,7 +156,8 @@ const EnhancedChat = ({ chatId }) => {
 					onSelect={handleModelSelect}
 					selectedModel={selectedModel}
 				/>
-				<div className='p-4'>
+				{/* this is message for later if we want to have an instant access to GPT model */}
+				{/* <div className='p-4'>
 					<MessageInput
 						inputText={inputText}
 						setInputText={setInputText}
@@ -164,7 +165,7 @@ const EnhancedChat = ({ chatId }) => {
 						isPending={isLoading}
 						isDisabled={!selectedModel}
 					/>
-				</div>
+				</div> */}
 			</div>
 		);
 	}

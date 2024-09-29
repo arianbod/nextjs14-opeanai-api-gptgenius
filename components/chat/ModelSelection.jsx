@@ -20,14 +20,31 @@ import Image from 'next/image';
 
 export const AIPersonas = [
 	// OpenAI Personas
+	// Perplexity Persona
 	{
 		key: 'BABAGPT',
-		name: 'BABAGPT',
-		role: 'BABAGPT AI Assistant',
-		icon: SiOpenai,
-		color: 'from-green-400 to-blue-500',
-		engine: 'OpenAI',
+		name: 'BabaGPT',
+		role: 'Exclusive AI Based Search Engine!',
+		icon: FaHardHat,
+		color: 'from-blue-400 to-purple-500',
+		engine: 'BabaGPT',
 	},
+	// {
+	// 	key: 'PERPLEXITY',
+	// 	name: 'Perplexity',
+	// 	role: 'AI Assistant',
+	// 	icon: FaHardHat,
+	// 	color: 'from-blue-400 to-purple-500',
+	// 	engine: 'Perplexity',
+	// },
+	// {
+	// 	key: 'BABAGPT',
+	// 	name: 'BabaGPT',
+	// 	role: 'BABAGPT AI Assistant',
+	// 	icon: SiOpenai,
+	// 	color: 'from-green-400 to-blue-500',
+	// 	engine: 'OpenAI',
+	// },
 	{
 		key: 'CHATGPT',
 		name: 'ChatGPT',
@@ -45,12 +62,32 @@ export const AIPersonas = [
 		engine: 'OpenAI',
 	},
 	{
+		key: 'JINA',
+		name: 'Hami Ras',
+		role: 'Doctor',
+		icon: FaUserMd,
+		color: 'from-red-400 to-pink-500',
+		engine: 'Medical',
+	},
+
+	// Custom Personas
+	{
+		key: 'ALBERTO',
+		name: 'Emilio',
+		role: 'Engineer',
+		icon: FaHardHat,
+		color: 'from-blue-400 to-indigo-500',
+		engine: 'Custom',
+	},
+	// Jina Personas
+
+	{
 		key: 'ALEX',
 		name: 'Alex',
 		role: 'Business Advisor',
 		icon: FaBriefcase,
 		color: 'from-indigo-400 to-purple-500',
-		engine: 'OpenAI',
+		engine: 'Custom',
 	},
 	{
 		key: 'NOAH',
@@ -58,7 +95,15 @@ export const AIPersonas = [
 		role: 'Data Analyst',
 		icon: FaChartLine,
 		color: 'from-green-400 to-blue-500',
-		engine: 'OpenAI',
+		engine: 'Custom',
+	},
+	{
+		key: 'LUCAS',
+		name: 'Louis Armstrong',
+		role: 'Musician',
+		icon: FaMusic,
+		color: 'from-purple-400 to-indigo-500',
+		engine: 'Claude',
 	},
 	// Claude Personas
 	{
@@ -77,41 +122,7 @@ export const AIPersonas = [
 		color: 'from-pink-400 to-red-500',
 		engine: 'Claude',
 	},
-	// Jina Personas
-	{
-		key: 'JINA',
-		name: 'Hami Ras',
-		role: 'Doctor',
-		icon: FaUserMd,
-		color: 'from-red-400 to-pink-500',
-		engine: 'Jina',
-	},
-	{
-		key: 'LUCAS',
-		name: 'Louis Armstrong',
-		role: 'Musician',
-		icon: FaMusic,
-		color: 'from-purple-400 to-indigo-500',
-		engine: 'Jina',
-	},
-	// Perplexity Persona
-	{
-		key: 'PERPLEXITY',
-		name: 'Perplexity',
-		role: 'AI Assistant',
-		icon: FaHardHat,
-		color: 'from-blue-400 to-purple-500',
-		engine: 'Perplexity',
-	},
-	// Custom Personas
-	{
-		key: 'ALBERTO',
-		name: 'Emilio',
-		role: 'Engineer',
-		icon: FaHardHat,
-		color: 'from-blue-400 to-indigo-500',
-		engine: 'Custom',
-	},
+
 	{
 		key: 'KOOROSH',
 		name: 'Koorosh',
@@ -166,7 +177,7 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 			data-tooltip-id={`tooltip-${persona.key}`}
 			data-tooltip-content={`Engine: ${persona.engine}\nRole: ${persona.role}`}>
 			<div className='p-6 flex flex-col items-center text-white select-none'>
-				{persona.name === 'BABAGPT' ? (
+				{persona.name === 'BabaGPT' ? (
 					<Image
 						height={300}
 						width={300}
@@ -247,7 +258,9 @@ const ModelSelection = ({ onSelect, selectedModel }) => {
 					<div
 						key={engine}
 						className='mb-8'>
-						<h3 className='text-2xl font-semibold mb-4'>{engine} Engine</h3>
+						<h3 className='text-sm border-b-2 font-semibold mb-4'>
+							{engine} Engine
+						</h3>
 						<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
 							{groupedPersonas[engine].map((persona) => (
 								<ModelCard

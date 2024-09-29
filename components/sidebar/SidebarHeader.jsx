@@ -13,11 +13,9 @@ const SidebarHeader = () => {
 				width={300}
 				alt='logo'
 				src='/babagpt_bw.svg'
-				className='w-24 h-24 animate-pulse bg-white rounded-full p-1'
+				className='w-24 h-24 animate-[pulse 6s cubic-bezier(0.4, 0, 0.6, 1)] bg-blue-800 rounded-full p-1'
 			/>
-			<h2 className='text-xl font-extrabold text-primary mr- capitalize'>
-				babaGPT
-			</h2>
+			<h2 className='text-xl font-bold text-primary mr- capitalize'>babaGPT</h2>
 			<ThemeToggle />
 		</Link>
 	);

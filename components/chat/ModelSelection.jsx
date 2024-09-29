@@ -88,7 +88,7 @@ export const AIPersonas = [
 	},
 	{
 		key: 'LUCAS',
-		name: 'Lucas',
+		name: 'Louis Armstrong',
 		role: 'Musician',
 		icon: FaMusic,
 		color: 'from-purple-400 to-indigo-500',
@@ -106,7 +106,7 @@ export const AIPersonas = [
 	// Custom Personas
 	{
 		key: 'ALBERTO',
-		name: 'Alberto',
+		name: 'Emilio',
 		role: 'Engineer',
 		icon: FaHardHat,
 		color: 'from-blue-400 to-indigo-500',

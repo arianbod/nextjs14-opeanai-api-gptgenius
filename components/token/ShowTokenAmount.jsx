@@ -27,7 +27,7 @@ const ShowTokenAmount = ({ userId }) => {
 
 	return (
 		<div>
-			<h2 className='text-white font-extrabold'>🪙{currentTokens}</h2>
+			<h2 className=' font-extrabold'>🪙{currentTokens}</h2>
 			{currentTokens <= 0 && (
 				<div className='text-red-600'>
 					Your tokens have been depleted. Please recharge to continue using the

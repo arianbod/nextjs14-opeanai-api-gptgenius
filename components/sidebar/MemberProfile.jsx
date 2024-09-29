@@ -10,11 +10,8 @@ const MemberProfile = ({ user }) => {
 	}
 
 	const handleSignOut = () => {
-		// Clear user data from localStorage
 		localStorage.removeItem('user');
-		// Remove the user cookie
 		document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-		// Redirect to home page
 		router.push('/');
 	};
 

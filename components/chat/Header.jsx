@@ -22,11 +22,11 @@ const Header = ({ selectedPersona, onChangeModel, AIPersonas }) => {
 				<span className='text-sm text-gray-400'>({selectedPersona.role})</span>
 			</h1>
 			<div className='relative'>
-				<button
+				{/* <button
 					onClick={() => setIsModelSelectOpen(!isModelSelectOpen)}
 					className='btn btn-sm btn-outline btn-accent hover:bg-accent-focus transition-colors duration-200'>
 					Change AI
-				</button>
+				</button> */}
 				{isModelSelectOpen && (
 					<div className='absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5'>
 						<div

@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { generateImage } from '@/server/chat';
 import MessageInput from './MessageInput';
+import Image from 'next/image';
 
 const ImageGenerationInterface = ({ userId, chatId }) => {
 	const [generatedImage, setGeneratedImage] = useState(null);
@@ -36,11 +37,19 @@ const ImageGenerationInterface = ({ userId, chatId }) => {
 		<div className='flex flex-col h-full'>
 			<div className='flex-grow overflow-auto p-4'>
 				{generatedImage && (
-					<img
-						src={generatedImage}
-						alt='Generated'
-						className='max-w-full h-auto'
-					/>
+					<>
+						<img
+							// height={1024}
+							// width={1024}
+							src={generatedImage}
+							alt='Generated'
+							className='max-w-full h-auto'
+						/>
+						<span className='text-black font-extrabold dark:text-white '>
+							{' '}
+							{generatedImage}
+						</span>
+					</>
 				)}
 			</div>
 			<div className='p-4'>

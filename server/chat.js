@@ -240,8 +240,8 @@ export async function generateImage(userId, prompt, chatId) {
     try {
         // Check and deduct tokens
         const requiredTokens = 50; // Adjust based on your token usage policy for image generation
-        const currentTokens = await manageUserTokens(user.id, -requiredTokens);
-        if (currentTokens < 0) {
+        // const currentTokens = await manageUserTokens(user.id, -requiredTokens);
+        if (user.tokenBalance < requiredTokens) {
             throw new Error('Insufficient tokens for image generation');
         }
 

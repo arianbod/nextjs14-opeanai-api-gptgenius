@@ -117,14 +117,14 @@ const Home = () => {
     return (
         <div>
             <header className="bg-blue-500 p-4 text-white">
-                <div className="container mx-auto flex justify-between items-center">
+                {/* <div className="container mx-auto flex justify-between items-center">
                     <h1 className="text-2xl font-bold">babaGPT</h1>
-                    {user && (
+                     {user && (
                         <button onClick={handleLogout} className="bg-red-500 px-4 py-2 rounded">
                             Logout
                         </button>
-                    )}
-                </div>
+                    )} 
+                </div> */}
             </header>
             <main className="container mx-auto mt-8">
                 {user ? (

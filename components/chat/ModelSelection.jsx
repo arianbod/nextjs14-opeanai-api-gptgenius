@@ -130,7 +130,7 @@ export const AIPersonas = [
 	},
 	{
 		key: 'MIA',
-		name: 'Mia',
+		name: 'Nicéphore',
 		role: 'Photographer',
 		icon: FaCamera,
 		color: 'from-yellow-400 to-pink-500',

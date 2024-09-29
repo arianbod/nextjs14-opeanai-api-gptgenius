@@ -7,7 +7,10 @@ const SidebarHeader = () => {
 		<Link
 			href='/'
 			className='flex items-center mb-4 gap-4 px-4'>
-			<SiOpenaigym className='w-10 h-10 text-primary' />
+			<img
+				src='/babagpt_bw.svg'
+				className='w-24 h-24 animate-pulse bg-white rounded-full p-1'
+			/>
 			<h2 className='text-xl font-extrabold text-primary mr- capitalize'>
 				babaGPT
 			</h2>

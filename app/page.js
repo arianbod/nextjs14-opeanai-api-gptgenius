@@ -78,6 +78,7 @@ import AuthPage from '../components/auth/AuthPage';
 import EnhancedChat from '../components/chat/EnhancedChat';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
+import { FaCopy } from 'react-icons/fa6';
 
 const Home = () => {
     const [user, setUser] = useState(null);
@@ -116,35 +117,36 @@ const Home = () => {
 
     return (
         <div>
-            <header className="bg-blue-500 p-4 text-white">
-                {/* <div className="container mx-auto flex justify-between items-center">
+            {/* <header className="bg-blue-500 p-4 text-white">
+                <div className="container mx-auto flex justify-between items-center">
                     <h1 className="text-2xl font-bold">babaGPT</h1>
                      {user && (
                         <button onClick={handleLogout} className="bg-red-500 px-4 py-2 rounded">
                             Logout
                         </button>
                     )} 
-                </div> */}
-            </header>
-            <main className="container mx-auto mt-8">
+                </div> 
+            </header> */}
+            <main className="container mx-auto">
                 {user ? (
                     <div>
-                        <div className="mb-4 p-4 bg-gray-100 rounded">
-                            <h2 className="text-lg font-semibold mb-2">Your Token:</h2>
+                        <div className="mb-4 p-4 bg-blue-100 dark:bg-blue-900 rounded text-white">
+                            <h2 className="text-lg font-semibold mb-2">This is your one time Token:</h2>
                             <div className="flex items-center">
-                                <input
+                                <input onClick={copyToken}
                                     type="text"
                                     value={user.token}
                                     readOnly
-                                    className="flex-grow p-2 border rounded-l"
+                                    className="cursor-pointer flex-grow h-8 px-2 border rounded-l bg-blue-500 animate-pulse font-bold text-center"
                                 />
                                 <button
                                     onClick={copyToken}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded-r"
+                                    className="bg-blue-500 text-white px-4 h-8 rounded-r"
                                 >
-                                    Copy
+                                    <FaCopy />
                                 </button>
                             </div>
+                            <span className='text-sm'>keep in mind after each login it will change and you need to take the new one.</span>
                         </div>
                         <EnhancedChat userId={user.userId} />
                     </div>

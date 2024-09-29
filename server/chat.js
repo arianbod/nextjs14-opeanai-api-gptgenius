@@ -203,7 +203,7 @@ export async function generateChatResponse(userId, chatMessagesJson, personaJson
                 systemMessage,
                 ...chatMessages
             ],
-            model: 'gpt-4-1106-preview',
+            model: 'chatgpt-4o-latest',
             temperature: 0.7,
             max_tokens: 1000
         });

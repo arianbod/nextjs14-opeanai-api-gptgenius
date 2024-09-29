@@ -14,22 +14,22 @@ const TOKEN_COSTS = {
     TOUR: 10,
 };
 
-export const subtractTokens = async (clerkId, tokens) => {
-    const currentTokens = await fetchUserTokensById(clerkId);
+export const subtractTokens = async (userId, tokens) => {
+    const currentTokens = await fetchUserTokensById(userId);
     if (currentTokens < tokens) {
         return { tokens: currentTokens, warning: 'Insufficient tokens. Please recharge to continue using the service.' };
     }
     const result = await prisma.token.update({
-        where: { clerkId },
+        where: { userId },
         data: { tokens: { decrement: tokens } },
     });
     revalidatePath('/profile');
     return { tokens: result.tokens };
 };
 
-export const generateChatResponse = async (chatMessagesJson, clerkId, personaJson) => {
+export const generateChatResponse = async (chatMessagesJson, userId, personaJson) => {
     try {
-        const { tokens, warning } = await subtractTokens(clerkId, TOKEN_COSTS.CHAT);
+        const { tokens, warning } = await subtractTokens(userId, TOKEN_COSTS.CHAT);
         if (warning) {
             return { message: warning, tokens };
         }
@@ -60,9 +60,9 @@ export const generateChatResponse = async (chatMessagesJson, clerkId, personaJso
     }
 };
 
-export const generateImage = async (prompt, clerkId) => {
+export const generateImage = async (prompt, userId) => {
     try {
-        const { tokens, warning } = await subtractTokens(clerkId, TOKEN_COSTS.IMAGE);
+        const { tokens, warning } = await subtractTokens(userId, TOKEN_COSTS.IMAGE);
         if (warning) {
             return { error: warning, tokens };
         }
@@ -85,9 +85,9 @@ export const generateImage = async (prompt, clerkId) => {
     }
 };
 
-export const translateText = async (text, targetLang, clerkId) => {
+export const translateText = async (text, targetLang, userId) => {
     try {
-        const { tokens, warning } = await subtractTokens(clerkId, TOKEN_COSTS.TRANSLATION);
+        const { tokens, warning } = await subtractTokens(userId, TOKEN_COSTS.TRANSLATION);
         if (warning) {
             return { error: warning, tokens };
         }
@@ -111,9 +111,9 @@ export const translateText = async (text, targetLang, clerkId) => {
     }
 };
 
-export const generateTourResponse = async ({ city, country }, clerkId) => {
+export const generateTourResponse = async ({ city, country }, userId) => {
     try {
-        const { tokens, warning } = await subtractTokens(clerkId, TOKEN_COSTS.TOUR);
+        const { tokens, warning } = await subtractTokens(userId, TOKEN_COSTS.TOUR);
         if (warning) {
             return { error: warning, tokens };
         }
@@ -171,15 +171,15 @@ export const getSingleTour = async (id) => {
     return prisma.tour.findUnique({ where: { id } });
 };
 
-export const fetchUserTokensById = async (clerkId) => {
-    if (!clerkId) {
-        console.log("No clerkId provided");
+export const fetchUserTokensById = async (userId) => {
+    if (!userId) {
+        console.log("No userId provided");
         return 0;
     }
 
     try {
         const result = await prisma.token.findUnique({
-            where: { clerkId },
+            where: { userId },
         });
 
         return result?.tokens || 0;
@@ -189,27 +189,27 @@ export const fetchUserTokensById = async (clerkId) => {
     }
 };
 
-export const generateUserTokensForId = async (clerkId) => {
+export const generateUserTokensForId = async (userId) => {
     const result = await prisma.token.create({
         data: {
-            clerkId,
+            userId,
             tokens: 100, // Start with 100 tokens for new users
         },
     });
     return result.tokens;
 };
 
-export const fetchOrGenerateTokens = async (clerkId) => {
-    let tokens = await fetchUserTokensById(clerkId);
+export const fetchOrGenerateTokens = async (userId) => {
+    let tokens = await fetchUserTokensById(userId);
     if (tokens === 0) {
-        tokens = await generateUserTokensForId(clerkId);
+        tokens = await generateUserTokensForId(userId);
     }
     return tokens;
 };
 
-export const rechargeTokens = async (clerkId, amount) => {
+export const rechargeTokens = async (userId, amount) => {
     const result = await prisma.token.update({
-        where: { clerkId },
+        where: { userId },
         data: { tokens: { increment: amount } },
     });
     revalidatePath('/profile');

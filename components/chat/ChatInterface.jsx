@@ -9,7 +9,7 @@ import MessageInput from './MessageInput';
 import AILoadingIndicator from './AILoadingIndicator';
 
 const ChatInterface = ({
-	clerkId,
+	userId,
 	persona,
 	chatId,
 	initialMessages,
@@ -27,17 +27,22 @@ const ChatInterface = ({
 
 	const chatMutation = useMutation({
 		mutationFn: async (content) => {
-			if (!clerkId) throw new Error('User not authenticated');
+			if (!userId) {
+				console.error('User not authenticated, userId:', userId);
+				throw new Error('User not authenticated');
+			}
+
+			console.log('Sending message for user:', userId, 'in chat:', chatId);
 
 			// Add user message to the database
-			await addMessageToChat(clerkId, chatId, content, 'user');
+			await addMessageToChat(userId, chatId, content, 'user');
 
 			if (isPerplexity) {
 				const response = await fetchPerplexity(content);
 				return { message: { content: response } };
 			} else {
 				const response = await generateChatResponse(
-					clerkId,
+					userId,
 					JSON.stringify([...messages, { role: 'user', content }]),
 					JSON.stringify(persona),
 					chatId
@@ -54,13 +59,15 @@ const ChatInterface = ({
 					timestamp: new Date().toISOString(),
 				};
 				setMessages((prev) => [...prev, newMessage]);
+				console.log('New message added:', newMessage);
 			} else if (data.error) {
+				console.error('Error in chat response:', data.error);
 				toast.error(data.error);
 			}
 		},
 		onError: (error) => {
 			console.error('Error in chat mutation:', error);
-			toast.error('Failed to send message. Please try again.');
+			toast.error(`Failed to send message: ${error.message}`);
 		},
 	});
 
@@ -74,6 +81,7 @@ const ChatInterface = ({
 			timestamp: new Date().toISOString(),
 		};
 		setMessages((prev) => [...prev, newMessage]);
+		console.log('User message added:', newMessage);
 		chatMutation.mutate(inputText);
 		setInputText('');
 	};

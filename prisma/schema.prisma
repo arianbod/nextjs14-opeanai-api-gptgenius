@@ -10,31 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Tour {
-  id          String   @id @default(uuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  city        String
-  country     String
-  title       String
-  description String   @db.Text
-  image       String?  @db.Text
-  stops       Json
-  @@unique([city, country])
-}
-
 model User {
-  id        String   @id
-  chats     Chat[]
-  token     Token?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Token {
-  clerkId String @id
-  tokens  Int    @default(3000)
-  user    User   @relation(fields: [clerkId], references: [id])
+  id              String   @id @default(uuid())
+  token           String   @unique
+  animalSelection String
+  email           String?  @unique
+  tokenBalance    Int      @default(3000)
+  chats           Chat[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  loginAttempts   Int      @default(0)
+  lastLoginAttempt DateTime?
 }
 
 model Chat {

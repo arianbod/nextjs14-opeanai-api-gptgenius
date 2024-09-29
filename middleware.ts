@@ -1,12 +1,28 @@
-import { authMiddleware } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export default authMiddleware({
-	publicRoutes: ['/sign-in', '/sign-up'], // Add public routes if needed
-});
+export function middleware(request: NextRequest) {
+	const user = request.cookies.get('user');
+
+	// List of paths that don't require authentication
+	const publicPaths = ['/', '/api/auth/register', '/api/auth/login'];
+
+	// Allow access to public paths and API routes without authentication
+	if (
+		publicPaths.includes(request.nextUrl.pathname) ||
+		request.nextUrl.pathname.startsWith('/api/')
+	) {
+		return NextResponse.next();
+	}
+
+	// Redirect to home if user is not authenticated and trying to access a protected route
+	if (!user) {
+		return NextResponse.redirect(new URL('/', request.url));
+	}
+
+	return NextResponse.next();
+}
 
 export const config = {
-	matcher: [
-		'/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-		'/(api|trpc)(.*)', // Protect API routes
-	],
+	matcher: ['/((?!_next/static|favicon.ico).*)'],
 };

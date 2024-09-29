@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@clerk/nextjs';
 import { toast } from 'react-hot-toast';
 import ModelSelection, { AIPersonas } from './ModelSelection';
 import ChatInterface from './ChatInterface';
@@ -12,18 +11,31 @@ import { createChat, getChatMessages, addMessageToChat } from '@/server/chat';
 
 const EnhancedChat = ({ chatId }) => {
 	const router = useRouter();
-	const { isLoaded, isSignedIn, user } = useUser();
+	const [user, setUser] = useState(null);
 	const [chatData, setChatData] = useState(null);
 	const [selectedModel, setSelectedModel] = useState(null);
 	const [inputText, setInputText] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
-		if (chatId && isSignedIn && user) {
+		const storedUser = localStorage.getItem('user');
+		if (storedUser) {
+			const parsedUser = JSON.parse(storedUser);
+			setUser(parsedUser);
+			console.log('User loaded from localStorage:', parsedUser);
+		} else {
+			console.log('No user found in localStorage, redirecting to login');
+			router.push('/');
+		}
+	}, [router]);
+
+	useEffect(() => {
+		if (chatId && user) {
 			const fetchChatData = async () => {
 				try {
 					setIsLoading(true);
-					const messages = await getChatMessages(user.id, chatId);
+					console.log('Fetching chat data for chat:', chatId);
+					const messages = await getChatMessages(user.userId, chatId);
 					if (messages.length > 0) {
 						const model =
 							AIPersonas.find(
@@ -36,10 +48,10 @@ const EnhancedChat = ({ chatId }) => {
 						setSelectedModel(AIPersonas[0]);
 						setChatData({ model: AIPersonas[0], messages: [] });
 					}
+					console.log('Chat data fetched successfully');
 				} catch (error) {
 					console.error('Error fetching chat data:', error);
 					toast.error('Failed to load chat data. Please try again.');
-					// Instead of redirecting, set up for a new chat
 					setSelectedModel(AIPersonas[0]);
 					setChatData({ model: AIPersonas[0], messages: [] });
 				} finally {
@@ -52,36 +64,55 @@ const EnhancedChat = ({ chatId }) => {
 			setSelectedModel(AIPersonas[0]);
 			setChatData({ model: AIPersonas[0], messages: [] });
 		}
-	}, [chatId, isSignedIn, user]);
-
-	const handleModelSelect = (model) => {
+	}, [chatId, user]);
+	const handleModelSelect = async (model) => {
+		console.log('Model selected:', model);
 		setSelectedModel(model);
 		setChatData((prev) => ({ ...prev, model }));
+		await createNewChat(model);
 	};
-
 	const createNewChat = async (model, initialMessage = null) => {
-		if (!isSignedIn || !user) return;
+		if (!user || !user.userId) {
+			console.error('No user ID found');
+			toast.error('Please log in to create a new chat.');
+			return;
+		}
 
 		try {
 			setIsLoading(true);
 			const chatTitle = initialMessage
 				? initialMessage.substring(0, 30) + '...'
 				: 'New Chat';
-			const newChat = await createChat(user.id, chatTitle);
+			console.log(
+				'Creating new chat for user:',
+				user.userId,
+				'with title:',
+				chatTitle
+			);
+			const newChat = await createChat(user.userId, chatTitle);
+			console.log('New chat created:', newChat);
+
+			if (!newChat || !newChat.id) {
+				throw new Error(
+					'Failed to create new chat: Invalid response from server'
+				);
+			}
 
 			const systemMessage = {
 				role: 'system',
 				content: `${model.name}, ${model.role}`,
 			};
+			console.log('Adding system message:', systemMessage);
 			await addMessageToChat(
-				user.id,
+				user.userId,
 				newChat.id,
 				systemMessage.content,
 				systemMessage.role
 			);
 
 			if (initialMessage) {
-				await addMessageToChat(user.id, newChat.id, initialMessage, 'user');
+				console.log('Adding initial message:', initialMessage);
+				await addMessageToChat(user.userId, newChat.id, initialMessage, 'user');
 			}
 
 			setChatData({
@@ -94,10 +125,11 @@ const EnhancedChat = ({ chatId }) => {
 				],
 			});
 			setSelectedModel(model);
+			console.log('Navigating to new chat:', `/chat/${newChat.id}`);
 			router.push(`/chat/${newChat.id}`);
 		} catch (error) {
 			console.error('Error creating new chat:', error);
-			toast.error('Failed to create a new chat. Please try again.');
+			toast.error(`Failed to create a new chat: ${error.message}`);
 		} finally {
 			setIsLoading(false);
 		}
@@ -105,7 +137,7 @@ const EnhancedChat = ({ chatId }) => {
 
 	const handleNewChatSubmit = async (e) => {
 		e.preventDefault();
-		if (!inputText.trim() || !selectedModel || !isSignedIn || !user) return;
+		if (!inputText.trim() || !selectedModel || !user) return;
 		await createNewChat(selectedModel, inputText);
 	};
 
@@ -113,12 +145,8 @@ const EnhancedChat = ({ chatId }) => {
 		await createNewChat(newModel);
 	};
 
-	if (!isLoaded || isLoading) {
+	if (!user || isLoading) {
 		return <div>Loading...</div>;
-	}
-
-	if (!isSignedIn) {
-		return <div>Please sign in to use the chat.</div>;
 	}
 
 	if (!chatId || !chatData) {
@@ -140,7 +168,9 @@ const EnhancedChat = ({ chatId }) => {
 			</div>
 		);
 	}
-
+	// useEffect(() => {
+	// 	console.log('Current chatId:', chatId);
+	// }, [chatId]);
 	return (
 		<div className='min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900'>
 			<div className='max-w-6xl mx-auto bg-white dark:bg-gray-800 rounded-xl overflow-hidden no-scrollbar'>
@@ -153,14 +183,14 @@ const EnhancedChat = ({ chatId }) => {
 
 					{chatData.model.name === 'DALL-E' ? (
 						<ImageGenerationInterface
-							clerkId={user.id}
-							chatId={chatId.toString()} // Ensure chatId is a string
+							userId={user.userId}
+							chatId={chatId.toString()}
 						/>
 					) : (
 						<ChatInterface
-							clerkId={user.id}
+							userId={user.userId}
 							persona={chatData.model}
-							chatId={chatId.toString()} // Ensure chatId is a string
+							chatId={chatId.toString()}
 							initialMessages={chatData.messages}
 							isPerplexity={chatData.model.engine === 'Perplexity'}
 						/>

@@ -3,81 +3,62 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/prisma/db';
 import OpenAI from "openai";
+import { getUserById } from './auth';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-async function ensureUserExists(clerkId) {
-    let user = await prisma.user.findUnique({
-        where: { id: clerkId },
-        include: { token: true }
-    });
-
+export async function createChat(userId, title) {
+    console.log('Creating chat for user:', userId, 'with title:', title);
+    const user = await getUserById(userId);
     if (!user) {
-        user = await prisma.user.create({
+        console.error('User not found:', userId);
+        throw new Error('User not authenticated');
+    }
+
+    try {
+        const chat = await prisma.chat.create({
             data: {
-                id: clerkId,
-                token: {
-                    create: {
-                        tokens: 3000, // Default token amount
-                    },
-                },
-            },
-            include: { token: true }
-        });
-    } else if (!user.token) {
-        await prisma.token.create({
-            data: {
-                clerkId: clerkId,
-                tokens: 3000, // Default token amount
+                title,
+                userId: user.id,
             },
         });
-    }
+        console.log('Chat created:', chat);
 
-    return user;
+        revalidatePath('/chat');
+        return chat;
+    } catch (error) {
+        console.error('Error creating chat:', error);
+        throw error;
+    }
 }
 
-export async function createChat(clerkId, title) {
-    if (!clerkId) {
-        throw new Error('User not authenticated')
+export async function getChatList(userId) {
+    console.log('Fetching chat list for user:', userId);
+    const user = await getUserById(userId);
+    if (!user) {
+        console.error('User not found:', userId);
+        throw new Error('User not authenticated');
     }
-
-    await ensureUserExists(clerkId);
-
-    const chat = await prisma.chat.create({
-        data: {
-            title,
-            userId: clerkId,
-        },
-    })
-
-    revalidatePath('/chat')
-    return chat
-}
-
-export async function getChatList(clerkId) {
-    if (!clerkId) {
-        throw new Error('User not authenticated')
-    }
-
-    await ensureUserExists(clerkId);
 
     const chats = await prisma.chat.findMany({
-        where: { userId: clerkId },
+        where: { userId: user.id },
         orderBy: { updatedAt: 'desc' },
         select: { id: true, title: true },
-    })
+    });
+    console.log('Chats found:', chats.length);
 
-    return chats
+    return chats;
 }
 
-export async function getChatMessages(clerkId, chatId) {
-    if (!clerkId) {
-        throw new Error('User not authenticated')
+export async function getChatMessages(userId, chatId) {
+    console.log('Fetching messages for user:', userId, 'in chat:', chatId);
+    const user = await getUserById(userId);
+    if (!user) {
+        console.error('User not found:', userId);
+        throw new Error('User not authenticated');
     }
-
-    await ensureUserExists(clerkId);
 
     // Ensure chatId is a string
     const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
@@ -85,7 +66,7 @@ export async function getChatMessages(clerkId, chatId) {
     const messages = await prisma.message.findMany({
         where: {
             chatId: chatIdString,
-            chat: { userId: clerkId } // Ensure the chat belongs to the user
+            chat: { userId: user.id } // Ensure the chat belongs to the user
         },
         orderBy: { createdAt: 'asc' },
         select: {
@@ -94,7 +75,8 @@ export async function getChatMessages(clerkId, chatId) {
             role: true,
             createdAt: true
         }
-    })
+    });
+    console.log('Messages found:', messages.length);
 
     return messages.map(message => ({
         id: message.id,
@@ -104,14 +86,13 @@ export async function getChatMessages(clerkId, chatId) {
     }));
 }
 
-export async function addMessageToChat(clerkId, chatId, content, role) {
-    console.log('Adding message to chat:', { clerkId, chatId, content, role });
-
-    if (!clerkId) {
-        throw new Error('User not authenticated')
+export async function addMessageToChat(userId, chatId, content, role) {
+    console.log('Adding message for user:', userId, 'to chat:', chatId);
+    const user = await getUserById(userId);
+    if (!user) {
+        console.error('User not found:', userId);
+        throw new Error('User not authenticated');
     }
-
-    await ensureUserExists(clerkId);
 
     // Ensure chatId is a string
     const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
@@ -122,11 +103,12 @@ export async function addMessageToChat(clerkId, chatId, content, role) {
     });
 
     if (!chat) {
+        console.log('Chat not found, creating new chat');
         chat = await prisma.chat.create({
             data: {
                 id: chatIdString,
                 title: "New Chat",
-                userId: clerkId,
+                userId: user.id,
             },
         });
     }
@@ -137,51 +119,61 @@ export async function addMessageToChat(clerkId, chatId, content, role) {
             role,
             chatId: chatIdString,
         },
-    })
+    });
+    console.log('Message added:', message.id);
 
     await prisma.chat.update({
         where: { id: chatIdString },
         data: { updatedAt: new Date() },
-    })
+    });
 
-    revalidatePath(`/chat/${chatIdString}`)
-    return message
+    revalidatePath(`/chat/${chatIdString}`);
+    return message;
 }
 
-export async function deleteChat(clerkId, chatId) {
-    if (!clerkId) {
-        throw new Error('User not authenticated')
+export async function deleteChat(userId, chatId) {
+    console.log('Deleting chat:', chatId, 'for user:', userId);
+    const user = await getUserById(userId);
+    if (!user) {
+        console.error('User not found:', userId);
+        throw new Error('User not authenticated');
     }
-
-    await ensureUserExists(clerkId);
 
     // Ensure chatId is a string
     const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
 
     await prisma.chat.delete({
-        where: { id: chatIdString, userId: clerkId },
-    })
-
-    revalidatePath('/chat')
-}
-
-export async function manageUserTokens(clerkId, amount) {
-    const user = await ensureUserExists(clerkId);
-
-    const updatedToken = await prisma.token.update({
-        where: { clerkId },
-        data: { tokens: { increment: amount } },
+        where: { id: chatIdString, userId: user.id },
     });
+    console.log('Chat deleted');
 
-    return updatedToken.tokens;
+    revalidatePath('/chat');
 }
 
-export async function generateChatResponse(clerkId, chatMessagesJson, personaJson, chatId) {
-    if (!clerkId) {
-        throw new Error('User not authenticated')
+export async function manageUserTokens(userId, amount) {
+    console.log('Managing tokens for user:', userId, 'amount:', amount);
+    const user = await getUserById(userId);
+    if (!user) {
+        console.error('User not found:', userId);
+        throw new Error('User not authenticated');
     }
 
-    await ensureUserExists(clerkId);
+    const updatedUser = await prisma.user.update({
+        where: { id: user.id },
+        data: { tokenBalance: { increment: amount } },
+    });
+    console.log('Updated token balance:', updatedUser.tokenBalance);
+
+    return updatedUser.tokenBalance;
+}
+
+export async function generateChatResponse(userId, chatMessagesJson, personaJson, chatId) {
+    console.log('Generating chat response for user:', userId, 'in chat:', chatId);
+    const user = await getUserById(userId);
+    if (!user) {
+        console.error('User not found:', userId);
+        throw new Error('User not authenticated');
+    }
 
     // Ensure chatId is a string
     const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
@@ -192,7 +184,7 @@ export async function generateChatResponse(clerkId, chatMessagesJson, personaJso
 
         // Check and deduct tokens
         const requiredTokens = 1; // Adjust based on your token usage policy
-        const currentTokens = await manageUserTokens(clerkId, -requiredTokens);
+        const currentTokens = await manageUserTokens(user.id, -requiredTokens);
         if (currentTokens < 0) {
             throw new Error('Insufficient tokens');
         }
@@ -204,7 +196,7 @@ export async function generateChatResponse(clerkId, chatMessagesJson, personaJso
 
         // Store the user's message in the database
         const userMessage = chatMessages[chatMessages.length - 1];
-        await addMessageToChat(clerkId, chatIdString, userMessage.content, userMessage.role);
+        await addMessageToChat(user.id, chatIdString, userMessage.content, userMessage.role);
 
         const response = await openai.chat.completions.create({
             messages: [
@@ -220,7 +212,7 @@ export async function generateChatResponse(clerkId, chatMessagesJson, personaJso
 
         try {
             // Store the AI's response in the database
-            await addMessageToChat(clerkId, chatIdString, aiMessage.content, aiMessage.role);
+            await addMessageToChat(user.id, chatIdString, aiMessage.content, aiMessage.role);
         } catch (error) {
             console.error('Error adding AI message to chat:', error);
             // If adding the message fails, we still return the AI response
@@ -234,12 +226,13 @@ export async function generateChatResponse(clerkId, chatMessagesJson, personaJso
     }
 }
 
-export async function generateImage(clerkId, prompt, chatId) {
-    if (!clerkId) {
-        throw new Error('User not authenticated')
+export async function generateImage(userId, prompt, chatId) {
+    console.log('Generating image for user:', userId, 'in chat:', chatId);
+    const user = await getUserById(userId);
+    if (!user) {
+        console.error('User not found:', userId);
+        throw new Error('User not authenticated');
     }
-
-    await ensureUserExists(clerkId);
 
     // Ensure chatId is a string
     const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
@@ -247,7 +240,7 @@ export async function generateImage(clerkId, prompt, chatId) {
     try {
         // Check and deduct tokens
         const requiredTokens = 50; // Adjust based on your token usage policy for image generation
-        const currentTokens = await manageUserTokens(clerkId, -requiredTokens);
+        const currentTokens = await manageUserTokens(user.id, -requiredTokens);
         if (currentTokens < 0) {
             throw new Error('Insufficient tokens for image generation');
         }
@@ -260,7 +253,7 @@ export async function generateImage(clerkId, prompt, chatId) {
         });
 
         if (response.data && response.data[0] && response.data[0].url) {
-            await addMessageToChat(clerkId, chatIdString, response.data[0].url, 'assistant');
+            await addMessageToChat(user.id, chatIdString, response.data[0].url, 'assistant');
             return { imageUrl: response.data[0].url };
         } else {
             throw new Error('Image URL not found in the response');

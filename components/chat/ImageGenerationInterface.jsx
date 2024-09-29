@@ -4,14 +4,14 @@ import { toast } from 'react-hot-toast';
 import { generateImage } from '@/server/chat';
 import MessageInput from './MessageInput';
 
-const ImageGenerationInterface = ({ clerkId, chatId }) => {
+const ImageGenerationInterface = ({ userId, chatId }) => {
 	const [generatedImage, setGeneratedImage] = useState(null);
 	const [prompt, setPrompt] = useState('');
 
 	const imageMutation = useMutation({
 		mutationFn: async (prompt) => {
-			if (!clerkId) throw new Error('User not authenticated');
-			return generateImage(clerkId, prompt, chatId);
+			if (!userId) throw new Error('User not authenticated');
+			return generateImage(userId, prompt, chatId);
 		},
 		onSuccess: (data) => {
 			if (data.imageUrl) {

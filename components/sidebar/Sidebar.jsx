@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useUser } from '@clerk/nextjs';
 import SidebarHeader from './SidebarHeader';
 import NavLinks from './NavLinks';
 import MemberProfile from './MemberProfile';
@@ -11,14 +10,22 @@ import { getChatList } from '@/server/chat';
 const navLinks = [{ href: '/', label: 'chat' }];
 
 const Sidebar = () => {
-	const { isLoaded, isSignedIn, user } = useUser();
+	const [user, setUser] = useState(null);
 	const [chats, setChats] = useState([]);
 
 	useEffect(() => {
+		// Check if user is authenticated
+		const storedUser = localStorage.getItem('user');
+		if (storedUser) {
+			setUser(JSON.parse(storedUser));
+		}
+	}, []);
+
+	useEffect(() => {
 		const fetchChats = async () => {
-			if (isSignedIn && user) {
+			if (user) {
 				try {
-					const chatList = await getChatList(user.id);
+					const chatList = await getChatList(user.userId);
 					setChats(chatList);
 				} catch (error) {
 					console.error('Error fetching chat list:', error);
@@ -26,12 +33,16 @@ const Sidebar = () => {
 			}
 		};
 		fetchChats();
-	}, [isSignedIn, user]);
+	}, [user]);
+
+	if (!user) {
+		return null; // Or return a login prompt
+	}
 
 	return (
 		<div className='px-6 w-80 min-h-full bg-base-300 py-12 grid grid-rows-[auto,auto,1fr,auto]'>
 			<SidebarHeader />
-			<ShowTokenAmount />
+			<ShowTokenAmount userId={user.userId} />
 			<div className='overflow-y-auto'>
 				<h3 className='text-lg font-semibold mb-2'>Your Chats</h3>
 				<ul className='menu text-base-content'>
@@ -45,7 +56,7 @@ const Sidebar = () => {
 				</ul>
 				<NavLinks navLinks={navLinks} />
 			</div>
-			<MemberProfile />
+			<MemberProfile user={user} />
 		</div>
 	);
 };

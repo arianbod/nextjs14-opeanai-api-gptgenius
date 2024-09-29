@@ -1,17 +1,15 @@
 'use client';
 import { manageUserTokens } from '@/server/chat';
-import { useUser } from '@clerk/nextjs';
 import React, { useEffect, useState } from 'react';
 
-const ShowTokenAmount = () => {
-	const { isLoaded, isSignedIn, user } = useUser();
+const ShowTokenAmount = ({ userId }) => {
 	const [currentTokens, setCurrentTokens] = useState(undefined);
 
 	useEffect(() => {
 		const fetchTokens = async () => {
-			if (isSignedIn && user) {
+			if (userId) {
 				try {
-					const tokens = await manageUserTokens(user.id, 0); // Fetch tokens without changing the amount
+					const tokens = await manageUserTokens(userId, 0); // Fetch tokens without changing the amount
 					setCurrentTokens(tokens);
 				} catch (error) {
 					console.error('Error fetching tokens:', error);
@@ -20,17 +18,11 @@ const ShowTokenAmount = () => {
 			}
 		};
 
-		if (isLoaded) {
-			fetchTokens();
-		}
-	}, [isLoaded, isSignedIn, user]);
+		fetchTokens();
+	}, [userId]);
 
-	if (!isLoaded || currentTokens === undefined) {
+	if (currentTokens === undefined) {
 		return <div>Loading...</div>;
-	}
-
-	if (!isSignedIn) {
-		return <div>Please sign in to view your tokens.</div>;
 	}
 
 	return (

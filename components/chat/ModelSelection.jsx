@@ -141,11 +141,15 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 			} rounded-xl shadow-lg overflow-hidden cursor-pointer transform transition duration-300 ${
 				isSelected ? 'ring-4 ring-blue-500' : ''
 			}`}
-			onClick={() => onSelect(persona)}
+			onClick={() => {
+				console.log('Model selected:', persona);
+				onSelect(persona);
+			}}
 			role='button'
 			tabIndex={0}
 			onKeyPress={(e) => {
 				if (e.key === 'Enter' || e.key === ' ') {
+					console.log('Model selected (keyboard):', persona);
 					onSelect(persona);
 				}
 			}}

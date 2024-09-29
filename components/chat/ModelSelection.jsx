@@ -80,7 +80,7 @@ export const AIPersonas = [
 	// Jina Personas
 	{
 		key: 'JINA',
-		name: 'Jina',
+		name: 'Hami Ras',
 		role: 'Doctor',
 		icon: FaUserMd,
 		color: 'from-red-400 to-pink-500',

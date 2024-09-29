@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
             <input type='checkbox' id='my-drawer-2' className='drawer-toggle' />
             <div className="drawer-content">
               <label htmlFor='my-drawer-2' className='drawer-button lg:hidden fixed top-6 right-6'>
-                <FaBarsStaggered className='w-10 h-10 p-2 text-white bg-blue-900 rounded-full t dark:bg-none z-50 shadow-lg shadow-blue-950' />
+                <FaBarsStaggered className='cursor-pointer w-10 h-10 p-2 text-white bg-blue-900 rounded-full t dark:bg-none z-50 shadow-lg shadow-blue-950' />
               </label>
               <div className="bg-base-200">
                 {children}

@@ -16,9 +16,18 @@ import {
 import { SiOpenai } from 'react-icons/si';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
+import Image from 'next/image';
 
 export const AIPersonas = [
 	// OpenAI Personas
+	{
+		key: 'BABAGPT',
+		name: 'BABAGPT',
+		role: 'BABAGPT AI Assistant',
+		icon: SiOpenai,
+		color: 'from-green-400 to-blue-500',
+		engine: 'OpenAI',
+	},
 	{
 		key: 'CHATGPT',
 		name: 'ChatGPT',
@@ -157,10 +166,20 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 			data-tooltip-id={`tooltip-${persona.key}`}
 			data-tooltip-content={`Engine: ${persona.engine}\nRole: ${persona.role}`}>
 			<div className='p-6 flex flex-col items-center text-white select-none'>
-				<Icon
-					className='w-16 h-16 mb-4'
-					aria-hidden='true'
-				/>
+				{persona.name === 'BABAGPT' ? (
+					<Image
+						height={300}
+						width={300}
+						alt='logo'
+						src='/babagpt_bw.svg'
+						className='w-16 h-16 mb-4 animate-pulse rounded-full p-1'
+					/>
+				) : (
+					<Icon
+						className='w-16 h-16 mb-4'
+						aria-hidden='true'
+					/>
+				)}
 				<h3 className='text-xl font-bold mb-2 select-none'>{persona.name}</h3>
 				<p className='text-sm opacity-75 select-none'>{persona.role}</p>
 			</div>

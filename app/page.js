@@ -130,7 +130,7 @@ const Home = () => {
             <main className="container mx-auto">
                 {user ? (
                     <div>
-                        <div className="mb-4 p-4 bg-blue-100 dark:bg-blue-900 rounded text-white">
+                        <div className="mb-4 p-4 bg-blue-100 dark:bg-blue-900 rounded text-white pt-8">
                             <h2 className="text-lg font-semibold mb-2">This is your one time Token:</h2>
                             <div className="flex items-center">
                                 <input onClick={copyToken}

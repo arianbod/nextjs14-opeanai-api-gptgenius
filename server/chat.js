@@ -60,13 +60,12 @@ export async function getChatMessages(userId, chatId) {
         throw new Error('User not authenticated');
     }
 
-    // Ensure chatId is a string
     const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
 
     const messages = await prisma.message.findMany({
         where: {
             chatId: chatIdString,
-            chat: { userId: user.id } // Ensure the chat belongs to the user
+            chat: { userId: user.id }
         },
         orderBy: { createdAt: 'asc' },
         select: {
@@ -78,13 +77,18 @@ export async function getChatMessages(userId, chatId) {
     });
     console.log('Messages found:', messages.length);
 
-    return messages.map(message => ({
+    const serializedMessages = messages.map(message => ({
         id: message.id,
         role: message.role,
         content: message.content,
         timestamp: message.createdAt.toISOString()
     }));
+
+    console.log('Serialized messages:', JSON.stringify(serializedMessages, null, 2));
+
+    return serializedMessages;
 }
+
 
 export async function addMessageToChat(userId, chatId, content, role) {
     console.log('Adding message for user:', userId, 'to chat:', chatId);
@@ -94,10 +98,8 @@ export async function addMessageToChat(userId, chatId, content, role) {
         throw new Error('User not authenticated');
     }
 
-    // Ensure chatId is a string
     const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
 
-    // Check if the chat exists, if not, create it
     let chat = await prisma.chat.findUnique({
         where: { id: chatIdString },
     });
@@ -130,6 +132,7 @@ export async function addMessageToChat(userId, chatId, content, role) {
     revalidatePath(`/chat/${chatIdString}`);
     return message;
 }
+
 
 export async function deleteChat(userId, chatId) {
     console.log('Deleting chat:', chatId, 'for user:', userId);
@@ -169,60 +172,42 @@ export async function manageUserTokens(userId, amount) {
 
 export async function generateChatResponse(userId, chatMessagesJson, personaJson, chatId) {
     console.log('Generating chat response for user:', userId, 'in chat:', chatId);
+    console.log('Chat messages:', chatMessagesJson);
+    console.log('Persona:', personaJson);
+
     const user = await getUserById(userId);
     if (!user) {
         console.error('User not found:', userId);
         throw new Error('User not authenticated');
     }
 
-    // Ensure chatId is a string
     const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
 
     try {
         const chatMessages = JSON.parse(chatMessagesJson);
         const persona = JSON.parse(personaJson);
 
-        // Check and deduct tokens
-        const requiredTokens = 1; // Adjust based on your token usage policy
-        const currentTokens = await manageUserTokens(user.id, -requiredTokens);
-        if (currentTokens < 0) {
-            throw new Error('Insufficient tokens');
-        }
-
         const systemMessage = {
             role: 'system',
             content: `You are ${persona.name}, a ${persona.role}. Respond to queries in a manner consistent with your role and expertise. Always stay in character.`
         };
-
-        // Store the user's message in the database
-        const userMessage = chatMessages[chatMessages.length - 1];
-        await addMessageToChat(user.id, chatIdString, userMessage.content, userMessage.role);
-
-        const response = await openai.chat.completions.create({
+        const stream = await openai.chat.completions.create({
             messages: [
                 systemMessage,
                 ...chatMessages
             ],
-            model: 'chatgpt-4o-latest',
+            model: 'gpt-4o-mini-2024-07-18',
             temperature: 0.7,
-            max_tokens: 1000
+            max_tokens: 1000,
+            stream: true,
         });
 
-        const aiMessage = response.choices[0].message;
+        console.log('OpenAI stream created successfully');
 
-        try {
-            // Store the AI's response in the database
-            await addMessageToChat(user.id, chatIdString, aiMessage.content, aiMessage.role);
-        } catch (error) {
-            console.error('Error adding AI message to chat:', error);
-            // If adding the message fails, we still return the AI response
-            // but we log the error and don't throw, allowing the conversation to continue
-        }
-
-        return { message: aiMessage };
+        return stream;
     } catch (error) {
         console.error('Error in generateChatResponse:', error);
-        return { message: { role: 'assistant', content: 'I apologize, but I encountered an error. Please try again later.' } };
+        throw error;
     }
 }
 

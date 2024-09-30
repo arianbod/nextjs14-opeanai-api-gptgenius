@@ -1,5 +1,6 @@
 'use client'
 
+import { MessageProvider } from '@/context/MessageContext'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import React, { useState } from 'react'
@@ -18,8 +19,11 @@ const Providers = ({ children }) => {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <Toaster position='top-center' />
-            {children}
+            <MessageProvider>
+
+                <Toaster position='top-center' />
+                {children}
+            </MessageProvider>
         </QueryClientProvider>
     )
 }

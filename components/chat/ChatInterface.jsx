@@ -1,23 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useMutation } from '@tanstack/react-query';
+'use client';
+import React, { useEffect, useRef, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
 import { toast } from 'react-hot-toast';
-import { generateChatResponse, addMessageToChat } from '@/server/chat';
+import {
+	generateChatResponse,
+	addMessageToChat,
+	getChatMessages,
+} from '@/server/chat';
 import { fetchPerplexity } from '@/server/perplexity';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import AILoadingIndicator from './AILoadingIndicator';
+import { useMessages } from '@/context/MessageContext';
 
-const ChatInterface = ({
-	userId,
-	persona,
-	chatId,
-	initialMessages,
-	isPerplexity,
-}) => {
-	const [messages, setMessages] = useState(initialMessages || []);
+const ChatInterface = ({ userId, persona, chatId, isPerplexity }) => {
+	const { messages, addMessage, updateMessage, removeMessage } = useMessages();
 	const [inputText, setInputText] = useState('');
 	const messagesEndRef = useRef(null);
+	const queryClient = useQueryClient();
+
+	const { isLoading, error } = useQuery({
+		queryKey: ['messages', chatId],
+		queryFn: () => getChatMessages(userId, chatId),
+		onSuccess: (data) => {
+			data.forEach(addMessage);
+		},
+		enabled: !!userId && !!chatId,
+	});
 
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -25,52 +35,99 @@ const ChatInterface = ({
 
 	useEffect(scrollToBottom, [messages]);
 
-	const chatMutation = useMutation({
+	const addMessageMutation = useMutation({
+		mutationFn: (newMessage) =>
+			addMessageToChat(userId, chatId, newMessage.content, newMessage.role),
+		onMutate: async (newMessage) => {
+			await queryClient.cancelQueries({ queryKey: ['messages', chatId] });
+			const optimisticMessage = { ...newMessage, id: nanoid() };
+			addMessage(optimisticMessage);
+			return { optimisticMessage };
+		},
+		onSuccess: (data, newMessage, context) => {
+			// Replace the optimistic message with the real one
+			removeMessage(context.optimisticMessage.id);
+			addMessage({ ...newMessage, id: data.id });
+		},
+		onError: (err, newMessage, context) => {
+			removeMessage(context.optimisticMessage.id);
+			toast.error(`Failed to send message: ${err.message}`);
+		},
+	});
+	const generateResponseMutation = useMutation({
 		mutationFn: async (content) => {
-			if (!userId) {
-				console.error('User not authenticated, userId:', userId);
-				throw new Error('User not authenticated');
-			}
-
-			console.log('Sending message for user:', userId, 'in chat:', chatId);
-
-			// Add user message to the database
-			await addMessageToChat(userId, chatId, content, 'user');
-
 			if (isPerplexity) {
-				const response = await fetchPerplexity(content);
-				return { message: { content: response } };
+				return await fetchPerplexity(content);
 			} else {
-				const response = await generateChatResponse(
-					userId,
-					JSON.stringify([...messages, { role: 'user', content }]),
-					JSON.stringify(persona),
-					chatId
-				);
+				const response = await fetch('/api/chat', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						userId,
+						messages,
+						persona,
+						chatId,
+					}),
+				});
+
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+
 				return response;
 			}
 		},
-		onSuccess: (data) => {
-			if (data.message) {
-				const newMessage = {
-					id: nanoid(),
-					role: 'assistant',
-					content: data.message.content,
-					timestamp: new Date().toISOString(),
-				};
-				setMessages((prev) => [...prev, newMessage]);
-				console.log('New message added:', newMessage);
-			} else if (data.error) {
-				console.error('Error in chat response:', data.error);
-				toast.error(data.error);
+		onMutate: () => {
+			const placeholderId = nanoid();
+			addMessage({
+				id: placeholderId,
+				role: 'assistant',
+				content: '',
+				timestamp: new Date().toISOString(),
+			});
+			return { placeholderId };
+		},
+		onSuccess: async (response, _, context) => {
+			if (isPerplexity) {
+				updateMessage(context.placeholderId, response);
+			} else {
+				const reader = response.body.getReader();
+				const decoder = new TextDecoder();
+
+				let accumulatedContent = '';
+
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done) break;
+
+					const chunk = decoder.decode(value);
+					const lines = chunk.split('\n');
+					for (const line of lines) {
+						if (line.startsWith('data: ')) {
+							try {
+								const data = JSON.parse(line.slice(6));
+								if (data.error) {
+									throw new Error(data.error);
+								}
+								accumulatedContent += data.content || '';
+								updateMessage(context.placeholderId, accumulatedContent);
+								scrollToBottom();
+							} catch (error) {
+								console.error('Error parsing SSE data:', error);
+							}
+						}
+					}
+				}
 			}
 		},
-		onError: (error) => {
-			console.error('Error in chat mutation:', error);
-			toast.error(`Failed to send message: ${error.message}`);
+		onError: (error, _, context) => {
+			console.error('Error in generateResponseMutation:', error);
+			removeMessage(context.placeholderId);
+			toast.error(`Failed to generate response: ${error.message}`);
 		},
 	});
-
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (!inputText.trim()) return;
@@ -80,20 +137,21 @@ const ChatInterface = ({
 			content: inputText,
 			timestamp: new Date().toISOString(),
 		};
-		setMessages((prev) => [...prev, newMessage]);
-		console.log('User message added:', newMessage);
-		chatMutation.mutate(inputText);
+		addMessageMutation.mutate(newMessage);
+		generateResponseMutation.mutate(inputText);
 		setInputText('');
 	};
+	if (isLoading) return <div>Loading...</div>;
+	if (error) return <div>Error: {error.message}</div>;
 
 	return (
 		<>
 			<MessageList
 				messages={messages}
-				isLoading={chatMutation.isPending}
+				isLoading={generateResponseMutation.isPending}
 				messagesEndRef={messagesEndRef}
 			/>
-			{chatMutation.isPending && (
+			{generateResponseMutation.isPending && (
 				<div className='mx-4 my-2'>
 					<AILoadingIndicator />
 				</div>
@@ -102,7 +160,9 @@ const ChatInterface = ({
 				inputText={inputText}
 				setInputText={setInputText}
 				handleSubmit={handleSubmit}
-				isPending={chatMutation.isPending}
+				isPending={
+					generateResponseMutation.isPending || addMessageMutation.isPending
+				}
 			/>
 		</>
 	);

@@ -1,10 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { FiSend } from 'react-icons/fi'; // Using Feather Icons for a sleek send icon
-// If using a custom SVG, you can import it instead
-// import { ReactComponent as CustomSendIcon } from './path-to-your-icon.svg';
+import { FiSend } from 'react-icons/fi';
 
-// Optional: Import Inter font if installed via npm
-// import '@fontsource/inter';
 const MessageInput = ({
 	inputText,
 	setInputText,
@@ -87,11 +83,7 @@ const MessageInput = ({
 	const onSubmit = (e) => {
 		e.preventDefault();
 		handleSubmit(e);
-		// Clear input and resize
-		setInputText('');
-		setTimeout(() => {
-			resizeTextarea();
-		}, 0);
+		// Note: We don't clear the input here as it's managed by the parent component
 	};
 
 	return (

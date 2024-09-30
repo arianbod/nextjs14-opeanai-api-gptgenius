@@ -19,9 +19,9 @@ const ThemeToggle = () => {
 			className='rounded-full hover:border-2 hover:border-blue-500 p-1 transition-all'
 			onClick={toggleTheme}>
 			{theme === 'winter' ? (
-				<BsMoonFill className='h-4 w-4' />
+				<BsMoonFill className='h-6 w-6' />
 			) : (
-				<BsSunFill className='h-4 w-4' />
+				<BsSunFill className='h-6 w-6' />
 			)}
 		</button>
 	);

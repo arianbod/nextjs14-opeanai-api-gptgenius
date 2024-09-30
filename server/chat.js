@@ -9,8 +9,25 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function createChat(userId, title) {
-    console.log('Creating chat for user:', userId, 'with title:', title);
+async function generateChatTitle(content) {
+    try {
+        const response = await openai.chat.completions.create({
+            model: "gpt-4o-mini-2024-07-18",
+            messages: [
+                { role: "system", content: "You are a helpful assistant that generates short, relevant titles for conversations based on the initial message. Keep the title concise, preferably under 6 words." },
+                { role: "user", content: `Generate a title for a conversation that starts with this message: "${content}"` }
+            ],
+            max_tokens: 20,
+        });
+
+        return response.choices[0].message.content.trim();
+    } catch (error) {
+        console.error('Error generating chat title:', error);
+        return "New Conversation";
+    }
+}
+export async function createChat(userId, initialMessage) {
+    console.log('Creating chat for user:', userId, 'with initial message:', initialMessage);
     const user = await getUserById(userId);
     if (!user) {
         console.error('User not found:', userId);
@@ -18,6 +35,8 @@ export async function createChat(userId, title) {
     }
 
     try {
+        const title = await generateChatTitle(initialMessage);
+
         const chat = await prisma.chat.create({
             data: {
                 title,
@@ -25,6 +44,9 @@ export async function createChat(userId, title) {
             },
         });
         console.log('Chat created:', chat);
+
+        // Add the initial message to the chat
+        await addMessageToChat(userId, chat.id, initialMessage, 'user');
 
         revalidatePath('/chat');
         return chat;
@@ -170,31 +192,23 @@ export async function manageUserTokens(userId, amount) {
     return updatedUser.tokenBalance;
 }
 
-export async function generateChatResponse(userId, chatMessagesJson, personaJson, chatId) {
-    console.log('Generating chat response for user:', userId, 'in chat:', chatId);
-    console.log('Chat messages:', chatMessagesJson);
-    console.log('Persona:', personaJson);
-
-    const user = await getUserById(userId);
-    if (!user) {
-        console.error('User not found:', userId);
-        throw new Error('User not authenticated');
+export async function generateChatResponse(messages, persona) {
+    // Ensure messages is an array
+    if (!Array.isArray(messages)) {
+        console.error('Messages is not an array:', messages);
+        throw new Error('Invalid messages format');
     }
 
-    const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
+    const systemMessage = {
+        role: 'system',
+        content: `You are ${persona.name}, a ${persona.role}. Respond to queries in a manner consistent with your role and expertise. Always stay in character.`
+    };
 
     try {
-        const chatMessages = JSON.parse(chatMessagesJson);
-        const persona = JSON.parse(personaJson);
-
-        const systemMessage = {
-            role: 'system',
-            content: `You are ${persona.name}, a ${persona.role}. Respond to queries in a manner consistent with your role and expertise. Always stay in character.`
-        };
         const stream = await openai.chat.completions.create({
             messages: [
                 systemMessage,
-                ...chatMessages
+                ...messages
             ],
             model: 'gpt-4o-mini-2024-07-18',
             temperature: 0.7,
@@ -202,11 +216,9 @@ export async function generateChatResponse(userId, chatMessagesJson, personaJson
             stream: true,
         });
 
-        console.log('OpenAI stream created successfully');
-
         return stream;
     } catch (error) {
-        console.error('Error in generateChatResponse:', error);
+        console.error('Error in OpenAI API call:', error);
         throw error;
     }
 }

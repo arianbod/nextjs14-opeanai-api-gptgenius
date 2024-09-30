@@ -211,7 +211,9 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 					/>
 				)}
 				<h3 className='text-xl font-bold mb-2 select-none'>{persona.name}</h3>
-				<p className='text-sm opacity-75 select-none'>{persona.role}</p>
+				<p className='text-sm opacity-75 select-none text-center'>
+					{persona.role}
+				</p>
 			</div>
 			<Tooltip
 				id={`tooltip-${persona.key}`}

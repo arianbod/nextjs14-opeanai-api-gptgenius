@@ -260,7 +260,7 @@ const ModelSelection = ({ onSelect, selectedModel }) => {
 					<div
 						key={engine}
 						className='mb-8'>
-						<h3 className='text-sm border-b-2 font-semibold mb-4'>
+						<h3 className='text-sm border-b-2 pb-1 font-semibold mb-4'>
 							{engine} Engine
 						</h3>
 						<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>

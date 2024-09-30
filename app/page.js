@@ -99,12 +99,7 @@ const Home = () => {
         document.cookie = `user=${JSON.stringify(userData)}; path=/;`;
     };
 
-    const handleLogout = () => {
-        setUser(null);
-        localStorage.removeItem('user');
-        document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        router.push('/');
-    };
+
 
     const copyToken = () => {
         navigator.clipboard.writeText(user.token);

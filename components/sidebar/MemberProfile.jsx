@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { FiLogOut } from 'react-icons/fi';
 
 const MemberProfile = ({ user }) => {
 	const router = useRouter();
@@ -16,13 +17,13 @@ const MemberProfile = ({ user }) => {
 	};
 
 	return (
-		<div className='px-4 flex items-center gap-2 mr-auto'>
+		<div className='px-4 flex border-t-2 pt-4 justify-between  w-full items-center gap-2 mr-auto'>
+			<p>{user.token.substring(0, 8)}...</p>
 			<button
 				onClick={handleSignOut}
 				className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors'>
-				Sign Out
+				<FiLogOut />
 			</button>
-			<p>{user.token.substring(0, 8)}...</p>
 		</div>
 	);
 };

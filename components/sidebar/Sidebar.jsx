@@ -36,12 +36,11 @@ const Sidebar = () => {
 	}, [user]);
 
 	return (
-		<div className='px-6 w-80 min-h-full bg-base-300 py-12 grid grid-rows-[auto,auto,1fr,auto]'>
-			<SidebarHeader />
+		<div className='px-6 w-80 h-screen bg-base-300 py-12 grid grid-rows-[auto,auto,1fr,auto]'>
+			<SidebarHeader userId={user?.userId} />
 			{user && (
 				<>
-					<ShowTokenAmount userId={user.userId} />
-					<div className='overflow-y-auto'>
+					<div className='overflow-y-auto max-h-[80vh]'>
 						<h3 className='text-lg font-semibold mb-2'>Your Chats</h3>
 						<ul className='menu text-base-content'>
 							{chats.map((chat) => (
@@ -53,7 +52,7 @@ const Sidebar = () => {
 							))}
 						</ul>
 
-						<NavLinks navLinks={navLinks} />
+						{/* <NavLinks navLinks={navLinks} /> */}
 					</div>
 				</>
 			)}

@@ -115,6 +115,14 @@ export const AIPersonas = [
 		engine: 'Claude',
 	},
 	{
+		key: 'TAXHELPER',
+		name: 'Johnny',
+		role: 'Personal Business Tax helper',
+		icon: FaRobot,
+		color: 'from-yellow-400 to-pink-500',
+		engine: 'OpenAI',
+	},
+	{
 		key: 'EMMA',
 		name: 'Emma',
 		role: 'Content Writer',

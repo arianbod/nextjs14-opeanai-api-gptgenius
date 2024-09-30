@@ -76,20 +76,15 @@ const AuthPage = ({ onAuthenticated }) => {
 
 	return (
 		<div
-			className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${
+			className={`flex items-center justify-center p-4 transition-colors duration-300 ${
 				isDarkMode ? 'dark' : ''
 			}`}>
 			<div className='w-full max-w-md'>
-				<div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden'>
-					<div className='bg-gradient-to-r from-blue-500 to-purple-600 p-6 flex justify-between items-center'>
-						<h1 className='text-3xl font-bold text-white'>
+				<div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl  w-full'>
+					<div className='bg-gradient-to-r from-blue-500 to-purple-600 p-6 flex justify-between items-center rounded-t-sm'>
+						<h1 className='text-3xl font-bold text-white text-center mx-auto'>
 							{isRegistering ? 'Register' : 'Login'}
 						</h1>
-						<button
-							onClick={toggleDarkMode}
-							className='p-2 rounded-full bg-white bg-opacity-20 text-white hover:bg-opacity-30 transition-colors duration-200'>
-							{isDarkMode ? <FaSun /> : <FaMoon />}
-						</button>
 					</div>
 					<form
 						onSubmit={handleSubmit}

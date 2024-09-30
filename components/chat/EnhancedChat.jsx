@@ -8,6 +8,7 @@ import ImageGenerationInterface from './ImageGenerationInterface';
 import Header from './Header';
 import MessageInput from './MessageInput';
 import { createChat, getChatMessages, addMessageToChat } from '@/server/chat';
+import Loading from '../Loading';
 
 const EnhancedChat = ({ chatId }) => {
 	const router = useRouter();
@@ -146,7 +147,7 @@ const EnhancedChat = ({ chatId }) => {
 	};
 
 	if (!user || isLoading) {
-		return <div>Loading...</div>;
+		return <Loading />;
 	}
 
 	if (!chatId || !chatData) {

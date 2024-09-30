@@ -2,12 +2,13 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { FiLogOut } from 'react-icons/fi';
+import Loading from '../Loading';
 
 const MemberProfile = ({ user }) => {
 	const router = useRouter();
 
 	if (!user) {
-		return <div>Loading...</div>;
+		return <Loading />;
 	}
 
 	const handleSignOut = () => {

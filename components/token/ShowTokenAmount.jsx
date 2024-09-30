@@ -1,6 +1,7 @@
 'use client';
 import { manageUserTokens } from '@/server/chat';
 import React, { useEffect, useState } from 'react';
+import Loading from '../Loading';
 
 const ShowTokenAmount = ({ userId }) => {
 	const [currentTokens, setCurrentTokens] = useState(undefined);
@@ -22,7 +23,7 @@ const ShowTokenAmount = ({ userId }) => {
 	}, [userId]);
 
 	if (currentTokens === undefined) {
-		return <div>Loading...</div>;
+		return <Loading />;
 	}
 
 	return (

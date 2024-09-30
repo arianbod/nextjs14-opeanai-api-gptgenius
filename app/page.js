@@ -79,6 +79,7 @@ import EnhancedChat from '../components/chat/EnhancedChat';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { FaCopy } from 'react-icons/fa6';
+import Loading from '@/components/Loading';
 
 const Home = () => {
     const [user, setUser] = useState(null);
@@ -107,7 +108,7 @@ const Home = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loading />
     }
 
     return (

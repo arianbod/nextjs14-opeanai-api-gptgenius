@@ -26,6 +26,7 @@ model User {
 model Chat {
   id        String    @id @default(uuid())
   title     String
+  titleUpdated  Boolean   @default(false)
   userId    String
   user      User      @relation(fields: [userId], references: [id])
   messages  Message[]

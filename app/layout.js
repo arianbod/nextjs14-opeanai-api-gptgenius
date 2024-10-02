@@ -4,6 +4,7 @@ import Providers from "./providers";
 import { global } from "@/lib/dic/en";
 import { FaBarsStaggered } from "react-icons/fa6";
 import Sidebar from "@/components/sidebar/Sidebar";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Toaster position='top-center' />
         <Providers>
           <div
             className='drawer lg:drawer-open'

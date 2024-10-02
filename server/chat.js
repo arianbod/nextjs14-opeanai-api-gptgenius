@@ -175,8 +175,8 @@ export async function deleteChat(userId, chatId) {
     revalidatePath('/chat');
 }
 
-export async function manageUserTokens(userId, amount) {
-    console.log('Managing tokens for user:', userId, 'amount:', amount);
+export async function manageUserTokens(userId) {
+    console.log('Managing tokens for user:', userId);
     const user = await getUserById(userId);
     if (!user) {
         console.error('User not found:', userId);

@@ -1,6 +1,9 @@
+// components/auth/AuthPage.jsx
+'use client';
 import React, { useState } from 'react';
-import { FaEnvelope, FaPaw, FaLock, FaMoon, FaSun } from 'react-icons/fa';
+import { FaEnvelope, FaPaw, FaLock } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
+import { useAuth } from '@/context/AuthContext';
 
 const ANIMALS = [
 	'dog',
@@ -17,7 +20,8 @@ const ANIMALS = [
 	'koala',
 ];
 
-const AuthPage = ({ onAuthenticated }) => {
+const AuthPage = () => {
+	const { login, setUser, setTokenBalance } = useAuth();
 	const [isRegistering, setIsRegistering] = useState(true);
 	const [email, setEmail] = useState('');
 	const [token, setToken] = useState('');
@@ -53,13 +57,27 @@ const AuthPage = ({ onAuthenticated }) => {
 				body: JSON.stringify(body),
 			});
 
-			if (!response.ok) throw new Error('Authentication failed');
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || 'Request failed');
+			}
 
 			const data = await response.json();
-			localStorage.setItem('user', JSON.stringify(data));
-			document.cookie = `user=${JSON.stringify(data)}; path=/;`;
+
+			// Set user state directly
+			const userData = {
+				userId: data.userId,
+				token: data.token,
+				tokenBalance: data.tokenBalance,
+			};
+			const timestamp = new Date().getTime();
+			const userWithTimestamp = { ...userData, timestamp };
+			setUser(userWithTimestamp);
+			setTokenBalance(data.tokenBalance);
+			localStorage.setItem('user', JSON.stringify(userWithTimestamp));
+			document.cookie = `user=${JSON.stringify(userWithTimestamp)}; path=/;`;
+
 			toast.success(`${isRegistering ? 'Registration' : 'Login'} successful!`);
-			onAuthenticated(data);
 		} catch (error) {
 			toast.error(
 				`${isRegistering ? 'Registration' : 'Login'} failed. Please try again.`
@@ -94,12 +112,13 @@ const AuthPage = ({ onAuthenticated }) => {
 								<label
 									htmlFor='email'
 									className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
-									Email (optional):
+									Email:
 								</label>
 								<input
 									id='email'
 									type='email'
 									value={email}
+									required
 									onChange={(e) => setEmail(e.target.value)}
 									className='w-full pl-10 pr-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400'
 									placeholder='your@email.com'

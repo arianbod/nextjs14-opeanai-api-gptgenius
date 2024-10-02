@@ -1,23 +1,25 @@
-import { PrismaClient } from '@prisma/client';
+// server/auth.js
+import prisma from '@/prisma/db';
 import crypto from 'crypto';
 
-const prisma = new PrismaClient();
-
-const ANIMALS = ['dog', 'cat', 'elephant', 'lion', 'tiger', 'bear', 'monkey', 'giraffe', 'zebra', 'penguin', 'kangaroo', 'koala'];
+const ANIMALS = [
+    'dog', 'cat', 'elephant', 'lion', 'tiger', 'bear',
+    'monkey', 'giraffe', 'zebra', 'penguin', 'kangaroo', 'koala'
+];
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
 
-function generateToken() {
+export function generateToken() {
     return crypto.randomBytes(16).toString('hex');
 }
 
-function hashValue(value) {
+export function hashValue(value) {
     const salt = crypto.randomBytes(16).toString('hex');
     const hash = crypto.pbkdf2Sync(value, salt, 1000, 64, 'sha512').toString('hex');
     return `${salt}:${hash}`;
 }
 
-function verifyHash(value, hashedValue) {
+export function verifyHash(value, hashedValue) {
     const [salt, hash] = hashedValue.split(':');
     const verifyHash = crypto.pbkdf2Sync(value, salt, 1000, 64, 'sha512').toString('hex');
     return hash === verifyHash;
@@ -40,14 +42,15 @@ export async function createUser(animalSelection, email = null) {
     return {
         userId: user.id,
         token,
-        animalSelection // Return the original (unhashed) animal selection
+        tokenBalance: user.tokenBalance,
+        animalSelection, // Return the original (unhashed) animal selection
     };
 }
 
 export async function authenticateUser(token, animalSelection) {
     console.log('Authenticating user with token:', token, 'and animals:', animalSelection);
 
-    // Find the user without using the token for initial lookup
+    // Find the user
     const users = await prisma.user.findMany();
     console.log('All users:', users.map(u => ({ id: u.id, tokenPrefix: u.token.slice(0, 8) })));
 
@@ -73,7 +76,11 @@ export async function authenticateUser(token, animalSelection) {
         return { success: false, message: 'User not found' };
     }
 
-    if (user.loginAttempts >= MAX_LOGIN_ATTEMPTS && user.lastLoginAttempt && new Date().getTime() - user.lastLoginAttempt.getTime() < LOCKOUT_DURATION) {
+    if (
+        user.loginAttempts >= MAX_LOGIN_ATTEMPTS &&
+        user.lastLoginAttempt &&
+        new Date().getTime() - user.lastLoginAttempt.getTime() < LOCKOUT_DURATION
+    ) {
         console.log('Account locked');
         return { success: false, message: 'Account is temporarily locked. Please try again later.' };
     }
@@ -104,27 +111,36 @@ export async function authenticateUser(token, animalSelection) {
 
     // Generate new token but keep the same animal selection
     const newToken = generateToken();
+    const hashedToken = hashValue(newToken);
 
     await prisma.user.update({
         where: { id: user.id },
         data: {
-            token: hashValue(newToken),
+            token: hashedToken,
         },
+    });
+
+    // Fetch updated user data
+    const updatedUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { id: true, tokenBalance: true },
     });
 
     console.log('Authentication successful');
 
     return {
         success: true,
-        userId: user.id,
-        token: newToken,
-        message: 'Authentication successful. Please note your new token.'
+        userId: updatedUser.id,
+        tokenBalance: updatedUser.tokenBalance,
+        token: newToken, // Return the new token to the client
+        message: 'Authentication successful. Please note your new token.',
     };
 }
 
 export async function getUserById(userId) {
-    return prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
         where: { id: userId },
         select: { id: true, email: true, tokenBalance: true },
     });
+    return user;
 }

@@ -1,12 +1,10 @@
 import prisma from "@/prisma/db";
+import { getUserById } from "./auth";
 
 
 export async function getUserTokenBalance(userId) {
-    const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { tokenBalance: true },
-    });
-    return user ? user.tokenBalance : 0;
+    const user = await getUserById(userId)
+    return user ? user.tokenBalance : 10;
 }
 
 export async function updateUserTokenBalance(userId, amount) {

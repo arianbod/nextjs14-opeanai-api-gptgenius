@@ -6,29 +6,18 @@ import ModelSelection, { AIPersonas } from './ModelSelection';
 import ChatInterface from './ChatInterface';
 import ImageGenerationInterface from './ImageGenerationInterface';
 import Header from './Header';
-import MessageInput from './MessageInput';
 import { createChat, getChatMessages, addMessageToChat } from '@/server/chat';
 import Loading from '../Loading';
+import { useAuth } from '@/context/AuthContext';
 
 const EnhancedChat = ({ chatId }) => {
 	const router = useRouter();
-	const [user, setUser] = useState(null);
 	const [chatData, setChatData] = useState(null);
 	const [selectedModel, setSelectedModel] = useState(null);
 	const [inputText, setInputText] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 
-	useEffect(() => {
-		const storedUser = localStorage.getItem('user');
-		if (storedUser) {
-			const parsedUser = JSON.parse(storedUser);
-			setUser(parsedUser);
-			console.log('User loaded from localStorage:', parsedUser);
-		} else {
-			console.log('No user found in localStorage, redirecting to login');
-			router.push('/');
-		}
-	}, [router]);
+	const {user} = useAuth();
 
 	useEffect(() => {
 		if (chatId && user) {

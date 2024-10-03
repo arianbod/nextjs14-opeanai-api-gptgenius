@@ -1,5 +1,5 @@
 "use client"
-import EnhancedChat from '@/components/chat/EnhancedChat'
+import EnhancedChat from '@/components/chat/ChatPage'
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 
 const ChatRoom = ({ params }) => {

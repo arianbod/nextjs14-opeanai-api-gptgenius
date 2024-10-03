@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import EnhancedChat from '@/components/chat/EnhancedChat';
+import EnhancedChat from '@/components/chat/ChatPage';
 
 const ChatPage = () => {
 	return <EnhancedChat />;

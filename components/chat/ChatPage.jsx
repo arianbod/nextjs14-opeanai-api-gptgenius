@@ -3,12 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import ModelSelection, { AIPersonas } from './ModelSelection';
-import ChatInterface from './ChatInterface';
-import ImageGenerationInterface from './ImageGenerationInterface';
-import Header from './Header';
 import { createChat, getChatMessages, addMessageToChat } from '@/server/chat';
 import Loading from '../Loading';
 import { useAuth } from '@/context/AuthContext';
+import Chat from './Chat';
 
 const EnhancedChat = ({ chatId }) => {
 	const router = useRouter();
@@ -17,7 +15,7 @@ const EnhancedChat = ({ chatId }) => {
 	const [inputText, setInputText] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 
-	const {user} = useAuth();
+	const { user } = useAuth();
 
 	useEffect(() => {
 		if (chatId && user) {
@@ -146,49 +144,18 @@ const EnhancedChat = ({ chatId }) => {
 					onSelect={handleModelSelect}
 					selectedModel={selectedModel}
 				/>
-				{/* this is message for later if we want to have an instant access to GPT model */}
-				{/* <div className='p-4'>
-					<MessageInput
-						inputText={inputText}
-						setInputText={setInputText}
-						handleSubmit={handleNewChatSubmit}
-						isPending={isLoading}
-						isDisabled={!selectedModel}
-					/>
-				</div> */}
 			</div>
 		);
 	}
-	// useEffect(() => {
-	// 	console.log('Current chatId:', chatId);
-	// }, [chatId]);
-	return (
-		<div className='min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900'>
-			<div className='max-w-6xl mx-auto bg-white dark:bg-gray-800 rounded-xl overflow-hidden no-scrollbar'>
-				<div className='h-[calc(100vh-3rem)] md:h-[calc(100vh-4rem)] flex flex-col overflow-hidden'>
-					<Header
-						selectedPersona={chatData.model}
-						onChangeModel={handleChangeModel}
-						AIPersonas={AIPersonas}
-					/>
 
-					{chatData.model.name === 'DALL-E' ? (
-						<ImageGenerationInterface
-							userId={user.userId}
-							chatId={chatId.toString()}
-						/>
-					) : (
-						<ChatInterface
-							userId={user.userId}
-							persona={chatData.model}
-							chatId={chatId.toString()}
-							initialMessages={chatData.messages}
-							isPerplexity={chatData.model.engine === 'Perplexity'}
-						/>
-					)}
-				</div>
-			</div>
-		</div>
+	return (
+		<Chat
+			chatId={chatId}
+			chatData={chatData}
+			user={user}
+			selectedPersona={chatData.model}
+			handleChangeModel={handleChangeModel}
+		/>
 	);
 };
 

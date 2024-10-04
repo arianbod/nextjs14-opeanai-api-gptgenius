@@ -1,8 +1,7 @@
-const { createContext, useContext, useState } = require("react");
+import { createContext, useContext, useState } from "react";
 
 const ChatContext = createContext()
 
-export const useChat = () => { useContext(ChatContext) }
 
 
 export const ChatProvider = ({ children }) => {
@@ -21,3 +20,5 @@ export const ChatProvider = ({ children }) => {
 
     )
 }
+
+export const useChat = () =>  useContext(ChatContext) 

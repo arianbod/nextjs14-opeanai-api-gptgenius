@@ -19,8 +19,6 @@ import 'react-tooltip/dist/react-tooltip.css';
 import Image from 'next/image';
 
 export const AIPersonas = [
-	// OpenAI Personas
-	// Perplexity Persona
 	{
 		key: 'BABAGPT',
 		name: 'BabaGPT',
@@ -28,23 +26,9 @@ export const AIPersonas = [
 		icon: FaHardHat,
 		color: 'from-blue-400 to-purple-500',
 		engine: 'BabaGPT',
+		engineCodeName: 'perplexity',
+		modelCodeName: 'pplx-7b-online',
 	},
-	// {
-	// 	key: 'PERPLEXITY',
-	// 	name: 'Perplexity',
-	// 	role: 'AI Assistant',
-	// 	icon: FaHardHat,
-	// 	color: 'from-blue-400 to-purple-500',
-	// 	engine: 'Perplexity',
-	// },
-	// {
-	// 	key: 'BABAGPT',
-	// 	name: 'BabaGPT',
-	// 	role: 'BABAGPT AI Assistant',
-	// 	icon: SiOpenai,
-	// 	color: 'from-green-400 to-blue-500',
-	// 	engine: 'OpenAI',
-	// },
 	{
 		key: 'CHATGPT',
 		name: 'ChatGPT',
@@ -52,6 +36,8 @@ export const AIPersonas = [
 		icon: SiOpenai,
 		color: 'from-green-400 to-blue-500',
 		engine: 'OpenAI',
+		engineCodeName: 'openai',
+		modelCodeName: 'gpt-4o-mini-2024-07-18',
 	},
 	{
 		key: 'DALLE',
@@ -60,6 +46,8 @@ export const AIPersonas = [
 		icon: FaImage,
 		color: 'from-purple-400 to-pink-500',
 		engine: 'OpenAI',
+		engineCodeName: 'openai',
+		modelCodeName: 'dall-e-3',
 	},
 	{
 		key: 'JINA',
@@ -68,9 +56,9 @@ export const AIPersonas = [
 		icon: FaUserMd,
 		color: 'from-red-400 to-pink-500',
 		engine: 'Medical',
+		engineCodeName: 'openai',
+		modelCodeName: 'gpt-4o-mini-2024-07-18',
 	},
-
-	// Custom Personas
 	{
 		key: 'ALBERTO',
 		name: 'Emilio',
@@ -78,9 +66,9 @@ export const AIPersonas = [
 		icon: FaHardHat,
 		color: 'from-blue-400 to-indigo-500',
 		engine: 'Custom',
+		engineCodeName: 'openai',
+		modelCodeName: 'gpt-4o-mini-2024-07-18',
 	},
-	// Jina Personas
-
 	{
 		key: 'ALEX',
 		name: 'Alex',
@@ -88,6 +76,8 @@ export const AIPersonas = [
 		icon: FaBriefcase,
 		color: 'from-indigo-400 to-purple-500',
 		engine: 'Custom',
+		engineCodeName: 'openai',
+		modelCodeName: 'gpt-4o-mini-2024-07-18',
 	},
 	{
 		key: 'NOAH',
@@ -96,6 +86,8 @@ export const AIPersonas = [
 		icon: FaChartLine,
 		color: 'from-green-400 to-blue-500',
 		engine: 'Custom',
+		engineCodeName: 'openai',
+		modelCodeName: 'gpt-4o-mini-2024-07-18',
 	},
 	{
 		key: 'LUCAS',
@@ -104,8 +96,9 @@ export const AIPersonas = [
 		icon: FaMusic,
 		color: 'from-purple-400 to-indigo-500',
 		engine: 'Claude',
+		engineCodeName: 'claude',
+		modelCodeName: 'claude-3-opus-20240229',
 	},
-	// Claude Personas
 	{
 		key: 'CLAUDE',
 		name: 'Claude',
@@ -113,6 +106,8 @@ export const AIPersonas = [
 		icon: FaRobot,
 		color: 'from-yellow-400 to-orange-500',
 		engine: 'Claude',
+		engineCodeName: 'claude',
+		modelCodeName: 'claude-3-opus-20240229',
 	},
 	{
 		key: 'TAXHELPER',
@@ -121,6 +116,8 @@ export const AIPersonas = [
 		icon: FaRobot,
 		color: 'from-yellow-400 to-pink-500',
 		engine: 'OpenAI',
+		engineCodeName: 'openai',
+		modelCodeName: 'gpt-4o-mini-2024-07-18',
 	},
 	{
 		key: 'EMMA',
@@ -129,8 +126,9 @@ export const AIPersonas = [
 		icon: FaBook,
 		color: 'from-pink-400 to-red-500',
 		engine: 'Claude',
+		engineCodeName: 'claude',
+		modelCodeName: 'claude-3-opus-20240229',
 	},
-
 	{
 		key: 'KOOROSH',
 		name: 'Koorosh',
@@ -138,6 +136,8 @@ export const AIPersonas = [
 		icon: FaLaptopCode,
 		color: 'from-green-400 to-teal-500',
 		engine: 'Custom',
+		engineCodeName: 'openai',
+		modelCodeName: 'gpt-4o-mini-2024-07-18',
 	},
 	{
 		key: 'SARAH',
@@ -146,6 +146,8 @@ export const AIPersonas = [
 		icon: FaChalkboardTeacher,
 		color: 'from-yellow-400 to-red-500',
 		engine: 'Custom',
+		engineCodeName: 'openai',
+		modelCodeName: 'gpt-4o-mini-2024-07-18',
 	},
 	{
 		key: 'MIA',
@@ -154,6 +156,8 @@ export const AIPersonas = [
 		icon: FaCamera,
 		color: 'from-yellow-400 to-pink-500',
 		engine: 'Custom',
+		engineCodeName: 'openai',
+		modelCodeName: 'gpt-4o-mini-2024-07-18',
 	},
 ];
 

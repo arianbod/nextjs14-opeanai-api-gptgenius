@@ -1,14 +1,11 @@
 import React from 'react';
 import Header from './Header';
 import ChatInterface from './ChatInterface';
+import { useChat } from '@/context/ChatContext';
 
-const Chat = ({
-	user,
-	selectedPersona,
-	handleChangeModel,
-	chatId,
-	chatData,
-}) => {
+const Chat = ({ user, selectedPersona, handleChangeModel, chatData }) => {
+	const { activeChat } = useChat();
+	const chatId = activeChat.id;
 	return (
 		<div className='min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900'>
 			<div className='max-w-6xl mx-auto bg-white dark:bg-gray-800 rounded-xl overflow-hidden no-scrollbar'>

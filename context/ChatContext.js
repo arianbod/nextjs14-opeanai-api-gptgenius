@@ -21,4 +21,4 @@ export const ChatProvider = ({ children }) => {
     )
 }
 
-export const useChat = () =>  useContext(ChatContext) 
+export const useChat = () => useContext(ChatContext) 

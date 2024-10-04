@@ -47,7 +47,7 @@ const Home = () => {
                             Keep in mind that after each login, your token will change. Please note your new token for future logins.
                         </span>
                     </div>
-                    <EnhancedChat userId={user.userId} />
+                    <EnhancedChat />
                 </div>
             </main>
         </div>

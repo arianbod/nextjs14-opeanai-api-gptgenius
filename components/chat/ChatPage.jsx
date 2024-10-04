@@ -109,8 +109,7 @@ const EnhancedChat = ({ chatId }) => {
 	}
 
 	return (
-		<Chat
-			chatId={chatId}
+		<Chat	
 			chatData={chatData}
 			user={user}
 			selectedPersona={chatData.model}

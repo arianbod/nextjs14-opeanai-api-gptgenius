@@ -1,22 +1,18 @@
 // layout.jsx
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Providers from "./providers";
-import { global } from "@/lib/dic/en";
-import { Toaster } from "react-hot-toast";
-import Sidebar from "@/components/sidebar/Sidebar";
-
-const inter = Inter({ subsets: ["latin"] });
+import './globals.css';
+import Providers from './providers';
+import { Toaster } from 'react-hot-toast';
+import Sidebar from '@/components/sidebar/Sidebar';
 
 export const metadata = {
-  title: global.title,
-  description: global.description,
+  title: 'Your App Title',
+  description: 'Your App Description',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className="font-sans bg-base-200 text-base-content">
         <Toaster position="top-center" />
         <Providers>
           <div className="flex h-screen overflow-hidden">
@@ -24,7 +20,7 @@ export default function RootLayout({ children }) {
             <Sidebar />
 
             {/* Content area */}
-            <div className="flex flex-col flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto">
               {children}
             </div>
           </div>

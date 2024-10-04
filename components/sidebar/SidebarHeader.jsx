@@ -3,24 +3,26 @@ import React from 'react';
 import ThemeToggle from './ThemeToggle';
 import Link from 'next/link';
 import Image from 'next/image';
-import { global } from '@/lib/dic/en';
 import ShowTokenAmount from '../token/ShowTokenAmount';
 
 const SidebarHeader = () => {
 	return (
-		<div className='flex items-center justify-between py-4 px-4'>
+		<div className='flex items-center justify-between py-6 px-6'>
 			<Link
 				href='/'
-				className='flex items-center gap-3'>
-				<Image
-					height={48}
-					width={48}
-					alt='logo'
-					src='/babagpt_bw.svg'
-					className='w-12 h-12 rounded-full p-1'
-				/>
+				className='flex items-center gap-4'>
+				<div className='relative w-14 h-14'>
+					<Image
+						alt='logo'
+						src='/babagpt_bw.svg'
+						layout='fill'
+						className='rounded-full shadow-lg'
+					/>
+				</div>
 				<div>
-					<h2 className='text-xl font-bold text-primary'>{global.title}</h2>
+					<h2 className='text-2xl font-bold text-white tracking-wide'>
+						BabaGPT
+					</h2>
 					<ShowTokenAmount />
 				</div>
 			</Link>

@@ -16,17 +16,22 @@ const MemberProfile = () => {
 	};
 
 	return (
-		<div className='flex items-center justify-between py-4 px-4 border-t border-base-300'>
-			<div className='flex items-center gap-2'>
-				<div className='bg-base-300 p-2 rounded-full'>
-					<span className='text-sm font-medium'>
-						{user.token.substring(0, 8)}...
+		<div className='flex items-center justify-between py-6 px-6 bg-white bg-opacity-10 backdrop-blur-sm rounded-t-xl'>
+			<div className='flex items-center gap-3'>
+				<div className='w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center'>
+					<span className='text-sm font-medium text-white'>
+						{user.token.substring(0, 2).toUpperCase()}
 					</span>
+				</div>
+				<div>
+					<p className='text-sm text-white font-semibold'>
+						{user.token.substring(0, 8)}...
+					</p>
 				</div>
 			</div>
 			<button
 				onClick={handleSignOut}
-				className='btn btn-sm btn-error flex items-center'>
+				className='btn btn-sm btn-error text-white hover:bg-white hover:bg-opacity-20 transition'>
 				<FiLogOut className='mr-2' />
 				Logout
 			</button>

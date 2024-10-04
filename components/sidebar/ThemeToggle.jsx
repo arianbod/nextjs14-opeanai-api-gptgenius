@@ -27,7 +27,7 @@ const ThemeToggle = () => {
 
 	return (
 		<button
-			className='btn btn-circle btn-ghost'
+			className='btn btn-circle btn-ghost text-white hover:bg-white hover:bg-opacity-20 transition'
 			onClick={toggleTheme}>
 			{theme === 'winter' ? (
 				<BsMoonFill className='h-5 w-5' />

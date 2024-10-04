@@ -26,6 +26,7 @@
 		"react-markdown": "^9.0.1",
 		"react-syntax-highlighter": "^15.5.0",
 		"react-tooltip": "^5.28.0",
+		"tailwindcss-filters": "^3.0.0",
 		"use-debounce": "^10.0.3"
 	},
 	"devDependencies": {

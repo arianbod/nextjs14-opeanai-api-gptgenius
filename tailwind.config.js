@@ -1,3 +1,4 @@
+// tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -7,17 +8,23 @@ module.exports = {
   ],
   theme: {
     extend: {
-      gradientColorStops: (theme) => ({
-        ...theme('colors'),
-      }),
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'], // Modern font
+      },
+      backdropBlur: {
+        xs: '2px',
+      },
+      colors: {
+        glassLight: 'rgba(255, 255, 255, 0.2)',
+        glassDark: 'rgba(0, 0, 0, 0.6)',
       },
     },
   },
-  plugins: [require('@tailwindcss/typography'), require('daisyui')],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('daisyui'),
+    require('tailwindcss-filters'),
+  ],
   daisyui: {
     themes: ["winter", "dracula"],
   },

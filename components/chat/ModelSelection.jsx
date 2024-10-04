@@ -30,9 +30,7 @@ const ModelSelection = ({ onSelect }) => {
 					<div
 						key={engine}
 						className='mb-12'>
-						<h3 className='text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300'>
-							{engine} Engine
-						</h3>
+						<h3 className='text-lg font-semibold mb-4'>{engine} Engine</h3>
 						<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
 							{groupedPersonas[engine].map((persona) => (
 								<ModelCard
@@ -46,7 +44,7 @@ const ModelSelection = ({ onSelect }) => {
 					</div>
 				))
 			) : (
-				<p className='text-center text-gray-500'>No personas found.</p>
+				<p className='text-center'>No personas found.</p>
 			)}
 		</div>
 	);

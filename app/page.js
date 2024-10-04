@@ -24,9 +24,9 @@ const Home = () => {
         <div>
             <main className="container mx-auto">
                 <div>
-                    <div className="mb-4 p-4 bg-blue-100 dark:bg-blue-900 rounded text-white pt-8">
-                        <h2 className="text-lg font-semibold mb-2">
-                            This is your one-time Token:
+                    <div className="mb-4 p-4 bg-blue-100 dark:bg-blue-900 rounded text-white pt-8 mx-auto place-context-center flex flex-col">
+                        <h2 className="text-lg font-semibold mb-2 text-center">
+                            This is your one-time Token
                         </h2>
                         <div className="flex items-center">
                             <input
@@ -43,7 +43,7 @@ const Home = () => {
                                 <FaCopy />
                             </button>
                         </div>
-                        <span className="text-sm">
+                        <span className="text-sm text-center">
                             Keep in mind that after each login, your token will change. Please note your new token for future logins.
                         </span>
                     </div>

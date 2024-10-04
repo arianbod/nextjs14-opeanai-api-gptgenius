@@ -42,7 +42,9 @@ const Message = ({ role, content }) => {
 							);
 						},
 					}}>
-					{content}
+					{content
+						.replace('OpenAI', 'BabaGPT(A.Rafiei)')
+						.replace('OpenAI', 'BabaGPT(A.Rafiei)')}
 				</ReactMarkdown>
 			</div>
 		</div>

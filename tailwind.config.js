@@ -7,7 +7,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-      gradientColorStops: theme => ({
+      gradientColorStops: (theme) => ({
         ...theme('colors'),
       }),
       backgroundImage: {

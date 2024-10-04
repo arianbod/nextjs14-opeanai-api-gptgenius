@@ -5,10 +5,12 @@ import Link from 'next/link';
 import SidebarHeader from './SidebarHeader';
 import MemberProfile from './MemberProfile';
 import { useAuth } from '@/context/AuthContext';
+import { FaBars, FaPlus } from 'react-icons/fa';
 
 const Sidebar = () => {
 	const { user } = useAuth();
 	const [chats, setChats] = useState([]);
+	const [sidebarOpen, setSidebarOpen] = useState(false);
 
 	useEffect(() => {
 		const fetchChats = async () => {
@@ -34,26 +36,58 @@ const Sidebar = () => {
 	}, [user]);
 
 	if (!user) {
-		return null; // Or return a login prompt
+		return null;
 	}
 
 	return (
-		<div className='px-6 w-80 h-screen bg-base-300 py-12 grid grid-rows-[auto,auto,1fr,auto]'>
-			<SidebarHeader userId={user.userId} />
-			<div className='overflow-y-auto max-h-[80vh]'>
-				<h3 className='text-lg font-semibold mb-2'>Your Chats</h3>
-				<ul className='menu text-base-content'>
-					{chats.map((chat) => (
-						<li key={chat.id}>
-							<Link href={`/chat/${chat.id}`}>
-								<span className='truncate'>{chat.title}</span>
-							</Link>
-						</li>
-					))}
-				</ul>
+		<>
+			{/* Mobile hamburger button */}
+			<div className='lg:hidden fixed top-4 left-4 z-50'>
+				<button
+					onClick={() => setSidebarOpen(!sidebarOpen)}
+					className='btn btn-square btn-ghost text-primary-content'>
+					<FaBars className='w-6 h-6' />
+				</button>
 			</div>
-			<MemberProfile user={user} />
-		</div>
+
+			{/* Sidebar */}
+			<div
+				className={`fixed inset-y-0 left-0 z-40 w-64 bg-base-200 text-base-content transform ${
+					sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+				} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
+				<SidebarHeader />
+				<div className='flex-1 overflow-y-auto px-4'>
+					<div className='flex items-center justify-between mb-4'>
+						<h3 className='text-lg font-semibold'>Your Chats</h3>
+						<button className='btn btn-sm btn-primary'>
+							<FaPlus className='mr-2' />
+							New Chat
+						</button>
+					</div>
+					<ul className='space-y-2'>
+						{chats.map((chat) => (
+							<li key={chat.id}>
+								<Link
+									href={`/chat/${chat.id}`}
+									className='flex items-center p-2 rounded-md hover:bg-base-300 transition'
+									onClick={() => setSidebarOpen(false)} // Close sidebar on mobile after selecting chat
+								>
+									<span className='truncate'>{chat.title}</span>
+								</Link>
+							</li>
+						))}
+					</ul>
+				</div>
+				<MemberProfile />
+			</div>
+
+			{/* Overlay */}
+			{sidebarOpen && (
+				<div
+					className='fixed inset-0 bg-black opacity-50 z-30 lg:hidden'
+					onClick={() => setSidebarOpen(false)}></div>
+			)}
+		</>
 	);
 };
 

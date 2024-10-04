@@ -3,13 +3,12 @@
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { FiLogOut } from 'react-icons/fi';
-import Loading from '../Loading';
 
 const MemberProfile = () => {
 	const { user, logout } = useAuth();
 
 	if (!user) {
-		return <Loading />;
+		return null;
 	}
 
 	const handleSignOut = () => {
@@ -17,12 +16,19 @@ const MemberProfile = () => {
 	};
 
 	return (
-		<div className='px-4 flex border-t-2 pt-4 justify-between w-full items-center gap-2 mr-auto'>
-			<p>{user.token.substring(0, 8)}...</p>
+		<div className='flex items-center justify-between py-4 px-4 border-t border-base-300'>
+			<div className='flex items-center gap-2'>
+				<div className='bg-base-300 p-2 rounded-full'>
+					<span className='text-sm font-medium'>
+						{user.token.substring(0, 8)}...
+					</span>
+				</div>
+			</div>
 			<button
 				onClick={handleSignOut}
-				className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors'>
-				<FiLogOut />
+				className='btn btn-sm btn-error flex items-center'>
+				<FiLogOut className='mr-2' />
+				Logout
 			</button>
 		</div>
 	);

@@ -1,27 +1,38 @@
+// components/ThemeToggle.jsx
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BsMoonFill, BsSunFill } from 'react-icons/bs';
 
 const themes = {
 	winter: 'winter',
 	dracula: 'dracula',
 };
+
 const ThemeToggle = () => {
-	const [theme, setTheme] = useState(themes.winter);
-	// const userPref=
+	const [theme, setTheme] = useState(
+		typeof window !== 'undefined' && localStorage.getItem('theme')
+			? localStorage.getItem('theme')
+			: themes.winter
+	);
+
+	useEffect(() => {
+		document.documentElement.setAttribute('data-theme', theme);
+		localStorage.setItem('theme', theme);
+	}, [theme]);
+
 	const toggleTheme = () => {
 		const newTheme = theme === themes.winter ? themes.dracula : themes.winter;
-		document.documentElement.setAttribute('data-theme', newTheme);
 		setTheme(newTheme);
 	};
+
 	return (
 		<button
-			className='rounded-full hover:border-2 hover:border-blue-500 p-1 transition-all'
+			className='btn btn-circle btn-ghost'
 			onClick={toggleTheme}>
 			{theme === 'winter' ? (
-				<BsMoonFill className='h-6 w-6' />
+				<BsMoonFill className='h-5 w-5' />
 			) : (
-				<BsSunFill className='h-6 w-6' />
+				<BsSunFill className='h-5 w-5' />
 			)}
 		</button>
 	);

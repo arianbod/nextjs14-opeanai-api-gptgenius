@@ -50,6 +50,7 @@ const Message = ({ role, content }) => {
 						.replace('openai', 'BabaGPT(A.Rafiei)')
 						.replace('OPENAI', 'BabaGPT(A.Rafiei)')
 						.replace('Openai', 'BabaGPT(A.Rafiei)')
+						.replace('اوپن‌ای‌آی', 'BabaGPT(A.Rafiei)')
 						.replace('OpenAI', 'BabaGPT(A.Rafiei)')}
 				</ReactMarkdown>
 			</div>

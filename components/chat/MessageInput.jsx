@@ -10,6 +10,7 @@ const MessageInput = ({
 }) => {
 	const textareaRef = useRef(null);
 	const [maxHeight, setMaxHeight] = useState('none');
+	const [isMobileDevice, setIsMobileDevice] = useState(false);
 
 	// Function to determine if the device is mobile based on viewport width
 	const isMobile = () => window.innerWidth < 768; // Tailwind's md breakpoint
@@ -53,6 +54,7 @@ const MessageInput = ({
 		const updateMaxHeight = () => {
 			const newMaxHeight = calculateMaxHeight();
 			setMaxHeight(newMaxHeight);
+			setIsMobileDevice(isMobile());
 			resizeTextarea();
 		};
 
@@ -74,9 +76,17 @@ const MessageInput = ({
 	}, [inputText]);
 
 	const handleKeyDown = (e) => {
-		if (e.key === 'Enter' && !e.shiftKey) {
-			e.preventDefault();
-			handleSubmit(e);
+		if (e.key === 'Enter') {
+			if (isMobileDevice) {
+				// On mobile, always allow new line
+				return;
+			} else {
+				// On desktop, submit on Enter, new line on Shift+Enter
+				if (!e.shiftKey) {
+					e.preventDefault();
+					handleSubmit(e);
+				}
+			}
 		}
 	};
 

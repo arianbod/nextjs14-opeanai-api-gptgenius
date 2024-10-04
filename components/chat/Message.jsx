@@ -11,7 +11,7 @@ const Message = ({ role, content }) => {
 	return (
 		<div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
 			<div
-				className={`max-w-[80%] ${
+				className={`max-w-full lg:max-w-[80%] ${
 					isUser
 						? 'bg-primary text-primary-content'
 						: 'bg-base-100 text-base-content'

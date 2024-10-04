@@ -1,25 +1,26 @@
+import { useChat } from '@/context/ChatContext';
 import React, { useState } from 'react';
 import { FaRobot } from 'react-icons/fa';
 
-const ModelIcon = ({ model }) => {
-	const IconComponent = model.icon || FaRobot;
-	return <IconComponent className='w-6 h-6 text-primary' />;
-};
+// const ModelIcon = ({ model }) => {
+// 	const IconComponent = model.icon || FaRobot;
+// 	return <IconComponent className='w-6 h-6 text-primary' />;
+// };
 
-const Header = ({ selectedPersona, onChangeModel, AIPersonas }) => {
+const Header = () => {
 	// const [isModelSelectOpen, setIsModelSelectOpen] = useState(false);
 
 	// const handleModelChange = (newModel) => {
 	// 	onChangeModel(newModel);
 	// 	setIsModelSelectOpen(false);
 	// };
-
+	const { activeChat } = useChat();
 	return (
-		<header className='bg-gradient-to-r from-gray-800 to-gray-900 text-white p-4 flex justify-between items-center'>
+		<header className=' p-4 flex justify-between items-center'>
 			<h1 className='text-xl font-semibold flex items-center gap-2'>
-				<ModelIcon model={selectedPersona} />
-				<span>{selectedPersona.name}</span>
-				<span className='text-sm text-gray-400'>({selectedPersona.role})</span>
+				{/* <ModelIcon activeChat={activeChat} /> */}
+				<span>{activeChat.name}</span>
+				<span className='text-sm'>({activeChat.role})</span>
 			</h1>
 		</header>
 	);

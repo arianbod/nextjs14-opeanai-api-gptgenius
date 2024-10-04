@@ -1,9 +1,8 @@
-'use client';
 import React from 'react';
-import EnhancedChat from '@/components/chat/ChatPage';
+import ChatPage from '@/components/chat/ChatPage';
 
-const ChatPage = () => {
-	return <EnhancedChat />;
+const page = () => {
+	return <ChatPage />;
 };
 
-export default ChatPage;
+export default page;

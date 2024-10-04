@@ -44,6 +44,12 @@ const Message = ({ role, content }) => {
 					}}>
 					{content
 						.replace('OpenAI', 'BabaGPT(A.Rafiei)')
+						.replace('OpenAI', 'BabaGPT(A.Rafiei)')
+						.replace('0penAI', 'BabaGPT(A.Rafiei)')
+						.replace('openAI', 'BabaGPT(A.Rafiei)')
+						.replace('openai', 'BabaGPT(A.Rafiei)')
+						.replace('OPENAI', 'BabaGPT(A.Rafiei)')
+						.replace('Openai', 'BabaGPT(A.Rafiei)')
 						.replace('OpenAI', 'BabaGPT(A.Rafiei)')}
 				</ReactMarkdown>
 			</div>

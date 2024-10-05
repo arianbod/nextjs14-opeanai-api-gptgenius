@@ -15,7 +15,7 @@ async function generateChatTitle(content) {
             model: "gpt-4o-mini-2024-07-18",
             messages: [
                 { role: "system", content: "You are a helpful assistant that generates short, relevant titles for conversations based on the initial message. Keep the title concise, preferably under 6 words." },
-                { role: "user", content: `Generate a title for a conversation that starts with this message: "${content}"` }
+                { role: "user", content: `Generate a title for a conversation that starts with this message: ${content}` }
             ],
             max_tokens: 20,
         });

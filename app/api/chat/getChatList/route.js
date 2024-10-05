@@ -1,6 +1,6 @@
 // app/api/chat/getChatList/route.js
 import { NextResponse } from 'next/server';
-import prisma from '@/prisma/db';
+import { getChatList } from '@/server/chat';
 
 export async function POST(request) {
     try {
@@ -8,10 +8,7 @@ export async function POST(request) {
         if (!userId) {
             return NextResponse.json({ error: 'userId is required' }, { status: 400 });
         }
-        const chats = await prisma.chat.findMany({
-            where: { userId },
-            select: { id: true, title: true },
-        });
+        const chats = await getChatList(userId)
         return NextResponse.json({ chats });
     } catch (error) {
         console.error('Error fetching chat list:', error);

@@ -49,7 +49,7 @@ const Sidebar = () => {
 				} z-50`}>
 				<button
 					onClick={() => setSidebarOpen(!sidebarOpen)}
-					className='btn btn-square btn-ghost text-primary-content backdrop-blur-md bg-glassLight dark:bg-glassLight'>
+					className='btn btn-square btn-ghost backdrop-blur-md bg-blue-900/50 text-white'>
 					{sidebarOpen ? (
 						<MdClose className='w-6 h-6' />
 					) : (
@@ -70,9 +70,9 @@ const Sidebar = () => {
 							<h3 className='text-md font-semibold text-white/50 '>
 								Conversations
 							</h3>
-							<button className='btn btn-primary btn-md rounded-full shadow-md hover:shadow-lg transition-shadow'>
+							{/* <Link href='/' onClick={()} className='btn btn-primary btn-md rounded-full shadow-md hover:shadow-lg transition-shadow' >
 								<MdAdd className='w-6 h-6' />
-							</button>
+							</Link> */}
 						</div>
 						<ul className='space-y-4'>
 							{chats.map((chat) => (

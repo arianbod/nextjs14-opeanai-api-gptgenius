@@ -1,22 +1,29 @@
+// components/chat/ChatPage.js
 'use client';
 import React from 'react';
 import ModelSelection from './ModelSelection';
+import Chat from './Chat';
 import Loading from '../Loading';
 import { useAuth } from '@/context/AuthContext';
-import Chat from './Chat';
 import { useChat } from '@/context/ChatContext';
 
 const ChatPage = () => {
-	const { handleModelSelect, isLoading } = useChat();
+	const { activeChat } = useChat();
 	const { user } = useAuth();
 
-	if (!user || isLoading) {
+	if (!user) {
 		return <Loading />;
 	}
 
+	// If a model has been selected, render the Chat interface
+	if (activeChat.model) {
+		return <Chat />;
+	}
+
+	// Otherwise, show the ModelSelection component
 	return (
 		<div className='flex flex-col no-scrollbar'>
-			<ModelSelection onSelect={handleModelSelect} />
+			<ModelSelection />
 		</div>
 	);
 };

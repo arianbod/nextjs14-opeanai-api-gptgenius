@@ -1,10 +1,11 @@
+// components/chat/ModelSelection.jsx
 import React, { useState } from 'react';
 import ModelCard from './ModelCard';
 import { AIPersonas } from '@/lib/Personas';
 import { useChat } from '@/context/ChatContext';
 
-const ModelSelection = ({ onSelect }) => {
-	const { model } = useChat();
+const ModelSelection = () => {
+	const { model, handleModelSelect } = useChat();
 	const [searchTerm, setSearchTerm] = useState('');
 
 	const filteredPersonas = AIPersonas.filter(
@@ -24,7 +25,7 @@ const ModelSelection = ({ onSelect }) => {
 
 	return (
 		<div className='w-full px-2 min-h-screen'>
-			{/* ... Rest of your component ... */}
+			{/* Your search input and other components */}
 			{Object.keys(groupedPersonas).length > 0 ? (
 				Object.keys(groupedPersonas).map((engine) => (
 					<div
@@ -36,7 +37,7 @@ const ModelSelection = ({ onSelect }) => {
 								<ModelCard
 									key={persona.key}
 									persona={persona}
-									onSelect={onSelect}
+									onSelect={handleModelSelect}
 									isSelected={model && model.key === persona.key}
 								/>
 							))}

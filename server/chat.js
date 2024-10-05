@@ -87,7 +87,7 @@ export async function getChatMessages(userId, chatId) {
     const messages = await prisma.message.findMany({
         where: {
             chatId: chatIdString,
-            chat: { userId: user.id }
+            chat: { userId }
         },
         orderBy: { createdAt: 'asc' },
         select: {

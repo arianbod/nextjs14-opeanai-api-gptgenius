@@ -7,35 +7,12 @@ import MemberProfile from './MemberProfile';
 import { useAuth } from '@/context/AuthContext';
 import { FaBars } from 'react-icons/fa';
 import { MdAdd, MdClose } from 'react-icons/md';
+import { useChat } from '@/context/ChatContext';
 
 const Sidebar = () => {
 	const { user } = useAuth();
-	const [chats, setChats] = useState([]);
 	const [sidebarOpen, setSidebarOpen] = useState(false);
-
-	useEffect(() => {
-		const fetchChats = async () => {
-			if (user?.userId) {
-				try {
-					const response = await fetch('/api/chat/getChatList', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({ userId: user.userId }),
-					});
-					if (response.ok) {
-						const data = await response.json();
-						setChats(data.chats);
-					} else {
-						console.error('Failed to fetch chat list');
-					}
-				} catch (error) {
-					console.error('Error fetching chat list:', error);
-				}
-			}
-		};
-		fetchChats();
-	}, [user]);
-
+	const { chatList } = useChat();
 	if (!user) {
 		return null;
 	}
@@ -75,7 +52,7 @@ const Sidebar = () => {
 							</Link> */}
 						</div>
 						<ul className='space-y-4'>
-							{chats.map((chat) => (
+							{chatList.map((chat) => (
 								<li key={chat.id}>
 									<Link
 										href={`/chat/${chat.id}`}

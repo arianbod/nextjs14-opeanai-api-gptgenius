@@ -23,6 +23,29 @@ export const ChatProvider = ({ children }) => {
     const [chatList, setChatList] = useState([]);
     const router = useRouter();
 
+    const fetchChats = async () => {
+        if (user?.userId) {
+            try {
+                const response = await fetch('/api/chat/getChatList', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.userId }),
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setChatList(data.chats);
+                } else {
+                    console.error('Failed to fetch chat list');
+                }
+            } catch (error) {
+                console.error('Error fetching chat list:', error);
+            }
+        }
+    };
+
+
+
+
     const handleModelSelect = (selectedModel) => {
         setModel(selectedModel);
 
@@ -122,6 +145,9 @@ export const ChatProvider = ({ children }) => {
     const removeMessage = useCallback((messageId) => {
         setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
     }, []);
+    useEffect(() => {
+        fetchChats();
+    }, [user, activeChat]);
 
     const values = {
         model,

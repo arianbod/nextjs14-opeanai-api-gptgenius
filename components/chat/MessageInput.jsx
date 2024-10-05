@@ -108,7 +108,7 @@ const MessageInput = ({
 						onChange={(e) => setInputText(e.target.value)}
 						onKeyDown={handleKeyDown}
 						placeholder='Type your message here...'
-						className='w-full p-3 rounded-3xl resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-blue-500 transition-[height] duration-200 ease-in-out font-sans text-base leading-relaxed'
+						className='w-full p-3 px-6 rounded-3xl resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-blue-500 transition-[height] duration-200 ease-in-out font-sans text-base leading-relaxed'
 						style={{
 							maxHeight: maxHeight,
 							minHeight: '3rem',

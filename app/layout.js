@@ -15,14 +15,14 @@ export default function RootLayout({ children }) {
       <body className="font-sans bg-base-200 text-base-content">
         <Toaster position="top-center" />
         <Providers>
-          <div className="flex h-screen overflow-hidden">
+          <div className="flex h-screen">
             {/* Sidebar */}
             <Sidebar />
 
             {/* Content area */}
-            <div className="flex-1 overflow-auto">
-              {children}
-            </div>
+            {/* <div className="overflow-auto"> */}
+            {children}
+            {/* </div> */}
           </div>
         </Providers>
       </body>

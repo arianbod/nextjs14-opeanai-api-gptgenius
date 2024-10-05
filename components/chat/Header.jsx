@@ -16,8 +16,8 @@ const Header = () => {
 	// };
 	const { activeChat } = useChat();
 	return (
-		<header className=' p-4 flex justify-between items-center'>
-			<h1 className='text-xl font-semibold flex items-center gap-2'>
+		<header className=' p-4 flex place-items-center place-content-center items-center'>
+			<h1 className='text-xl font-semibold text-center flex items-center gap-2'>
 				{/* <ModelIcon activeChat={activeChat} /> */}
 				<span>{activeChat.name}</span>
 				<span className='text-sm'>({activeChat.role})</span>

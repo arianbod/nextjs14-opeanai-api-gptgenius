@@ -31,21 +31,21 @@ const Message = ({ role, content, timestamp }) => {
 				<div className='flex justify-between items-center mb-2'>
 					<span
 						className={`text-[12px] ${
-							isUser ? 'text-gray-300/75 ' : 'text-gray-500'
+							isUser ? 'text-gray-300/75' : 'text-gray-500'
 						}`}>
 						{formatTimestamp(timestamp)}
 					</span>
 					<div className='flex space-x-2'>
 						<button
-							className='p-1 hover:bg-gray-200 rounded'
+							className='p-1 hover:bg-gray-200/25 rounded'
 							onClick={() => copyToClipboard(content)}
 							title='Copy to clipboard'>
-							<Copy size={16} />
+							<Copy size={12} />
 						</button>
 						{!isUser && (
 							<>
 								<button
-									className='p-1 hover:bg-gray-200 rounded'
+									className='p-1 hover:bg-gray-200/25 rounded'
 									onClick={() =>
 										setReaction(reaction === 'like' ? null : 'like')
 									}
@@ -56,7 +56,7 @@ const Message = ({ role, content, timestamp }) => {
 									/>
 								</button>
 								<button
-									className='p-1 hover:bg-gray-200 rounded'
+									className='p-1 hover:bg-gray-200/25 rounded'
 									onClick={() =>
 										setReaction(reaction === 'dislike' ? null : 'dislike')
 									}
@@ -83,12 +83,12 @@ const Message = ({ role, content, timestamp }) => {
 											className='absolute top-2 right-2 p-1  hover:bg-gray-300/25 rounded'
 											onClick={() => setExpanded(!expanded)}>
 											{expanded ? (
-												<Minimize2 size={16} />
+												<Minimize2 size={12} />
 											) : (
-												<Maximize2 size={16} />
+												<Maximize2 size={12} />
 											)}
 										</button>
-										
+
 										<SyntaxHighlighter
 											language={match[1]}
 											style={

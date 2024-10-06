@@ -13,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="font-sans bg-base-200 text-base-content">
+      <body className="font-sans">
         <Toaster position="top-center" />
         <Providers>
           <div className="flex h-screen">

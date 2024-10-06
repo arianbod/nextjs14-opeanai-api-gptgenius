@@ -16,7 +16,7 @@ const MessageList = ({ messages, isLoading, messagesEndRef }) => {
 	});
 
 	return (
-		<div className='flex flex-col h-full'>
+		<div className='flex flex-col '>
 			<div className='flex flex-col space-y-2 p-4'>
 				<div className='relative'>
 					<input

@@ -24,7 +24,7 @@ const Home = () => {
         <div>
             <main className="container mx-auto">
                 <div>
-                    <div className="mb-4 p-4  dark:bg-blue-900 rounded text-white pt-8 mx-auto place-context-center flex flex-col">
+                    <div className="mb-4 p-4  bg-blue-900 rounded text-white pt-8 mx-auto place-context-center flex flex-col">
                         <h2 className="text-lg font-semibold mb-2 text-center">
                             This is your one-time Token
                         </h2>

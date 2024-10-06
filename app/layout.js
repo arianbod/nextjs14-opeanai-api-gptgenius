@@ -3,10 +3,11 @@ import './globals.css';
 import Providers from './providers';
 import { Toaster } from 'react-hot-toast';
 import Sidebar from '@/components/sidebar/Sidebar';
+import { global } from '@/lib/dic/en';
 
 export const metadata = {
-  title: 'Your App Title',
-  description: 'Your App Description',
+  title: global.title,
+  description: global.description,
 };
 
 export default function RootLayout({ children }) {
@@ -20,9 +21,9 @@ export default function RootLayout({ children }) {
             <Sidebar />
 
             {/* Content area */}
-            {/* <div className="overflow-auto"> */}
-            {children}
-            {/* </div> */}
+            <div className="mx-auto">
+              {children}
+            </div>
           </div>
         </Providers>
       </body>

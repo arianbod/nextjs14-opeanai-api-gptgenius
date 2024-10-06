@@ -16,54 +16,73 @@ const MessageList = ({ messages, isLoading, messagesEndRef }) => {
 	});
 
 	return (
-		<div className='flex flex-col'>
-			<div className='flex items-center space-x-2 p-4 bg-gray-100'>
-				<input
-					type='text'
-					placeholder='Search messages...'
-					value={searchTerm}
-					onChange={(e) => setSearchTerm(e.target.value)}
-					className='flex-grow p-2 border rounded'
-				/>
-				<button
-					className={`px-3 py-1 rounded ${
-						filter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-					}`}
-					onClick={() => setFilter('all')}>
-					All
-				</button>
-				<button
-					className={`px-3 py-1 rounded ${
-						filter === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-					}`}
-					onClick={() => setFilter('user')}>
-					User
-				</button>
-				<button
-					className={`px-3 py-1 rounded ${
-						filter === 'assistant' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-					}`}
-					onClick={() => setFilter('assistant')}>
-					Assistant
-				</button>
+		<div className='flex flex-col h-full'>
+			<div className='flex flex-col space-y-2 p-4 bg-gray-100'>
+				<div className='relative'>
+					<input
+						type='text'
+						placeholder='Search messages...'
+						value={searchTerm}
+						onChange={(e) => setSearchTerm(e.target.value)}
+						className='w-full p-2 pr-8 border rounded'
+					/>
+					<Search
+						className='absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400'
+						size={18}
+					/>
+				</div>
+				<div className='flex justify-center space-x-2'>
+					<button
+						className={`px-3 py-1 rounded transition-colors duration-300 ease-in-out ${
+							filter === 'all'
+								? 'bg-blue-500 text-white'
+								: 'bg-white hover:bg-blue-100'
+						}`}
+						onClick={() => setFilter('all')}>
+						All
+					</button>
+					<button
+						className={`px-3 py-1 rounded transition-colors duration-300 ease-in-out ${
+							filter === 'user'
+								? 'bg-blue-500 text-white'
+								: 'bg-white hover:bg-blue-100'
+						}`}
+						onClick={() => setFilter('user')}>
+						User
+					</button>
+					<button
+						className={`px-3 py-1 rounded transition-colors duration-300 ease-in-out ${
+							filter === 'assistant'
+								? 'bg-blue-500 text-white'
+								: 'bg-white hover:bg-blue-100'
+						}`}
+						onClick={() => setFilter('assistant')}>
+						Assistant
+					</button>
+				</div>
 			</div>
-			<div className='flex-1 overflow-y-auto p-6 space-y-6 backdrop-blur-lg'>
+			<div className='flex-1 overflow-y-auto p-4 space-y-4 backdrop-blur-lg'>
 				<div className='max-w-4xl mx-auto flex flex-col gap-2'>
 					{filteredMessages.length > 0 ? (
 						filteredMessages.map(({ id, role, content, timestamp }) => (
-							<Message
+							<div
 								key={id}
-								role={role}
-								content={content}
-								timestamp={timestamp}
-							/>
+								className='transition-opacity duration-300 ease-in-out opacity-100'>
+								<Message
+									role={role}
+									content={content}
+									timestamp={timestamp}
+								/>
+							</div>
 						))
 					) : (
-						<Message
-							role='assistant'
-							content='Welcome! How can I assist you today?'
-							timestamp={new Date().toISOString()}
-						/>
+						<div className='transition-opacity duration-300 ease-in-out opacity-100'>
+							<Message
+								role='assistant'
+								content='Welcome! How can I assist you today?'
+								timestamp={new Date().toISOString()}
+							/>
+						</div>
 					)}
 					{isLoading && <LoadingMessage />}
 					<div ref={messagesEndRef} />

@@ -12,7 +12,7 @@ import { useChat } from '@/context/ChatContext';
 const Sidebar = () => {
 	const { user } = useAuth();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const { chatList } = useChat();
+	const { chatList, resetChat } = useChat();
 	if (!user) {
 		return null;
 	}
@@ -47,6 +47,12 @@ const Sidebar = () => {
 							<h3 className='text-md font-semibold text-white/50 '>
 								Conversations
 							</h3>
+							<Link
+								onClick={() => resetChat()}
+								href='/'
+								className='flex items-center gap-4 hover:bg-white/25 rounded-full transition-all p-1'>
+								<MdAdd className='w-6 h-6' />
+							</Link>
 							{/* <Link href='/' onClick={()} className='btn btn-primary btn-md rounded-full shadow-md hover:shadow-lg transition-shadow' >
 								<MdAdd className='w-6 h-6' />
 							</Link> */}

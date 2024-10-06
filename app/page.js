@@ -15,11 +15,9 @@ const Home = () => {
         navigator.clipboard.writeText(user.token);
         toast.success("Token copied to clipboard!");
     };
-
     if (user === null) {
         return <AuthPage />;
     }
-
     return (
         <div>
             <main className="container mx-auto">

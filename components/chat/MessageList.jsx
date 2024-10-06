@@ -17,7 +17,7 @@ const MessageList = ({ messages, isLoading, messagesEndRef }) => {
 
 	return (
 		<div className='flex flex-col h-full'>
-			<div className='flex flex-col space-y-2 p-4 bg-gray-100'>
+			<div className='flex flex-col space-y-2 p-4'>
 				<div className='relative'>
 					<input
 						type='text'
@@ -34,9 +34,7 @@ const MessageList = ({ messages, isLoading, messagesEndRef }) => {
 				<div className='flex justify-center space-x-2'>
 					<button
 						className={`px-3 py-1 rounded transition-colors duration-300 ease-in-out ${
-							filter === 'all'
-								? 'bg-blue-500 text-white'
-								: 'bg-white hover:bg-blue-100'
+							filter === 'all' ? 'bg-blue-500 text-white' : 'hover:bg-blue-100'
 						}`}
 						onClick={() => setFilter('all')}>
 						All
@@ -45,7 +43,7 @@ const MessageList = ({ messages, isLoading, messagesEndRef }) => {
 						className={`px-3 py-1 rounded transition-colors duration-300 ease-in-out ${
 							filter === 'user'
 								? 'bg-blue-500 text-white'
-								: 'bg-white hover:bg-blue-100'
+								: ' hover:bg-blue-500/50'
 						}`}
 						onClick={() => setFilter('user')}>
 						User
@@ -54,7 +52,7 @@ const MessageList = ({ messages, isLoading, messagesEndRef }) => {
 						className={`px-3 py-1 rounded transition-colors duration-300 ease-in-out ${
 							filter === 'assistant'
 								? 'bg-blue-500 text-white'
-								: 'bg-white hover:bg-blue-100'
+								: ' hover:bg-blue-500/50'
 						}`}
 						onClick={() => setFilter('assistant')}>
 						Assistant

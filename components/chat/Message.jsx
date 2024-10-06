@@ -80,7 +80,7 @@ const Message = ({ role, content, timestamp }) => {
 								return (
 									<div className='relative'>
 										<button
-											className='absolute top-2 right-2 p-1 bg-gray-200 hover:bg-gray-300 rounded'
+											className='absolute top-2 right-2 p-1  hover:bg-gray-300/25 rounded'
 											onClick={() => setExpanded(!expanded)}>
 											{expanded ? (
 												<Minimize2 size={16} />
@@ -88,6 +88,7 @@ const Message = ({ role, content, timestamp }) => {
 												<Maximize2 size={16} />
 											)}
 										</button>
+										
 										<SyntaxHighlighter
 											language={match[1]}
 											style={

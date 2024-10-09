@@ -13,18 +13,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="font-sans">
+      <body className="font-sans flex">
         <Toaster position="top-center" />
         <Providers>
-          <div className="flex h-screen">
-            {/* Sidebar */}
-            <Sidebar />
-
-            {/* Content area */}
-            <div className="mx-auto">
-              {children}
-            </div>
-          </div>
+          <Sidebar />
+          <main className="flex-1 ml-0 lg:ml-64 p-4">
+            {children}
+          </main>
         </Providers>
       </body>
     </html>

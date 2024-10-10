@@ -23,53 +23,53 @@ const Message = ({ role, content, timestamp }) => {
 	};
 
 	return (
-		<div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
-			<div
-				className={`max-w-full lg:max-w-[80%] ${
-					isUser ? 'bg-blue-500 text-white' : ''
-				} p-4 rounded-lg shadow-md`}>
-				<div className='flex justify-between items-center mb-2'>
-					<span
-						className={`text-[12px] ${
-							isUser ? 'text-gray-300/75' : 'text-gray-500'
-						}`}>
-						{formatTimestamp(timestamp)}
-					</span>
-					<div className='flex space-x-2'>
-						<button
-							className='p-1 hover:bg-gray-200/25 rounded'
-							onClick={() => copyToClipboard(content)}
-							title='Copy to clipboard'>
-							<Copy size={12} />
-						</button>
-						{!isUser && (
-							<>
-								<button
-									className='p-1 hover:bg-gray-200/25 rounded'
-									onClick={() =>
-										setReaction(reaction === 'like' ? null : 'like')
-									}
-									title={reaction === 'like' ? 'Unlike' : 'Like'}>
-									<ThumbsUp
-										size={16}
-										className={reaction === 'like' ? 'text-green-500' : ''}
-									/>
-								</button>
-								<button
-									className='p-1 hover:bg-gray-200/25 rounded'
-									onClick={() =>
-										setReaction(reaction === 'dislike' ? null : 'dislike')
-									}
-									title={reaction === 'dislike' ? 'Remove dislike' : 'Dislike'}>
-									<ThumbsDown
-										size={16}
-										className={reaction === 'dislike' ? 'text-red-500' : ''}
-									/>
-								</button>
-							</>
-						)}
-					</div>
+		<div
+			className={`flex  flex-col  ${
+				isUser
+					? 'justify-end ml-20 bg-gray-700 text-white shadow-md'
+					: 'justify-start '
+			} mb-4 hover:bg-black/25 rounded-lg px-4 p-2 transition-all`}>
+			<div className='flex justify-between items-center mb-2'>
+				<span
+					className={`text-[12px] ${
+						isUser ? 'text-gray-300/75' : 'text-gray-500'
+					}`}>
+					{formatTimestamp(timestamp)}
+				</span>
+				<div className='flex space-x-2'>
+					<button
+						className='p-1 hover:bg-gray-200/25 rounded'
+						onClick={() => copyToClipboard(content)}
+						title='Copy to clipboard'>
+						<Copy size={12} />
+					</button>
+					{/* {!isUser && (
+						<>
+							<button
+								className='p-1 hover:bg-gray-200/25 rounded'
+								onClick={() => setReaction(reaction === 'like' ? null : 'like')}
+								title={reaction === 'like' ? 'Unlike' : 'Like'}>
+								<ThumbsUp
+									size={16}
+									className={reaction === 'like' ? 'text-green-500' : ''}
+								/>
+							</button>
+							<button
+								className='p-1 hover:bg-gray-200/25 rounded'
+								onClick={() =>
+									setReaction(reaction === 'dislike' ? null : 'dislike')
+								}
+								title={reaction === 'dislike' ? 'Remove dislike' : 'Dislike'}>
+								<ThumbsDown
+									size={16}
+									className={reaction === 'dislike' ? 'text-red-500' : ''}
+								/>
+							</button>
+						</>
+					)} */}
 				</div>
+			</div>
+			<div className={`max-w-full lg:max-w-[80%] ${''}  rounded-lg `}>
 				<ReactMarkdown
 					components={{
 						code({ node, inline, className, children, ...props }) {

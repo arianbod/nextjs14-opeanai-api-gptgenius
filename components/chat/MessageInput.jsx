@@ -7,6 +7,7 @@ const MessageInput = ({
 	handleSubmit,
 	isPending,
 	isDisabled,
+	msgLen,
 }) => {
 	const textareaRef = useRef(null);
 	const [maxHeight, setMaxHeight] = useState('none');
@@ -99,7 +100,7 @@ const MessageInput = ({
 	return (
 		<form
 			onSubmit={onSubmit}
-			className=''>
+			className={msgLen > 0 && `fixed bottom-0 mx-auto  z-20 w-full max-w-3xl`}>
 			<div className='flex items-end gap-2 '>
 				<div className='relative flex-1 pr-1 '>
 					<textarea

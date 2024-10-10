@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
         <Toaster position="top-center" />
         <Providers>
           <Sidebar />
-          <main className="flex-1 ml-0 lg:ml-64 p-4">
+          <main className="flex-1 ml-0 lg:ml-72 p-4 ">
             {children}
           </main>
         </Providers>

@@ -147,20 +147,30 @@ const ChatInterface = () => {
 
 		setInputText('');
 	};
-
+	const msgLen = messages.length;
 	return (
 		<>
-			<MessageList
-				messages={messages}
-				isLoading={generateResponseMutation.isPending}
-				messagesEndRef={messagesEndRef}
-			/>
-			{generateResponseMutation.isPending && (
-				<div className='mx-4 my-2'>
-					<AILoadingIndicator />
+			{msgLen > 0 ? (
+				<>
+					<MessageList
+						messages={messages}
+						isLoading={generateResponseMutation.isPending}
+						messagesEndRef={messagesEndRef}
+					/>
+					{generateResponseMutation.isPending && (
+						<div className='mx-4 my-2'>
+							<AILoadingIndicator />
+						</div>
+					)}
+				</>
+			) : (
+				<div className='h-[30vh] w-full flex place-items-center place-content-center font-bold animate-pulse '>
+					{' '}
+					how can I assist you today?
 				</div>
 			)}
 			<MessageInput
+				msgLen={msgLen}
 				inputText={inputText}
 				setInputText={setInputText}
 				handleSubmit={handleSubmit}

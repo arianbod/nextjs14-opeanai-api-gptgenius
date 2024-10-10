@@ -1,4 +1,3 @@
-// context/ChatContext.js
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import toast from 'react-hot-toast';
@@ -23,6 +22,11 @@ export const ChatProvider = ({ children }) => {
     const [chatList, setChatList] = useState([]);
     const router = useRouter();
 
+    // New state for search functionality
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchFilter, setSearchFilter] = useState('all');
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+
     const fetchChats = async () => {
         if (user?.userId) {
             try {
@@ -43,12 +47,8 @@ export const ChatProvider = ({ children }) => {
         }
     };
 
-
-
-
     const handleModelSelect = (selectedModel) => {
         setModel(selectedModel);
-
         setActiveChat({
             id: null,
             title: '',
@@ -57,36 +57,27 @@ export const ChatProvider = ({ children }) => {
             role: selectedModel.role,
             name: selectedModel.name,
         });
-
-        // Navigate to the chat interface without a chatId
         router.push('/chat');
     };
 
     const fetchChatData = useCallback(
         async (chatId) => {
             if (!chatId || !user) return;
-
             try {
                 setIsLoading(true);
-
-                // Fetch messages from the API endpoint
                 const response = await fetch('/api/chat/getChatMessages', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userId: user.userId, chatId }),
                 });
-
                 if (!response.ok) {
                     throw new Error('Failed to fetch chat messages');
                 }
-
                 const data = await response.json();
                 const fetchedMessages = data.messages;
-
                 if (fetchedMessages.length > 0) {
                     const initialMessage = fetchedMessages[0].content.split(',')[0].trim();
-                    const selectedModel =
-                        AIPersonas.find((p) => p.name === initialMessage) || AIPersonas[0];
+                    const selectedModel = AIPersonas.find((p) => p.name === initialMessage) || AIPersonas[0];
                     setActiveChat({
                         id: chatId,
                         title: '',
@@ -98,7 +89,6 @@ export const ChatProvider = ({ children }) => {
                     setModel(selectedModel);
                     setMessages(fetchedMessages);
                 } else {
-                    // If no messages, treat as a new chat
                     setActiveChat({
                         id: chatId,
                         title: '',
@@ -117,7 +107,7 @@ export const ChatProvider = ({ children }) => {
                 setIsLoading(false);
             }
         },
-        [user, setActiveChat, setModel, setMessages]
+        [user]
     );
 
     const resetChat = () => {
@@ -145,6 +135,19 @@ export const ChatProvider = ({ children }) => {
     const removeMessage = useCallback((messageId) => {
         setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
     }, []);
+
+    // Function to toggle search
+    const toggleSearch = () => setIsSearchOpen(prev => !prev);
+
+    // Function to filter messages based on search term and filter
+    const filteredMessages = useCallback(() => {
+        return messages.filter(message => {
+            const matchesSearch = message.content.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesFilter = searchFilter === 'all' || message.role === searchFilter;
+            return matchesSearch && matchesFilter;
+        });
+    }, [messages, searchTerm, searchFilter]);
+
     useEffect(() => {
         fetchChats();
     }, [user, activeChat]);
@@ -164,7 +167,14 @@ export const ChatProvider = ({ children }) => {
         setChatList,
         isLoading,
         fetchChatData,
-        resetChat, // Added resetChat to the context values
+        resetChat,
+        searchTerm,
+        setSearchTerm,
+        searchFilter,
+        setSearchFilter,
+        isSearchOpen,
+        toggleSearch,
+        filteredMessages,
     };
 
     return <ChatContext.Provider value={values}>{children}</ChatContext.Provider>;

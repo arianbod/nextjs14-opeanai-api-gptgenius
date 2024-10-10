@@ -5,16 +5,15 @@ import {
 	vscDarkPlus,
 	vs,
 } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Copy, ThumbsUp, ThumbsDown, Maximize2, Minimize2 } from 'lucide-react';
+import { Copy, Maximize2, Minimize2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Message = ({ role, content, timestamp }) => {
 	const [expanded, setExpanded] = useState(false);
-	const [reaction, setReaction] = useState(null);
 	const isUser = role === 'user';
 
 	const copyToClipboard = (text) => {
-		toast.success('text copied');
+		toast.success('Text copied');
 		navigator.clipboard.writeText(text);
 	};
 
@@ -24,52 +23,24 @@ const Message = ({ role, content, timestamp }) => {
 
 	return (
 		<div
-			className={`flex  flex-col  ${
-				isUser
-					? 'justify-end ml-20 bg-gray-700 text-white shadow-md'
-					: 'justify-start '
-			} mb-4 hover:bg-black/25 rounded-lg px-4 p-2 transition-all`}>
-			<div className='flex justify-between items-center mb-2'>
+			className={`flex flex-col ${
+				isUser ? 'items-end bg-gray-700 text-white' : 'items-start'
+			} mb-4 hover:bg-black/25 rounded-lg p-4 transition-all max-w-full`}>
+			<div className='flex justify-between items-center w-full mb-2'>
 				<span
-					className={`text-[12px] ${
+					className={`text-xs ${
 						isUser ? 'text-gray-300/75' : 'text-gray-500'
 					}`}>
 					{formatTimestamp(timestamp)}
 				</span>
-				<div className='flex space-x-2'>
-					<button
-						className='p-1 hover:bg-gray-200/25 rounded'
-						onClick={() => copyToClipboard(content)}
-						title='Copy to clipboard'>
-						<Copy size={12} />
-					</button>
-					{/* {!isUser && (
-						<>
-							<button
-								className='p-1 hover:bg-gray-200/25 rounded'
-								onClick={() => setReaction(reaction === 'like' ? null : 'like')}
-								title={reaction === 'like' ? 'Unlike' : 'Like'}>
-								<ThumbsUp
-									size={16}
-									className={reaction === 'like' ? 'text-green-500' : ''}
-								/>
-							</button>
-							<button
-								className='p-1 hover:bg-gray-200/25 rounded'
-								onClick={() =>
-									setReaction(reaction === 'dislike' ? null : 'dislike')
-								}
-								title={reaction === 'dislike' ? 'Remove dislike' : 'Dislike'}>
-								<ThumbsDown
-									size={16}
-									className={reaction === 'dislike' ? 'text-red-500' : ''}
-								/>
-							</button>
-						</>
-					)} */}
-				</div>
+				<button
+					className='p-1 hover:bg-gray-200/25 rounded'
+					onClick={() => copyToClipboard(content)}
+					title='Copy to clipboard'>
+					<Copy size={12} />
+				</button>
 			</div>
-			<div className={`max-w-full lg:max-w-[80%] ${''}  rounded-lg `}>
+			<div className='w-full overflow-x-auto'>
 				<ReactMarkdown
 					components={{
 						code({ node, inline, className, children, ...props }) {
@@ -80,7 +51,7 @@ const Message = ({ role, content, timestamp }) => {
 								return (
 									<div className='relative'>
 										<button
-											className='absolute top-2 right-2 p-1  hover:bg-gray-300/25 rounded'
+											className='absolute top-2 right-2 p-1 hover:bg-gray-300/25 rounded'
 											onClick={() => setExpanded(!expanded)}>
 											{expanded ? (
 												<Minimize2 size={12} />
@@ -88,7 +59,6 @@ const Message = ({ role, content, timestamp }) => {
 												<Maximize2 size={12} />
 											)}
 										</button>
-
 										<SyntaxHighlighter
 											language={match[1]}
 											style={

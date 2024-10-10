@@ -119,14 +119,14 @@ const MessageInput = ({
 						disabled={isPending || isDisabled}
 						rows={1}
 					/>
+					<button
+						type='submit'
+						className='absolute right-5 top-6 transform -translate-y-1/2 text-gray-400 cursor-pointer bg-slate-500 dark:bg-slate-800 p-2 rounded-full'
+						disabled={isPending || isDisabled || inputText.trim() === ''}
+						aria-label='Send Message'>
+						<FiSend className='text-xl' />
+					</button>
 				</div>
-				<button
-					type='submit'
-					className='bg-blue-500 mb-2 mr-1 text-white rounded-full h-10 w-10 flex items-center justify-center hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 ease-in-out'
-					disabled={isPending || isDisabled || inputText.trim() === ''}
-					aria-label='Send Message'>
-					<FiSend className='text-xl' />
-				</button>
 			</div>
 		</form>
 	);

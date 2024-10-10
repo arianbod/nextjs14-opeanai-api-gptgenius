@@ -16,7 +16,7 @@ const MessageList = ({ isLoading, messagesEndRef }) => {
 	} = useChat();
 
 	return (
-		<div className='relative flex flex-col h-full'>
+		<div className='relative flex flex-col '>
 			{isSearchOpen && (
 				<div className='absolute inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center pt-20'>
 					<div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-4 m-4'>
@@ -61,7 +61,7 @@ const MessageList = ({ isLoading, messagesEndRef }) => {
 				</div>
 			)}
 
-			<div className='flex-1 overflow-y-auto p-4 space-y-4 backdrop-blur-lg z-10'>
+			<div className='flex-1 overflow-y-auto p-4 space-y-4 backdrop-blur-lg z-10 mt-14'>
 				<div className='max-w-4xl mx-auto flex flex-col gap-4'>
 					{filteredMessages().length > 0 ? (
 						filteredMessages().map(({ id, role, content, timestamp }) => (

@@ -7,24 +7,27 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-hot-toast";
 import { FaCopy } from "react-icons/fa";
 import Loading from "@/components/Loading";
+import en from '@/lib/dic/en.json'; // Import the English translations
 
 const Home = () => {
     const { user } = useAuth();
 
     const copyToken = () => {
         navigator.clipboard.writeText(user.token);
-        toast.success("Token copied to clipboard!");
+        toast.success(en.auth.tokenCopied || "Token copied to clipboard!");
     };
+
     if (user === null) {
         return <AuthPage />;
     }
+
     return (
         <div>
             <main className="container mx-auto">
                 <div>
-                    <div className="mb-4 p-4  bg-blue-900 rounded text-white pt-8 mx-auto place-context-center flex flex-col">
+                    <div className="mb-4 p-4 bg-blue-900 rounded text-white pt-8 mx-auto place-context-center flex flex-col">
                         <h2 className="text-lg font-semibold mb-2 text-center">
-                            This is your one-time Token
+                            {en.auth.OTPTitle}
                         </h2>
                         <div className="flex items-center">
                             <input
@@ -42,7 +45,7 @@ const Home = () => {
                             </button>
                         </div>
                         <span className="text-sm text-center">
-                            Keep in mind that after each login, your token will change. Please note your new token for future logins.
+                            {en.auth.OTPDescription}
                         </span>
                     </div>
                     <EnhancedChat />

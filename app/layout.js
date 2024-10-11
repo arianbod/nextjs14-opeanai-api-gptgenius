@@ -3,11 +3,11 @@ import './globals.css';
 import Providers from './providers';
 import { Toaster } from 'react-hot-toast';
 import Sidebar from '@/components/sidebar/Sidebar';
-import { global } from '@/lib/dic/en';
+import en from '@/lib/dic/en.json';
 
 export const metadata = {
-  title: global.title,
-  description: global.description,
+  title: en.global.title,
+  description: en.global.description,
 };
 
 export default function RootLayout({ children }) {

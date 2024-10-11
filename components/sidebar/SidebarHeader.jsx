@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ShowTokenAmount from '../token/ShowTokenAmount';
 import { useChat } from '@/context/ChatContext';
-import { global } from '@/lib/dic/en';
+import en from '@/lib/dic/en.json';
 
 const SidebarHeader = () => {
 	const { resetChat } = useChat();
@@ -25,7 +25,7 @@ const SidebarHeader = () => {
 				</div>
 				<div>
 					<h2 className='text-2xl tracking-wide capitalize font-thin'>
-						{global.title}
+						{en.global.title}
 					</h2>
 					<ShowTokenAmount />
 				</div>

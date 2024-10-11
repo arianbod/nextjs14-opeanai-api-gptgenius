@@ -28,4 +28,5 @@ module.exports = {
   daisyui: {
     themes: ["winter", "dracula"],
   },
+  darkMode: ['class', '[data-theme="dracula"]'],
 };

@@ -4,21 +4,8 @@ import React, { useState } from 'react';
 import { FaEnvelope, FaPaw, FaLock } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
-
-const ANIMALS = [
-	'dog',
-	'cat',
-	'elephant',
-	'lion',
-	'tiger',
-	'bear',
-	'monkey',
-	'giraffe',
-	'zebra',
-	'penguin',
-	'kangaroo',
-	'koala',
-];
+import { auth } from '@/lib/dic/en';
+import ThemeToggle from '../sidebar/ThemeToggle';
 
 const AuthPage = () => {
 	const { login, setUser, setTokenBalance } = useAuth();
@@ -40,7 +27,7 @@ const AuthPage = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (selectedAnimals.length !== 3) {
-			toast.error('Please select exactly 3 animals');
+			toast.error(auth.selectAnimalsError);
 			return;
 		}
 
@@ -77,10 +64,12 @@ const AuthPage = () => {
 			localStorage.setItem('user', JSON.stringify(userWithTimestamp));
 			document.cookie = `user=${JSON.stringify(userWithTimestamp)}; path=/;`;
 
-			toast.success(`${isRegistering ? 'Registration' : 'Login'} successful!`);
+			toast.success(
+				isRegistering ? auth.register.successMessage : auth.login.successMessage
+			);
 		} catch (error) {
 			toast.error(
-				`${isRegistering ? 'Registration' : 'Login'} failed. Please try again.`
+				isRegistering ? auth.register.failureMessage : auth.login.failureMessage
 			);
 		} finally {
 			setIsSubmitting(false);
@@ -99,10 +88,13 @@ const AuthPage = () => {
 			}`}>
 			<div className='w-full max-w-md'>
 				<div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl  w-full'>
-					<div className='bg-gradient-to-r from-blue-500 to-purple-600 p-6 flex justify-between items-center rounded-t-sm'>
+					<div className='relative p-6 flex justify-between items-center rounded-t-sm'>
 						<h1 className='text-3xl font-bold text-white text-center mx-auto'>
-							{isRegistering ? 'Register' : 'Login'}
+							{isRegistering ? auth.register.title : auth.login.title}
 						</h1>
+						<div className='absolute right-2'>
+							<ThemeToggle />
+						</div>
 					</div>
 					<form
 						onSubmit={handleSubmit}
@@ -112,7 +104,7 @@ const AuthPage = () => {
 								<label
 									htmlFor='email'
 									className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
-									Email:
+									{auth.register.Email}:
 								</label>
 								<input
 									id='email'
@@ -121,7 +113,7 @@ const AuthPage = () => {
 									required
 									onChange={(e) => setEmail(e.target.value)}
 									className='w-full pl-10 pr-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400'
-									placeholder='your@email.com'
+									placeholder={auth.register.emailPlaceHolder}
 								/>
 								<FaEnvelope className='absolute left-3 top-9 text-gray-400 dark:text-gray-500' />
 							</div>
@@ -131,7 +123,7 @@ const AuthPage = () => {
 								<label
 									htmlFor='token'
 									className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
-									Enter your token:
+									{auth.login.enterToken}
 								</label>
 								<input
 									id='token'
@@ -146,21 +138,21 @@ const AuthPage = () => {
 						)}
 						<div>
 							<label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
-								Select 3 animals:
+								{auth.chooseAnimalTitle}
 							</label>
 							<div className='grid grid-cols-3 gap-2'>
-								{ANIMALS.map((animal) => (
+								{auth.animalList.map((animal) => (
 									<button
-										key={animal}
+										key={animal.key}
 										type='button'
-										onClick={() => handleAnimalSelect(animal)}
+										onClick={() => handleAnimalSelect(animal.key)}
 										className={`p-2 rounded-lg transition-colors duration-200 flex items-center justify-center text-sm ${
-											selectedAnimals.includes(animal)
+											selectedAnimals.includes(animal.key)
 												? 'bg-blue-500 text-white dark:bg-blue-600'
 												: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
 										}`}>
 										<FaPaw className='mr-1' />
-										{animal}
+										{animal.label}
 									</button>
 								))}
 							</div>
@@ -192,12 +184,14 @@ const AuthPage = () => {
 											fill='currentColor'
 											d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
 									</svg>
-									{isRegistering ? 'Registering...' : 'Logging in...'}
+									{isRegistering
+										? auth.register.submittingText
+										: auth.login.submittingText}
 								</>
 							) : isRegistering ? (
-								'Register'
+								auth.register.buttonText
 							) : (
-								'Login'
+								auth.login.buttonText
 							)}
 						</button>
 					</form>
@@ -206,8 +200,8 @@ const AuthPage = () => {
 							onClick={() => setIsRegistering(!isRegistering)}
 							className='w-full py-2 px-4 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200'>
 							{isRegistering
-								? 'Already have an account? Login'
-								: 'Need an account? Register'}
+								? auth.register.switchToLogin
+								: auth.login.switchToRegister}
 						</button>
 					</div>
 				</div>

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { FiSend } from 'react-icons/fi';
+import { ArrowUp } from 'lucide-react';
+import AnimatedPlaceholder from './AnimatedPlaceholder';
 
 const MessageInput = ({
 	inputText,
@@ -13,10 +14,8 @@ const MessageInput = ({
 	const [maxHeight, setMaxHeight] = useState('none');
 	const [isMobileDevice, setIsMobileDevice] = useState(false);
 
-	// Function to determine if the device is mobile based on viewport width
-	const isMobile = () => window.innerWidth < 768; // Tailwind's md breakpoint
+	const isMobile = () => window.innerWidth < 768;
 
-	// Debounce function to limit how often a function can fire
 	const debounce = (func, delay) => {
 		let timer;
 		return (...args) => {
@@ -27,30 +26,22 @@ const MessageInput = ({
 		};
 	};
 
-	// Function to set maxHeight based on viewport size
 	const calculateMaxHeight = () => {
 		const vh = window.innerHeight;
-		if (isMobile()) {
-			return `${vh * 0.5}px`; // 50% of viewport height on mobile
-		} else {
-			return `${vh * 0.3}px`; // 30% of viewport height on desktop
-		}
+		return isMobile() ? `${vh * 0.5}px` : `${vh * 0.3}px`;
 	};
 
-	// Function to resize the textarea
 	const resizeTextarea = () => {
 		const textarea = textareaRef.current;
 		if (textarea) {
-			textarea.style.height = 'auto'; // Reset height to auto to get the correct scrollHeight
+			textarea.style.height = 'auto';
 			const newHeight = Math.min(textarea.scrollHeight, parseInt(maxHeight));
 			textarea.style.height = `${newHeight}px`;
 		}
 	};
 
-	// Debounced version of resizeTextarea for performance
 	const debouncedResizeTextarea = debounce(resizeTextarea, 100);
 
-	// Update maxHeight and resize on mount and when window resizes
 	useEffect(() => {
 		const updateMaxHeight = () => {
 			const newMaxHeight = calculateMaxHeight();
@@ -67,22 +58,17 @@ const MessageInput = ({
 		return () => {
 			window.removeEventListener('resize', handleResize);
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// Resize textarea when inputText changes
 	useEffect(() => {
 		resizeTextarea();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [inputText]);
 
 	const handleKeyDown = (e) => {
 		if (e.key === 'Enter') {
 			if (isMobileDevice) {
-				// On mobile, always allow new line
 				return;
 			} else {
-				// On desktop, submit on Enter, new line on Shift+Enter
 				if (!e.shiftKey) {
 					e.preventDefault();
 					handleSubmit(e);
@@ -94,37 +80,67 @@ const MessageInput = ({
 	const onSubmit = (e) => {
 		e.preventDefault();
 		handleSubmit(e);
-		// Note: We don't clear the input here as it's managed by the parent component
 	};
+
+	const placeholderSentences = [
+		'Type your message here...',
+		"What's on your mind?",
+		'Ready to chat?',
+		'Share your thoughts...',
+		"Let's start a conversation!",
+	];
 
 	return (
 		<form
 			onSubmit={onSubmit}
-			className={msgLen > 0 && `fixed bottom-0 mx-auto  z-20 w-full max-w-3xl`}>
-			<div className='flex items-end gap-2 '>
-				<div className='relative flex-1 pr-1 '>
-					<textarea
-						ref={textareaRef}
-						value={inputText}
-						onChange={(e) => setInputText(e.target.value)}
-						onKeyDown={handleKeyDown}
-						placeholder='Type your message here...'
-						className='w-full p-3 px-6 rounded-3xl resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-blue-500 transition-[height] duration-200 ease-in-out font-sans text-base leading-relaxed'
+			className={
+				msgLen > 0 ? 'fixed bottom-0 mx-auto z-20 w-full max-w-3xl' : ''
+			}>
+			<div className='flex items-end gap-2'>
+				<div className='relative flex-1'>
+					<div
+						className={`p-0 m-0 flex bg-base-200 border-base-300 border-2 rounded-3xl resize-none transition-[height] duration-200 ease-in-out font-sans leading-relaxed ${
+							msgLen < 0 && inputText.length < 1 && 'animate-pulse'
+						}`}
 						style={{
 							maxHeight: maxHeight,
 							minHeight: '3rem',
 							height: 'auto',
 							transition: 'height 0.2s ease-in-out',
-						}}
-						disabled={isPending || isDisabled}
-						rows={1}
-					/>
+						}}>
+						<textarea
+							ref={textareaRef}
+							value={inputText}
+							onChange={(e) => setInputText(e.target.value)}
+							onKeyDown={handleKeyDown}
+							disabled={isPending || isDisabled}
+							rows={1}
+							className={`w-11/12 p-3 px-6 bg-transparent rounded-3xl resize-none focus:outline-none transition-[height] duration-200 ease-in-out font-sans leading-relaxed ${
+								inputText.length < 1 && 'animate-pulse'
+							}`}
+							style={{
+								maxHeight: maxHeight,
+								minHeight: '3rem',
+								height: 'auto',
+								transition: 'height 0.2s ease-in-out',
+							}}
+						/>
+						{inputText.length === 0 && (
+							<div className='absolute left-6 top-1/2 transform -translate-y-1/2 pointer-events-none'>
+								<AnimatedPlaceholder
+									sentences={placeholderSentences}
+									isActive={inputText.length === 0 && msgLen === 0}
+									staticText='Write your response here'
+								/>
+							</div>
+						)}
+					</div>
 					<button
 						type='submit'
-						className='absolute right-5 top-6 transform -translate-y-1/2 text-gray-400 cursor-pointer bg-slate-500 dark:bg-slate-800 p-2 rounded-full'
+						className='absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer p-1 rounded-xl text-base-content hover:bg-base-300'
 						disabled={isPending || isDisabled || inputText.trim() === ''}
 						aria-label='Send Message'>
-						<FiSend className='text-xl' />
+						<ArrowUp className='text-md' />
 					</button>
 				</div>
 			</div>

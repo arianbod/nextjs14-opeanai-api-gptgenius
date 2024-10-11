@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ShowTokenAmount from '../token/ShowTokenAmount';
 import { useChat } from '@/context/ChatContext';
+import { global } from '@/lib/dic/en';
 
 const SidebarHeader = () => {
 	const { resetChat } = useChat();
@@ -19,13 +20,11 @@ const SidebarHeader = () => {
 						alt='logo'
 						src='/babagpt_bw.svg'
 						layout='fill'
-						className='rounded-full shadow-lg'
+						className='rounded-full shadow-lg bg-slate-800 p-1'
 					/>
 				</div>
 				<div>
-					<h2 className='text-2xl font-bold text-white tracking-wide'>
-						BabaGPT
-					</h2>
+					<h2 className='text-2xl font-bold tracking-wide'>{global.title}</h2>
 					<ShowTokenAmount />
 				</div>
 			</Link>

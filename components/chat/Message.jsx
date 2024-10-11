@@ -24,20 +24,23 @@ const Message = ({ role, content, timestamp }) => {
 	return (
 		<div
 			className={`flex flex-col ${
-				isUser ? 'items-end bg-gray-700 text-white' : 'items-start'
-			} mb-4 hover:bg-black/25 rounded-lg p-4 transition-all max-w-full`}>
+				isUser ? 'items-end bg-base-300' : 'items-start'
+			} mb-4 hover:bg-base-200 rounded-lg p-4 transition-all max-w-full`}>
 			<div className='flex justify-between items-center w-full mb-2'>
 				<span
 					className={`text-xs ${
-						isUser ? 'text-gray-300/75' : 'text-gray-500'
+						isUser ? 'text-base-content/75' : 'text-base-content/50'
 					}`}>
 					{formatTimestamp(timestamp)}
 				</span>
 				<button
-					className='p-1 hover:bg-gray-200/25 rounded'
+					className='p-1 hover:bg-base-300 rounded'
 					onClick={() => copyToClipboard(content)}
 					title='Copy to clipboard'>
-					<Copy size={12} />
+					<Copy
+						size={12}
+						className='text-base-content'
+					/>
 				</button>
 			</div>
 			<div className='w-full overflow-x-auto'>
@@ -51,12 +54,18 @@ const Message = ({ role, content, timestamp }) => {
 								return (
 									<div className='relative'>
 										<button
-											className='absolute top-2 right-2 p-1 hover:bg-gray-300/25 rounded'
+											className='absolute top-2 right-2 p-1 hover:bg-base-300 rounded'
 											onClick={() => setExpanded(!expanded)}>
 											{expanded ? (
-												<Minimize2 size={12} />
+												<Minimize2
+													size={12}
+													className='text-base-content'
+												/>
 											) : (
-												<Maximize2 size={12} />
+												<Maximize2
+													size={12}
+													className='text-base-content'
+												/>
 											)}
 										</button>
 										<SyntaxHighlighter
@@ -72,6 +81,8 @@ const Message = ({ role, content, timestamp }) => {
 											customStyle={{
 												maxHeight: expanded ? 'none' : '300px',
 												overflow: 'auto',
+												background: 'var(--tw-prose-pre-bg)',
+												color: 'var(--tw-prose-pre-code)',
 											}}>
 											{codeString}
 										</SyntaxHighlighter>
@@ -80,7 +91,7 @@ const Message = ({ role, content, timestamp }) => {
 							}
 							return (
 								<code
-									className={className}
+									className={`${className} bg-base-300 text-base-content`}
 									{...props}>
 									{children}
 								</code>

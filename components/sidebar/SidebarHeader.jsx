@@ -24,7 +24,9 @@ const SidebarHeader = () => {
 					/>
 				</div>
 				<div>
-					<h2 className='text-2xl font-bold tracking-wide'>{global.title}</h2>
+					<h2 className='text-2xl tracking-wide capitalize font-thin'>
+						{global.title}
+					</h2>
 					<ShowTokenAmount />
 				</div>
 			</Link>

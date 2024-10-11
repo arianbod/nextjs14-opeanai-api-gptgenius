@@ -10,7 +10,7 @@ const ShowTokenAmount = () => {
 	return (
 		<div className='flex items-center mt-1'>
 			<Coins className='mr-2' />
-			<span className='text-md font-bold'>{tokenBalance}</span>
+			<span className='text-md font-semibold'>{tokenBalance}</span>
 		</div>
 	);
 };

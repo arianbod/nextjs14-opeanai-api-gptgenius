@@ -1,0 +1,49 @@
+{
+	"global": {
+		"title": "بابا‌جی‌پی‌تی",
+		"description": "",
+		"conversations": "گفتگوها"
+	},
+	"sideBar": {},
+	"auth": {
+		"register": {
+			"title": "ثبت نام",
+			"Email": "ایمیل",
+			"emailPlaceHolder": "ایمیل@شما.com",
+			"buttonText": "ثبت نام",
+			"submittingText": "در حال ثبت نام...",
+			"successMessage": "ثبت نام با موفقیت انجام شد!",
+			"failureMessage": "ثبت نام ناموفق بود. لطفا دوباره تلاش کنید.",
+			"switchToLogin": "قبلاً حساب کاربری دارید؟ وارد شوید"
+		},
+		"login": {
+			"title": "ورود",
+			"enterToken": "توکن خود را وارد کنید:",
+			"Email": "ایمیل",
+			"emailPlaceHolder": "ایمیل@شما.com",
+			"buttonText": "ورود",
+			"submittingText": "در حال ورود...",
+			"successMessage": "ورود موفقیت‌آمیز بود!",
+			"failureMessage": "ورود ناموفق بود. لطفا دوباره تلاش کنید.",
+			"switchToRegister": "نیاز به حساب کاربری دارید؟ ثبت نام کنید"
+		},
+		"chooseAnimalTitle": "۳ حیوان را انتخاب کنید:",
+		"animalList": [
+			{ "key": "dog", "label": "سگ" },
+			{ "key": "cat", "label": "گربه" },
+			{ "key": "elephant", "label": "فیل" },
+			{ "key": "lion", "label": "شیر" },
+			{ "key": "tiger", "label": "ببر" },
+			{ "key": "bear", "label": "خرس" },
+			{ "key": "monkey", "label": "میمون" },
+			{ "key": "giraffe", "label": "زرافه" },
+			{ "key": "zebra", "label": "گورخر" },
+			{ "key": "penguin", "label": "پنگوئن" },
+			{ "key": "kangaroo", "label": "کانگورو" },
+			{ "key": "koala", "label": "کوآلا" }
+		],
+		"selectAnimalsError": "لطفاً دقیقاً ۳ حیوان را انتخاب کنید",
+		"OTPTitle": "این توکن یکبار مصرف شماست",
+		"OTPDescription": "به خاطر داشته باشید که پس از هر بار ورود، توکن شما تغییر خواهد کرد. لطفاً توکن جدید خود را برای ورودهای بعدی یادداشت کنید."
+	}
+}

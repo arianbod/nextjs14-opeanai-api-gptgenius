@@ -1,10 +1,12 @@
 // app/layout.jsx
-import './globals.css';
+import '../globals.css';
 import Providers from './providers';
 import { Toaster } from 'react-hot-toast';
 import Sidebar from '@/components/sidebar/Sidebar';
 import en from '@/lib/dic/en.json';
-
+export async function generateStaticParams() {
+  return [{ lang: 'en' }, { lang: 'fa' }, { lang: 'tr' }]
+}
 export const metadata = {
   title: en.global.title,
   description: en.global.description,

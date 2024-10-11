@@ -1,28 +1,42 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+const supportedLanguages = ['en', 'fa', 'tr'];
+const defaultLanguage = 'en';
+
+function getLanguageFromRequest(request: NextRequest): string {
+	const pathname = request.nextUrl.pathname;
+	const pathnameLanguage = supportedLanguages.find(
+		(lang) => pathname.startsWith(`/${lang}/`) || pathname === `/${lang}`
+	);
+	if (pathnameLanguage) return pathnameLanguage;
+
+	const acceptLanguage = request.headers.get('Accept-Language');
+	if (acceptLanguage) {
+		const headerLanguage = acceptLanguage.split(',')[0].split('-')[0];
+		if (supportedLanguages.includes(headerLanguage)) return headerLanguage;
+	}
+
+	return defaultLanguage;
+}
+
 export function middleware(request: NextRequest) {
-	const user = request.cookies.get('user');
+	const pathname = request.nextUrl.pathname;
+	const language = getLanguageFromRequest(request);
 
-	// List of paths that don't require authentication
-	const publicPaths = ['/', '/api/auth/register', '/api/auth/login'];
-
-	// Allow access to public paths and API routes without authentication
+	// If the pathname already includes a supported language, don't redirect
 	if (
-		publicPaths.includes(request.nextUrl.pathname) ||
-		request.nextUrl.pathname.startsWith('/api/')
+		supportedLanguages.some(
+			(lang) => pathname.startsWith(`/${lang}/`) || pathname === `/${lang}`
+		)
 	) {
 		return NextResponse.next();
 	}
 
-	// Redirect to home if user is not authenticated and trying to access a protected route
-	if (!user) {
-		return NextResponse.redirect(new URL('/', request.url));
-	}
-
-	return NextResponse.next();
+	// Redirect to the appropriate language path
+	return NextResponse.redirect(new URL(`/${language}${pathname}`, request.url));
 }
 
 export const config = {
-	matcher: ['/((?!_next/static|favicon.ico).*)'],
+	matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };

@@ -1,8 +1,8 @@
 // pages/index.js
 "use client";
 import React from "react";
-import AuthPage from "../components/auth/AuthPage";
-import EnhancedChat from "../components/chat/ChatPage";
+import AuthPage from "../../components/auth/AuthPage";
+import EnhancedChat from "../../components/chat/ChatPage";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-hot-toast";
 import { FaCopy } from "react-icons/fa";

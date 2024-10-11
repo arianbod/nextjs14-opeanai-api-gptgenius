@@ -166,7 +166,7 @@ const ChatInterface = () => {
 	};
 
 	return (
-		<div className='flex max-h-full transition-colors duration-300'>
+		<div className='flex  flex-col  max-h-full transition-colors duration-300'>
 			{messages.length > 0 ? (
 				<div className='flex-grow overflow-y-auto animate-fade-in-down'>
 					<MessageList

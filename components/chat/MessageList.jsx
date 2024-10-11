@@ -61,7 +61,7 @@ const MessageList = ({ isLoading, messagesEndRef }) => {
 				</div>
 			)}
 
-			<div className='flex-1 overflow-y-auto p-4 space-y-4 backdrop-blur-lg z-0 mt-14'>
+			<div className='flex-1 overflow-y-auto p-4 space-y-4 backdrop-blur-lg z-0 pt-14'>
 				<div className='max-w-4xl mx-auto flex flex-col gap-4'>
 					{filteredMessages().length > 0 ? (
 						filteredMessages().map(({ id, role, content, timestamp }) => (

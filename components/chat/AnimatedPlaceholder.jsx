@@ -20,7 +20,7 @@ const AnimatedPlaceholder = ({ sentences, isActive, staticText }) => {
 				timer = setTimeout(() => {
 					setPlaceholderText((prev) => prev + currentText[currentIndex]);
 					setCurrentIndex((prev) => prev + 1);
-				}, 50); // Slower typing speed
+				}, 200); // Slower typing speed
 			} else {
 				setIsTyping(false);
 				timer = setTimeout(() => {

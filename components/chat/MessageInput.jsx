@@ -100,7 +100,9 @@ const MessageInput = ({
 				<div className='relative flex-1'>
 					<div
 						className={`p-0 m-0 flex bg-base-200 border-base-300 border-2 rounded-3xl resize-none transition-[height] duration-200 ease-in-out font-sans leading-relaxed ${
-							msgLen < 0 && inputText.length < 1 && 'animate-pulse'
+							msgLen < 1 && inputText.length < 1
+								? 'circular-animation animate-pulse'
+								: ''
 						}`}
 						style={{
 							maxHeight: maxHeight,
@@ -144,6 +146,36 @@ const MessageInput = ({
 					</button>
 				</div>
 			</div>
+			<style jsx>{`
+				@keyframes circular-border {
+					0% {
+						clip-path: polygon(0% 100%, 0% 100%, 0% 100%);
+					}
+					25% {
+						clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
+					}
+					50% {
+						clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 100% 0%);
+					}
+					75% {
+						clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);
+					}
+					100% {
+						clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);
+					}
+				}
+				.circular-animation::before {
+					content: '';
+					position: absolute;
+					top: -2px;
+					left: -2px;
+					right: -2px;
+					bottom: -2px;
+					border: 2px solid #3b82f6; /* Tailwind blue-500 */
+					border-radius: 1.5rem;
+					animation: circular-border 10s linear infinite;
+				}
+			`}</style>
 		</form>
 	);
 };

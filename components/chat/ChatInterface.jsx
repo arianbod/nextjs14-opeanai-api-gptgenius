@@ -21,6 +21,27 @@ const ChatInterface = () => {
 	const { user } = useAuth();
 	const [inputText, setInputText] = useState('');
 	const messagesEndRef = useRef(null);
+	const [greetingIndex, setGreetingIndex] = useState(0);
+	const [showGreeting, setShowGreeting] = useState(true);
+
+	const greetings = [
+		'How can I assist you today?',
+		"Ready to chat! What's on your mind?",
+		"Let's explore some ideas together!",
+		"I'm here to help. What would you like to know?",
+		'Excited to learn from you. What shall we discuss?',
+	];
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setShowGreeting(false);
+			setTimeout(() => {
+				setGreetingIndex((prevIndex) => (prevIndex + 1) % greetings.length);
+				setShowGreeting(true);
+			}, 300); // Wait for fade out before changing text
+		}, 5000);
+		return () => clearInterval(interval);
+	}, []);
 
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -139,19 +160,15 @@ const ChatInterface = () => {
 			timestamp: new Date().toISOString(),
 		};
 
-		// Add the user's message to the local state for immediate feedback
 		addMessage(newMessage);
-
-		// Start the mutation to handle the assistant's response
 		generateResponseMutation.mutate(inputText);
-
 		setInputText('');
 	};
-	const msgLen = messages.length;
+
 	return (
-		<>
-			{msgLen > 0 ? (
-				<>
+		<div className='flex flex-col h-full  transition-colors duration-300'>
+			{messages.length > 0 ? (
+				<div className='flex-grow overflow-y-auto animate-fade-in-down'>
 					<MessageList
 						messages={messages}
 						isLoading={generateResponseMutation.isPending}
@@ -162,21 +179,27 @@ const ChatInterface = () => {
 							<AILoadingIndicator />
 						</div>
 					)}
-				</>
+				</div>
 			) : (
-				<div className='h-[30vh] w-full flex place-items-center place-content-center font-bold animate-pulse '>
-					{' '}
-					how can I assist you today?
+				<div className='h-[30vh] w-full flex items-center justify-center'>
+					<h2
+						className={`text-2xl font-bold  text-center px-4 transition-opacity duration-300 ${
+							showGreeting ? 'opacity-100' : 'opacity-0'
+						}`}>
+						{greetings[greetingIndex]}
+					</h2>
 				</div>
 			)}
+			{/* <div className='mt-auto p-4 bg-white dark:bg-gray-800 shadow-lg animate-fade-in-up'> */}
 			<MessageInput
-				msgLen={msgLen}
+				msgLen={messages.length}
 				inputText={inputText}
 				setInputText={setInputText}
 				handleSubmit={handleSubmit}
 				isPending={generateResponseMutation.isPending}
 			/>
-		</>
+			{/* </div> */}
+		</div>
 	);
 };
 

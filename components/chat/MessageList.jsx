@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Message from './Message';
 import LoadingMessage from './LoadingMessage';
 import { useChat } from '@/context/ChatContext';
 import { Search, X } from 'lucide-react';
 
-const MessageList = ({ isLoading, messagesEndRef }) => {
+const MessageList = ({ isLoading, messagesEndRef, msgLen }) => {
 	const {
 		filteredMessages,
 		isSearchOpen,
@@ -92,4 +92,4 @@ const MessageList = ({ isLoading, messagesEndRef }) => {
 	);
 };
 
-export default MessageList;
+export default memo(MessageList);

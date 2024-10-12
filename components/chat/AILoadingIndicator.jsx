@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 const AILoadingIndicator = () => (
 	<div className='flex items-center justify-center'>
@@ -6,4 +6,4 @@ const AILoadingIndicator = () => (
 	</div>
 );
 
-export default AILoadingIndicator;
+export default memo(AILoadingIndicator);

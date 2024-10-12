@@ -17,11 +17,11 @@ export default async function RootLayout({ children, params: { lang } }) {
   const dict = await getDictionary(lang);
   return (
     <html lang="en">
-      <body className="font-sans flex">
+      <body className="font-sans flex overflow-x-hidden">
         <Providers translations={dict}>
           <Toaster position="top-center" />
           <Sidebar />
-          <main className="flex-1 mx-0 lg:ml-72 p-0 ">
+          <main className="flex-1 mx-0 lg:ml-80 p-0 pt-8 ">
             {children}
           </main>
         </Providers>

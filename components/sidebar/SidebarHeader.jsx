@@ -1,5 +1,5 @@
 // components/SidebarHeader.jsx
-import React from 'react';
+import React, { memo } from 'react';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
 import Link from 'next/link';
@@ -43,4 +43,4 @@ const SidebarHeader = () => {
 	);
 };
 
-export default SidebarHeader;
+export default memo(SidebarHeader);

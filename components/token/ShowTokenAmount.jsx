@@ -1,6 +1,6 @@
 // components/token/ShowTokenAmount.jsx
 'use client';
-import React from 'react';
+import React, { memo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { FaCoins } from 'react-icons/fa';
 import { Coins, CoinsIcon, HandCoins } from 'lucide-react';
@@ -15,4 +15,4 @@ const ShowTokenAmount = () => {
 	);
 };
 
-export default ShowTokenAmount;
+export default memo(ShowTokenAmount);

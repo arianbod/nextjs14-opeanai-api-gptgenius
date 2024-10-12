@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import {
@@ -108,4 +108,4 @@ const Message = ({ role, content, timestamp }) => {
 	);
 };
 
-export default Message;
+export default memo(Message);

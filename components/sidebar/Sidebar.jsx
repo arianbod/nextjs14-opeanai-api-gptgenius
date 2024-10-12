@@ -1,9 +1,9 @@
 // components/Sidebar.jsx
 'use client';
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import Link from 'next/link';
 import SidebarHeader from './SidebarHeader';
-import MemberProfile from './MemberProfile';
+import MemberProfile from './member-profile/MemberProfile';
 import { useAuth } from '@/context/AuthContext';
 import { FaBars } from 'react-icons/fa';
 import { MdAdd, MdClose } from 'react-icons/md';
@@ -40,7 +40,7 @@ const Sidebar = () => {
 
 			{/* Sidebar */}
 			<div
-				className={`fixed inset-y-0 left-0 z-40 w-72 transform ${
+				className={`fixed inset-y-0 left-0 z-40 w-80 transform ${
 					sidebarOpen ? 'translate-x-0' : '-translate-x-full'
 				} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:inset-0`}>
 				<div className='flex flex-col h-full bg-base-200 shadow-lg'>
@@ -86,4 +86,4 @@ const Sidebar = () => {
 	);
 };
 
-export default Sidebar;
+export default memo(Sidebar);

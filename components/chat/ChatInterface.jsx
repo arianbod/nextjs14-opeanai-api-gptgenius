@@ -1,5 +1,5 @@
 // components/chat/ChatInterface.js
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
 import { toast } from 'react-hot-toast';
@@ -8,6 +8,7 @@ import MessageInput from './MessageInput';
 import AILoadingIndicator from './AILoadingIndicator';
 import { useChat } from '@/context/ChatContext';
 import { useAuth } from '@/context/AuthContext';
+import Header from './Header';
 
 const ChatInterface = () => {
 	const {
@@ -167,6 +168,7 @@ const ChatInterface = () => {
 
 	return (
 		<div className='flex  flex-col  max-h-full transition-colors duration-300'>
+			<Header msgLen={messages.length} />
 			{messages.length > 0 ? (
 				<div className='flex-grow overflow-y-auto animate-fade-in-down'>
 					<MessageList
@@ -203,4 +205,4 @@ const ChatInterface = () => {
 	);
 };
 
-export default ChatInterface;
+export default memo(ChatInterface);

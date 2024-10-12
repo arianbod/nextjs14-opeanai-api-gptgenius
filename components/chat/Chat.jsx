@@ -11,10 +11,7 @@ const Chat = ({ lang }) => {
 		<div className='min-h-screen w-full'>
 			<div className='w-full max-w-3xl mx-auto rounded-xl no-scrollbar'>
 				<div className='h-[calc(100vh-3rem)] md:h-[calc(100vh-4rem)] flex flex-col'>
-					<Header
-						lang={lang}
-						dict={dict}
-					/>
+					
 					<ChatInterface
 						lang={lang}
 						dict={dict}

@@ -1,6 +1,6 @@
 // components/ThemeToggle.jsx
 'use client';
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { BsMoonFill, BsSunFill } from 'react-icons/bs';
 
@@ -29,4 +29,4 @@ const ThemeToggle = () => {
 	);
 };
 
-export default ThemeToggle;
+export default memo(ThemeToggle);

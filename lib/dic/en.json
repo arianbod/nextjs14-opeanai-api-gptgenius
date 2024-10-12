@@ -44,6 +44,6 @@
 		],
 		"selectAnimalsError": "Please select exactly 3 animals",
 		"OTPTitle": "This is your one-time Token",
-		"OTPDescription": "Keep in mind that after each login, your token will change. Please note your new token for future logins."
+		"OTPDescription": "Please note your new token for next login."
 	}
 }

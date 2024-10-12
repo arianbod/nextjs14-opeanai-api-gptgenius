@@ -24,7 +24,7 @@ const ModelSelection = () => {
 	}, {});
 
 	return (
-		<div className='w-full px-2 min-h-screen'>
+		<div className='w-full px-2 pt-4'>
 			{/* Your search input and other components */}
 			{Object.keys(groupedPersonas).length > 0 ? (
 				Object.keys(groupedPersonas).map((engine) => (

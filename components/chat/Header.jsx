@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useChat } from '@/context/ChatContext';
 import { FaRobot } from 'react-icons/fa';
 import { Search } from 'lucide-react';
 
-const Header = () => {
+const Header = ({ msgLen = 0 }) => {
 	const { activeChat, toggleSearch } = useChat();
 
 	return (
@@ -19,11 +19,11 @@ const Header = () => {
 					className='p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition'
 					title='Search'
 					aria-label='Toggle Search'>
-					<Search size={18} />
+					{msgLen > 2 && <Search size={18} />}
 				</button>
 			</div>
 		</header>
 	);
 };
 
-export default Header;
+export default memo(Header);

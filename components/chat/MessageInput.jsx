@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, memo } from 'react';
 import { ArrowUp } from 'lucide-react';
 import AnimatedPlaceholder from './AnimatedPlaceholder';
 
@@ -178,4 +178,4 @@ const MessageInput = ({
 	);
 };
 
-export default MessageInput;
+export default memo(MessageInput);

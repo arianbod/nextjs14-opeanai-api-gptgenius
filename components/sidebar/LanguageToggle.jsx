@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import { IoLanguage, IoChevronDown } from 'react-icons/io5';
@@ -77,4 +77,4 @@ const LanguageToggle = () => {
 	);
 };
 
-export default LanguageToggle;
+export default memo(LanguageToggle);

@@ -8,11 +8,13 @@ import { useAuth } from '@/context/AuthContext';
 import { FaBars } from 'react-icons/fa';
 import { MdAdd, MdClose } from 'react-icons/md';
 import { useChat } from '@/context/ChatContext';
+import { useTranslations } from '@/context/TranslationContext';
 
 const Sidebar = () => {
 	const { user } = useAuth();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const { chatList, resetChat } = useChat();
+	const dict = useTranslations();
 
 	if (!user) {
 		return null;
@@ -46,7 +48,7 @@ const Sidebar = () => {
 					<div className='flex-1 overflow-y-auto px-4'>
 						<div className='flex items-center justify-between mb-6'>
 							<h3 className='text-md font-semibold text-base-content/50'>
-								Conversations
+								{dict.sidebar.conversations}
 							</h3>
 							<Link
 								onClick={() => resetChat()}

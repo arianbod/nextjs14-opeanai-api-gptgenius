@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import { FaEnvelope, FaPaw, FaLock } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
-import en from '@/lib/dic/en.json'; // Import the English translations
 import ThemeToggle from '../sidebar/ThemeToggle';
+import { useTranslations } from '@/context/TranslationContext';
+import LanguageToggle from '../sidebar/LanguageToggle';
 
 const AuthPage = () => {
+	const dict = useTranslations();
 	const { login, setUser, setTokenBalance } = useAuth();
 	const [isRegistering, setIsRegistering] = useState(true);
 	const [email, setEmail] = useState('');
@@ -27,7 +29,7 @@ const AuthPage = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (selectedAnimals.length !== 3) {
-			toast.error(en.auth.selectAnimalsError);
+			toast.error(dict.auth.selectAnimalsError);
 			return;
 		}
 
@@ -66,14 +68,14 @@ const AuthPage = () => {
 
 			toast.success(
 				isRegistering
-					? en.auth.register.successMessage
-					: en.auth.login.successMessage
+					? dict.auth.register.successMessage
+					: dict.auth.login.successMessage
 			);
 		} catch (error) {
 			toast.error(
 				isRegistering
-					? en.auth.register.failureMessage
-					: en.auth.login.failureMessage
+					? dict.auth.register.failureMessage
+					: dict.auth.login.failureMessage
 			);
 		} finally {
 			setIsSubmitting(false);
@@ -94,10 +96,11 @@ const AuthPage = () => {
 				<div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl  w-full'>
 					<div className='relative p-6 flex justify-between items-center rounded-t-sm'>
 						<h1 className='text-3xl font-bold text-center mx-auto'>
-							{isRegistering ? en.auth.register.title : en.auth.login.title}
+							{isRegistering ? dict.auth.register.title : dict.auth.login.title}
 						</h1>
-						<div className='absolute right-2'>
+						<div className='absolute right-2 flex justify-between place-items-center '>
 							<ThemeToggle />
+							<LanguageToggle />
 						</div>
 					</div>
 					<form
@@ -108,7 +111,7 @@ const AuthPage = () => {
 								<label
 									htmlFor='email'
 									className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
-									{en.auth.register.Email}:
+									{dict.auth.register.Email}:
 								</label>
 								<input
 									id='email'
@@ -117,7 +120,7 @@ const AuthPage = () => {
 									required
 									onChange={(e) => setEmail(e.target.value)}
 									className='w-full pl-10 pr-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400'
-									placeholder={en.auth.register.emailPlaceHolder}
+									placeholder={dict.auth.register.emailPlaceHolder}
 								/>
 								<FaEnvelope className='absolute left-3 top-9 text-gray-400 dark:text-gray-500' />
 							</div>
@@ -127,7 +130,7 @@ const AuthPage = () => {
 								<label
 									htmlFor='token'
 									className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
-									{en.auth.login.enterToken}
+									{dict.auth.login.enterToken}
 								</label>
 								<input
 									id='token'
@@ -142,10 +145,10 @@ const AuthPage = () => {
 						)}
 						<div>
 							<label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
-								{en.auth.chooseAnimalTitle}
+								{dict.auth.chooseAnimalTitle}
 							</label>
 							<div className='grid grid-cols-3 gap-2'>
-								{en.auth.animalList.map((animal) => (
+								{dict.auth.animalList.map((animal) => (
 									<button
 										key={animal.key}
 										type='button'
@@ -189,13 +192,13 @@ const AuthPage = () => {
 											d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
 									</svg>
 									{isRegistering
-										? en.auth.register.submittingText
-										: en.auth.login.submittingText}
+										? dict.auth.register.submittingText
+										: dict.auth.login.submittingText}
 								</>
 							) : isRegistering ? (
-								en.auth.register.buttonText
+								dict.auth.register.buttonText
 							) : (
-								en.auth.login.buttonText
+								dict.auth.login.buttonText
 							)}
 						</button>
 					</form>
@@ -204,8 +207,8 @@ const AuthPage = () => {
 							onClick={() => setIsRegistering(!isRegistering)}
 							className='w-full py-2 px-4 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200'>
 							{isRegistering
-								? en.auth.register.switchToLogin
-								: en.auth.login.switchToRegister}
+								? dict.auth.register.switchToLogin
+								: dict.auth.login.switchToRegister}
 						</button>
 					</div>
 				</div>

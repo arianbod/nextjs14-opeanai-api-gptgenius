@@ -8,8 +8,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import React, { useState } from 'react'
 
 import { ThemeProvider } from 'next-themes';
+import { TranslationsProvider } from '@/context/TranslationContext'
 
-const Providers = ({ children }) => {
+const Providers = ({ children, translations }) => {
 
     const queryClient = new QueryClient({
         defaultOptions: {
@@ -22,12 +23,15 @@ const Providers = ({ children }) => {
     return (
         <QueryClientProvider client={queryClient}>
             <MessageProvider>
+
                 <AuthProvider>
-                    <ChatProvider>
-                        <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
-                            {children}
-                        </ThemeProvider>
-                    </ChatProvider>
+                    <TranslationsProvider translations={translations}>
+                        <ChatProvider>
+                            <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
+                                {children}
+                            </ThemeProvider>
+                        </ChatProvider>
+                    </TranslationsProvider>
                 </AuthProvider>
             </MessageProvider>
         </QueryClientProvider>

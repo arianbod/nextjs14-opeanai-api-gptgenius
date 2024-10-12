@@ -4,7 +4,7 @@
 		"description": "",
 		"conversations": "گفتگوها"
 	},
-	"sideBar": {},
+	"sidebar": { "conversations": "گفتگوها" },
 	"auth": {
 		"register": {
 			"title": "ثبت نام",

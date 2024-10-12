@@ -4,7 +4,7 @@
 		"description": "",
 		"conversations": "conversations"
 	},
-	"sideBar": {},
+	"sidebar": { "conversations": "conversations" },
 	"auth": {
 		"register": {
 			"title": "Register",

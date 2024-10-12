@@ -47,7 +47,7 @@ const LanguageToggle = () => {
 			<button
 				className='flex items-center space-x-2  hover:bg-base-200 text-base-content rounded-full px-4 py-2 transition-colors duration-200'
 				onClick={() => setIsOpen(!isOpen)}>
-				<IoLanguage className='h-5 w-5 text-primary' />
+				{/* <IoLanguage className='h-5 w-5 text-primary' /> */}
 				<span className='font-medium'>{currentLanguage.flag}</span>
 				{/* <span className='text-sm font-medium'>{currentLanguage.name}</span> */}
 				<IoChevronDown

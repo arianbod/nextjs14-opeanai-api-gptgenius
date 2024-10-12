@@ -95,7 +95,7 @@ const AuthPage = () => {
 			<div className='w-full max-w-md'>
 				<div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl  w-full'>
 					<div className='relative p-6 flex justify-between items-center rounded-t-sm'>
-						<h1 className='text-3xl font-bold text-center mx-auto'>
+						<h1 className='text-md lg:text-3xl font-bold text-center mx-auto'>
 							{isRegistering ? dict.auth.register.title : dict.auth.login.title}
 						</h1>
 						<div className='absolute right-2 flex justify-between place-items-center '>

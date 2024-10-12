@@ -24,8 +24,8 @@ const Sidebar = () => {
 		<>
 			{/* Mobile hamburger button */}
 			<div
-				className={`lg:hidden fixed top-1 left-0 transition-transform  bg-white dark:bg-gray-800 rounded-lg ${
-					sidebarOpen ? '-translate-x-3/4' : ''
+				className={`lg:hidden fixed top-0 left-0 flex transition-all  bg-white dark:bg-slate-800 w-full ${
+					sidebarOpen ? 'hidden' : ''
 				} z-50`}>
 				<button
 					onClick={() => setSidebarOpen(!sidebarOpen)}

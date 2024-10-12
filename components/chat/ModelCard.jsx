@@ -41,13 +41,20 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 							/>
 							)} */}
 					<Image
-						height={250}
-						width={250}
-						alt='logo'
-						src={`/personas/${persona.role
-							.toLowerCase()
-							.replace(' ', '_')}.jpg`}
+						height={128}
+						width={128}
+						alt={`${persona.name} logo`}
+						src={`/images/personas/${
+							persona.role?.toLowerCase().replace(' ', '_') || 'default'
+						}.jpg`}
 						className='w-32 h-full rounded-lg transition-all duration-300 group-hover:scale-110'
+						onError={(e) => {
+							console.error(`Failed to load image for ${persona.name}:`, e);
+							// e.target.src = '/fallback-image.jpg'; // Make sure this fallback image exists in your public folder
+						}}
+						onLoad={() =>
+							console.log(`Successfully loaded image for ${persona.name}`)
+						}
 					/>
 				</div>
 

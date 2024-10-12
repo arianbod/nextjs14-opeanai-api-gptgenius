@@ -22,6 +22,12 @@ function getLanguageFromRequest(request: NextRequest): string {
 
 export function middleware(request: NextRequest) {
 	const pathname = request.nextUrl.pathname;
+
+	// Don't redirect requests for static assets in the personas folder
+	if (pathname.startsWith('/images/')) {
+		return NextResponse.next();
+	}
+
 	const language = getLanguageFromRequest(request);
 
 	// If the pathname already includes a supported language, don't redirect

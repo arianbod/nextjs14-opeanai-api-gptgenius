@@ -22,7 +22,7 @@ const SidebarHeader = () => {
 					<div className='relative w-14 h-14'>
 						<Image
 							alt='logo'
-							src='/babagpt_bw.svg'
+							src='/images/babagpt_bw.svg'
 							layout='fill'
 							className='rounded-full shadow-lg bg-slate-800 p-1'
 						/>

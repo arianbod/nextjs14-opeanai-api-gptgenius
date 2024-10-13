@@ -2,9 +2,18 @@
 	"global": {
 		"title": "بابا‌جی‌پی‌تی",
 		"description": "",
+		"conversations": "گفتگوها",
+		"tokenBalance": "موجودی توکن",
+		"purchaseTokens": "خرید توکن",
+		"selectedAmount": "مقدار انتخاب شده",
+		"discount": "تخفیف",
+		"finalPrice": "قیمت نهایی",
+		"purchase": "خرید",
+		"tokens": "توکن‌ها"
+	},
+	"sidebar": {
 		"conversations": "گفتگوها"
 	},
-	"sidebar": { "conversations": "گفتگوها" },
 	"auth": {
 		"register": {
 			"title": "ثبت نام",

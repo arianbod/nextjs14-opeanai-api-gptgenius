@@ -2,9 +2,18 @@
 	"global": {
 		"title": "BabaGPT",
 		"description": "",
-		"conversations": "konuşmalar"
+		"conversations": "konuşmalar",
+		"tokenBalance": "Token Bakiyesi",
+		"purchaseTokens": "Token Satın Al",
+		"selectedAmount": "Seçilen Miktar",
+		"discount": "İndirim",
+		"finalPrice": "Son Fiyat",
+		"purchase": "Satın Al",
+		"tokens": "Tokenler"
 	},
-	"sidebar": { "conversations": "conversations" },
+	"sidebar": {
+		"conversations": "conversations"
+	},
 	"auth": {
 		"register": {
 			"title": "Kayıt Ol",

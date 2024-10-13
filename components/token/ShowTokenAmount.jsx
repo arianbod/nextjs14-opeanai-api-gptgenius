@@ -1,17 +1,26 @@
 // components/token/ShowTokenAmount.jsx
 'use client';
-import React, { memo } from 'react';
+
+import React, { memo, useState } from 'react';
+import { Coins } from 'lucide-react';
+import TokenSlider from './TokenSlider';
 import { useAuth } from '@/context/AuthContext';
-import { FaCoins } from 'react-icons/fa';
-import { Coins, CoinsIcon, HandCoins } from 'lucide-react';
+import Link from 'next/link';
+import { IoAdd } from 'react-icons/io5';
 
 const ShowTokenAmount = () => {
 	const { tokenBalance } = useAuth();
+
 	return (
-		<div className='flex items-center mt-1'>
-			<Coins className='mr-2' />
-			<span className='text-md font-semibold'>{tokenBalance}</span>
-		</div>
+		<>
+			<Link
+				href='/token'
+				className='flex items-center mt-1 cursor-pointer select-none'>
+				<Coins className='mr-2' />
+				<span className='text-md font-semibold'>{tokenBalance}</span>
+				<IoAdd />
+			</Link>
+		</>
 	);
 };
 

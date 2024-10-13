@@ -2,9 +2,18 @@
 	"global": {
 		"title": "BabaGPT",
 		"description": "",
+		"conversations": "conversations",
+		"tokenBalance": "Token Balance",
+		"purchaseTokens": "Purchase Tokens",
+		"selectedAmount": "Selected Amount",
+		"discount": "Discount",
+		"finalPrice": "Final Price",
+		"purchase": "Purchase",
+		"tokens": "tokens"
+	},
+	"sidebar": {
 		"conversations": "conversations"
 	},
-	"sidebar": { "conversations": "conversations" },
 	"auth": {
 		"register": {
 			"title": "Register",

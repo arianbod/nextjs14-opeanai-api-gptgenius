@@ -9,7 +9,8 @@
 		"discount": "تخفیف",
 		"finalPrice": "قیمت نهایی",
 		"purchase": "خرید",
-		"tokens": "توکن‌ها"
+		"tokens": "توکن‌ها",
+		"sliderTitle": "تخیف های جادویی"
 	},
 	"sidebar": {
 		"conversations": "گفتگوها"

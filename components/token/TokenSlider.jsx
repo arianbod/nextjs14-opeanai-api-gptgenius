@@ -42,12 +42,13 @@ const TokenSlider = ({ isOpen, onClose }) => {
 		acc[spot.price] = {
 			label: spot.discountPercentage > 0 && (
 				<div
-					className={`flex flex-col items-center select-none ${
-						isActive ? 'text-blue-600' : 'text-gray-500'
+					className={`flex flex-col place-items-center place-content-center text-center select-none transition-all mt-2 ${
+						isActive ? 'text-blue-600 scale-110 animate-pulse' : 'text-gray-500'
 					}`}>
 					<span className='text-2xl mb-2'>{spot.icon}</span>
 					<span className='text-xs'>{spot.discountPercentage}%</span>
-					<span className='text-xs'>{spot.tokens}</span>
+					<span className='text-xs mx-auto text-center '>Off</span>
+					{/* <span className='text-xs'>{spot.tokens}</span> */}
 				</div>
 			),
 			style: { color: isActive ? '#3b82f6' : '#9ca3af' },
@@ -67,11 +68,11 @@ const TokenSlider = ({ isOpen, onClose }) => {
 				className={`flex flex-col gap-8 rounded-lg p-6 w-full max-w-md relative overflow-hidden transform transition-transform duration-300 ease-in-out ${
 					isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
 				}`}>
-				<h2 className='text-2xl font-semibold mb-6 text-center text-gray-800 dark:text-gray-100'>
+				<h2 className='text-2xl font-semibold  text-center text-gray-800 dark:text-gray-100'>
 					{dict.global.purchaseTokens}
 				</h2>
-
-				<div className='mb-8 px-4'>
+				<div className='mb-8 px-4 flex flex-col gap-1 place-content-center text-center'>
+					<span className='font-semibold'>{dict.global.sliderTitle}</span>
 					<Slider
 						min={min}
 						max={max}
@@ -83,7 +84,6 @@ const TokenSlider = ({ isOpen, onClose }) => {
 						activeDotStyle={{}}
 					/>
 				</div>
-
 				<div className='space-y-6 mt-8'>
 					<div className='bg-gray-100 dark:bg-gray-700 rounded-xl shadow-inner p-4 flex justify-between items-center'>
 						<div>
@@ -123,6 +123,7 @@ const TokenSlider = ({ isOpen, onClose }) => {
 								${savings}
 							</p>
 						</div>
+
 						<div className='text-right'>
 							<p className='text-sm text-gray-500 dark:text-gray-300'>
 								{dict.global.finalPrice}

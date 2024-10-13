@@ -9,7 +9,8 @@
 		"discount": "Discount",
 		"finalPrice": "Final Price",
 		"purchase": "Purchase",
-		"tokens": "tokens"
+		"tokens": "tokens",
+		"sliderTitle": "slider Discount Magic"
 	},
 	"sidebar": {
 		"conversations": "conversations"

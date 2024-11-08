@@ -1,5 +1,6 @@
 // app/layout.jsx
 import '../globals.css';
+import { GoogleAnalytics } from '@next/third-parties/google'
 import Providers from './providers';
 import { Toaster } from 'react-hot-toast';
 import Sidebar from '@/components/sidebar/Sidebar';
@@ -26,6 +27,7 @@ export default async function RootLayout({ children, params: { lang } }) {
           </main>
         </Providers>
       </body>
+      <GoogleAnalytics gaId="G-3T0PFBNMPY" />
     </html>
   );
 }

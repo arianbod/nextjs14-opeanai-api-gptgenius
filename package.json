@@ -10,6 +10,7 @@
 	},
 	"dependencies": {
 		"@fontsource/inter": "^5.1.0",
+		"@next/third-parties": "^15.0.3",
 		"@prisma/client": "^5.20.0",
 		"@tanstack/react-query": "^5.8.1",
 		"@tanstack/react-query-devtools": "^5.8.1",

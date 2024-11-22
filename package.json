@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
-		"build": "npm install --legacy-peer-deps --force && npx prisma generate && next build",
+		"build": "npm install --legacy-peer-deps --force --production=false && npx prisma generate && next build",
 		"start": "next start",
 		"lint": "next lint"
 	},
@@ -15,7 +15,10 @@
 		"@prisma/client": "^5.22.0",
 		"@tanstack/react-query": "^5.61.0",
 		"@tanstack/react-query-devtools": "^5.61.0",
+		"@tailwindcss/typography": "^0.5.10",
+		"autoprefixer": "^10.0.1",
 		"axios": "^1.6.7",
+		"daisyui": "^3.9.4",
 		"highlight.js": "^11.9.0",
 		"llamaai": "^1.0.4",
 		"lucide-react": "^0.460.0",
@@ -25,6 +28,7 @@
 		"next-themes": "^0.4.3",
 		"openai": "^4.73.0",
 		"perplexity": "^1.0.1",
+		"postcss": "^8",
 		"rc-slider": "^11.1.7",
 		"react": "19.0.0-rc-66855b96-20241106",
 		"react-dom": "19.0.0-rc-66855b96-20241106",
@@ -33,15 +37,15 @@
 		"react-markdown": "^9.0.1",
 		"react-syntax-highlighter": "^15.5.0",
 		"react-tooltip": "^5.28.0",
+		"tailwindcss": "^3.3.0",
 		"tailwindcss-filters": "^3.0.0",
 		"use-debounce": "^10.0.3"
 	},
 	"devDependencies": {
-		"@tailwindcss/typography": "^0.5.10",
-		"autoprefixer": "^10.0.1",
-		"daisyui": "^3.9.4",
-		"postcss": "^8",
-		"prisma": "^5.22.0",
-		"tailwindcss": "^3.3.0"
+		"prisma": "^5.22.0"
+	},
+	"overrides": {
+		"react": "19.0.0-rc-66855b96-20241106",
+		"react-dom": "19.0.0-rc-66855b96-20241106"
 	}
 }

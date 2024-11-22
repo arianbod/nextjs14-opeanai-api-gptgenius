@@ -3,11 +3,8 @@ import React, { useState, useEffect } from 'react';
 import AuthPage from './auth/AuthPage';
 import EnhancedChat from './chat/ChatPage';
 import { useAuth } from '@/context/AuthContext';
-import { toast } from 'react-hot-toast';
-import { FaCopy } from 'react-icons/fa';
 import Loading from '@/components/Loading';
 import { useTranslations } from '@/context/TranslationContext';
-import { useParams } from 'next/navigation';
 
 const ClientHome = () => {
 	const dict = useTranslations();

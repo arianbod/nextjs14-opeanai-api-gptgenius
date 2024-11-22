@@ -64,6 +64,12 @@ const MessageInput = ({
 		resizeTextarea();
 	}, [inputText]);
 
+	useEffect(() => {
+		if (textareaRef.current) {
+			textareaRef.current.focus();
+		}
+	}, []);
+
 	const handleKeyDown = (e) => {
 		if (e.key === 'Enter') {
 			if (isMobileDevice) {
@@ -170,7 +176,7 @@ const MessageInput = ({
 					right: -2px;
 					bottom: -2px;
 					border: 2px solid #3b82f6; /* Tailwind blue-500 */
-					border-radius: 1.5rem;
+					borstyleadius: 1.5rem;
 					animation: circular-border 10s linear infinite;
 				}
 			`}</style>

@@ -1,79 +1,73 @@
 import React from 'react';
-import Image from 'next/image';
 
 const ModelCard = ({ persona, onSelect, isSelected }) => {
-	const Icon = persona.icon;
+	const handleKeyPress = (e) => {
+		if (e.key === 'Enter' || e.key === ' ') {
+			onSelect(persona);
+		}
+	};
 
 	return (
 		<div
-			className={`group relative bg-white dark:bg-gray-800 rounded-xl shadow-lg cursor-pointer transition-all duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-2xl ${
-				isSelected ? 'ring-4 ring-blue-500' : ''
-			}`}
+			className={`
+        relative rounded-xl shadow-lg cursor-pointer
+        bg-white dark:bg-gray-800
+        transition-all duration-300 ease-in-out
+        hover:-translate-y-2 hover:shadow-2xl
+        ${isSelected ? 'ring-4 ring-blue-500' : ''}
+      `}
 			onClick={() => onSelect(persona)}
 			role='button'
 			tabIndex={0}
-			onKeyPress={(e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					onSelect(persona);
-				}
-			}}
+			onKeyPress={handleKeyPress}
 			aria-pressed={isSelected}>
-			{/* Background gradient */}
+			{/* Hover Gradient Effect */}
 			<div
-				className={`absolute inset-0 bg-gradient-to-br ${persona.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
-			{/* Content */}
-			<div className='p-2 flex items-center space-x-4 relative z-10'>
-				{/* Icon or Image */}
-				<div className='flex-shrink-0'>
-					{/* {persona.name === 'BabaGPT' ? (
+				className={`
+          absolute inset-0 rounded-xl opacity-0 
+          hover:opacity-20 transition-opacity duration-300
+          bg-gradient-to-br ${persona.color || 'from-blue-500 to-purple-500'}
+        `}
+			/>
 
-						<Image
-							height={64}
-							width={64}
-							alt='logo'
-							src='/babagpt_bw.svg'
-							className='w-16 h-16 rounded-full transition-transform duration-300 group-hover:scale-110'
-						/>
-						) : (
-							<Icon
-							className='w-16 h-16 text-blue-500 transition-transform duration-300 group-hover:scale-110'
-							aria-hidden='true'
-							/>
-							)} */}
-					<Image
-						height={128}
-						width={128}
-						alt={`${persona.name} logo`}
+			{/* Main Content */}
+			<div className='p-4 flex items-start space-x-4 relative'>
+				{/* Image Container */}
+				<div className='flex-shrink-0'>
+					<img
 						src={`/images/personas/${
 							persona.role?.toLowerCase().replace(' ', '_') || 'default'
 						}.jpg`}
-						className='w-32 h-full rounded-lg transition-all duration-300 group-hover:scale-110'
+						alt={`${persona.name} avatar`}
+						className='w-24 h-24 rounded-full object-cover
+              transition-transform duration-300 hover:scale-105
+              select-none'
 						onError={(e) => {
-							console.error(`Failed to load image for ${persona.name}:`, e);
-							// e.target.src = '/fallback-image.jpg'; // Make sure this fallback image exists in your public folder
+							e.target.src = '/images/default-avatar.jpg';
 						}}
-						onLoad={() =>
-							console.log(`Successfully loaded image for ${persona.name}`)
-						}
 					/>
 				</div>
 
 				{/* Text Content */}
 				<div className='flex-grow'>
-					<h3 className='text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300'>
+					<h3
+						className='text-lg font-semibold 
+            text-gray-900 dark:text-white 
+            hover:text-blue-600 dark:hover:text-blue-400 
+            transition-colors duration-300 select-none'>
 						{persona.name}
 					</h3>
-					<p className='text-sm text-gray-600 dark:text-gray-300 mt-1 group-hover:text-gray-800 dark:group-hover:text-gray-100 transition-colors duration-300'>
+					<p
+						className='text-sm text-gray-600 dark:text-gray-300 
+            mt-1 select-none'>
 						{persona.role}
 					</p>
-				</div>
-			</div>
-			{/* Tooltip */}
-			<div className=' inset-0 flex items-center w-full justify-center group-hover:opacity-100 transition-opacity duration-300'>
-				<div className='bg-black w-full bg-opacity-75 text-white text-xs rounded-md py-1 px-2 pointer-events-none'>
-					Engine: {persona.engine}
-					<br />
-					Role: {persona.role}
+
+					{/* Info Section */}
+					<div className='mt-2 text-xs text-gray-500 dark:text-gray-400 select-none'>
+						<p>Engine: {persona.engine}</p>
+						<p>Role: {persona.role}</p>
+					</div>
 				</div>
 			</div>
 		</div>

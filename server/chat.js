@@ -2,30 +2,45 @@
 
 import { revalidatePath } from 'next/cache'
 import prisma from '@/prisma/db';
-import OpenAI from "openai";
 import { getUserById } from './auth';
+import { getChatProvider } from '@/lib/ai-providers';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
-
+// server/chat.js (relevant part)
 async function generateChatTitle(content) {
     try {
-        const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini-2024-07-18",
-            messages: [
-                { role: "system", content: "You are a helpful assistant that generates short, relevant titles for conversations based on the initial message. Keep the title concise, preferably under 6 words." },
-                { role: "user", content: `Generate a title for a conversation that starts with this message: ${content}` }
-            ],
-            max_tokens: 20,
+        const provider = getChatProvider('openai');
+        const formattedMessages = provider.formatMessages({
+            persona: {
+                name: "Title Generator",
+                role: "Assistant that generates short, relevant titles",
+                instructions: "Generate a short, relevant title for conversations based on the initial message. Keep the title concise, preferably under 6 words.",
+                model: "gpt-3.5-turbo",
+                temperature: 0.7,
+                maxTokens: 20
+            },
+            previousMessages: [
+                {
+                    role: "user",
+                    content: `Generate a title for a conversation that starts with this message: ${content}`
+                }
+            ]
         });
 
-        return response.choices[0].message.content.trim();
+        const stream = await provider.generateChatStream(formattedMessages);
+        let title = '';
+
+        for await (const chunk of stream) {
+            const content = provider.extractContentFromChunk(chunk);
+            if (content) title += content;
+        }
+
+        return title.trim() || "New Conversation";
     } catch (error) {
         console.error('Error generating chat title:', error);
         return "New Conversation";
     }
 }
+
 export async function createChat(userId, initialMessage) {
     console.log('Creating chat for user:', userId, 'with initial message:', initialMessage);
     const user = await getUserById(userId);
@@ -40,12 +55,12 @@ export async function createChat(userId, initialMessage) {
         const chat = await prisma.chat.create({
             data: {
                 title,
+                titleUpdated: false,
                 userId: user.id,
             },
         });
         console.log('Chat created:', chat);
 
-        // Add the initial message to the chat
         await addMessageToChat(userId, chat.id, initialMessage, 'user');
 
         revalidatePath('/chat');
@@ -67,7 +82,13 @@ export async function getChatList(userId) {
     const chats = await prisma.chat.findMany({
         where: { userId: user.id },
         orderBy: { updatedAt: 'desc' },
-        select: { id: true, title: true },
+        select: {
+            id: true,
+            title: true,
+            titleUpdated: true,
+            createdAt: true,
+            updatedAt: true
+        },
     });
     console.log('Chats found:', chats.length);
 
@@ -97,20 +118,14 @@ export async function getChatMessages(userId, chatId) {
             createdAt: true
         }
     });
-    console.log('Messages found:', messages.length);
 
-    const serializedMessages = messages.map(message => ({
+    return messages.map(message => ({
         id: message.id,
         role: message.role,
         content: message.content,
         timestamp: message.createdAt.toISOString()
     }));
-
-    console.log('Serialized messages:', JSON.stringify(serializedMessages, null, 2));
-
-    return serializedMessages;
 }
-
 
 export async function addMessageToChat(userId, chatId, content, role) {
     console.log('Adding message for user:', userId, 'to chat:', chatId);
@@ -132,6 +147,7 @@ export async function addMessageToChat(userId, chatId, content, role) {
             data: {
                 id: chatIdString,
                 title: "New Chat",
+                titleUpdated: false,
                 userId: user.id,
             },
         });
@@ -144,7 +160,6 @@ export async function addMessageToChat(userId, chatId, content, role) {
             chatId: chatIdString,
         },
     });
-    console.log('Message added:', message.id);
 
     await prisma.chat.update({
         where: { id: chatIdString },
@@ -155,7 +170,6 @@ export async function addMessageToChat(userId, chatId, content, role) {
     return message;
 }
 
-
 export async function deleteChat(userId, chatId) {
     console.log('Deleting chat:', chatId, 'for user:', userId);
     const user = await getUserById(userId);
@@ -164,7 +178,6 @@ export async function deleteChat(userId, chatId) {
         throw new Error('User not authenticated');
     }
 
-    // Ensure chatId is a string
     const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
 
     await prisma.chat.delete({
@@ -175,7 +188,7 @@ export async function deleteChat(userId, chatId) {
     revalidatePath('/chat');
 }
 
-export async function manageUserTokens(userId) {
+export async function manageUserTokens(userId, amount) {
     console.log('Managing tokens for user:', userId);
     const user = await getUserById(userId);
     if (!user) {
@@ -193,32 +206,17 @@ export async function manageUserTokens(userId) {
 }
 
 export async function generateChatResponse(messages, persona) {
-    // Ensure messages is an array
     if (!Array.isArray(messages)) {
         console.error('Messages is not an array:', messages);
         throw new Error('Invalid messages format');
     }
 
-    const systemMessage = {
-        role: 'system',
-        content: `You are ${persona.name}, a ${persona.role}. Respond to queries in a manner consistent with your role and expertise. Always stay in character.`
-    };
-
     try {
-        const stream = await openai.chat.completions.create({
-            messages: [
-                systemMessage,
-                ...messages
-            ],
-            model: 'gpt-4o-mini-2024-07-18',
-            temperature: 0.7,
-            max_tokens: 1000,
-            stream: true,
-        });
-
-        return stream;
+        const provider = getChatProvider(persona.provider || 'openai');
+        const formattedMessages = provider.formatMessages({ persona, previousMessages: messages });
+        return await provider.generateChatStream(formattedMessages, persona);
     } catch (error) {
-        console.error('Error in OpenAI API call:', error);
+        console.error('Error generating chat response:', error);
         throw error;
     }
 }
@@ -231,32 +229,34 @@ export async function generateImage(userId, prompt, chatId) {
         throw new Error('User not authenticated');
     }
 
-    // Ensure chatId is a string
     const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
 
     try {
-        // Check and deduct tokens
-        const requiredTokens = 50; // Adjust based on your token usage policy for image generation
-        // const currentTokens = await manageUserTokens(user.id, -requiredTokens);
+        const requiredTokens = 50;
         if (user.tokenBalance < requiredTokens) {
             throw new Error('Insufficient tokens for image generation');
         }
 
-        const response = await openai.images.generate({
-            model: "dall-e-3",
-            prompt: prompt,
-            n: 1,
-            size: "1024x1024",
-        });
+        // Update token balance
+        await manageUserTokens(userId, -requiredTokens);
 
-        if (response.data && response.data[0] && response.data[0].url) {
-            await addMessageToChat(user.id, chatIdString, response.data[0].url, 'assistant');
-            return { imageUrl: response.data[0].url };
+        // Get default image provider
+        const provider = getChatProvider('openai');
+        const response = await provider.generateImage(prompt);
+
+        if (response.url) {
+            // Add image message to chat
+            await addMessageToChat(user.id, chatIdString, response.url, 'assistant');
+            return { imageUrl: response.url };
         } else {
             throw new Error('Image URL not found in the response');
         }
     } catch (error) {
         console.error('Error in generateImage:', error);
+        // Refund tokens if generation failed
+        if (error.message !== 'Insufficient tokens for image generation') {
+            await manageUserTokens(userId, requiredTokens);
+        }
         return { error: 'Failed to generate image. Please try again later.' };
     }
 }

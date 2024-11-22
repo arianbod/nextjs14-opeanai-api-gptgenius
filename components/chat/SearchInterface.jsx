@@ -8,42 +8,43 @@ import toast from 'react-hot-toast';
 import { fetchPerplexity } from '@/server/perplexity';
 import Image from 'next/image';
 import { useDebounce } from 'use-debounce';
+import Link from 'next/link';
 
 // Inside SearchInterface component
 
 const SearchInterface = () => {
-    const [query, setQuery] = useState('');
+	const [query, setQuery] = useState('');
 	const [image, setImage] = useState(null);
 	const [results, setResults] = useState([]);
-    
-    const [debouncedQuery] = useDebounce(query, 500);
+
+	const [debouncedQuery] = useDebounce(query, 500);
 	const searchMutation = useMutation({
-        mutationFn: ({ query, image }) => fetchPerplexity(query, image),
+		mutationFn: ({ query, image }) => fetchPerplexity(query, image),
 		onSuccess: (data) => {
-            if (data.results) {
-                setResults(data.results);
+			if (data.results) {
+				setResults(data.results);
 			} else if (data.error) {
 				toast.error(data.error);
 			}
 		},
 		onError: (error) => {
-            toast.error(error.message);
+			toast.error(error.message);
 		},
 	});
 
 	const handleSubmit = (e) => {
-        e.preventDefault();
+		e.preventDefault();
 		if (!query.trim() && !image) {
-            toast.error('Please enter a query or upload an image.');
+			toast.error('Please enter a query or upload an image.');
 			return;
 		}
 		searchMutation.mutate({ query, image });
 	};
-    
+
 	const handleImageChange = (e) => {
-        const file = e.target.files[0];
+		const file = e.target.files[0];
 		if (file && file.type.startsWith('image/')) {
-            setImage(file);
+			setImage(file);
 		} else {
 			toast.error('Please select a valid image file.');
 		}
@@ -111,31 +112,28 @@ const SearchInterface = () => {
 					<h3 className='text-xl font-semibold mb-4'>Search Results:</h3>
 					<ul className='space-y-4'>
 						{results.map((result) => (
-							<li
+							<Link
 								key={result.id}
-								className='p-4 border border-gray-200 dark:border-gray-700 rounded-md'>
-								<a
-									href={result.url}
-									target='_blank'
-									rel='noopener noreferrer'
-									className='block'>
-									{result.imageUrl && (
-										<Image
-											src={result.imageUrl}
-											alt={result.title}
-											width={400}
-											height={200}
-											className='w-full h-auto object-cover rounded-md mb-2'
-										/>
-									)}
-									<h4 className='text-lg font-medium text-blue-600 dark:text-blue-400'>
-										{result.title}
-									</h4>
-									<p className='text-gray-700 dark:text-gray-300'>
-										{result.snippet}
-									</p>
-								</a>
-							</li>
+								className='p-4 border border-gray-200 dark:border-gray-700 rounded-md'
+								href={result.url}
+								rel='noopener noreferrer'
+								target='_blank'>
+								{result.imageUrl && (
+									<Image
+										src={result.imageUrl}
+										alt={result.title}
+										width={400}
+										height={200}
+										className='w-full h-auto object-cover rounded-md mb-2'
+									/>
+								)}
+								<h4 className='text-lg font-medium text-blue-600 dark:text-blue-400'>
+									{result.title}
+								</h4>
+								<p className='text-gray-700 dark:text-gray-300'>
+									{result.snippet}
+								</p>
+							</Link>
 						))}
 					</ul>
 				</div>

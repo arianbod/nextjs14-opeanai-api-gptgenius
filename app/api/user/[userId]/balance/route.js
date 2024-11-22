@@ -6,7 +6,8 @@ import { verifyHash } from '@/server/auth'; // Adjust the import path accordingl
 
 const prisma = new PrismaClient();
 
-export async function GET(request, { params }) {
+export async function GET(request, props) {
+    const params = await props.params;
     const { userId } = params;
 
     // Extract the token from the Authorization header

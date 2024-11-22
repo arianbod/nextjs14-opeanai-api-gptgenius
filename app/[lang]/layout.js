@@ -14,7 +14,17 @@ export const metadata = {
   description: en.global.description,
 };
 
-export default async function RootLayout({ children, params: { lang } }) {
+export default async function RootLayout(props) {
+  const params = await props.params;
+
+  const {
+    lang
+  } = params;
+
+  const {
+    children
+  } = props;
+
   const dict = await getDictionary(lang);
   return (
     <html lang="en">
@@ -22,7 +32,7 @@ export default async function RootLayout({ children, params: { lang } }) {
         <Providers translations={dict}>
           <Toaster position="top-center" />
           <Sidebar />
-          <main className="flex-1 mx-0 lg:ml-80 p-0 pt-8 ">
+          <main className="flex-1 mx-0 lg:ml-80 p-0 pt-8 md:pt-0 ">
             {children}
           </main>
         </Providers>

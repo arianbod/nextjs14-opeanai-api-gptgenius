@@ -24,7 +24,7 @@ const Sidebar = () => {
 		<>
 			{/* Mobile hamburger button */}
 			<div
-				className={`lg:hidden fixed top-0 left-0 flex transition-all  bg-white dark:bg-base-100 shadow-sm w-full ${
+				className={`lg:hidden fixed top-0 left-0 flex transition-all  bg-white dark:bg-base-100 shadow-sm  ${
 					sidebarOpen ? 'hidden' : ''
 				} z-50`}>
 				<button
@@ -62,10 +62,10 @@ const Sidebar = () => {
 								<li key={chat.id}>
 									<Link
 										href={`/chat/${chat.id}`}
-										className='flex items-center p-3 rounded-xl bg-base-300 hover:translate-x-2 transition'
+										className='flex items-center p-3 rounded-xl  hover:bg-base-300 transition'
 										onClick={() => setSidebarOpen(false)}>
 										<span className='truncate text-sm font-medium'>
-											{chat.title}
+											{chat.title.replace(`"` || `'` || `"` || 'opening', '')}
 										</span>
 									</Link>
 								</li>

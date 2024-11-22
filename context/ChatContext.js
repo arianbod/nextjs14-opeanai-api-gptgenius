@@ -17,6 +17,7 @@ export const ChatProvider = ({ children }) => {
         engine: '',
         role: '',
         name: '',
+        avatar: '',
     });
     const [messages, setMessages] = useState([]);
     const [chatList, setChatList] = useState([]);
@@ -56,6 +57,7 @@ export const ChatProvider = ({ children }) => {
             engine: selectedModel.engine,
             role: selectedModel.role,
             name: selectedModel.name,
+            avatar: selectedModel.avatar,
         });
         router.push('/chat');
     };
@@ -85,6 +87,7 @@ export const ChatProvider = ({ children }) => {
                         engine: selectedModel.engine,
                         role: selectedModel.role,
                         name: selectedModel.name,
+                        avatar: selectedModel.avatar,
                     });
                     setModel(selectedModel);
                     setMessages(fetchedMessages);
@@ -95,7 +98,7 @@ export const ChatProvider = ({ children }) => {
                         model: null,
                         engine: '',
                         role: '',
-                        name: '',
+                        name: '', avatar: "",
                     });
                     setMessages([]);
                 }
@@ -118,6 +121,7 @@ export const ChatProvider = ({ children }) => {
             engine: '',
             role: '',
             name: '',
+            avatar: "",
         });
         setMessages([]);
     };

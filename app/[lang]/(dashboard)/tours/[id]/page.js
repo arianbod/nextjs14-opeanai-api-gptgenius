@@ -8,7 +8,8 @@ import axios from 'axios';
 const url = `https://api.unsplash.com/search/photos?client_id=${process.env.UNSPLASH_API_KEY}&query=`;
 
 
-const SingleTourPage = async ({ params }) => {
+const SingleTourPage = async props => {
+    const params = await props.params;
     const tour = await getSingleTour(params.id)
     console.log(params.id);
 

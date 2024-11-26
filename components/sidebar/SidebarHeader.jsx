@@ -28,7 +28,7 @@ const SidebarHeader = () => {
 						/>
 					</div>
 					<div>
-						<h2 className='text-2xl tracking-wide capitalize font-thin'>
+						<h2 className='text-2xl tracking-wide capitalize font-extrabold font-serif'>
 							{dict.global.title}
 						</h2>
 						<ShowTokenAmount />

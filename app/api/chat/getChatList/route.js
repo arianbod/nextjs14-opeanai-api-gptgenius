@@ -9,6 +9,8 @@ export async function POST(request) {
             return NextResponse.json({ error: 'userId is required' }, { status: 400 });
         }
         const chats = await getChatList(userId)
+        // console.log("chatList Generated:", chats);
+
         return NextResponse.json({ chats });
     } catch (error) {
         console.error('Error fetching chat list:', error);

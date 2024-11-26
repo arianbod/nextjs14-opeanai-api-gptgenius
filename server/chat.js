@@ -41,8 +41,8 @@ async function generateChatTitle(content) {
     }
 }
 
-export async function createChat(userId, initialMessage) {
-    console.log('Creating chat for user:', userId, 'with initial message:', initialMessage);
+export async function createChat(userId, initialMessage, model) {
+    // console.log('Creating chat for user:', userId, 'with initial message:', initialMessage);
     const user = await getUserById(userId);
     if (!user) {
         console.error('User not found:', userId);
@@ -57,13 +57,20 @@ export async function createChat(userId, initialMessage) {
                 title,
                 titleUpdated: false,
                 userId: user.id,
+                model: model.name,
+                modelCodeName: model.modelCodeName,
+                provider: model.provider,
+                role: model.role,
             },
         });
-        console.log('Chat created:', chat);
+        // console.log('Chat created:', chat);
 
-        await addMessageToChat(userId, chat.id, initialMessage, 'user');
+        const message = await addMessageToChat(userId, chat.id, initialMessage, 'user');
+        // console.log("message has been added:", message);
 
         revalidatePath('/chat');
+        // console.log("revalidate done");
+
         return chat;
     } catch (error) {
         console.error('Error creating chat:', error);
@@ -259,4 +266,16 @@ export async function generateImage(userId, prompt, chatId) {
         }
         return { error: 'Failed to generate image. Please try again later.' };
     }
+}
+export async function getChatInfo(chatId) {
+    try {
+
+        const chatInfo = await prisma.chat.findUnique({ where: { id: chatId }, select: { id: true, provider: true, model: true, modelCodeName: true } })
+        console.log("chatInfo", chatInfo);
+        return chatInfo
+    } catch (error) {
+        console.error("there is an error on getchatinfo", error);
+        throw new Error(error)
+    }
+
 }

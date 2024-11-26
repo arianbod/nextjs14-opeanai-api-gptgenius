@@ -11,6 +11,7 @@ datasource db {
 }
 
 model User {
+  orderId         Int      @unique @default(autoincrement())
   id              String   @id @default(uuid())
   token           String   @unique
   animalSelection String
@@ -24,21 +25,35 @@ model User {
 }
 
 model Chat {
-  id        String    @id @default(uuid())
-  title     String
-  titleUpdated  Boolean   @default(false)
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
-  messages  Message[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  orderId      Int       @unique @default(autoincrement())
+  id           String    @id @default(uuid())
+  title        String
+  titleUpdated Boolean   @default(false)
+  userId       String
+  provider     String    @default("openai")  // Store the AI provider
+  model        String    @default("o1-mini") // Store the specific model
+  role         String    @default("user")
+  modelCodeName String    @default("o1-mini")
+  user         User      @relation(fields: [userId], references: [id])
+  messages     Message[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Message {
   id        String   @id @default(uuid())
+  type      type     @default(TEXT)
   content   String   @db.Text
   role      String
   chatId    String
   chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+}
+
+enum type {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  HTML
 }

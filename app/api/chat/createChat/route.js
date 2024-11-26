@@ -1,26 +1,45 @@
 // app/api/chat/createChat/route.js
 import { NextResponse } from 'next/server';
 import { createChat } from '@/server/chat';
+import { data } from 'autoprefixer';
 
 export async function POST(request) {
     try {
-        const { userId, initialMessage } = await request.json();
+        const body = await request.json();
 
-        if (!userId || !initialMessage) {
-            return NextResponse.json(
-                { error: 'Missing userId or initialMessage' },
-                { status: 400 }
-            );
+        if (!body?.userId || !body?.initialMessage || !body?.model) {
+            return NextResponse.json({
+                success: false,
+                error: 'Missing required fields'
+            }, { status: 400 });
         }
 
-        const chat = await createChat(userId, initialMessage);
+        const { userId, initialMessage, model } = body;
 
-        return NextResponse.json(chat, { status: 200 });
+        try {
+            const chat = await createChat(userId, initialMessage, {
+                name: model.name || "ChatGPT",
+                provider: model.provider || "openai",
+                modelCodeName: model.modelCodeName || "o1-mini",
+                role: model.role || "user"
+            });
+
+            console.log({ success: true, data: chat });
+            return NextResponse.json({
+                success: true,
+                data: chat
+            });
+
+        } catch (error) {
+            return NextResponse.json({
+                success: false,
+                error: error.message || 'Chat creation failed'
+            }, { status: error.status || 500 });
+        }
     } catch (error) {
-        console.error('Error creating chat:', error);
-        return NextResponse.json(
-            { error: 'Failed to create chat' },
-            { status: 500 }
-        );
+        return NextResponse.json({
+            success: false,
+            error: 'Invalid request'
+        }, { status: 400 });
     }
 }

@@ -50,62 +50,69 @@ const ChatInterface = () => {
 
 	useEffect(scrollToBottom, [messages]);
 
+	// Inside ChatInterface.jsx
 	const generateResponseMutation = useMutation({
 		mutationFn: async (content) => {
 			let chatId = activeChat.id;
 
-			// If the chat hasn't been created yet, create it now
 			if (!chatId) {
-				// Create the chat via the API
+				const modelData = {
+					name: activeChat.model.name,
+					provider: activeChat.model.provider,
+					modelCodeName: activeChat.model.modelCodeName,
+					role: activeChat.model.role,
+				};
+
 				const response = await fetch('/api/chat/createChat', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
 						userId: user.userId,
 						initialMessage: content,
+						model: modelData,
 					}),
 				});
 
+				const data = await response.json();
+				// console.log("responseResult:",response.ok);
+
 				if (!response.ok) {
-					throw new Error('Failed to create new chat');
+					throw new Error(data.error || 'Failed to create chat');
+				}
+				// console.log('data id:', data.data.id);
+
+				if (!data.data.id) {
+					throw new Error('Invalid response from server');
 				}
 
-				const newChat = await response.json();
-
-				if (!newChat || !newChat.id) {
-					throw new Error(
-						'Failed to create new chat: Invalid response from server'
-					);
-				}
-
-				chatId = newChat.id;
-
-				// Update activeChat with the new chatId
-				setActiveChat((prevActiveChat) => ({
-					...prevActiveChat,
+				chatId = data.data.id;
+				setActiveChat((prev) => ({
+					...prev,
 					id: chatId,
 				}));
+				console.log(activeChat);
 
-				// Update the URL without causing a navigation
-				if (typeof window !== 'undefined') {
-					window.history.replaceState(null, '', `/chat/${chatId}`);
-				}
+				window.history.replaceState(null, '', `/chat/${chatId}`);
 			}
 
-			// Proceed to send the message and get the assistant's response
-			const response = await fetch('/api/chat', {
+			// Continue with sending message...
+			const messageResponse = await fetch('/api/chat', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					userId: user.userId,
-					chatId: chatId,
+					chatId,
 					content,
 					persona: activeChat.model,
+					provider: activeChat.provider,
 				}),
 			});
 
-			if (!response.ok) throw new Error('Network response was not ok');
-			return response;
+			if (!messageResponse.ok) {
+				throw new Error('Failed to send message');
+			}
+
+			return messageResponse;
 		},
 		onMutate: () => {
 			const placeholderId = nanoid();

@@ -3,6 +3,7 @@ import { useAuth } from './AuthContext';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { AIPersonas } from '@/lib/Personas';
+import axios from 'axios';
 
 const ChatContext = createContext();
 
@@ -18,6 +19,8 @@ export const ChatProvider = ({ children }) => {
         role: '',
         name: '',
         avatar: '',
+        provider: "",
+        modelCodeName: ""
     });
     const [messages, setMessages] = useState([]);
     const [chatList, setChatList] = useState([]);
@@ -58,6 +61,8 @@ export const ChatProvider = ({ children }) => {
             role: selectedModel.role,
             name: selectedModel.name,
             avatar: selectedModel.avatar,
+            provider: selectedModel.provider,
+            modelCodeName: selectedModel.modelCodeName,
         });
         router.push('/chat');
     };
@@ -67,6 +72,27 @@ export const ChatProvider = ({ children }) => {
             if (!chatId || !user) return;
             try {
                 setIsLoading(true);
+
+                // Separate try-catch for chat info
+                try {
+                    const { data: chatInfo } = await axios.post('/api/chat/getChatInfo', {
+                        userId: user.userId,
+                        chatId
+                    });
+
+                    if (chatInfo) {
+                        setActiveChat(prev => ({
+                            ...prev,
+                            id: chatInfo.id,
+                            provider: chatInfo.provider,
+                            model: chatInfo.model,
+                            modelCodeName: chatInfo.modelCodeName
+                        }));
+                    }
+                } catch (error) {
+                    console.error('Error fetching chat info:', error);
+                    toast.error('Failed to load chat information');
+                }
                 const response = await fetch('/api/chat/getChatMessages', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -88,6 +114,8 @@ export const ChatProvider = ({ children }) => {
                         role: selectedModel.role,
                         name: selectedModel.name,
                         avatar: selectedModel.avatar,
+                        provider: selectedModel.provider,
+                        modelCodeName: selectedModel.modelCodeName,
                     });
                     setModel(selectedModel);
                     setMessages(fetchedMessages);
@@ -98,7 +126,7 @@ export const ChatProvider = ({ children }) => {
                         model: null,
                         engine: '',
                         role: '',
-                        name: '', avatar: "",
+                        name: '', avatar: "", provider: "", modelCodeName: "",
                     });
                     setMessages([]);
                 }
@@ -122,6 +150,8 @@ export const ChatProvider = ({ children }) => {
             role: '',
             name: '',
             avatar: "",
+            provider: "",
+            modelCodeName: "",
         });
         setMessages([]);
     };

@@ -3,11 +3,12 @@ import React, { useState, useEffect, memo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from '@/context/TranslationContext';
 import { FiLogOut, FiCopy, FiEye, FiEyeOff } from 'react-icons/fi';
+import { IoMdRefresh } from 'react-icons/io';
+import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import ShowTokenAmount from '@/components/token/ShowTokenAmount';
 import Link from 'next/link';
-import { IoMdRefresh } from 'react-icons/io'; // Additional icon for recharge
-import Modal from '@/components/Modal'; // Assuming you have a Modal component
+import Modal from '@/components/Modal'; // Ensure you have a Modal component
 
 const MemberProfile = () => {
 	const { user, logout } = useAuth();
@@ -70,41 +71,48 @@ const MemberProfile = () => {
 
 	return (
 		<>
-			<div className='bg-white dark:bg-gray-800 rounded-lg shadow-inner p-4 w-full'>
+			<div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full transition-transform '>
 				{/* User Information and Login Token */}
 				<div className='flex items-center justify-between'>
-					<div className='flex items-center space-x-3'>
+					<div className='flex items-center space-x-4'>
 						{/* User Avatar - Hidden when token is visible */}
 						{!isTokenVisible && (
-							<div className='w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center'>
+							<motion.div
+								className='w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center'
+								whileHover={{ scale: 1.1 }}
+								transition={{ duration: 0.3 }}>
 								<span className='text-blue-600 dark:text-blue-300 font-semibold text-lg'>
 									{getUserInitials(user.name)}
 								</span>
-							</div>
+							</motion.div>
 						)}
 
 						{/* User Info */}
 						<div className='flex-1'>
 							<div className='flex items-center space-x-2 flex-wrap'>
-								<span className='text-sm font-medium text-gray-800 dark:text-gray-200 break-all'>
+								<motion.span
+									className='text-sm font-medium text-gray-800 dark:text-gray-200 break-all'
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.5 }}>
 									{isTokenVisible ? user.token : maskToken(user.token)}
-								</span>
+								</motion.span>
 								<div className='flex space-x-1'>
 									<button
 										onClick={() => setIsTokenVisible(!isTokenVisible)}
 										className='text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition'
 										aria-label={isTokenVisible ? 'Hide token' : 'Show token'}>
 										{isTokenVisible ? (
-											<FiEyeOff size={16} />
+											<FiEyeOff size={18} />
 										) : (
-											<FiEye size={16} />
+											<FiEye size={18} />
 										)}
 									</button>
 									<button
 										onClick={copyToken}
 										className='text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition'
 										aria-label='Copy token'>
-										<FiCopy size={16} />
+										<FiCopy size={18} />
 									</button>
 								</div>
 							</div>
@@ -118,14 +126,14 @@ const MemberProfile = () => {
 					{/* Logout Button */}
 					<button
 						onClick={logout}
-						className='text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 p-2 rounded-full transition'
+						className='text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 p-3 rounded-full transition'
 						aria-label='Logout'>
 						<FiLogOut size={20} />
 					</button>
 				</div>
 
 				{/* Divider */}
-				<div className='my-4 border-t border-gray-200 dark:border-gray-700'></div>
+				<div className='my-6 border-t border-gray-200 dark:border-gray-700'></div>
 
 				{/* Token Balance and Recharge */}
 				<div className='flex items-center justify-between flex-wrap'>
@@ -133,20 +141,28 @@ const MemberProfile = () => {
 					<ShowTokenAmount />
 
 					{/* Recharge Button with Promotion */}
-					<Link
-						href='/token/recharge'
-						className='flex items-center space-x-1 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white px-3 py-1 rounded-full transition mt-2 md:mt-0'
-						aria-label='Recharge Tokens'>
-						<IoMdRefresh size={18} />
-						<span className='text-sm font-semibold'>Recharge</span>
-						<span className='bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full'>
-							50% OFF
-						</span>
-					</Link>
+					<motion.div
+						whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.95 }}
+						transition={{ type: 'spring', stiffness: 300 }}>
+						<Link
+							href='/token/'
+							className='flex items-center space-x-2 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white px-4 py-2 rounded-full shadow-lg transition transform'
+							aria-label='Recharge Tokens'>
+							<IoMdRefresh size={20} />
+							<span className='text-sm font-semibold'>Recharge Now</span>
+							<motion.span
+								className='bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full'
+								animate={{ scale: [1, 1.2, 1] }}
+								transition={{ repeat: Infinity, duration: 1.5 }}>
+								50% OFF
+							</motion.span>
+						</Link>
+					</motion.div>
 				</div>
 
 				{/* Additional Guidance */}
-				<div className='mt-4'>
+				<div className='mt-6'>
 					<p className='text-xs text-gray-500 dark:text-gray-400'>
 						{dict.auth.tokenReminder ||
 							'Remember your token for your next login.'}
@@ -157,17 +173,43 @@ const MemberProfile = () => {
 			{/* Black Friday Promotion Modal */}
 			{showPromo && (
 				<Modal onClose={handleClosePromo}>
-					<h2 className='text-lg font-semibold mb-2'>Black Friday Special!</h2>
-					<p className='mb-4'>
-						Enjoy 50% off on all token recharges. Hurry, offer ends soon!
-					</p>
-					<Link
-						href='/token/recharge'
-						className='flex items-center justify-center space-x-2 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white px-4 py-2 rounded'
-						onClick={handleClosePromo}>
-						<IoMdRefresh size={18} />
-						<span>Recharge Now</span>
-					</Link>
+					<motion.div
+						className='bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg text-center'
+						initial={{ scale: 0.8, opacity: 0 }}
+						animate={{ scale: 1, opacity: 1 }}
+						exit={{ scale: 0.8, opacity: 0 }}
+						transition={{ duration: 0.3 }}>
+						{/* Animated Banner */}
+						<motion.div
+							className='mb-4 mx-auto w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center'
+							animate={{ rotate: 360 }}
+							transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}>
+							<span className='text-white font-bold text-xl'>🎉</span>
+						</motion.div>
+
+						<h2 className='text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-200'>
+							Black Friday Special!
+						</h2>
+						<p className='text-gray-600 dark:text-gray-300 mb-6'>
+							Enjoy an exclusive{' '}
+							<span className='font-bold text-green-500'>50% OFF</span> on all
+							token recharges. Hurry, offer ends soon!
+						</p>
+						<motion.div
+							className='flex justify-center'
+							initial={{ scale: 0 }}
+							animate={{ scale: 1 }}
+							transition={{ duration: 0.5 }}>
+							<Link
+								href='/token/'
+								className='flex items-center space-x-2 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white px-6 py-3 rounded-full shadow-lg transition transform'
+								onClick={handleClosePromo}
+								aria-label='Recharge Now with Black Friday Discount'>
+								<IoMdRefresh size={20} />
+								<span className='font-semibold'>Recharge Now</span>
+							</Link>
+						</motion.div>
+					</motion.div>
 				</Modal>
 			)}
 		</>

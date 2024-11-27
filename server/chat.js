@@ -3,10 +3,11 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/prisma/db';
 import { getUserById } from './auth';
-import { getChatProvider } from '@/lib/ai-providers';
+import { getChatProvider } from '@/lib/ai-providers/server';
 
 // server/chat.js (relevant part)
-async function generateChatTitle(content) {
+// server/chat.js (relevant part)
+async function generateChatTitle(initialMessage) {
     try {
         const provider = getChatProvider('openai');
         const formattedMessages = provider.formatMessages({
@@ -14,26 +15,60 @@ async function generateChatTitle(content) {
                 name: "Title Generator",
                 role: "Assistant that generates short, relevant titles",
                 instructions: "Generate a short, relevant title for conversations based on the initial message. Keep the title concise, preferably under 6 words.",
-                model: "gpt-3.5-turbo",
-                temperature: 0.7,
-                maxTokens: 20
+                modelCodeName: "gpt-3.5-turbo",
+                provider: "openai",
+                capabilities: {
+                    supportsSystemMessage: true,
+                    supportedParameters: {
+                        temperature: {
+                            supported: true,
+                            default: 0.7
+                        },
+                        maxTokens: {
+                            name: 'max_tokens',
+                            default: 20
+                        }
+                    }
+                }
             },
             previousMessages: [
                 {
                     role: "user",
-                    content: `Generate a title for a conversation that starts with this message: ${content}`
+                    content: `Generate a title for a conversation that starts with this message: ${initialMessage}`
                 }
             ]
         });
 
-        const stream = await provider.generateChatStream(formattedMessages);
-        let title = '';
+        const stream = await provider.generateChatStream(formattedMessages, {
+            modelCodeName: "gpt-3.5-turbo",
+            capabilities: {
+                supportsSystemMessage: true,
+                supportedParameters: {
+                    temperature: {
+                        supported: true,
+                        default: 0.7
+                    },
+                    maxTokens: {
+                        name: 'max_tokens',
+                        default: 20
+                    }
+                }
+            }
+        });
 
+        let title = '';
         for await (const chunk of stream) {
-            const content = provider.extractContentFromChunk(chunk);
-            if (content) title += content;
+            console.log('Chunk:', chunk);
+            const chunkContent = provider.extractContentFromChunk(chunk);
+            console.log('Chunk content:', chunkContent);
+            if (typeof chunkContent === 'string' && chunkContent) {
+                title += chunkContent;
+            } else {
+                console.warn('Received non-string chunk content:', chunkContent);
+            }
         }
 
+        console.log('Generated title:', title);
         return title.trim() || "New Conversation";
     } catch (error) {
         console.error('Error generating chat title:', error);
@@ -270,7 +305,7 @@ export async function generateImage(userId, prompt, chatId) {
 export async function getChatInfo(chatId) {
     try {
 
-        const chatInfo = await prisma.chat.findUnique({ where: { id: chatId }, select: { id: true, provider: true, model: true, modelCodeName: true } })
+        const chatInfo = await prisma.chat.findUnique({ where: { id: chatId }, select: { id: true, provider: true, model: true, modelCodeName: true, title: true } })
         console.log("chatInfo", chatInfo);
         return chatInfo
     } catch (error) {

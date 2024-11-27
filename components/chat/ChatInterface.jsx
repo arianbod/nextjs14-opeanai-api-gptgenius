@@ -74,28 +74,15 @@ const ChatInterface = () => {
 				});
 
 				const data = await response.json();
-				// console.log("responseResult:",response.ok);
-
-				if (!response.ok) {
+				if (!response.ok)
 					throw new Error(data.error || 'Failed to create chat');
-				}
-				// console.log('data id:', data.data.id);
-
-				if (!data.data.id) {
-					throw new Error('Invalid response from server');
-				}
+				if (!data.data.id) throw new Error('Invalid response from server');
 
 				chatId = data.data.id;
-				setActiveChat((prev) => ({
-					...prev,
-					id: chatId,
-				}));
-				console.log(activeChat);
-
+				setActiveChat((prev) => ({ ...prev, id: chatId }));
 				window.history.replaceState(null, '', `/chat/${chatId}`);
 			}
 
-			// Continue with sending message...
 			const messageResponse = await fetch('/api/chat', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -108,51 +95,78 @@ const ChatInterface = () => {
 				}),
 			});
 
-			if (!messageResponse.ok) {
-				throw new Error('Failed to send message');
-			}
-
+			if (!messageResponse.ok) throw new Error('Failed to send message');
 			return messageResponse;
 		},
-		onMutate: () => {
-			const placeholderId = nanoid();
-			addMessage({
-				id: placeholderId,
+		onMutate: async (content) => {
+			// Add user message first
+			const userMessageId = nanoid();
+			const userMessage = {
+				id: userMessageId,
+				role: 'user',
+				content,
+				timestamp: new Date().toISOString(),
+			};
+			await addMessage(userMessage);
+
+			// Add placeholder for assistant message
+			const assistantMessageId = nanoid();
+			const assistantMessage = {
+				id: assistantMessageId,
 				role: 'assistant',
 				content: '',
 				timestamp: new Date().toISOString(),
-			});
-			return { placeholderId };
+			};
+			await addMessage(assistantMessage);
+
+			return { assistantMessageId };
 		},
 		onSuccess: async (response, _, context) => {
 			const reader = response.body.getReader();
 			const decoder = new TextDecoder();
 			let accumulatedContent = '';
 
-			while (true) {
-				const { done, value } = await reader.read();
-				if (done) break;
+			try {
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done) break;
 
-				const chunk = decoder.decode(value);
-				const lines = chunk.split('\n');
-				for (const line of lines) {
-					if (line.startsWith('data: ')) {
-						try {
-							const data = JSON.parse(line.slice(6));
-							if (data.error) throw new Error(data.error);
-							accumulatedContent += data.content || '';
-							updateMessage(context.placeholderId, accumulatedContent);
-							scrollToBottom();
-						} catch (error) {
-							console.error('Error parsing SSE data:', error);
+					const chunk = decoder.decode(value);
+					const lines = chunk.split('\n');
+
+					for (const line of lines) {
+						if (line.startsWith('data: ')) {
+							try {
+								const data = JSON.parse(line.slice(6));
+
+								// Only process actual content
+								if (
+									data.content &&
+									typeof data.content === 'string' &&
+									!data.content.includes('streaming_started') &&
+									!data.content.includes('streaming_completed') &&
+									!data.content.includes('stream_ended')
+								) {
+									accumulatedContent += data.content;
+									updateMessage(context.assistantMessageId, accumulatedContent);
+									scrollToBottom();
+								}
+							} catch (error) {
+								console.error('Error parsing SSE data:', error);
+							}
 						}
 					}
 				}
+			} catch (error) {
+				console.error('Stream reading error:', error);
+				toast.error('Error reading response stream');
 			}
 		},
 		onError: (error, _, context) => {
 			console.error('Error in generateResponseMutation:', error);
-			removeMessage(context.placeholderId);
+			if (context?.assistantMessageId) {
+				removeMessage(context.assistantMessageId);
+			}
 			toast.error(`Failed to generate response: ${error.message}`);
 		},
 	});

@@ -1,14 +1,13 @@
-// app/api/chat/route.js
 import { NextResponse } from 'next/server';
 import { addMessageToChat, getChatMessages } from '@/server/chat';
-import { getChatProvider } from '@/lib/ai-providers/index';
+import { getChatProvider } from '@/lib/ai-providers/server';
 import { handleProviderError } from '@/lib/error-handlers';
 
 export async function POST(request) {
     try {
         const { userId, chatId, content, persona } = await request.json();
 
-        // Validate request
+        // Input validation
         if (!userId || !chatId || !content || !persona) {
             return NextResponse.json(
                 { error: 'Missing required parameters' },
@@ -16,56 +15,83 @@ export async function POST(request) {
             );
         }
 
-        // Store user message
-        await addMessageToChat(userId, chatId, content, 'user');
+        // Store user message first
+        const userMessage = await addMessageToChat(userId, chatId, content, 'user');
 
         // Get chat history
         const previousMessages = await getChatMessages(userId, chatId);
 
-        // Get the AI provider based on persona configuration
+        // Get the appropriate provider
         const provider = getChatProvider(persona.provider);
 
-        // Create response stream
+        // Initialize streaming response
         const stream = new ReadableStream({
             async start(controller) {
                 const encoder = new TextEncoder();
-                let assistantContent = '';
+                let accumulatedContent = '';
+
+                // Helper function to send SSE data
+                const sendSSEMessage = (data) => {
+                    controller.enqueue(
+                        encoder.encode(`data: ${JSON.stringify(data)}\n\n`)
+                    );
+                };
 
                 try {
-                    // Format messages according to provider requirements
+                    // Format messages for the provider
                     const formattedMessages = provider.formatMessages({
                         persona,
                         previousMessages,
                     });
 
-                    // Generate stream from provider
-                    const aiStream = await provider.generateChatStream(formattedMessages, persona);
+                    // Start the AI stream
+                    const aiStream = await provider.generateChatStream(
+                        formattedMessages,
+                        persona
+                    );
+
+                    // Send initial status
+                    sendSSEMessage({
+                        type: 'status',
+                        content: 'streaming_started',
+                        messageId: userMessage.id
+                    });
 
                     // Process the stream
                     for await (const chunk of aiStream) {
                         const contentChunk = provider.extractContentFromChunk(chunk);
 
                         if (contentChunk) {
-                            assistantContent += contentChunk;
-                            controller.enqueue(
-                                encoder.encode(`data: ${JSON.stringify({
-                                    content: contentChunk,
-                                    provider: persona.provider
-                                })}\n\n`)
-                            );
+                            accumulatedContent += contentChunk;
+
+                            // Send the chunk immediately
+                            sendSSEMessage({
+                                type: 'chunk',
+                                content: contentChunk,
+                                provider: persona.provider
+                            });
                         }
                     }
 
-                    // Store complete response
-                    await addMessageToChat(
+                    // Store the complete response
+                    const assistantMessage = await addMessageToChat(
                         userId,
                         chatId,
-                        assistantContent,
-                        'assistant',
-                        { provider: persona.provider }
+                        accumulatedContent,
+                        'assistant'
                     );
 
+                    // Send completion status
+                    sendSSEMessage({
+                        type: 'status',
+                        content: 'streaming_completed',
+                        messageId: assistantMessage.id
+                    });
+
                 } catch (error) {
+                    console.error('Streaming error:', error);
+
+                    // Try to use fallback provider if available
                     const { fallbackProvider, errorMessage } = await handleProviderError(
                         error,
                         persona,
@@ -73,16 +99,14 @@ export async function POST(request) {
                     );
 
                     if (fallbackProvider) {
-                        // If we have a fallback provider, notify the client
-                        controller.enqueue(
-                            encoder.encode(
-                                `data: ${JSON.stringify({
-                                    notice: `Switching to fallback provider: ${fallbackProvider}`
-                                })}\n\n`
-                            )
-                        );
+                        // Notify about fallback
+                        sendSSEMessage({
+                            type: 'status',
+                            content: 'switching_provider',
+                            provider: fallbackProvider
+                        });
 
-                        // Get and use the fallback provider
+                        // Get and use fallback provider
                         const backupProvider = getChatProvider(fallbackProvider);
                         const backupMessages = backupProvider.formatMessages({
                             persona: { ...persona, provider: fallbackProvider },
@@ -94,55 +118,73 @@ export async function POST(request) {
                             { ...persona, provider: fallbackProvider }
                         );
 
-                        // Process the fallback stream
+                        // Reset accumulated content for fallback
+                        accumulatedContent = '';
+
+                        // Process fallback stream
                         for await (const chunk of backupStream) {
                             const contentChunk = backupProvider.extractContentFromChunk(chunk);
+
                             if (contentChunk) {
-                                assistantContent += contentChunk;
-                                controller.enqueue(
-                                    encoder.encode(`data: ${JSON.stringify({
-                                        content: contentChunk,
-                                        provider: fallbackProvider
-                                    })}\n\n`)
-                                );
+                                accumulatedContent += contentChunk;
+
+                                sendSSEMessage({
+                                    type: 'chunk',
+                                    content: contentChunk,
+                                    provider: fallbackProvider
+                                });
                             }
                         }
 
-                        // Store the fallback response
-                        await addMessageToChat(
+                        // Store fallback response
+                        const fallbackMessage = await addMessageToChat(
                             userId,
                             chatId,
-                            assistantContent,
+                            accumulatedContent,
                             'assistant',
                             { provider: fallbackProvider }
                         );
+
+                        // Send completion status for fallback
+                        sendSSEMessage({
+                            type: 'status',
+                            content: 'streaming_completed',
+                            messageId: fallbackMessage.id
+                        });
+
                     } else {
-                        // No fallback available, send error to client
-                        controller.enqueue(
-                            encoder.encode(
-                                `data: ${JSON.stringify({
-                                    error: errorMessage || 'An error occurred'
-                                })}\n\n`
-                            )
-                        );
+                        // Send error status if no fallback available
+                        sendSSEMessage({
+                            type: 'error',
+                            content: errorMessage || 'An error occurred during streaming',
+                            error: error.message
+                        });
                     }
                 } finally {
+                    // Ensure the stream is properly closed
+                    sendSSEMessage({
+                        type: 'status',
+                        content: 'stream_ended'
+                    });
                     controller.close();
                 }
-            },
+            }
         });
 
+        // Return the stream response
         return new NextResponse(stream, {
             headers: {
                 'Content-Type': 'text/event-stream',
                 'Cache-Control': 'no-cache, no-transform',
-                Connection: 'keep-alive',
+                'Connection': 'keep-alive',
+                'X-Accel-Buffering': 'no' // Prevents proxy buffering
             },
         });
+
     } catch (error) {
-        console.error('Error in chat API:', error);
+        console.error('Fatal error in chat API:', error);
         return NextResponse.json(
-            { error: 'Failed to process chat' },
+            { error: 'Failed to process chat request' },
             { status: 500 }
         );
     }

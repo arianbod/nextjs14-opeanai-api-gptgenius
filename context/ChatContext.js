@@ -3,6 +3,7 @@ import { useAuth } from './AuthContext';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { AIPersonas } from '@/lib/Personas';
+import { getProviderConfig } from '@/lib/ai-providers';
 import axios from 'axios';
 
 const ChatContext = createContext();
@@ -26,7 +27,7 @@ export const ChatProvider = ({ children }) => {
     const [chatList, setChatList] = useState([]);
     const router = useRouter();
 
-    // New state for search functionality
+    // Search functionality states
     const [searchTerm, setSearchTerm] = useState('');
     const [searchFilter, setSearchFilter] = useState('all');
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -41,17 +42,24 @@ export const ChatProvider = ({ children }) => {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setChatList(data.chats);
+                    setChatList(data.chats || []);
                 } else {
                     console.error('Failed to fetch chat list');
+                    toast.error('Failed to load chat list');
                 }
             } catch (error) {
                 console.error('Error fetching chat list:', error);
+                toast.error('Failed to load chat list');
             }
         }
     };
 
     const handleModelSelect = (selectedModel) => {
+        if (!selectedModel) {
+            console.error('No model selected');
+            return;
+        }
+
         setModel(selectedModel);
         setActiveChat({
             id: null,
@@ -73,67 +81,86 @@ export const ChatProvider = ({ children }) => {
             try {
                 setIsLoading(true);
 
-                // Separate try-catch for chat info
+                // First get chat info
                 try {
-                    const { data: chatInfo } = await axios.post('/api/chat/getChatInfo', {
-                        userId: user.userId,
-                        chatId
-                    });
+                    const { data } = await axios.post('/api/chat/getChatInfo',
+                        { userId: user.userId, chatId },
+                        { headers: { 'Content-Type': 'application/json' } }
+                    );
 
-                    if (chatInfo) {
-                        setActiveChat(prev => ({
-                            ...prev,
-                            id: chatInfo.id,
-                            provider: chatInfo.provider,
-                            model: chatInfo.model,
-                            modelCodeName: chatInfo.modelCodeName
-                        }));
+                    if (data?.chatDataInfo?.modelCodeName) {
+                        const selectedModel = AIPersonas.find(
+                            (p) => p.modelCodeName === data.chatDataInfo.modelCodeName
+                        ) || AIPersonas.find((p) => p.provider === data.chatDataInfo.provider);
+
+                        if (!selectedModel) {
+                            console.warn(`Model ${data.chatDataInfo.modelCodeName} not found, using default model for provider ${data.chatDataInfo.provider}`);
+                            const defaultModel = AIPersonas.find(p =>
+                                p.provider === data.chatDataInfo.provider &&
+                                p.modelCodeName === getProviderConfig(data.chatDataInfo.provider).defaultModel
+                            );
+
+                            if (!defaultModel) {
+                                throw new Error('No compatible model found');
+                            }
+
+                            setActiveChat({
+                                id: data.chatDataInfo.id,
+                                title: data.chatDataInfo.title || '',
+                                model: defaultModel,
+                                engine: defaultModel.engine,
+                                role: defaultModel.role,
+                                name: defaultModel.name,
+                                avatar: defaultModel.avatar,
+                                provider: data.chatDataInfo.provider,
+                                modelCodeName: defaultModel.modelCodeName
+                            });
+                            setModel(defaultModel);
+                        } else {
+                            setActiveChat({
+                                id: data.chatDataInfo.id,
+                                title: data.chatDataInfo.title || '',
+                                model: selectedModel,
+                                engine: selectedModel.engine,
+                                role: selectedModel.role,
+                                name: selectedModel.name,
+                                avatar: selectedModel.avatar,
+                                provider: data.chatDataInfo.provider,
+                                modelCodeName: data.chatDataInfo.modelCodeName
+                            });
+                            setModel(selectedModel);
+                        }
+                    } else {
+                        throw new Error('Invalid chat info received');
                     }
                 } catch (error) {
                     console.error('Error fetching chat info:', error);
                     toast.error('Failed to load chat information');
+                    return;
                 }
+
                 const response = await fetch('/api/chat/getChatMessages', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userId: user.userId, chatId }),
                 });
+
                 if (!response.ok) {
                     throw new Error('Failed to fetch chat messages');
                 }
+
                 const data = await response.json();
-                const fetchedMessages = data.messages;
-                if (fetchedMessages.length > 0) {
-                    const initialMessage = fetchedMessages[0].content.split(',')[0].trim();
-                    const selectedModel = AIPersonas.find((p) => p.name === initialMessage) || AIPersonas[0];
-                    setActiveChat({
-                        id: chatId,
-                        title: '',
-                        model: selectedModel,
-                        engine: selectedModel.engine,
-                        role: selectedModel.role,
-                        name: selectedModel.name,
-                        avatar: selectedModel.avatar,
-                        provider: selectedModel.provider,
-                        modelCodeName: selectedModel.modelCodeName,
-                    });
-                    setModel(selectedModel);
-                    setMessages(fetchedMessages);
+                if (data?.messages) {
+                    setMessages(data.messages);
                 } else {
-                    setActiveChat({
-                        id: chatId,
-                        title: '',
-                        model: null,
-                        engine: '',
-                        role: '',
-                        name: '', avatar: "", provider: "", modelCodeName: "",
-                    });
                     setMessages([]);
                 }
+
             } catch (error) {
                 console.error('Error fetching chat data:', error);
                 toast.error('Failed to load chat data. Please try again.');
                 setMessages([]);
+                resetChat();
             } finally {
                 setIsLoading(false);
             }
@@ -141,7 +168,7 @@ export const ChatProvider = ({ children }) => {
         [user]
     );
 
-    const resetChat = () => {
+    const resetChat = useCallback(() => {
         setActiveChat({
             id: null,
             title: '',
@@ -154,26 +181,51 @@ export const ChatProvider = ({ children }) => {
             modelCodeName: "",
         });
         setMessages([]);
-    };
+        setModel(null);
+    }, []);
 
+    // Key changes in these message handling functions
     const addMessage = useCallback((newMessage) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        // More permissive message validation
+        if (typeof newMessage !== 'object') {
+            console.error('Invalid message format:', newMessage);
+            return;
+        }
+
+        const messageToAdd = {
+            id: newMessage.id || '',
+            role: newMessage.role || 'user',
+            content: newMessage.content || '',
+            timestamp: newMessage.timestamp || new Date().toISOString()
+        };
+
+        setMessages(prevMessages => [...prevMessages, messageToAdd]);
     }, []);
 
     const updateMessage = useCallback((messageId, newContent) => {
-        setMessages((prevMessages) =>
-            prevMessages.map((msg) => (msg.id === messageId ? { ...msg, content: newContent } : msg))
+        if (!messageId) {
+            console.error('Missing messageId for update');
+            return;
+        }
+
+        setMessages(prevMessages =>
+            prevMessages.map(msg => msg.id === messageId
+                ? { ...msg, content: newContent || '' }
+                : msg
+            )
         );
     }, []);
 
     const removeMessage = useCallback((messageId) => {
-        setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
+        if (!messageId) {
+            console.error('Missing messageId for removal');
+            return;
+        }
+        setMessages(prevMessages => prevMessages.filter(msg => msg.id !== messageId));
     }, []);
 
-    // Function to toggle search
     const toggleSearch = () => setIsSearchOpen(prev => !prev);
 
-    // Function to filter messages based on search term and filter
     const filteredMessages = useCallback(() => {
         return messages.filter(message => {
             const matchesSearch = message.content.toLowerCase().includes(searchTerm.toLowerCase());
@@ -183,7 +235,9 @@ export const ChatProvider = ({ children }) => {
     }, [messages, searchTerm, searchFilter]);
 
     useEffect(() => {
-        fetchChats();
+        if (user?.userId) {
+            fetchChats();
+        }
     }, [user, activeChat]);
 
     const values = {
@@ -214,4 +268,10 @@ export const ChatProvider = ({ children }) => {
     return <ChatContext.Provider value={values}>{children}</ChatContext.Provider>;
 };
 
-export const useChat = () => useContext(ChatContext);
+export const useChat = () => {
+    const context = useContext(ChatContext);
+    if (!context) {
+        throw new Error('useChat must be used within a ChatProvider');
+    }
+    return context;
+};

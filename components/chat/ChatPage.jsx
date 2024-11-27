@@ -16,7 +16,7 @@ const ChatPage = () => {
 	}
 
 	// If a model has been selected, render the Chat interface
-	if (activeChat.model) {
+	if (activeChat.provider && activeChat.modelCodeName) {
 		return <Chat />;
 	}
 

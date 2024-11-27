@@ -15,29 +15,32 @@ const SidebarHeader = () => {
 	return (
 		<div className='flex flex-col py-6 px-6'>
 			<div className='flex items-center justify-between mb-4'>
-				<Link
-					onClick={() => resetChat()}
-					href='/'
-					className='flex items-center gap-4'>
-					<div className='relative w-14 h-14'>
+				<div className='flex items-center gap-4'>
+					<Link
+						onClick={() => resetChat()}
+						href='/'
+						className='relative w-14 h-14'>
 						<Image
 							alt='logo'
 							src='/images/babagpt_bw.svg'
 							layout='fill'
 							className='rounded-full shadow-lg bg-slate-800 p-1'
 						/>
-					</div>
+					</Link>
 					<div>
-						<h2 className='text-2xl tracking-wide capitalize font-semibold font-sans'>
+						<Link
+							onClick={() => resetChat()}
+							href='/'
+							className='text-2xl tracking-wide capitalize font-semibold font-sans'>
 							{dict.global.title}
-						</h2>
+						</Link>
 						<div className='flex gap-2  place-items-center justify-start'>
 							<ThemeToggle />
 							<LanguageToggle />
 						</div>
 						{/* <ShowTokenAmount /> */}
 					</div>
-				</Link>
+				</div>
 			</div>
 			<div className='flex justify-between space-x-2 place-items-center'></div>
 		</div>

@@ -1,4 +1,6 @@
+// components/chat/ModelCard.jsx
 import React from 'react';
+import { FaCheckCircle, FaLightbulb } from 'react-icons/fa';
 
 const ModelCard = ({ persona, onSelect, isSelected }) => {
 	const handleKeyPress = (e) => {
@@ -10,10 +12,10 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 	return (
 		<div
 			className={`
-        relative rounded-xl shadow-lg cursor-pointer
-        bg-white dark:bg-gray-800
-        transition-all duration-300 ease-in-out
-        hover:-translate-y-2 hover:shadow-2xl
+        relative rounded-xl shadow-md cursor-pointer
+        bg-gradient-to-br ${persona.color || 'from-blue-500 to-purple-500'}
+        transition-transform duration-300 ease-in-out
+        hover:scale-105 hover:shadow-2xl
         ${isSelected ? 'ring-4 ring-blue-500' : ''}
       `}
 			onClick={() => onSelect(persona)}
@@ -21,26 +23,25 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 			tabIndex={0}
 			onKeyPress={handleKeyPress}
 			aria-pressed={isSelected}>
-			{/* Hover Gradient Effect */}
+			{/* Overlay for dark mode */}
 			<div
 				className={`
           absolute inset-0 rounded-xl opacity-0 
           hover:opacity-20 transition-opacity duration-300
-          bg-gradient-to-br ${persona.color || 'from-blue-500 to-purple-500'}
+          bg-black
         `}
 			/>
 
 			{/* Main Content */}
-			<div className='p-4 flex items-start space-x-4 relative'>
+			<div className='p-6 flex flex-col items-center text-center relative'>
 				{/* Image Container */}
-				<div className='flex-shrink-0'>
+				<div className='mb-4'>
 					<img
-						src={`/images/personas/${
-							persona.role?.toLowerCase().replace(' ', '_') || 'default'
-						}.jpg`}
+						src={persona.avatar || '/images/default-avatar.jpg'}
 						alt={`${persona.name} avatar`}
 						className='w-24 h-24 rounded-full object-cover
-              transition-transform duration-300 hover:scale-105
+              border-4 border-white shadow-md
+              transition-transform duration-300 hover:scale-110
               select-none'
 						onError={(e) => {
 							e.target.src = '/images/default-avatar.jpg';
@@ -49,24 +50,54 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 				</div>
 
 				{/* Text Content */}
-				<div className='flex-grow'>
+				<div className='flex flex-col items-center'>
 					<h3
-						className='text-lg font-semibold 
-            text-gray-900 dark:text-white 
-            hover:text-blue-600 dark:hover:text-blue-400 
-            transition-colors duration-300 select-none'>
+						className='text-xl font-bold 
+            
+              transition-colors duration-300 select-none'>
 						{persona.name}
 					</h3>
-					<p
-						className='text-sm text-gray-600 dark:text-gray-300 
-            mt-1 select-none'>
-						{persona.role}
-					</p>
 
-					{/* Info Section */}
-					<div className='mt-2 text-xs text-gray-500 dark:text-gray-400 select-none'>
-						<p>Engine: {persona.engine}</p>
-						<p>Role: {persona.role}</p>
+					{/* Conditionally Render Role */}
+					{persona.role && persona.role !== persona.name && (
+						<p
+							className='text-sm 
+                mt-1 select-none'>
+							{persona.role}
+						</p>
+					)}
+
+					{/* Description */}
+					{persona.description && (
+						<p
+							className='text-sm  
+                mt-2 select-none'>
+							{persona.description}
+						</p>
+					)}
+
+					{/* Features Section */}
+					<div className='mt-4 flex flex-wrap gap-2'>
+						{persona.features && (
+							<>
+								{persona.features.suitableFor.map((feature, index) => (
+									<span
+										key={index}
+										className='flex items-center px-2 py-1 bg-blue-600 text-white  rounded-full text-xs'>
+										<FaCheckCircle className='mr-1' />
+										{feature}
+									</span>
+								))}
+								{persona.features.bestFor.map((feature, index) => (
+									<span
+										key={index}
+										className='flex items-center px-2 py-1 bg-yellow-500 text-white  rounded-full text-xs'>
+										<FaLightbulb className='mr-1' />
+										{feature}
+									</span>
+								))}
+							</>
+						)}
 					</div>
 				</div>
 			</div>

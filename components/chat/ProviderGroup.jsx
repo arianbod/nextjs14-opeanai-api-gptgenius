@@ -1,49 +1,36 @@
 // components/chat/ProviderGroup.jsx
-import React, { useState } from 'react';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import React from 'react';
 import ProviderModal from './ProviderModal';
+import { useState } from 'react';
+import { FaChevronDown } from 'react-icons/fa';
 
 const ProviderGroup = ({ provider, personas, selectedModel, onSelect }) => {
-	const [isModalOpen, setIsModalOpen] = useState(false);
-
-	const openProviderModal = () => {
-		setIsModalOpen(true);
-	};
-
-	const closeProviderModal = () => {
-		setIsModalOpen(false);
-	};
+	const [isOpen, setIsOpen] = useState(false);
 
 	return (
 		<div className='mb-6'>
-			{/* Provider Summary Card */}
-			<div
-				className={`
-          flex items-center justify-between p-4 rounded-lg bg-gray-100 dark:bg-gray-700 
-          cursor-pointer transition-colors duration-300 
-          hover:bg-gray-200 dark:hover:bg-gray-600
-        `}
-				onClick={openProviderModal}>
-				<div className='flex items-center space-x-3'>
-					{/* Provider Icon */}
-					<div className='text-2xl'>{personas[0].icon}</div>
-					{/* Provider Name */}
-					<h2 className='text-xl font-semibold text-gray-800 dark:text-gray-200'>
-						{provider} Engine
-					</h2>
-				</div>
-				{/* Expand/Collapse Icon */}
-				<div className='text-gray-600 dark:text-gray-300'>
-					<FaChevronDown />
-				</div>
-			</div>
+			{/* Provider Header */}
+			<button
+				onClick={() => setIsOpen(!isOpen)}
+				className='w-full flex items-center justify-between px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg shadow'
+				aria-expanded={isOpen}
+				aria-controls={`provider-modal-${provider}`}>
+				<span className='text-lg font-semibold text-gray-800 dark:text-gray-200'>
+					{provider} Engine
+				</span>
+				<FaChevronDown
+					className={`transition-transform duration-300 ${
+						isOpen ? 'transform rotate-180' : ''
+					}`}
+				/>
+			</button>
 
 			{/* Provider Modal */}
-			{isModalOpen && (
+			{isOpen && (
 				<ProviderModal
 					provider={provider}
 					personas={personas}
-					onClose={closeProviderModal}
+					onClose={() => setIsOpen(false)}
 					selectedModel={selectedModel}
 					onSelect={onSelect}
 				/>

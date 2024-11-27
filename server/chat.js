@@ -127,9 +127,10 @@ export async function getChatList(userId) {
         select: {
             id: true,
             title: true,
+            modelCodeName: true,
             titleUpdated: true,
             createdAt: true,
-            updatedAt: true
+            updatedAt: true, provider: true, model: true
         },
     });
     console.log('Chats found:', chats.length);

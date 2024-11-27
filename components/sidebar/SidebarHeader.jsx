@@ -28,17 +28,18 @@ const SidebarHeader = () => {
 						/>
 					</div>
 					<div>
-						<h2 className='text-2xl tracking-wide capitalize font-extrabold font-serif'>
+						<h2 className='text-2xl tracking-wide capitalize font-semibold font-sans'>
 							{dict.global.title}
 						</h2>
-						<ShowTokenAmount />
+						<div className='flex gap-2  place-items-center justify-start'>
+							<ThemeToggle />
+							<LanguageToggle />
+						</div>
+						{/* <ShowTokenAmount /> */}
 					</div>
 				</Link>
 			</div>
-			<div className='flex justify-end space-x-2 place-items-center'>
-				<ThemeToggle />
-				<LanguageToggle />
-			</div>
+			<div className='flex justify-between space-x-2 place-items-center'></div>
 		</div>
 	);
 };

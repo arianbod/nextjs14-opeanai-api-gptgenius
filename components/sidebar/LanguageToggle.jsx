@@ -1,8 +1,10 @@
+// components/LanguageToggle.jsx
 'use client';
+
 import React, { useState, useRef, useEffect, memo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useParams } from 'next/navigation';
-import { IoLanguage, IoChevronDown } from 'react-icons/io5';
+import { IoGlobe, IoChevronDown } from 'react-icons/io5'; // Changed icon to IoGlobe
 
 const languages = [
 	{ code: 'en', name: 'English', flag: '🇬🇧' },
@@ -45,13 +47,16 @@ const LanguageToggle = () => {
 			className='relative'
 			ref={dropdownRef}>
 			<button
-				className='flex items-center space-x-2  hover:bg-base-200 text-base-content rounded-full px-4 py-2 transition-colors duration-200'
+				className='flex items-center space-x-2 hover:bg-base-200 text-base-content rounded-full py-2 transition-colors duration-200'
 				onClick={() => setIsOpen(!isOpen)}>
-				<IoLanguage className='h-5 w-5 text-primary' />
-				{/* <span className='font-medium'>{currentLanguage.flag}</span> */}
-				{/* <span className='text-sm font-medium'>{currentLanguage.name}</span> */}
+				<IoGlobe className='h-5 w-5 font-bold' /> {/* Changed icon */}
+				<span className='font-medium text-sm'>
+					{/* {currentLanguage.flag} */}
+					{/* {currentLanguage.name} */}
+				</span>{' '}
+				{/* Display flag and name */}
 				<IoChevronDown
-					className={`h-4 w-4 transition-transform duration-200 ${
+					className={`h-4 w-4 transition-transform duration-100 ${
 						isOpen ? 'rotate-180' : ''
 					}`}
 				/>
@@ -67,7 +72,7 @@ const LanguageToggle = () => {
 									: 'text-base-content'
 							}`}
 							onClick={() => changeLanguage(language.code)}>
-							{/* <span className='text-xl'>{language.flag}</span> */}
+							<span className='text-xl'>{language.flag}</span>
 							<span>{language.name}</span>
 						</button>
 					))}

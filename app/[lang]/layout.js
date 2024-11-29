@@ -28,6 +28,14 @@ export default async function RootLayout(props) {
   const dict = await getDictionary(lang);
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+          integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="font-sans flex overflow-x-hidden">
         <Providers translations={dict}>
           <Toaster position="top-center" />

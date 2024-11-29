@@ -36,11 +36,11 @@ export default async function RootLayout(props) {
           crossOrigin="anonymous"
         />
       </head>
-      <body className="font-sans flex overflow-x-hidden">
+      <body className="font-sans flex max-w-full overflow-x-hidden">
         <Providers translations={dict}>
           <Toaster position="top-center" />
           <Sidebar />
-          <main className="flex-1 mx-0 lg:ml-80 p-0 pt-8 md:pt-0 ">
+          <main className="flex-1 mx-0 lg:ml-80 p-0 pt-8 md:pt-0 max-w-full">
             {children}
           </main>
         </Providers>

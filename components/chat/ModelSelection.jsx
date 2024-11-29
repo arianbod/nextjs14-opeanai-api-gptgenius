@@ -91,6 +91,31 @@ const ModelSelection = () => {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [selectedCategory, setSelectedCategory] = useState('all');
 
+	// Dynamically get unique categories from personas
+	const categories = useMemo(() => {
+		const uniqueCategories = new Set();
+		// Add 'all' category first
+		uniqueCategories.add('all');
+
+		// Collect all categories from personas
+		AIPersonas.forEach((persona) => {
+			if (persona.categories && Array.isArray(persona.categories)) {
+				persona.categories.forEach((category) =>
+					uniqueCategories.add(category)
+				);
+			}
+		});
+
+		// Convert to array of objects with proper formatting
+		return Array.from(uniqueCategories).map((category) => ({
+			id: category,
+			name:
+				category === 'all'
+					? 'All Models'
+					: category.charAt(0).toUpperCase() + category.slice(1),
+		}));
+	}, []);
+
 	// Filter and sort personas
 	const filteredPersonas = useMemo(() => {
 		let filtered = AIPersonas;
@@ -144,14 +169,6 @@ const ModelSelection = () => {
 		return recent;
 	}, [chatList]);
 
-	const categories = [
-		{ id: 'all', name: 'All Models' },
-		{ id: 'creative', name: 'Creative Writing' },
-		{ id: 'analytical', name: 'Analysis' },
-		{ id: 'coding', name: 'Programming' },
-		{ id: 'chat', name: 'Conversation' },
-	];
-
 	return (
 		<div className='min-h-screen w-full bg-base-100'>
 			<SearchComponent
@@ -162,7 +179,7 @@ const ModelSelection = () => {
 			<div className='max-w-4xl mx-auto px-6 py-8'>
 				{/* Categories */}
 				<div className='mb-8 overflow-x-auto'>
-					<div className='flex gap-2 pb-2'>
+					<div className='flex gap-2 pb-2 flex-wrap'>
 						{categories.map((category) => (
 							<button
 								key={category.id}
@@ -170,7 +187,7 @@ const ModelSelection = () => {
 								className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap
                   transition-colors duration-200 ${
 										selectedCategory === category.id
-											? 'bg-primary text-primary-content'
+											? 'bg-base-300'
 											: 'bg-base-200 text-base-content/70 hover:bg-base-300'
 									}`}>
 								{category.name}

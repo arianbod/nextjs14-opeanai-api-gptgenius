@@ -13,7 +13,7 @@ const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 
 	return (
 		<motion.div
-			className='sticky top-0 z-50 w-full bg-base-100/95 backdrop-blur-xl'
+			className='sticky top-0 z-20 w-full bg-base-100/95 backdrop-blur-xl'
 			initial={{ height: '4rem' }}
 			animate={{ height: isExpanded ? '6rem' : '4rem' }}>
 			<div className='max-w-4xl mx-auto h-full px-6'>
@@ -23,7 +23,7 @@ const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 							scale: isExpanded ? 0.9 : 1,
 							translateY: isExpanded ? -2 : 0,
 						}}
-						className='text-xl font-semibold text-base-content'>
+						className=' text-xl font-semibold text-base-content'>
 						Select an AI Model
 					</motion.h1>
 
@@ -52,6 +52,7 @@ const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 								<Search
 									size={18}
 									className='text-base-content/50'
+									onFocus={() => setIsExpanded(true)}
 								/>
 							</div>
 							{searchValue && (

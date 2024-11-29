@@ -35,9 +35,9 @@ const Message = ({ role, content, timestamp }) => {
 				/>
 			)}
 			<div
-				className={`w-full flex flex-col ${
-					isUser ? 'items-end bg-base-300' : 'items-start'
-				} mb-4 hover:bg-base-200 rounded-lg p-4 transition-all max-w-full`}>
+				className={`w-full flex flex-col 
+		
+				 mb-4 hover:bg-base-200 rounded-lg p-4 transition-all max-w-full`}>
 				<div className='flex justify-between items-center w-full mb-2'>
 					<span
 						className={`text-xs ${

@@ -68,7 +68,7 @@ const Header = ({ msgLen = 0 }) => {
 								scale: isExpanded ? 0.9 : 1,
 								translateY: isExpanded ? -4 : 0,
 							}}
-							className='text-xl font-semibold flex items-center gap-2'>
+							className=' ml-3 text-xl font-semibold flex items-center gap-2'>
 							<Image
 								src={activeChat.avatar}
 								alt='robot'

@@ -58,9 +58,9 @@ async function generateChatTitle(initialMessage) {
 
         let title = '';
         for await (const chunk of stream) {
-            console.log('Chunk:', chunk);
+            // console.log('Chunk:', chunk);
             const chunkContent = provider.extractContentFromChunk(chunk);
-            console.log('Chunk content:', chunkContent);
+            // console.log('Chunk content:', chunkContent);
             if (typeof chunkContent === 'string' && chunkContent) {
                 title += chunkContent;
             } else {
@@ -68,7 +68,7 @@ async function generateChatTitle(initialMessage) {
             }
         }
 
-        console.log('Generated title:', title);
+        // console.log('Generated title:', title);
         return title.trim() || "New Conversation";
     } catch (error) {
         console.error('Error generating chat title:', error);
@@ -114,7 +114,7 @@ export async function createChat(userId, initialMessage, model) {
 }
 
 export async function getChatList(userId) {
-    console.log('Fetching chat list for user:', userId);
+    // console.log('Fetching chat list for user:', userId);
     const user = await getUserById(userId);
     if (!user) {
         console.error('User not found:', userId);
@@ -133,13 +133,13 @@ export async function getChatList(userId) {
             updatedAt: true, provider: true, model: true
         },
     });
-    console.log('Chats found:', chats.length);
+    // console.log('Chats found:', chats.length);
 
     return chats;
 }
 
 export async function getChatMessages(userId, chatId) {
-    console.log('Fetching messages for user:', userId, 'in chat:', chatId);
+    // console.log('Fetching messages for user:', userId, 'in chat:', chatId);
     const user = await getUserById(userId);
     if (!user) {
         console.error('User not found:', userId);
@@ -171,7 +171,7 @@ export async function getChatMessages(userId, chatId) {
 }
 
 export async function addMessageToChat(userId, chatId, content, role) {
-    console.log('Adding message for user:', userId, 'to chat:', chatId);
+    // console.log('Adding message for user:', userId, 'to chat:', chatId);
     const user = await getUserById(userId);
     if (!user) {
         console.error('User not found:', userId);
@@ -185,7 +185,7 @@ export async function addMessageToChat(userId, chatId, content, role) {
     });
 
     if (!chat) {
-        console.log('Chat not found, creating new chat');
+        // console.log('Chat not found, creating new chat');
         chat = await prisma.chat.create({
             data: {
                 id: chatIdString,
@@ -307,7 +307,7 @@ export async function getChatInfo(chatId) {
     try {
 
         const chatInfo = await prisma.chat.findUnique({ where: { id: chatId }, select: { id: true, provider: true, model: true, modelCodeName: true, title: true } })
-        console.log("chatInfo", chatInfo);
+        // console.log("chatInfo", chatInfo);
         return chatInfo
     } catch (error) {
         console.error("there is an error on getchatinfo", error);

@@ -78,7 +78,7 @@ export const ChatProvider = ({ children }) => {
             modelCodeName: selectedModel.modelCodeName,
         });
         setMessages([]);
-        router.push('/chat');
+        router.prefetch('/chat');
     }, [router]);
 
     const fetchChatData = useCallback(async (chatId) => {

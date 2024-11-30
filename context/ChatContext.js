@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { useParams, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
 import { AIPersonas } from '@/lib/Personas';
 import { getProviderConfig } from '@/lib/ai-providers';
 import axios from 'axios';
@@ -10,6 +10,7 @@ import { nanoid } from 'nanoid';
 const ChatContext = createContext();
 
 export const ChatProvider = ({ children }) => {
+    const params = useParams();
     const { user } = useAuth();
     const router = useRouter();
 
@@ -152,10 +153,13 @@ export const ChatProvider = ({ children }) => {
             console.error('Error fetching chat data:', error);
             toast.error('Failed to load chat data. Please try again.');
             resetChat();
+            if (error.response?.status === 404) {
+                router.prefetch('/chat');
+            }
         } finally {
             setIsLoading(false);
         }
-    }, [user?.userId]);
+    }, [user?.userId, router]);
 
     const resetChat = useCallback(() => {
         setActiveChat({
@@ -192,7 +196,6 @@ export const ChatProvider = ({ children }) => {
 
     const updateMessage = useCallback((messageId, newContent) => {
         if (!messageId) return;
-
         setMessages(prev => prev.map(msg =>
             msg.id === messageId ? { ...msg, content: newContent || '' } : msg
         ));
@@ -214,7 +217,6 @@ export const ChatProvider = ({ children }) => {
         const assistantMessageId = nanoid();
 
         try {
-            // Add user message first
             addMessage({
                 id: userMessageId,
                 role: 'user',
@@ -222,7 +224,6 @@ export const ChatProvider = ({ children }) => {
                 timestamp: new Date().toISOString(),
             });
 
-            // Add assistant placeholder
             addMessage({
                 id: assistantMessageId,
                 role: 'assistant',
@@ -230,7 +231,6 @@ export const ChatProvider = ({ children }) => {
                 timestamp: new Date().toISOString(),
             });
 
-            // Handle chat creation if needed
             let chatId = activeChat.id;
             if (!chatId) {
                 const modelData = {
@@ -258,7 +258,6 @@ export const ChatProvider = ({ children }) => {
                 window.history.pushState(null, '', `/chat/${chatId}`);
             }
 
-            // Generate response
             const messageResponse = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -273,7 +272,6 @@ export const ChatProvider = ({ children }) => {
 
             if (!messageResponse.ok) throw new Error('Failed to send message');
 
-            // Handle streaming response
             const reader = messageResponse.body.getReader();
             const decoder = new TextDecoder();
             let accumulatedContent = '';
@@ -290,7 +288,6 @@ export const ChatProvider = ({ children }) => {
                         if (line.startsWith('data: ')) {
                             try {
                                 const data = JSON.parse(line.slice(6));
-
                                 if (
                                     data.content &&
                                     typeof data.content === 'string' &&
@@ -335,24 +332,29 @@ export const ChatProvider = ({ children }) => {
         });
     }, [messages, searchTerm, searchFilter]);
 
+    // Fetch chat list when user is available
     useEffect(() => {
         if (user?.userId) {
             fetchChats();
         }
     }, [user?.userId, fetchChats]);
 
+    // Set active chat based on route params
     useEffect(() => {
-        const chatId = window.location.pathname.split('/').pop();
-        if (chatId && chatId !== 'chat' && user?.userId && !activeChat.id) {
-            setActiveChat(prev => ({ ...prev, id: chatId }));
+        if (params?.chatId && user?.userId && !activeChat.id) {
+            // Validate chat ID format if needed
+            if (params.chatId.match(/^[a-zA-Z0-9-_]+$/)) {
+                setActiveChat(prev => ({ ...prev, id: params.chatId }));
+            }
         }
-    }, [user?.userId]);
+    }, [params?.chatId, user?.userId]);
 
+    // Fetch chat data when active chat changes
     useEffect(() => {
-        if (activeChat?.id && user?.userId && messages.length === 0) {
+        if (params?.chatId && activeChat?.id && user?.userId && messages.length === 0) {
             fetchChatData(activeChat.id);
         }
-    }, [activeChat?.id, user?.userId, messages.length, fetchChatData]);
+    }, [params?.chatId, activeChat?.id, user?.userId, messages.length, fetchChatData]);
 
     const values = {
         model,

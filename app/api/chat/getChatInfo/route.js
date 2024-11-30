@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
     try {
         const { userId, chatId } = await request.json()
+        console.log("userId:", userId, "chatId:", chatId);
+
         if (!chatId) {
             console.log("there is no chatId in getChatInfo API");
             return NextResponse.json({ error: "chatId is required" }, { status: 400 })

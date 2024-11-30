@@ -24,7 +24,7 @@ export async function POST(request) {
                 role: model.role || "user"
             });
 
-            console.log({ success: true, data: chat });
+            // console.log({ success: true, data: chat });
             return NextResponse.json({
                 success: true,
                 data: chat

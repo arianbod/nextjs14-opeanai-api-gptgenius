@@ -10,9 +10,7 @@ const ChatInterface = () => {
 	const {
 		messages,
 		isGenerating,
-		isLoading,
 		generateResponse,
-		activeChat,
 		model,
 	} = useChat();
 

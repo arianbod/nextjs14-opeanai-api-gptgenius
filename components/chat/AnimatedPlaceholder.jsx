@@ -1,60 +1,17 @@
-import React, { useState, useEffect, memo } from 'react';
+import React from 'react';
 
-const AnimatedPlaceholder = ({ sentences, isActive, staticText }) => {
-	const [placeholderText, setPlaceholderText] = useState('');
-	const [isTyping, setIsTyping] = useState(true);
-	const [currentIndex, setCurrentIndex] = useState(0);
-	const [currentSentence, setCurrentSentence] = useState(0);
-
-	useEffect(() => {
-		if (!isActive) {
-			setPlaceholderText(staticText);
-			return;
-		}
-
-		let timer;
-		const currentText = sentences[currentSentence];
-
-		if (isTyping) {
-			if (currentIndex < currentText.length) {
-				timer = setTimeout(() => {
-					setPlaceholderText((prev) => prev + currentText[currentIndex]);
-					setCurrentIndex((prev) => prev + 1);
-				}, 200); // Slower typing speed
-			} else {
-				setIsTyping(false);
-				timer = setTimeout(() => {
-					setIsTyping(false);
-				}, 2000); // Pause before erasing
-			}
-		} else {
-			if (placeholderText.length > 0) {
-				timer = setTimeout(() => {
-					setPlaceholderText((prev) => prev.slice(0, -1));
-				}, 100); // Slower erasing speed
-			} else {
-				setIsTyping(true);
-				setCurrentIndex(0);
-				setCurrentSentence((prev) => (prev + 1) % sentences.length);
-			}
-		}
-
-		return () => clearTimeout(timer);
-	}, [
-		currentIndex,
-		isTyping,
-		sentences,
-		placeholderText,
-		isActive,
-		staticText,
-		currentSentence,
-	]);
-
+const AnimatedPlaceholder = ({ text = 'Write your response here' }) => {
 	return (
-		<span className='animated-placeholder text-base-content/50'>
-			{placeholderText}
-		</span>
+		<div className='relative flex items-center'>
+			{/* Larger floating dot indicator */}
+			<div className='absolute -top-5 left-0 animate-bounce'>
+				<div className='w-2.5 h-2.5 bg-blue-400 rounded-full shadow-lg' />
+				<div className='w-1.5 h-1.5 bg-blue-400 rounded-full absolute -bottom-1 left-0.5 opacity-50' />
+			</div>
+
+			<span className='text-gray-400 pl-4'>{text}</span>
+		</div>
 	);
 };
 
-export default memo(AnimatedPlaceholder);
+export default AnimatedPlaceholder;

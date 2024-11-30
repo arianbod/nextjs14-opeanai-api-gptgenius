@@ -8,7 +8,7 @@ const MessageList = ({ isLoading, messagesEndRef, msgLen }) => {
 
 	return (
 		<div className='relative flex flex-col'>
-			<div className='flex-1 overflow-y-auto p-4 space-y-4 backdrop-blur-lg z-0 pt-14'>
+			<div className='flex-1 overflow-y-auto space-y-4 backdrop-blur-lg z-0 pt-14 pb-14'>
 				<div className='max-w-4xl mx-auto flex flex-col gap-4'>
 					{filteredMessages().length > 0 ? (
 						filteredMessages().map(({ id, role, content, timestamp }) => (
@@ -31,7 +31,7 @@ const MessageList = ({ isLoading, messagesEndRef, msgLen }) => {
 							/>
 						</div>
 					)}
-					{isLoading && <LoadingMessage />}
+					{/* {isLoading && <LoadingMessage />} */}
 					<div ref={messagesEndRef} />
 				</div>
 			</div>

@@ -12,9 +12,11 @@ export async function POST(request) {
         if (chatDataInfo?.id) {
             return NextResponse.json({ chatDataInfo }, { status: 200 })
         }
+        // Add this to handle case where chatDataInfo doesn't have an id
+        return NextResponse.json({ error: "Chat not found" }, { status: 404 })
     } catch (error) {
         console.error("getChatInfo faced an error:", error);
-
+        // Add this to handle the error case
+        return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 })
     }
-
 }

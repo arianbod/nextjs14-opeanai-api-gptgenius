@@ -217,21 +217,9 @@ export const ChatProvider = ({ children }) => {
         const assistantMessageId = nanoid();
 
         try {
-            addMessage({
-                id: userMessageId,
-                role: 'user',
-                content: content.trim(),
-                timestamp: new Date().toISOString(),
-            });
-
-            addMessage({
-                id: assistantMessageId,
-                role: 'assistant',
-                content: '',
-                timestamp: new Date().toISOString(),
-            });
-
             let chatId = activeChat.id;
+
+            // If no active chat, create one first
             if (!chatId) {
                 const modelData = {
                     name: activeChat.model.name,
@@ -257,6 +245,22 @@ export const ChatProvider = ({ children }) => {
                 setActiveChat(prev => ({ ...prev, id: chatId }));
                 window.history.pushState(null, '', `/chat/${chatId}`);
             }
+
+            // Add the user message after chat creation
+            addMessage({
+                id: userMessageId,
+                role: 'user',
+                content: content.trim(),
+                timestamp: new Date().toISOString(),
+            });
+
+            // Add empty assistant message that will be updated with the stream
+            addMessage({
+                id: assistantMessageId,
+                role: 'assistant',
+                content: '',
+                timestamp: new Date().toISOString(),
+            });
 
             const messageResponse = await fetch('/api/chat', {
                 method: 'POST',

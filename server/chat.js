@@ -77,7 +77,6 @@ async function generateChatTitle(initialMessage) {
 }
 
 export async function createChat(userId, initialMessage, model) {
-    // console.log('Creating chat for user:', userId, 'with initial message:', initialMessage);
     const user = await getUserById(userId);
     if (!user) {
         console.error('User not found:', userId);
@@ -98,13 +97,11 @@ export async function createChat(userId, initialMessage, model) {
                 role: model.role,
             },
         });
-        // console.log('Chat created:', chat);
 
-        const message = await addMessageToChat(userId, chat.id, initialMessage, 'user');
-        // console.log("message has been added:", message);
+        // Remove this line to prevent duplicate message
+        // const message = await addMessageToChat(userId, chat.id, initialMessage, 'user');
 
         revalidatePath('/chat');
-        // console.log("revalidate done");
 
         return chat;
     } catch (error) {

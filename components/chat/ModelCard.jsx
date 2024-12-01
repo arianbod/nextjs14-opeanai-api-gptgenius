@@ -43,6 +43,10 @@ const ModelCard = ({ persona, onSelect, isSelected, isRecent }) => {
 						alt={`${persona.name} avatar`}
 						className={`object-cover w-full h-full rounded-full transition-transform duration-300 ${
 							isRecent ? 'hover:scale-105' : 'hover:scale-110'
+						} ${
+							persona.avatar === '/images/babagpt_bw.svg'
+								? 'bg-green-600 p-1 rounded-full'
+								: ''
 						}`}
 						onError={(e) => {
 							e.target.src = '/images/default-avatar.jpg';

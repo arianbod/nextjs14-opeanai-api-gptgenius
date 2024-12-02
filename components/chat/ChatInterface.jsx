@@ -7,12 +7,7 @@ import Header from './Header';
 import toast from 'react-hot-toast';
 
 const ChatInterface = () => {
-	const {
-		messages,
-		isGenerating,
-		generateResponse,
-		model,
-	} = useChat();
+	const { messages, isGenerating, generateResponse, model } = useChat();
 
 	const [inputText, setInputText] = useState('');
 	const messagesEndRef = useRef(null);

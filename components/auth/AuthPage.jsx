@@ -1,4 +1,3 @@
-// components/auth/AuthPage.jsx
 'use client';
 import React, { useState } from 'react';
 import { FaEnvelope, FaPaw, FaLock } from 'react-icons/fa';
@@ -7,10 +6,12 @@ import { useAuth } from '@/context/AuthContext';
 import ThemeToggle from '../sidebar/ThemeToggle';
 import { useTranslations } from '@/context/TranslationContext';
 import LanguageToggle from '../sidebar/LanguageToggle';
+import { useRouter } from 'next/navigation';
 
 const AuthPage = () => {
+	const router = useRouter();
 	const dict = useTranslations();
-	const { login, setUser, setTokenBalance } = useAuth();
+	const { login, register } = useAuth();
 	const [isRegistering, setIsRegistering] = useState(true);
 	const [email, setEmail] = useState('');
 	const [token, setToken] = useState('');
@@ -35,42 +36,13 @@ const AuthPage = () => {
 
 		setIsSubmitting(true);
 		try {
-			const endpoint = isRegistering ? '/api/auth/register' : '/api/auth/login';
-			const body = isRegistering
-				? { email: email || null, animalSelection: selectedAnimals }
-				: { token, animalSelection: selectedAnimals };
+			const result = isRegistering
+				? await register(email || null, selectedAnimals)
+				: await login(token, selectedAnimals);
 
-			const response = await fetch(endpoint, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(body),
-			});
-
-			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.error || 'Request failed');
+			if (result.success) {
+				router.push('/chat');
 			}
-
-			const data = await response.json();
-
-			// Set user state directly
-			const userData = {
-				userId: data.userId,
-				token: data.token,
-				tokenBalance: data.tokenBalance,
-			};
-			const timestamp = new Date().getTime();
-			const userWithTimestamp = { ...userData, timestamp };
-			setUser(userWithTimestamp);
-			setTokenBalance(data.tokenBalance);
-			localStorage.setItem('user', JSON.stringify(userWithTimestamp));
-			document.cookie = `user=${JSON.stringify(userWithTimestamp)}; path=/;`;
-
-			toast.success(
-				isRegistering
-					? dict.auth.register.successMessage
-					: dict.auth.login.successMessage
-			);
 		} catch (error) {
 			toast.error(
 				isRegistering
@@ -98,7 +70,7 @@ const AuthPage = () => {
 						<h1 className='text-md lg:text-3xl font-bold text-center mx-auto'>
 							{isRegistering ? dict.auth.register.title : dict.auth.login.title}
 						</h1>
-						<div className='absolute right-2 flex justify-between place-items-center '>
+						<div className='absolute right-2 flex justify-between place-items-center'>
 							<ThemeToggle />
 							<LanguageToggle />
 						</div>

@@ -39,10 +39,7 @@ export default async function RootLayout(props) {
       <body className="font-sans flex max-w-full overflow-x-hidden">
         <Providers translations={dict}>
           <Toaster position="top-center" />
-          <Sidebar />
-          <main className="flex-1 mx-0 lg:ml-80 p-0 md:pt-0 max-w-full">
-            {children}
-          </main>
+          {children}
         </Providers>
       </body>
       <GoogleAnalytics gaId="G-3T0PFBNMPY" />

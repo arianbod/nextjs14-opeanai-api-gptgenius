@@ -12,7 +12,7 @@ const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 
 	return (
 		<motion.div
-			className='sticky top-0 z-20 w-full bg-base-100/95 backdrop-blur-xl'
+			className='sticky top-0 z-20 w-full bg-base-100/95 backdrop-blur-xl overflow-x-hidden'
 			initial={{ height: '4rem' }}
 			animate={{ height: isExpanded ? '6rem' : '4rem' }}>
 			<div className='max-w-4xl mx-auto h-full px-6'>
@@ -40,7 +40,7 @@ const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 								onFocus={() => setIsExpanded(true)}
 								onBlur={() => !searchValue && setIsExpanded(false)}
 								placeholder={isExpanded ? placeholder : ''}
-								className={`w-full h-10 pl-10 pr-4 rounded-full bg-base-200/50 border-none 
+								className={`h-10 pl-10 pr-4 rounded-full bg-base-200/50 border-none 
                   ring-1 ring-base-200 focus:ring-2 focus:ring-primary/30 
                   transition-all duration-300 text-base-content/80 
                   placeholder:text-base-content/30 ${

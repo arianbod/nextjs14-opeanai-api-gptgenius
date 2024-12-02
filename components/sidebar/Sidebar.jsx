@@ -24,7 +24,7 @@ const Sidebar = () => {
 		<>
 			{/* Mobile hamburger button */}
 			<div
-				className={`lg:hidden fixed top-3 left-0 flex transition-all  shadow-sm  ${
+				className={`lg:hidden fixed top-3 left-0 flex transition-all  rounded-full  ${
 					sidebarOpen ? 'hidden' : ''
 				} z-50`}>
 				<button

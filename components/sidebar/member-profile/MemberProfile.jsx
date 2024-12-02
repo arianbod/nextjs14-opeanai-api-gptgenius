@@ -162,12 +162,12 @@ const MemberProfile = () => {
 				</div>
 
 				{/* Additional Guidance */}
-				<div className='mt-6'>
+				{/* <div className='mt-6'>
 					<p className='text-xs text-gray-500 dark:text-gray-400'>
 						{dict.auth.tokenReminder ||
 							'Remember your token for your next login.'}
 					</p>
-				</div>
+				</div> */}
 			</div>
 
 			{/* Black Friday Promotion Modal */}

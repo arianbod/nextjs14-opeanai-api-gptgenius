@@ -52,8 +52,8 @@ const Header = ({ msgLen = 0 }) => {
 			</AnimatePresence>
 
 			<motion.header
-				animate={{ height: isExpanded ? '8rem' : '4rem' }}
-				className='fixed top-0 left-0 lg:pl-72 right-0 shadow-lg z-30 bg-base-200/95 backdrop-blur-xl'>
+				animate={{ height: isExpanded ? '10rem' : '4rem' }}
+				className='fixed rounded-b-lg top-0 left-0 lg:pl-72 right-0 shadow-lg z-30 bg-base-200/95 backdrop-blur-xl'>
 				<div className='max-w-3xl mx-auto h-full'>
 					<motion.div
 						className='px-6 py-2 flex justify-between items-center'
@@ -117,7 +117,7 @@ const Header = ({ msgLen = 0 }) => {
 											value={searchTerm}
 											onChange={(e) => setSearchTerm(e.target.value)}
 											placeholder='Search in conversation...'
-											className='w-full p-3 pl-11 rounded-xl bg-base-200/50 border-none ring-1 ring-base-200 focus:ring-2 focus:ring-primary/30 focus:bg-base-200/80 transition-all duration-300 text-base-content/80 placeholder:text-base-content/30'
+											className='w-full p-2 mb-2 pl-11 rounded-xl bg-base-100 border-none ring-1 ring-base-200 focus:ring-2 focus:ring-primary/30 focus:bg-base-200/80 transition-all duration-300 text-base-content/80 placeholder:text-base-content/30'
 										/>
 									</div>
 
@@ -125,7 +125,7 @@ const Header = ({ msgLen = 0 }) => {
 										initial={{ opacity: 0, y: -10 }}
 										animate={{ opacity: 1, y: 0 }}
 										transition={{ delay: 0.1 }}
-										className='absolute right-3 top-1/2 -translate-y-1/2 flex gap-1'>
+										className='  -translate-y-1/2 flex gap-1'>
 										{['all', 'user', 'assistant'].map((filter) => (
 											<button
 												key={filter}

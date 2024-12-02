@@ -173,7 +173,13 @@ const MessageInput = ({
 								maxHeight,
 								height: 'auto',
 							}}
-							placeholder='Write your response here'
+							placeholder={
+								isPending
+									? 'Generating...'
+									: msgLen < 1
+									? 'start writing here'
+									: `Write your response here`
+							}
 						/>
 
 						{textareaRef.current && (

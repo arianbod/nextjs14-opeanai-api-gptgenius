@@ -34,7 +34,7 @@ const ModelCard = ({ persona, onSelect, isSelected, isRecent }) => {
 			/>
 
 			{/* Main Content */}
-			<div className='flex flex-row items-center relative'>
+			<div className='flex flex-col items-center relative'>
 				{/* Image Container */}
 				<div
 					className={`flex-shrink-0 ${isRecent ? 'w-12 h-12' : 'w-24 h-24'} `}>

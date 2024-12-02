@@ -76,10 +76,12 @@ const Header = ({ msgLen = 0 }) => {
 								width={24}
 								height={24}
 							/>
-							<span>{activeChat.name}</span>
-							<span className='text-sm text-base-content/70'>
-								({activeChat.role})
-							</span>
+							<div className='flex flex-col justify-start'>
+								<span>{activeChat.name}</span>
+								<span className='text-sm text-base-content/50 -mt-1 capitalize'>
+									{activeChat.role}
+								</span>
+							</div>
 						</motion.div>
 
 						{msgLen > 2 && (

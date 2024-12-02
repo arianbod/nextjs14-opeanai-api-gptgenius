@@ -4,6 +4,7 @@ import { AIPersonas } from '@/lib/Personas';
 import { useChat } from '@/context/ChatContext';
 import { motion } from 'framer-motion';
 import { Sparkles, Zap, Clock, Star } from 'lucide-react';
+import PersonaSuggester from './PersonaSuggester';
 
 const ModelCard = ({ persona, onSelect, isSelected }) => {
 	return (
@@ -199,6 +200,7 @@ const ModelSelection = () => {
 						</div>
 					)}
 				{/* <hr /> */}
+				<PersonaSuggester />
 				{/* Categories */}
 				<div className='mb-8 overflow-x-auto mx-auto flex place-items-center place-content-center'>
 					<div className='flex gap-2 pb-2 flex-wrap select-none place-content-center mx-auto'>

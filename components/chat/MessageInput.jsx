@@ -237,7 +237,7 @@ const MessageInput = ({
 
 						<button
 							type='submit'
-							className='p-2 text-gray-400 hover:text-white rounded-full disabled:opacity-50'
+							className='p-2 text-gray-400 hover:text-white rounded-full disabled:opacity-70 bg-base-200 disabled:bg-base-200/50 transition-all duration-200'
 							disabled={isPending || isDisabled || inputText.trim() === ''}
 							aria-label='Send Message'>
 							<ArrowUp className='w-6 h-6' />

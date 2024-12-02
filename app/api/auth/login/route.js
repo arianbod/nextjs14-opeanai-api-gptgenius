@@ -1,37 +1,64 @@
-// app/api/auth/login/route.js
 import { authenticateUser } from '@/server/auth';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
     try {
         const { token, animalSelection } = await request.json();
-        console.log('Received login request:', { token, animalSelection });
 
-        if (
-            !token ||
-            !animalSelection ||
-            !Array.isArray(animalSelection) ||
-            animalSelection.length !== 3
-        ) {
-            console.log('Invalid request data');
+        // Enhanced validation with specific error messages
+        if (!token) {
             return NextResponse.json(
-                { error: 'Invalid token or animal selection' },
+                { error: 'Please enter your authentication token' },
+                { status: 400 }
+            );
+        }
+
+        if (!animalSelection || !Array.isArray(animalSelection)) {
+            return NextResponse.json(
+                { error: 'Please select your security animals in the correct order' },
+                { status: 400 }
+            );
+        }
+
+        if (animalSelection.length !== 3) {
+            return NextResponse.json(
+                {
+                    error: `Please select exactly 3 animals in order (you selected ${animalSelection.length})`,
+                    currentCount: animalSelection.length
+                },
                 { status: 400 }
             );
         }
 
         const result = await authenticateUser(token, animalSelection);
-        console.log('Authentication result:', result);
 
         if (result.success) {
-            return NextResponse.json(result);
+            return NextResponse.json({
+                ...result,
+                message: result.message || 'Login successful! Please save your new token.'
+            });
         } else {
-            return NextResponse.json({ error: result.message }, { status: 401 });
+            let statusCode = 401;
+            let response = {
+                error: result.message,
+                isLocked: result.isLocked || false,
+                remainingAttempts: result.remainingAttempts,
+                remainingLockoutTime: result.remainingLockoutTime
+            };
+
+            if (result.isLocked) {
+                statusCode = 423; // Locked
+            }
+
+            return NextResponse.json(response, { status: statusCode });
         }
     } catch (error) {
         console.error('Authentication error:', error);
         return NextResponse.json(
-            { error: 'An error occurred during authentication', details: error.message },
+            {
+                error: 'An unexpected error occurred. Please try again later.',
+                details: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
             { status: 500 }
         );
     }

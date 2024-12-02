@@ -18,26 +18,41 @@
 	"auth": {
 		"register": {
 			"title": "Register",
-			"Email": "Email",
-			"emailPlaceHolder": "your@email.com",
-			"buttonText": "Register",
-			"submittingText": "Registering...",
+			"email": "Email",
+			"emailPlaceholder": "your@email.com",
+			"buttonText": "Get Started",
+			"submitting": "Registering...",
 			"successMessage": "Registration successful!",
 			"failureMessage": "Registration failed. Please try again.",
-			"switchToLogin": "Already have an account? Login"
+			"switchToLogin": "Already have an account? Login",
+			"info": "Create your account by selecting 3 animals in sequence. Remember this sequence - it's your unique security pattern.",
+			"submit": "Get Started"
 		},
 		"login": {
 			"title": "Login",
-			"enterToken": "Enter your token:",
-			"Email": "Email",
-			"emailPlaceHolder": "your@email.com",
+			"token": "Authentication Token",
+			"tokenPlaceholder": "Enter your authentication token",
+			"email": "Email",
+			"emailPlaceholder": "your@email.com",
 			"buttonText": "Login",
-			"submittingText": "Logging in...",
+			"submitting": "Logging in...",
 			"successMessage": "Login successful!",
 			"failureMessage": "Login failed. Please try again.",
-			"switchToRegister": "Need an account? Register"
+			"switchToRegister": "Need an account? Register",
+			"info": "Enter your token and select your 3 animals in the exact same order as during registration.",
+			"submit": "Login"
 		},
-		"chooseAnimalTitle": "Select 3 animals:",
+		"selectThreeAnimalsInOrder": "Please select exactly 3 animals",
+		"selectedAnimalsOrder": "Your selected sequence:",
+		"selectNext": "Select next animal",
+		"selectAnimalsInOrder": "Choose your security animals in order:",
+		"orderMatters": "Remember: The order of animal selection matters!",
+		"tokenCopied": "Token copied to clipboard",
+		"saveToken": "Save Your Token",
+		"tokenImportant": "Important: Save this token - you'll need it to log in.",
+		"rememberAnimalOrder": "Remember your animal sequence:",
+		"understood": "I've saved my token",
+		"genericError": "An error occurred. Please try again",
 		"animalList": [
 			{ "key": "dog", "label": "dog" },
 			{ "key": "cat", "label": "cat" },
@@ -52,8 +67,48 @@
 			{ "key": "kangaroo", "label": "kangaroo" },
 			{ "key": "koala", "label": "koala" }
 		],
-		"selectAnimalsError": "Please select exactly 3 animals",
-		"OTPTitle": "This is your one-time Token",
-		"OTPDescription": "Please note your new token for next login."
+		
+		"token": {
+			"title": "Your Authentication Token",
+			"description": "IMPORTANT: Save this token - you'll need it to log in",
+			"newTokenNotice": "Your token has been updated. Save the new token below:",
+			"copied": "Token copied to clipboard",
+			"savePrompt": "Save Your Token",
+			"important": "Important: Save this token - you'll need it to log in.",
+			"understand": "I've saved my token",
+			"rememberSequence": "Remember your animal sequence:",
+			"sequenceOrder": "Your selected sequence in order:"
+		},
+		"security": {
+			"orderMatters": "Remember: The order of animal selection matters!",
+			"remainingAttempts": "${count} login attempts remaining",
+			"lockoutWarning": "Too many failed attempts will lock your account",
+			"saveTokenWarning": "Save your token securely - it cannot be recovered if lost"
+		},
+		"errors": {
+			"email": {
+				"alreadyExists": "This email is already registered. Please try logging in or use a different email.",
+				"invalid": "Please enter a valid email address",
+				"required": "Email is required"
+			},
+			"animals": {
+				"selectThree": "Please select exactly 3 animals",
+				"uniqueRequired": "Please select 3 different animals",
+				"invalidSelection": "Invalid animal selection. Please try again",
+				"orderMatters": "The order of animal selection is important. Please try again"
+			},
+			"login": {
+				"invalidToken": "Invalid authentication token. Please check and try again",
+				"incorrectSequence": "Incorrect animal sequence. ${attempts} attempts remaining",
+				"accountLocked": "Account is temporarily locked. Please try again in ${minutes} minutes",
+				"generic": "Login failed. Please check your credentials and try again"
+			},
+			"register": {
+				"generic": "Registration failed. Please try again",
+				"emailTaken": "This email is already registered. Please try logging in or use a different email"
+			},
+			"network": "Connection error. Please check your internet connection",
+			"generic": "An error occurred. Please try again"
+		}
 	}
 }

@@ -28,6 +28,7 @@ export const AuthProvider = ({ children }) => {
 
             return true;
         } catch (error) {
+            console.error("Auth check error:", error);
             return false;
         }
     };
@@ -46,9 +47,14 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const setCookieAndStorage = (userData) => {
+    const setCookieAndStorage = (userData, selectedAnimals = null) => {
         const timestamp = new Date().getTime();
-        const userWithTimestamp = { ...userData, timestamp };
+        const userWithTimestamp = {
+            ...userData,
+            timestamp,
+            // Store selected animals if provided (only during registration)
+            ...(selectedAnimals && { selectedAnimals })
+        };
 
         // Set local storage
         localStorage.setItem("user", JSON.stringify(userWithTimestamp));
@@ -67,29 +73,53 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (email, animalSelection) => {
         try {
-            const response = await fetch("/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({ email, animalSelection }),
             });
 
-            if (response.ok) {
-                const userData = await response.json();
-                setCookieAndStorage(userData);
-                toast.success("Registration successful!");
-                return { success: true };
-            } else {
-                const error = await response.json();
-                toast.error(error.error || "Registration failed");
-                return { success: false, error: error.error };
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Return the error information from the server
+                return {
+                    success: false,
+                    error: data.error,
+                    details: data.details,
+                    validationErrors: data.validationErrors,
+                    code: data.code
+                };
             }
+
+            return data; // Contains success: true and other user data
         } catch (error) {
-            toast.error("An error occurred during registration");
-            return { success: false, error: "Registration error" };
+            console.error('Registration error:', error);
+            return {
+                success: false,
+                error: 'An unexpected error occurred',
+                code: 'UNKNOWN_ERROR'
+            };
         }
     };
 
     const login = async (token, animalSelection) => {
+        if (!token?.trim()) {
+            return {
+                success: false,
+                error: "Please enter your authentication token"
+            };
+        }
+
+        if (!Array.isArray(animalSelection) || animalSelection.length !== 3) {
+            return {
+                success: false,
+                error: "Please select exactly 3 animals in order"
+            };
+        }
+
         try {
             const response = await fetch("/api/auth/login", {
                 method: "POST",
@@ -97,19 +127,39 @@ export const AuthProvider = ({ children }) => {
                 body: JSON.stringify({ token, animalSelection }),
             });
 
+            const data = await response.json();
+
             if (response.ok) {
-                const userData = await response.json();
-                setCookieAndStorage(userData);
-                toast.success("Login successful!");
-                return { success: true };
+                setCookieAndStorage(data);
+                return {
+                    success: true,
+                    token: data.token,
+                    message: data.message
+                };
             } else {
-                const error = await response.json();
-                toast.error(error.error || "Login failed");
-                return { success: false, error: error.error };
+                let errorMessage = data.error;
+                if (data.remainingAttempts) {
+                    errorMessage = `${data.error} (${data.remainingAttempts} attempts remaining)`;
+                }
+                if (data.remainingLockoutTime) {
+                    errorMessage = `${data.error} Try again in ${data.remainingLockoutTime} minutes.`;
+                }
+
+                return {
+                    success: false,
+                    error: errorMessage,
+                    isLocked: data.isLocked,
+                    remainingAttempts: data.remainingAttempts,
+                    remainingLockoutTime: data.remainingLockoutTime,
+                    message: data.error
+                };
             }
         } catch (error) {
-            toast.error("An error occurred during login");
-            return { success: false, error: "Login error" };
+            console.error("Login error:", error);
+            return {
+                success: false,
+                error: "An unexpected error occurred during login. Please try again."
+            };
         }
     };
 

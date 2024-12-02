@@ -26,9 +26,22 @@ export function verifyHash(value, hashedValue) {
 }
 
 export async function createUser(animalSelection, email = null) {
+    // Validate animal selection array
+    if (!Array.isArray(animalSelection) || animalSelection.length !== 3) {
+        throw new Error('Invalid animal selection: must select exactly 3 animals');
+    }
+
+    // Validate each animal in the selection
+    animalSelection.forEach(animal => {
+        if (!ANIMALS.includes(animal)) {
+            throw new Error(`Invalid animal selected: ${animal}`);
+        }
+    });
+
     const token = generateToken();
     const hashedToken = hashValue(token);
-    const hashedAnimalSelection = hashValue(animalSelection.join(','));
+    // Store animals in order by joining them with a delimiter
+    const hashedAnimalSelection = hashValue(animalSelection.join('|'));
 
     const user = await prisma.user.create({
         data: {
@@ -36,6 +49,8 @@ export async function createUser(animalSelection, email = null) {
             animalSelection: hashedAnimalSelection,
             email,
             tokenBalance: 3000, // Default token balance
+            loginAttempts: 0,
+            lastLoginAttempt: null
         },
     });
 
@@ -43,17 +58,33 @@ export async function createUser(animalSelection, email = null) {
         userId: user.id,
         token,
         tokenBalance: user.tokenBalance,
-        animalSelection, // Return the original (unhashed) animal selection
+        animalSelection, // Return original animal selection for confirmation
     };
 }
 
 export async function authenticateUser(token, animalSelection) {
-    console.log('Authenticating user with token:', token, 'and animals:', animalSelection);
+    console.log('Authenticating user with token and ordered animals');
+
+    // Validate animal selection
+    if (!Array.isArray(animalSelection) || animalSelection.length !== 3) {
+        return {
+            success: false,
+            message: 'Please select exactly 3 animals in order'
+        };
+    }
+
+    // Validate each animal
+    for (const animal of animalSelection) {
+        if (!ANIMALS.includes(animal)) {
+            return {
+                success: false,
+                message: `Invalid animal selected: ${animal}`
+            };
+        }
+    }
 
     // Find the user
     const users = await prisma.user.findMany();
-    console.log('All users:', users.map(u => ({ id: u.id, tokenPrefix: u.token.slice(0, 8) })));
-
     let user = null;
     for (const u of users) {
         if (verifyHash(token, u.token)) {
@@ -62,42 +93,56 @@ export async function authenticateUser(token, animalSelection) {
         }
     }
 
-    console.log('User found:', user ? 'Yes' : 'No');
-    if (user) {
-        console.log('User details:', {
-            id: user.id,
-            tokenPrefix: user.token.slice(0, 8),
-            loginAttempts: user.loginAttempts,
-            lastLoginAttempt: user.lastLoginAttempt
-        });
-    }
-
     if (!user) {
-        return { success: false, message: 'User not found' };
+        return {
+            success: false,
+            message: 'Invalid authentication token',
+            remainingAttempts: MAX_LOGIN_ATTEMPTS
+        };
     }
 
+    // Check for account lockout
     if (
         user.loginAttempts >= MAX_LOGIN_ATTEMPTS &&
         user.lastLoginAttempt &&
         new Date().getTime() - user.lastLoginAttempt.getTime() < LOCKOUT_DURATION
     ) {
-        console.log('Account locked');
-        return { success: false, message: 'Account is temporarily locked. Please try again later.' };
+        const remainingLockoutTime = Math.ceil(
+            (LOCKOUT_DURATION - (new Date().getTime() - user.lastLoginAttempt.getTime())) / 60000
+        );
+
+        return {
+            success: false,
+            message: `Account is temporarily locked. Please try again in ${remainingLockoutTime} minutes.`,
+            isLocked: true,
+            remainingLockoutTime
+        };
     }
 
-    const animalSelectionVerified = verifyHash(animalSelection.join(','), user.animalSelection);
-
-    console.log('Animal selection verified:', animalSelectionVerified);
+    // Verify animal selection order
+    const animalSelectionString = animalSelection.join('|');
+    const animalSelectionVerified = verifyHash(animalSelectionString, user.animalSelection);
 
     if (!animalSelectionVerified) {
+        // Increment login attempts
+        const newAttempts = (user.loginAttempts || 0) + 1;
         await prisma.user.update({
             where: { id: user.id },
             data: {
-                loginAttempts: user.loginAttempts + 1,
+                loginAttempts: newAttempts,
                 lastLoginAttempt: new Date(),
             },
         });
-        return { success: false, message: 'Invalid animal selection' };
+
+        const remainingAttempts = MAX_LOGIN_ATTEMPTS - newAttempts;
+        return {
+            success: false,
+            message: remainingAttempts > 0
+                ? `Incorrect animal sequence. ${remainingAttempts} attempts remaining.`
+                : 'Account locked due to too many failed attempts. Please try again in 15 minutes.',
+            remainingAttempts,
+            isLocked: remainingAttempts <= 0
+        };
     }
 
     // Reset login attempts on successful authentication
@@ -126,14 +171,12 @@ export async function authenticateUser(token, animalSelection) {
         select: { id: true, tokenBalance: true },
     });
 
-    console.log('Authentication successful');
-
     return {
         success: true,
         userId: updatedUser.id,
         tokenBalance: updatedUser.tokenBalance,
-        token: newToken, // Return the new token to the client
-        message: 'Authentication successful. Please note your new token.',
+        token: newToken,
+        message: 'Login successful! A new token has been generated for security. Please save it.',
     };
 }
 

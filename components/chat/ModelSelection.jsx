@@ -154,7 +154,8 @@ const ModelSelection = () => {
 		const recent = [];
 
 		for (const chat of chatList) {
-			if (recent.length >= 3) break;
+			// number of last used models to show
+			if (recent.length >= 2) break;
 			if (!recentModelIds.has(chat.modelCodeName)) {
 				const model = AIPersonas.find(
 					(p) => p.modelCodeName === chat.modelCodeName
@@ -177,25 +178,6 @@ const ModelSelection = () => {
 			/>
 
 			<div className='max-w-4xl mx-auto px-6 py-8'>
-				{/* Categories */}
-				<div className='mb-8 overflow-x-auto'>
-					<div className='flex gap-2 pb-2 flex-wrap'>
-						{categories.map((category) => (
-							<button
-								key={category.id}
-								onClick={() => setSelectedCategory(category.id)}
-								className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap
-                  transition-colors duration-200 ${
-										selectedCategory === category.id
-											? 'bg-base-300'
-											: 'bg-base-200 text-base-content/70 hover:bg-base-300'
-									}`}>
-								{category.name}
-							</button>
-						))}
-					</div>
-				</div>
-
 				{/* Recent Models */}
 				{recentModels.length > 0 &&
 					!searchTerm &&
@@ -216,6 +198,25 @@ const ModelSelection = () => {
 							</div>
 						</div>
 					)}
+				{/* <hr /> */}
+				{/* Categories */}
+				<div className='mb-8 overflow-x-auto mx-auto flex place-items-center place-content-center'>
+					<div className='flex gap-2 pb-2 flex-wrap select-none place-content-center mx-auto'>
+						{categories.map((category) => (
+							<button
+								key={category.id}
+								onClick={() => setSelectedCategory(category.id)}
+								className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap
+                  transition-colors duration-200 ${
+										selectedCategory === category.id
+											? 'bg-base-300'
+											: 'bg-base-200 text-base-content/70 hover:bg-base-300'
+									}`}>
+								{category.name}
+							</button>
+						))}
+					</div>
+				</div>
 
 				{/* All Models */}
 				<div className='space-y-3'>

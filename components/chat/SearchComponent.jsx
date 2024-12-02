@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [searchValue, setSearchValue] = useState('');
-
 	const handleSearch = (value) => {
 		setSearchValue(value);
 		onSearch(value);
@@ -23,8 +22,8 @@ const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 							scale: isExpanded ? 0.9 : 1,
 							translateY: isExpanded ? -2 : 0,
 						}}
-						className=' text-xl font-semibold text-base-content'>
-						Select an AI Model
+						className=' text-lg font-semibold text-base-content ml-4 select-none'>
+						{!isExpanded && 'Select an AI Model'}
 					</motion.h1>
 
 					<div className='relative'>

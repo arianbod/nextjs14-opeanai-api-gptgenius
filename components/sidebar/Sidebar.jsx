@@ -52,7 +52,7 @@ const Sidebar = () => {
 							</h3>
 							<Link
 								onClick={() => resetChat()}
-								href='/'
+								href='/chat'
 								className='flex items-center gap-4 hover:bg-base-300 rounded-full transition-all p-1'>
 								<MdAdd className='w-6 h-6' />
 							</Link>

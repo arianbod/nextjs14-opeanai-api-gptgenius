@@ -30,7 +30,7 @@ const SidebarHeader = () => {
 					<div>
 						<Link
 							onClick={() => resetChat()}
-							href='/'
+							href='/chat'
 							className='text-2xl tracking-wide capitalize font-semibold font-sans'>
 							{dict.global.title}
 						</Link>

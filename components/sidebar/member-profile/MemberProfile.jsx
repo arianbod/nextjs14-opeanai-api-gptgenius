@@ -77,14 +77,16 @@ const MemberProfile = () => {
 					<div className='flex items-center space-x-4'>
 						{/* User Avatar - Hidden when token is visible */}
 						{!isTokenVisible && (
-							<motion.div
-								className='w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center'
-								whileHover={{ scale: 1.1 }}
-								transition={{ duration: 0.3 }}>
-								<span className='text-blue-600 dark:text-blue-300 font-semibold text-lg'>
-									{getUserInitials(user.name)}
-								</span>
-							</motion.div>
+							<Link href={`/account/${user.userId}`}>
+								<motion.div
+									className='w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center'
+									whileHover={{ scale: 1.1 }}
+									transition={{ duration: 0.3 }}>
+									<span className='text-blue-600 dark:text-blue-300 font-semibold text-lg'>
+										{getUserInitials(user.name)}
+									</span>
+								</motion.div>
+							</Link>
 						)}
 
 						{/* User Info */}

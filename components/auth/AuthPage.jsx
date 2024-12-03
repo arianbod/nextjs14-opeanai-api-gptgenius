@@ -183,7 +183,7 @@ const AuthPage = () => {
 	);
 
 	return (
-		<div className='flex items-center justify-center min-h-screen p-4'>
+		<div className='flex items-center justify-center min-h-screen p-4 fixed  left-0 right-0 mx-auto'>
 			<div className='w-full max-w-md'>
 				<div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl'>
 					{/* Header section with toggles */}
@@ -191,7 +191,7 @@ const AuthPage = () => {
 						<h1 className='text-xl lg:text-2xl font-bold text-center mx-auto'>
 							{isRegistering ? dict.auth.register.title : dict.auth.login.title}
 						</h1>
-						<div className='absolute right-2 flex gap-2'>
+						<div className='absolute right-2 flex gap-2 place-items-center'>
 							<ThemeToggle />
 							<LanguageToggle />
 						</div>

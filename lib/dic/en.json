@@ -52,7 +52,29 @@
 		"tokenImportant": "Important: Save this token - you'll need it to log in.",
 		"rememberAnimalOrder": "Remember your animal sequence:",
 		"understood": "I've saved my token",
-		"genericError": "An error occurred. Please try again",
+		"errors": {
+			"generic": "An error occurred. Please try again",
+			"network": "Network error. Please check your connection",
+			"animals": {
+				"selectThree": "Please select exactly 3 animals"
+			},
+			"email": {
+				"invalid": "Please enter a valid email address",
+				"required": "Email is required"
+			},
+			"register": {
+				"generic": "Registration failed. Please try again",
+				"emailTaken": "This email is already registered"
+			},
+			"login": {
+				"generic": "Login failed. Please try again",
+				"tokenRequired": "Authentication token is required",
+				"invalidToken": "Invalid authentication token",
+				"incorrectSequence": "Incorrect animal sequence. ${attempts} attempts remaining",
+				"accountLocked": "Account is locked. Try again in ${minutes} minutes",
+				"tooManyAttempts": "Too many failed attempts. Please try again later"
+			}
+		},
 		"animalList": [
 			{ "key": "dog", "label": "dog" },
 			{ "key": "cat", "label": "cat" },
@@ -66,49 +88,164 @@
 			{ "key": "penguin", "label": "penguin" },
 			{ "key": "kangaroo", "label": "kangaroo" },
 			{ "key": "koala", "label": "koala" }
-		],
-		
-		"token": {
-			"title": "Your Authentication Token",
-			"description": "IMPORTANT: Save this token - you'll need it to log in",
-			"newTokenNotice": "Your token has been updated. Save the new token below:",
-			"copied": "Token copied to clipboard",
-			"savePrompt": "Save Your Token",
-			"important": "Important: Save this token - you'll need it to log in.",
-			"understand": "I've saved my token",
-			"rememberSequence": "Remember your animal sequence:",
-			"sequenceOrder": "Your selected sequence in order:"
+		]
+	},
+	"personas": {
+		"names": {
+			"babagpt": "BabaGPT",
+			"claude": "Claude",
+			"o1Preview": "o1-preview",
+			"o1Mini": "o1-mini",
+			"chatgpt4": "4o"
 		},
-		"security": {
-			"orderMatters": "Remember: The order of animal selection matters!",
-			"remainingAttempts": "${count} login attempts remaining",
-			"lockoutWarning": "Too many failed attempts will lock your account",
-			"saveTokenWarning": "Save your token securely - it cannot be recovered if lost"
+		"roles": {
+			"searchEngine": "Live Search Engine",
+			"chatgpt": "CHATGPT",
+			"analyticalAssistant": "Analytical Assistant"
 		},
+		"descriptions": {
+			"babagpt": "Mixtral delivers technical analysis and data in a friendly, accessible format with clear number formatting and engaging presentation.",
+			"claude": "Claude excels in delivering clear and concise analytical insights, making it ideal for data-driven decision-making and detailed explanations.",
+			"o1Preview": "o1-preview is designed for generating comprehensive and detailed responses, suitable for in-depth analysis and extended conversations.",
+			"o1Mini": "o1-mini offers quick and efficient responses, ideal for short queries and fast-paced interactions.",
+			"chatgpt4": "4o is an analytical assistant capable of adjusting response creativity and length, perfect for tailored and nuanced conversations."
+		},
+		"categories": {
+			"all": "All Models",
+			"creative": "Creative",
+			"analytical": "Analytical",
+			"coding": "Coding",
+			"chat": "Chat",
+			"searchEngine": "Search Engine"
+		},
+		"features": {
+			"suitableFor": {
+				"contentCreation": "Content Creation",
+				"academicResearch": "Academic Research",
+				"codingAssistance": "Coding Assistance",
+				"dataAnalysis": "Data Analysis",
+				"quickQueries": "Quick Queries",
+				"customerSupport": "Customer Support",
+				"creativeProjects": "Creative Projects"
+			},
+			"bestFor": {
+				"detailedExplanations": "Detailed Explanations",
+				"conciseSummaries": "Concise Summaries",
+				"interactiveAssistance": "Interactive Assistance",
+				"dataDecisions": "Data-Driven Decisions",
+				"userFriendly": "User-Friendly Explanations",
+				"technicalAccuracy": "Technical Accuracy",
+				"liveData": "Live Real Data",
+				"accurate": "Accurate"
+			},
+			"specificFeatures": {
+				"languageSupport": "Language Support",
+				"customization": "Customization",
+				"securityFeatures": "Security Features",
+				"highPerformance": "High Performance",
+				"realtimeCollaboration": "Real-Time Collaboration",
+				"engagingOutputs": "Engaging Outputs",
+				"integrationCapabilities": "Integration Capabilities"
+			}
+		},
+		"labels": {
+			"pro": "PRO",
+			"new": "NEW",
+			"rating": "Rating",
+			"speed": "Speed",
+			"speedValues": {
+				"veryFast": "Very Fast",
+				"fast": "Fast",
+				"slow": "Slow"
+			},
+			"recentlyUsed": "Recently Used"
+		}
+	},
+	"modelSelection": {
+		"search": {
+			"placeholder": "Search by capability, name, or description..."
+		},
+		"sections": {
+			"recent": "Recent",
+			"allModels": "All Models",
+			"noResults": "No models found matching your search."
+		},
+		"needHelp": "Need Help?",
+		"backButton": "Back",
+		"chooseAgain": "Choose Again"
+	},
+	"personaSuggester": {
+		"needHelp": "Need Help?",
+		"progress": {
+			"step1": "Only three questions to find the best solution for you.",
+			"step2": "Almost there, only two questions left.",
+			"step3": "We are finding the best solution, only one question left.",
+			"step4": "Finished! This is your list."
+		},
+		"questions": {
+			"useCase": {
+				"title": "1. What is your primary use-case?",
+				"options": {
+					"contentCreation": "Content Creation",
+					"academicResearch": "Academic Research",
+					"codingAssistance": "Coding Assistance",
+					"dataAnalysis": "Data Analysis",
+					"creativeProjects": "Creative Projects"
+				}
+			},
+			"responseType": {
+				"title": "2. What type of responses do you prefer?",
+				"options": {
+					"detailedExplanations": "Detailed Explanations",
+					"conciseSummaries": "Concise Summaries",
+					"codeSnippets": "Code Snippets",
+					"visualAids": "Visual Aids",
+					"interactiveAssistance": "Interactive Assistance"
+				}
+			},
+			"features": {
+				"title": "3. Do you require any specific features?",
+				"options": {
+					"languageSupport": "Language Support",
+					"integrationCapabilities": "Integration Capabilities",
+					"customization": "Customization",
+					"realtimeCollaboration": "Real-Time Collaboration",
+					"securityFeatures": "Security Features"
+				}
+			}
+		},
+		"results": {
+			"title": "Completed! Here are your recommended personas:",
+			"noResults": "No suitable personas found.",
+			"chooseAgain": "Choose Again"
+		}
+	},
+	"account": {
+		"title": "Account Settings",
+		"subtitle": "Manage your account settings and preferences",
+		"userInfo": "User Information",
+		"email": "Email Address",
+		"updateEmail": "Update Email",
+		"newEmailPlaceholder": "Enter new email address",
+		"save": "Save Changes",
+		"cancel": "Cancel",
+		"noEmail": "No email address set",
+		"tokenBalance": "Token Balance",
+		"authToken": "Authentication Token",
+		"showToken": "Show Token",
+		"hideToken": "Hide Token",
+		"tokenCopied": "Token copied to clipboard",
+		"security": "Security",
+		"securityInfo": "Keep your token and animal sequence secure. These are required for authentication and cannot be recovered if lost.",
+		"logout": "Logout",
+		"emailUpdated": "Email updated successfully",
+		"updateFailed": "Failed to update email",
+		"invalidEmail": "Please enter a valid email address",
 		"errors": {
-			"email": {
-				"alreadyExists": "This email is already registered. Please try logging in or use a different email.",
-				"invalid": "Please enter a valid email address",
-				"required": "Email is required"
-			},
-			"animals": {
-				"selectThree": "Please select exactly 3 animals",
-				"uniqueRequired": "Please select 3 different animals",
-				"invalidSelection": "Invalid animal selection. Please try again",
-				"orderMatters": "The order of animal selection is important. Please try again"
-			},
-			"login": {
-				"invalidToken": "Invalid authentication token. Please check and try again",
-				"incorrectSequence": "Incorrect animal sequence. ${attempts} attempts remaining",
-				"accountLocked": "Account is temporarily locked. Please try again in ${minutes} minutes",
-				"generic": "Login failed. Please check your credentials and try again"
-			},
-			"register": {
-				"generic": "Registration failed. Please try again",
-				"emailTaken": "This email is already registered. Please try logging in or use a different email"
-			},
-			"network": "Connection error. Please check your internet connection",
-			"generic": "An error occurred. Please try again"
+			"emailTaken": "This email is already in use",
+			"invalidFormat": "Invalid email format",
+			"updateFailed": "Failed to update email",
+			"notAuthenticated": "Please login to update your settings"
 		}
 	}
 }

@@ -35,40 +35,50 @@ export const AuthProvider = ({ children }) => {
 
     const handleRouting = () => {
         const currentPath = window.location.pathname;
-        const lang = currentPath.split('/')[1]; // Get language from URL
+        const lang = currentPath.split('/')[1];
 
-        // If we're on home or auth page and user is authenticated, redirect to chat
         if ((currentPath === `/${lang}` || currentPath === `/${lang}/auth`) && user) {
             router.push(`/${lang}/chat`);
         }
-        // If we're on chat page and user is not authenticated, redirect to auth
         else if (currentPath.includes('/chat') && !user) {
             router.push(`/${lang}/auth`);
         }
     };
 
-    const setCookieAndStorage = (userData, selectedAnimals = null) => {
-        const timestamp = new Date().getTime();
-        const userWithTimestamp = {
-            ...userData,
-            timestamp,
-            // Store selected animals if provided (only during registration)
-            ...(selectedAnimals && { selectedAnimals })
-        };
+    const setCookieAndStorage = async (userData) => {
+        try {
+            const timestamp = new Date().getTime();
+            const userDataToStore = {
+                userId: userData.userId,
+                token: userData.token,
+                tokenBalance: userData.tokenBalance,
+                timestamp,
+                animalSelection: userData.animalSelection // Store for session context if needed
+            };
 
-        // Set local storage
-        localStorage.setItem("user", JSON.stringify(userWithTimestamp));
+            // Set local storage first
+            localStorage.setItem("user", JSON.stringify(userDataToStore));
 
-        // Set cookie with expiration
-        const expires = new Date(timestamp + SESSION_DURATION).toUTCString();
-        document.cookie = `user=${JSON.stringify(userWithTimestamp)}; path=/; expires=${expires}`;
+            // Set cookie with proper structure and expiration
+            const expires = new Date(timestamp + SESSION_DURATION).toUTCString();
+            document.cookie = `user=${encodeURIComponent(JSON.stringify(userDataToStore))}; path=/; expires=${expires}; SameSite=Lax`;
 
-        setUser(userWithTimestamp);
-        setTokenBalance(userData.tokenBalance);
+            // Update state
+            setUser(userDataToStore);
+            setTokenBalance(userData.tokenBalance);
 
-        // Get language from current URL and redirect to chat
-        const lang = window.location.pathname.split('/')[1];
-        router.push(`/${lang}/chat`);
+            // Get language and redirect after state is set
+            const lang = window.location.pathname.split('/')[1] || 'en';
+
+            // Small delay to ensure cookie is set
+            await new Promise(resolve => setTimeout(resolve, 100));
+            router.push(`/${lang}/chat`);
+
+            return true;
+        } catch (error) {
+            console.error("Error setting auth data:", error);
+            return false;
+        }
     };
 
     const register = async (email, animalSelection) => {
@@ -84,7 +94,6 @@ export const AuthProvider = ({ children }) => {
             const data = await response.json();
 
             if (!response.ok) {
-                // Return the error information from the server
                 return {
                     success: false,
                     error: data.error,
@@ -94,7 +103,24 @@ export const AuthProvider = ({ children }) => {
                 };
             }
 
-            return data; // Contains success: true and other user data
+            // If registration successful, immediately set the auth data
+            if (data.success) {
+                const stored = await setCookieAndStorage({
+                    userId: data.userId,
+                    token: data.token,
+                    tokenBalance: data.tokenBalance,
+                    animalSelection: animalSelection
+                });
+
+                if (!stored) {
+                    return {
+                        success: false,
+                        error: "Failed to store authentication data"
+                    };
+                }
+            }
+
+            return data;
         } catch (error) {
             console.error('Registration error:', error);
             return {
@@ -129,8 +155,21 @@ export const AuthProvider = ({ children }) => {
 
             const data = await response.json();
 
-            if (response.ok) {
-                setCookieAndStorage(data);
+            if (response.ok && data.success) {
+                const stored = await setCookieAndStorage({
+                    userId: data.userId,
+                    token: data.token,
+                    tokenBalance: data.tokenBalance,
+                    animalSelection: animalSelection
+                });
+
+                if (!stored) {
+                    return {
+                        success: false,
+                        error: "Failed to store authentication data"
+                    };
+                }
+
                 return {
                     success: true,
                     token: data.token,
@@ -150,8 +189,7 @@ export const AuthProvider = ({ children }) => {
                     error: errorMessage,
                     isLocked: data.isLocked,
                     remainingAttempts: data.remainingAttempts,
-                    remainingLockoutTime: data.remainingLockoutTime,
-                    message: data.error
+                    remainingLockoutTime: data.remainingLockoutTime
                 };
             }
         } catch (error) {
@@ -168,7 +206,7 @@ export const AuthProvider = ({ children }) => {
         setTokenBalance(0);
         localStorage.removeItem("user");
         document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-        const lang = window.location.pathname.split('/')[1];
+        const lang = window.location.pathname.split('/')[1] || 'en';
         router.push(`/${lang}`);
     };
 
@@ -190,7 +228,6 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    // Handle routing whenever user state changes
     useEffect(() => {
         handleRouting();
     }, [user]);

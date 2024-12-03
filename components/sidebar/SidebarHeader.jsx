@@ -18,7 +18,7 @@ const SidebarHeader = () => {
 				<div className='flex items-center gap-4'>
 					<Link
 						onClick={() => resetChat()}
-						href='/'
+						href='/chat'
 						className='relative w-14 h-14'>
 						<Image
 							alt='logo'

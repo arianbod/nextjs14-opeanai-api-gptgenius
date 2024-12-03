@@ -183,7 +183,7 @@ const AuthPage = () => {
 	);
 
 	return (
-		<div className='flex items-center justify-center min-h-screen p-4 fixed  left-0 right-0 mx-auto'>
+		<div className='flex items-center justify-center min-h-screen lg:p-4 lg:fixed left-0 right-0 mx-auto h-fit overflow-auto'>
 			<div className='w-full max-w-md'>
 				<div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl'>
 					{/* Header section with toggles */}

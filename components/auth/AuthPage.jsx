@@ -19,7 +19,7 @@ const AuthPage = () => {
 	const router = useRouter();
 	const dict = useTranslations();
 	const { login, register } = useAuth();
-	const [isRegistering, setIsRegistering] = useState(false);
+	const [isRegistering, setIsRegistering] = useState(true);
 	const [email, setEmail] = useState('');
 	const [token, setToken] = useState('');
 	const [selectedAnimals, setSelectedAnimals] = useState([]);

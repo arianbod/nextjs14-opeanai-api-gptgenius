@@ -77,7 +77,7 @@ const ChatInterface = () => {
 		],
 		// Trending & News
 		[
-			'who won the super bowl 2024',
+			'who won the world cup 2006',
 			'game of thrones spin off release date',
 			'tesla new model price and features',
 		],

@@ -25,7 +25,7 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 				{/* Avatar */}
 				<div className='relative w-16 h-16 flex-shrink-0'>
 					<img
-						src={persona.avatar}
+						src={persona.avatar || '/images/babagpt_bw.svg'}
 						alt={persona.name}
 						className='w-full h-full rounded-lg object-cover'
 					/>

@@ -24,47 +24,53 @@ const ChatInterface = () => {
 
 	// Categories of questions to help users understand the AI's capabilities
 	const perplexityQuestions = [
-		// Everyday Questions
+		// Common Searches
 		[
-			"What's the best recipe for chocolate chip cookies?",
-			'How can I improve my productivity while working from home?',
-			'What are some easy exercises for beginners?',
+			'weather new york next 5 days',
+			'best restaurants near me open now',
+			'how to get to times square from jfk',
 		],
-		// Educational & Research
+		// How-to & DIY
 		[
-			'Explain quantum computing in simple terms',
-			'Compare and contrast renewable energy sources',
-			'What caused the fall of the Roman Empire?',
+			'how to reset iphone without password',
+			'easy chicken recipes for dinner tonight',
+			'fastest way to lose belly fat at home',
 		],
-		// Problem Solving
+		// Shopping & Reviews
 		[
-			'Debug this code: function sum(a,b) { retur a + b }',
-			'How do I fix a leaking faucet?',
-			"What's the best way to remove coffee stains?",
+			'iphone 15 vs samsung s24 which is better',
+			'best washing machine under 500',
+			'amazon prime day 2024 deals',
 		],
-		// Current Events & Analysis
+		// Health & Symptoms
 		[
-			'What are the latest developments in AI technology?',
-			'How is climate change affecting agriculture?',
-			'Analyze the impact of remote work on cities',
+			'why do I have a headache when I wake up',
+			'how to get rid of cold fast natural remedies',
+			'is it normal to feel tired all the time',
 		],
-		// Creative & Writing
+		// Tech Help
 		[
-			'Write a short story about a time traveler',
-			'Help me draft a professional email to my boss',
-			'Generate a marketing tagline for an eco-friendly product',
+			'netflix not working on smart tv how to fix',
+			'how to remove virus from laptop windows 11',
+			'forgot gmail password recovery steps',
 		],
-		// Math & Science
+		// Travel & Events
 		[
-			'Solve this equation: 3x² + 6x - 24 = 0',
-			'Explain how vaccines work',
-			'Calculate the compound interest on $1000 at 5% for 3 years',
+			'cheap flights to europe summer 2024',
+			'things to do in paris with kids',
+			'taylor swift eras tour tickets resale',
 		],
-		// Life Advice
+		// Trending & News
 		[
-			'What are some tips for improving sleep quality?',
-			'How can I start investing with a small budget?',
-			'Suggest some healthy meal prep ideas',
+			'who won the super bowl 2024',
+			'game of thrones spin off release date',
+			'tesla new model price and features',
+		],
+		// Life Questions
+		[
+			'how much should i save each month calculator',
+			'what jobs can i do from home with no experience',
+			'best time to buy house 2024',
 		],
 	];
 
@@ -120,17 +126,18 @@ const ChatInterface = () => {
 		if (model.provider === 'perplexity') {
 			const currentQuestions = greetings[greetingIndex];
 			const categoryTitles = [
-				'Everyday Questions',
-				'Educational & Research',
-				'Problem Solving',
-				'Current Events & Analysis',
-				'Creative & Writing',
-				'Math & Science',
-				'Life Advice',
+				'Common Searches',
+				'How-to & DIY',
+				'Shopping & Reviews',
+				'Health & Symptoms',
+				'Tech Help',
+				'Travel & Events',
+				'Trending & News',
+				'Life Questions',
 			];
 
 			return (
-				<div className='flex flex-col space-y-6 w-full max-w-xl mx-auto px-4'>
+				<div className='flex flex-col space-y-6 w-full max-w-xl mx-auto px-4 pt-8'>
 					<div className='text-center space-y-2'>
 						<h2 className='text-xl font-semibold'>Try asking me:</h2>
 						<p className='text-sm text-gray-600 dark:text-gray-400'>

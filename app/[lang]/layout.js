@@ -36,7 +36,7 @@ export default async function RootLayout(props) {
           crossOrigin="anonymous"
         />
       </head>
-      <body className="font-sans flex max-w-full overflow-x-hidden">
+      <body className="font-sans flex max-w-full overflow-x-hidden overflow-y-auto min-h-full">
         <Providers translations={dict}>
           <Toaster position="top-center" />
           {children}

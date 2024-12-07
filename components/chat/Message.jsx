@@ -24,7 +24,10 @@ const Message = ({ role, content, timestamp }) => {
 	};
 
 	return (
-		<div className=' flex w-full'>
+		<div
+			className={`w-full max-w-[97vw] lg:max-w-3xl flex-wrap flex mx-auto  ${
+				isUser ? 'justify-end' : ''
+			}`}>
 			{!isUser && (
 				<Image
 					src={activeChat.avatar}
@@ -35,9 +38,9 @@ const Message = ({ role, content, timestamp }) => {
 				/>
 			)}
 			<div
-				className={`w-full flex flex-col 
-		
-				 mb-4 hover:bg-base-200 rounded-lg p-4 transition-all max-w-full`}>
+				className={`flex flex-col mb-4 hover:bg-base-200 rounded-lg p-4 transition-all ${
+					isUser ? 'w-1/2 bg-base-200' : 'w-full'
+				}`}>
 				<div className='flex justify-between items-center w-full mb-2'>
 					<span
 						className={`text-xs ${
@@ -55,7 +58,7 @@ const Message = ({ role, content, timestamp }) => {
 						/>
 					</button>
 				</div>
-				<div className='w-full overflow-x-auto'>
+				<div className={`w-full overflow-x-auto text-wrap ${''}`}>
 					<ReactMarkdown
 						components={{
 							code({ node, inline, className, children, ...props }) {

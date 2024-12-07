@@ -55,11 +55,11 @@ const MessageList = ({ isLoading, messagesEndRef, msgLen }) => {
 	}, [handleScroll]);
 
 	return (
-		<div className='relative flex flex-col h-full'>
+		<div className='relative flex flex-col w-full '>
 			<div
 				ref={scrollContainerRef}
-				className='flex-1 overflow-y-auto space-y-4 backdrop-blur-lg z-0 pt-14 pb-24 scroll-smooth'>
-				<div className='max-w-4xl mx-auto flex flex-col gap-4'>
+				className='flex flex-col overflow-y-auto space-y-4 backdrop-blur-lg z-0 pt-14 pb-24 scroll-smooth'>
+				<div className='max-w-3xl mx-auto flex flex-col gap-4'>
 					{filteredMessages().length > 0 ? (
 						filteredMessages().map(({ id, role, content, timestamp }) => (
 							<div

@@ -5,6 +5,7 @@ import AILoadingIndicator from './AILoadingIndicator';
 import { useChat } from '@/context/ChatContext';
 import Header from './Header';
 import toast from 'react-hot-toast';
+import Loading from '../Loading';
 
 const ChatInterface = () => {
 	const { messages, isGenerating, generateResponse, model } = useChat();
@@ -65,39 +66,47 @@ const ChatInterface = () => {
 	};
 
 	return (
-		<div className='flex flex-col max-h-full transition-colors duration-300'>
-			<Header msgLen={messages.length} />
-			{messages.length > 0 ? (
-				<div className='flex-grow overflow-y-auto animate-fade-in-down'>
-					<MessageList
-						messages={messages}
-						isLoading={isGenerating}
-						messagesEndRef={messagesEndRef}
-					/>
-					{isGenerating && (
-						<div className='mx-4 my-2'>
-							<AILoadingIndicator />
-						</div>
-					)}
-				</div>
-			) : (
-				<div className='h-[30vh] w-full flex items-center justify-center'>
-					<h2
-						className={`text-2xl font-bold text-center px-4 transition-opacity duration-300 ${
-							showGreeting ? 'opacity-100' : 'opacity-0'
-						}`}>
-						{greetings[greetingIndex]}
-					</h2>
-				</div>
-			)}
-			<MessageInput
-				msgLen={messages.length}
-				inputText={inputText}
-				setInputText={setInputText}
-				handleSubmit={handleSubmit}
-				isPending={isGenerating}
-				disabled={!model || isGenerating}
-			/>
+		<div className='w-full max-w-3xl mx-auto rounded-xl no-scrollbar min-h-screen'>
+			<div className='relative flex flex-col transition-colors duration-300 '>
+				<Header msgLen={messages.length} />
+				{messages.length > 0 ? (
+					<div className='flex-grow  animate-fade-in-down'>
+						<MessageList
+							messages={messages}
+							isLoading={isGenerating}
+							messagesEndRef={messagesEndRef}
+						/>
+						{isGenerating && (
+							<div className='mx-4 my-2'>
+								<AILoadingIndicator />
+							</div>
+						)}
+					</div>
+				) : (
+					<div className='h-[30vh] w-full flex items-center justify-center'>
+						<h2
+							className={`text-2xl font-bold text-center px-4 transition-opacity duration-300 ${
+								showGreeting ? 'opacity-100' : 'opacity-0'
+							}`}>
+							{isGenerating ? (
+								<div className='mx-4 my-2'>
+									<AILoadingIndicator />
+								</div>
+							) : (
+								greetings[greetingIndex]
+							)}
+						</h2>
+					</div>
+				)}
+				<MessageInput
+					msgLen={messages.length}
+					inputText={inputText}
+					setInputText={setInputText}
+					handleSubmit={handleSubmit}
+					isPending={isGenerating}
+					disabled={!model || isGenerating}
+				/>
+			</div>
 		</div>
 	);
 };

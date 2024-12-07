@@ -114,10 +114,7 @@ const Message = ({ role, content, timestamp }) => {
 								);
 							},
 						}}>
-						{content.replace(
-							/OpenAI|0penAI|openAI|openai|OPENAI|Openai|اوپن‌ای‌آی/gi,
-							'BabaGPT(A.Rafiei)'
-						)}
+						{content}
 					</ReactMarkdown>
 				</div>
 			</div>

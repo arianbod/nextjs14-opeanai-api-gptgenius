@@ -150,9 +150,10 @@ const MessageInput = ({
 	return (
 		<form
 			onSubmit={onSubmit}
-			className='fixed bottom-5 left-0 right-0 px-4 w-full'>
+			onClick={() => textareaRef.current?.focus()}
+			className='fixed bottom-0 left-0  right-0 mx-auto lg:ml-40 px-4 w-full'>
 			<div className='max-w-3xl mx-auto'>
-				<div className='relative bg-[#2a2b36] rounded-3xl min-h-[96px] flex flex-col'>
+				<div className='relative bg-[#2a2b36] rounded-3xl min-h-[96px] flex flex-col dark:border-2  border-white/50'>
 					<div className='flex-1 p-4 relative'>
 						<textarea
 							ref={textareaRef}
@@ -166,7 +167,7 @@ const MessageInput = ({
 							onKeyDown={handleKeyDown}
 							disabled={isPending || isDisabled}
 							rows={1}
-							className='w-full bg-transparent text-white placeholder-gray-400
+							className='w-full  bg-transparent text-white placeholder-gray-300
                        resize-none focus:outline-none transition-all duration-200 
                        ease-in-out font-sans leading-relaxed'
 							style={{
@@ -175,9 +176,9 @@ const MessageInput = ({
 							}}
 							placeholder={
 								isPending
-									? 'Generating...'
+									? 'wait, Generating...'
 									: msgLen < 1
-									? 'start writing here'
+									? 'Start Writing Here!'
 									: `Write your response here`
 							}
 						/>
@@ -242,6 +243,9 @@ const MessageInput = ({
 							aria-label='Send Message'>
 							<ArrowUp className='w-6 h-6' />
 						</button>
+					</div>
+					<div className='text-center w-full text-[10px] py-1'>
+						<h2>AI models can make mistakes, check anything two times!</h2>
 					</div>
 				</div>
 			</div>

@@ -22,21 +22,49 @@ const ChatInterface = () => {
 		'Excited to learn from you. What shall we discuss?',
 	];
 
+	// Categories of questions to help users understand the AI's capabilities
 	const perplexityQuestions = [
+		// Everyday Questions
 		[
-			'Tell me about recent developments in AI technology',
-			'What are the key challenges in quantum computing?',
-			'How is climate change affecting global weather patterns?',
+			"What's the best recipe for chocolate chip cookies?",
+			'How can I improve my productivity while working from home?',
+			'What are some easy exercises for beginners?',
 		],
+		// Educational & Research
 		[
-			"What's the future of renewable energy?",
-			'How does blockchain technology work?',
-			'What are the latest breakthroughs in medicine?',
+			'Explain quantum computing in simple terms',
+			'Compare and contrast renewable energy sources',
+			'What caused the fall of the Roman Empire?',
 		],
+		// Problem Solving
 		[
-			'Explain the impact of social media on society',
-			'What are the trends in remote work?',
-			'How is space exploration advancing?',
+			'Debug this code: function sum(a,b) { retur a + b }',
+			'How do I fix a leaking faucet?',
+			"What's the best way to remove coffee stains?",
+		],
+		// Current Events & Analysis
+		[
+			'What are the latest developments in AI technology?',
+			'How is climate change affecting agriculture?',
+			'Analyze the impact of remote work on cities',
+		],
+		// Creative & Writing
+		[
+			'Write a short story about a time traveler',
+			'Help me draft a professional email to my boss',
+			'Generate a marketing tagline for an eco-friendly product',
+		],
+		// Math & Science
+		[
+			'Solve this equation: 3x² + 6x - 24 = 0',
+			'Explain how vaccines work',
+			'Calculate the compound interest on $1000 at 5% for 3 years',
+		],
+		// Life Advice
+		[
+			'What are some tips for improving sleep quality?',
+			'How can I start investing with a small budget?',
+			'Suggest some healthy meal prep ideas',
 		],
 	];
 
@@ -90,19 +118,48 @@ const ChatInterface = () => {
 
 	const renderGreeting = () => {
 		if (model.provider === 'perplexity') {
+			const currentQuestions = greetings[greetingIndex];
+			const categoryTitles = [
+				'Everyday Questions',
+				'Educational & Research',
+				'Problem Solving',
+				'Current Events & Analysis',
+				'Creative & Writing',
+				'Math & Science',
+				'Life Advice',
+			];
+
 			return (
-				<div className='flex flex-col space-y-4'>
-					<h2 className='text-xl font-semibold text-center mb-4'>
-						Explore these topics:
-					</h2>
-					{greetings[greetingIndex].map((question, idx) => (
-						<button
-							key={idx}
-							onClick={() => handleQuestionClick(question)}
-							className='text-left px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200'>
-							{question}
-						</button>
-					))}
+				<div className='flex flex-col space-y-6 w-full max-w-xl mx-auto px-4'>
+					<div className='text-center space-y-2'>
+						<h2 className='text-xl font-semibold'>Try asking me:</h2>
+						<p className='text-sm text-gray-600 dark:text-gray-400'>
+							Click any question or type your own. I can handle follow-up
+							questions too!
+						</p>
+					</div>
+
+					<div className='space-y-4'>
+						<h3 className='text-md font-medium text-gray-700 dark:text-gray-300'>
+							{categoryTitles[greetingIndex]}:
+						</h3>
+						{currentQuestions.map((question, idx) => (
+							<button
+								key={idx}
+								onClick={() => handleQuestionClick(question)}
+								className='w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'>
+								<span className='flex items-center'>
+									<span className='mr-2 text-gray-400'>→</span>
+									{question}
+								</span>
+							</button>
+						))}
+					</div>
+
+					<div className='text-center text-sm text-gray-500 dark:text-gray-400'>
+						Pro tip: You can ask follow-up questions or request more details
+						about any topic!
+					</div>
 				</div>
 			);
 		}

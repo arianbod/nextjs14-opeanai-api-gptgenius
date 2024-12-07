@@ -89,6 +89,9 @@ const ChatInterface = () => {
 		],
 	];
 	// always use standardGreetings regardless of provider
+	// First render protection
+	
+
 	const greetings =
 		!model || !model.showOnModelSelection
 			? standardGreetings
@@ -142,7 +145,7 @@ const ChatInterface = () => {
 	};
 
 	const renderGreeting = () => {
-		if (model.provider === 'perplexity') {
+		if (model?.provider === 'perplexity') {
 			const currentQuestions = greetings[greetingIndex];
 			const categoryTitles = [
 				'Common Searches',

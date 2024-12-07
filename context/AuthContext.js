@@ -36,11 +36,14 @@ export const AuthProvider = ({ children }) => {
     const handleRouting = () => {
         const currentPath = window.location.pathname;
         const lang = currentPath.split('/')[1];
+        const pathParts = currentPath.split('/');
 
+        // Only redirect if exactly at auth or root path
         if ((currentPath === `/${lang}` || currentPath === `/${lang}/auth`) && user) {
             router.push(`/${lang}/chat`);
         }
-        else if (currentPath.includes('/chat') && !user) {
+        // Only redirect if exactly at chat path without auth
+        else if (pathParts[2] === 'chat' && pathParts.length === 3 && !user) {
             router.push(`/${lang}/auth`);
         }
     };

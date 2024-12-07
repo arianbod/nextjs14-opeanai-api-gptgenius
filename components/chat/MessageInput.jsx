@@ -244,8 +244,8 @@ const MessageInput = ({
 							<ArrowUp className='w-6 h-6' />
 						</button>
 					</div>
-					<div className='text-center w-full text-[10px] py-1'>
-						<h2>AI models can make mistakes, check anything two times!</h2>
+					<div className='text-center w-full text-[11px] text-white py-1 font-bold'>
+						<h2>AI Models can make mistakes. Please double-check responses.</h2>
 					</div>
 				</div>
 			</div>

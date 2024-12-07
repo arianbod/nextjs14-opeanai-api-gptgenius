@@ -15,11 +15,26 @@ const ChatInterface = () => {
 	const [showGreeting, setShowGreeting] = useState(true);
 
 	const standardGreetings = [
-		'How can I assist you today?',
-		"Ready to chat! What's on your mind?",
-		"Let's explore some ideas together!",
-		"I'm here to help. What would you like to know?",
-		'Excited to learn from you. What shall we discuss?',
+		{
+			title: '👋 Ask me anything',
+			subtitle: "From simple questions to complex analysis, I'm here to help",
+		},
+		{
+			title: '💡 Need creative ideas?',
+			subtitle: "Let's brainstorm solutions together",
+		},
+		{
+			title: '📚 Research assistant mode',
+			subtitle: 'I can help analyze, explain, or summarize any topic',
+		},
+		{
+			title: '🔍 Looking for specifics?',
+			subtitle: 'I can break down complex topics step by step',
+		},
+		{
+			title: '💪 Task helper',
+			subtitle: "Writing, coding, math - let's tackle it together",
+		},
 	];
 
 	// Categories of questions to help users understand the AI's capabilities
@@ -137,7 +152,7 @@ const ChatInterface = () => {
 			];
 
 			return (
-				<div className='flex flex-col space-y-6 w-full max-w-xl mx-auto px-4 pt-8'>
+				<div className='flex flex-col space-y-6 w-full max-w-xl mx-auto px-4 pt-24'>
 					<div className='text-center space-y-2'>
 						<h2 className='text-xl font-semibold'>Try asking me:</h2>
 						<p className='text-sm text-gray-600 dark:text-gray-400'>
@@ -171,9 +186,16 @@ const ChatInterface = () => {
 			);
 		}
 		return (
-			<h2 className='text-2xl font-bold text-center px-4'>
-				{greetings[greetingIndex]}
-			</h2>
+			<div className='flex flex-col items-center space-y-3 text-center px-4'>
+				<h2 className='text-2xl font-bold'>{greetings[greetingIndex].title}</h2>
+				<p className='text-gray-600 dark:text-gray-400 text-lg'>
+					{greetings[greetingIndex].subtitle}
+				</p>
+				<div className='mt-6 text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2'>
+					<span className='w-2 h-2 bg-green-500 rounded-full animate-pulse'></span>
+					Ready to chat
+				</div>
+			</div>
 		);
 	};
 

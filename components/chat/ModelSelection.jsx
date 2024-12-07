@@ -43,7 +43,7 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 							{persona.name}
 						</h3>
 						{persona.isPro && (
-							<span className='px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full font-medium'>
+							<span className='px-2 py-0.5 bg-base-100/10 text-base-200 text-sm rounded-full font-medium'>
 								PRO
 							</span>
 						)}
@@ -91,7 +91,9 @@ const ModelSelection = () => {
 	const { model, handleModelSelect, chatList } = useChat();
 	const [searchTerm, setSearchTerm] = useState('');
 	const [selectedCategory, setSelectedCategory] = useState('all');
-
+	const AvailableAIPersonas = AIPersonas.filter(
+		(persona) => persona.showOnModelSelection === true
+	);
 	// Dynamically get unique categories from personas
 	const categories = useMemo(() => {
 		const uniqueCategories = new Set();
@@ -99,7 +101,7 @@ const ModelSelection = () => {
 		uniqueCategories.add('all');
 
 		// Collect all categories from personas
-		AIPersonas.forEach((persona) => {
+		AvailableAIPersonas.forEach((persona) => {
 			if (persona.categories && Array.isArray(persona.categories)) {
 				persona.categories.forEach((category) =>
 					uniqueCategories.add(category)
@@ -119,7 +121,7 @@ const ModelSelection = () => {
 
 	// Filter and sort personas
 	const filteredPersonas = useMemo(() => {
-		let filtered = AIPersonas;
+		let filtered = AvailableAIPersonas;
 
 		// Apply search filter
 		if (searchTerm) {
@@ -158,7 +160,7 @@ const ModelSelection = () => {
 			// number of last used models to show
 			if (recent.length >= 2) break;
 			if (!recentModelIds.has(chat.modelCodeName)) {
-				const model = AIPersonas.find(
+				const model = AvailableAIPersonas.find(
 					(p) => p.modelCodeName === chat.modelCodeName
 				);
 				if (model) {

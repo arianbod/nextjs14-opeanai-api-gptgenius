@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
                 token: userData.token,
                 tokenBalance: userData.tokenBalance,
                 timestamp,
-                animalSelection: userData.animalSelection // Store for session context if needed
+                animalSelection: userData.animalSelection
             };
 
             // Set local storage first
@@ -67,13 +67,33 @@ export const AuthProvider = ({ children }) => {
             setUser(userDataToStore);
             setTokenBalance(userData.tokenBalance);
 
-            // Get language and redirect after state is set
+            // Get language
             const lang = window.location.pathname.split('/')[1] || 'en';
+            // from here
+            // Check if user has any existing chats
+            try {
+                const response = await fetch('/api/chat/getChatList', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: userData.userId }),
+                });
 
-            // Small delay to ensure cookie is set
-            await new Promise(resolve => setTimeout(resolve, 100));
-            router.push(`/${lang}/chat`);
-
+                if (response.ok) {
+                    const data = await response.json();
+                    // If new user (no chats), redirect to welcome page
+                    if (!data.chats?.length) {
+                        router.push(`/${lang}/welcome`);
+                    } else {
+                        // Existing user, redirect to chat
+                        router.push(`/${lang}/chat`);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking chat list:', error);
+                // Default to chat route if check fails
+                router.push(`/${lang}/chat`);
+            }
+            // to here 
             return true;
         } catch (error) {
             console.error("Error setting auth data:", error);
@@ -201,13 +221,51 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
-        setUser(null);
-        setTokenBalance(0);
-        localStorage.removeItem("user");
-        document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-        const lang = window.location.pathname.split('/')[1] || 'en';
-        router.push(`/${lang}`);
+    const logout = async () => {
+        try {
+            // 1. Clear all states
+            setUser(null);
+            setTokenBalance(0);
+
+            // 2. Clear all storage
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // 3. Clear all cookies
+            document.cookie.split(";").forEach(cookie => {
+                document.cookie = cookie
+                    .replace(/^ +/, "")
+                    .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+            });
+            document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+            // 4. Get current language from path
+            const lang = window.location.pathname.split('/')[1] || 'en';
+
+            // 5. Clear server-side session
+            // try {
+            //     await fetch('/api/auth/logout', {
+            //         method: 'POST',
+            //         credentials: 'include'
+            //     });
+            // } catch (error) {
+            //     console.error('Server logout error:', error);
+            // }
+
+            // 6. Show success message
+            toast.success('Successfully logged out');
+
+            // 7. Navigate using Next.js router with refresh
+            router.refresh(); // Refresh server components
+            router.push(`/${lang}`); // Replace current route with home
+
+        } catch (error) {
+            console.error('Logout error:', error);
+            toast.error('Error during logout');
+
+            // Fallback using Next.js router
+            router.refresh();
+            router.replace(`/`);
+        }
     };
 
     useEffect(() => {

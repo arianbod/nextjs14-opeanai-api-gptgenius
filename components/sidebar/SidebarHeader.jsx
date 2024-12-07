@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
 import Link from 'next/link';
-import Image from "next/legacy/image";
+import Image from 'next/image';
 import ShowTokenAmount from '../token/ShowTokenAmount';
 import { useChat } from '@/context/ChatContext';
 import { useTranslations } from '@/context/TranslationContext';
@@ -19,12 +19,15 @@ const SidebarHeader = () => {
 					<Link
 						onClick={() => resetChat()}
 						href='/chat'
-						className='relative w-14 h-14'>
+						className='relative w-16 h-16 overflow-hidden'>
 						<Image
 							alt='logo'
 							src='/images/babagpt_bw.svg'
-							layout='fill'
-							className='rounded-full shadow-lg bg-slate-800 p-1'
+							width={64}
+							height={64}
+							// fill='contain'
+
+							className='rounded-full shadow-lg bg-slate-800 w-16 h-16 p-1'
 						/>
 					</Link>
 					<div>

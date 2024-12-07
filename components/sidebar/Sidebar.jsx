@@ -1,5 +1,5 @@
-// components/Sidebar.jsx
 'use client';
+
 import React, { memo, useState } from 'react';
 import Link from 'next/link';
 import SidebarHeader from './SidebarHeader';
@@ -9,6 +9,8 @@ import { FaBars } from 'react-icons/fa';
 import { MdAdd, MdClose } from 'react-icons/md';
 import { useChat } from '@/context/ChatContext';
 import { useTranslations } from '@/context/TranslationContext';
+import Image from 'next/legacy/image';
+import { AIPersonas } from '@/lib/Personas';
 
 const Sidebar = () => {
 	const { user } = useAuth();
@@ -20,11 +22,20 @@ const Sidebar = () => {
 		return null;
 	}
 
+	const getPersonaByChat = (chat) => {
+		if (!chat.provider || !chat.modelCodeName) return null;
+		// Find the persona in the AIPersonas array
+		return AIPersonas.find(
+			(p) =>
+				p.provider === chat.provider && p.modelCodeName === chat.modelCodeName
+		);
+	};
+
 	return (
 		<>
 			{/* Mobile hamburger button */}
 			<div
-				className={`lg:hidden fixed top-3 left-0 flex transition-all  rounded-full  ${
+				className={`lg:hidden fixed top-3 left-0 flex transition-all rounded-full ${
 					sidebarOpen ? 'hidden' : ''
 				} z-50`}>
 				<button
@@ -57,19 +68,34 @@ const Sidebar = () => {
 								<MdAdd className='w-6 h-6' />
 							</Link>
 						</div>
-						<ul className='space-y-4'>
-							{chatList.map((chat) => (
-								<li key={chat.id}>
-									<Link
-										href={`/chat/${chat.id}`}
-										className='flex items-center p-3 rounded-xl  hover:bg-base-300 transition'
-										onClick={() => setSidebarOpen(false)}>
-										<span className='truncate text-sm font-medium'>
-											{chat.title.replace(`"` || `'` || `"` || 'opening', '')}
-										</span>
-									</Link>
-								</li>
-							))}
+						<ul className='space-y-2'>
+							{chatList.map((chat) => {
+								const persona = getPersonaByChat(chat);
+								const avatarUrl =
+									persona?.avatar || '/images/default-avatar.png';
+								const chatTitle = chat.title.replace(/["'opening]/g, '');
+
+								return (
+									<li key={chat.id}>
+										<Link
+											href={`/chat/${chat.id}`}
+											className='flex place-items-center rounded-xl hover:bg-base-300 transition'
+											onClick={() => setSidebarOpen(false)}>
+											{/* Persona avatar */}
+											<div className='flex place-items-center place-content-center w-16 h-16 relative rounded-full overflow-hidden'>
+												<Image
+													src={avatarUrl}
+													alt={persona?.name || 'Model Avatar'}
+													width={32}
+													height={32}
+													className='object-cover rounded-full'
+												/>
+											</div>
+											<span className='text-sm font-medium'>{chatTitle}</span>
+										</Link>
+									</li>
+								);
+							})}
 						</ul>
 					</div>
 					<MemberProfile />

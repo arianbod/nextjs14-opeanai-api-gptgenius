@@ -33,7 +33,7 @@ const MemberProfile = () => {
 		const promoShown = localStorage.getItem('blackFridayPromoShown');
 		const currentDate = new Date();
 		const promoStart = new Date('2024-11-27');
-		const promoEnd = new Date('2024-12-27');
+		const promoEnd = new Date('2024-12-05');
 
 		if (!promoShown && currentDate >= promoStart && currentDate <= promoEnd) {
 			setShowPromo(true);
@@ -73,7 +73,7 @@ const MemberProfile = () => {
 		<>
 			<div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full transition-transform '>
 				{/* User Information and Login Token */}
-				<div className='flex items-center justify-between'>
+				<div className='flex flex-col items-center justify-between'>
 					<div className='flex items-center space-x-4'>
 						{/* User Avatar - Hidden when token is visible */}
 						{!isTokenVisible && (
@@ -128,9 +128,11 @@ const MemberProfile = () => {
 					{/* Logout Button */}
 					<button
 						onClick={logout}
-						className='text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 p-3 rounded-full transition'
-						aria-label='Logout'>
+						className='flex items-center gap-2 text-red-600 dark:text-red-200 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 px-3 py-2 rounded-full transition-colors'
+						aria-label='Logout'
+						title='Logout from your account'>
 						<FiLogOut size={20} />
+						<span className='text-sm font-medium'>Logout</span>
 					</button>
 				</div>
 

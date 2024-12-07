@@ -6,8 +6,9 @@ const MessageInput = ({
 	setInputText,
 	handleSubmit,
 	isPending,
-	isDisabled,
+	disabled,
 	msgLen,
+	modelName, // New prop for model name
 }) => {
 	const textareaRef = useRef(null);
 	const fileInputRef = useRef(null);
@@ -147,13 +148,23 @@ const MessageInput = ({
 		}
 	};
 
+	// Determine the placeholder text dynamically
+	let placeholder;
+	if (isPending) {
+		placeholder = `${modelName} is thinking...`;
+	} else if (msgLen < 1) {
+		placeholder = 'Start Writing Here!';
+	} else {
+		placeholder = 'Write your response here';
+	}
+
 	return (
 		<form
 			onSubmit={onSubmit}
 			onClick={() => textareaRef.current?.focus()}
-			className='fixed bottom-0 left-0  right-0 mx-auto lg:ml-40 px-4 w-full'>
+			className='fixed bottom-0 left-0 right-0 mx-auto lg:ml-40 px-4 w-full'>
 			<div className='max-w-3xl mx-auto'>
-				<div className='relative bg-[#2a2b36] rounded-3xl min-h-[96px] flex flex-col dark:border-2  border-white/50'>
+				<div className='relative bg-[#2a2b36] rounded-3xl min-h-[96px] flex flex-col dark:border-2 border-white/50'>
 					<div className='flex-1 p-4 relative'>
 						<textarea
 							ref={textareaRef}
@@ -165,22 +176,16 @@ const MessageInput = ({
 							onKeyUp={updateCursorPosition}
 							onClick={updateCursorPosition}
 							onKeyDown={handleKeyDown}
-							disabled={isPending || isDisabled}
+							disabled={isPending || disabled}
 							rows={1}
-							className='w-full  bg-transparent text-white placeholder-gray-300
+							className='w-full bg-transparent text-white placeholder-gray-300
                        resize-none focus:outline-none transition-all duration-200 
                        ease-in-out font-sans leading-relaxed'
 							style={{
 								maxHeight,
 								height: 'auto',
 							}}
-							placeholder={
-								isPending
-									? 'wait, Generating...'
-									: msgLen < 1
-									? 'Start Writing Here!'
-									: `Write your response here`
-							}
+							placeholder={placeholder}
 						/>
 
 						{textareaRef.current && (
@@ -239,7 +244,7 @@ const MessageInput = ({
 						<button
 							type='submit'
 							className='p-2 text-gray-400 hover:text-white rounded-full disabled:opacity-70 bg-base-200 disabled:bg-base-200/50 transition-all duration-200'
-							disabled={isPending || isDisabled || inputText.trim() === ''}
+							disabled={isPending || disabled || inputText.trim() === ''}
 							aria-label='Send Message'>
 							<ArrowUp className='w-6 h-6' />
 						</button>

@@ -257,6 +257,7 @@ export const AuthProvider = ({ children }) => {
             // 7. Navigate using Next.js router with refresh
             router.refresh(); // Refresh server components
             router.push(`/${lang}`); // Replace current route with home
+            window.location.reload();
 
         } catch (error) {
             console.error('Logout error:', error);

@@ -71,7 +71,7 @@ const Header = ({ msgLen = 0 }) => {
 							className=' ml-3 text-xl font-semibold flex items-center gap-2'>
 							<Image
 								src={activeChat.avatar}
-								alt='robot'
+								alt='model active chat avatar in header'
 								className='rounded-full w-8 h-8'
 								width={24}
 								height={24}

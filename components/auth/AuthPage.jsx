@@ -156,7 +156,7 @@ const AuthPage = () => {
 					</button>
 				</div>
 				<div className='mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded'>
-					<p className='text-sm text-yellow-800 dark:text-yellow-200'>
+					<div className='text-sm text-yellow-800 dark:text-yellow-200'>
 						{dict.auth.rememberAnimalOrder}
 						<div className='mt-2 flex gap-2'>
 							{selectedAnimals.map((animal, index) => (
@@ -168,7 +168,7 @@ const AuthPage = () => {
 								</div>
 							))}
 						</div>
-					</p>
+					</div>
 				</div>
 				<button
 					onClick={() => {
@@ -183,8 +183,8 @@ const AuthPage = () => {
 	);
 
 	return (
-        (<div className='flex items-center justify-center min-h-screen lg:p-4 lg:fixed left-0 right-0 mx-auto h-fit overflow-auto'>
-            <div className='w-full max-w-md'>
+		<div className='flex items-center justify-center min-h-screen lg:p-4 lg:fixed left-0 right-0 mx-auto h-fit overflow-auto'>
+			<div className='w-full max-w-md'>
 				<div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl'>
 					{/* Header section with toggles */}
 					<div className='relative p-6 flex justify-between items-center'>
@@ -391,10 +391,10 @@ const AuthPage = () => {
 					</div>
 				</div>
 			</div>
-            {/* Token Modal */}
-            {showTokenModal && <TokenModal />}
-        </div>)
-    );
+			{/* Token Modal */}
+			{showTokenModal && <TokenModal />}
+		</div>
+	);
 };
 
 export default AuthPage;

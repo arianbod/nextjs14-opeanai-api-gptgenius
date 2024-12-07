@@ -41,7 +41,7 @@ const ImageGenerationInterface = ({ userId, chatId }) => {
 						<img
 							// height={1024}
 							// width={1024}
-							src={generatedImage}
+							src={generatedImage || "images/babagpt_bw.svg"}
 							alt='Generated'
 							className='max-w-full h-auto'
 						/>

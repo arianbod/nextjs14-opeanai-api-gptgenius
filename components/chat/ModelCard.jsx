@@ -39,7 +39,7 @@ const ModelCard = ({ persona, onSelect, isSelected, isRecent }) => {
 				<div
 					className={`flex-shrink-0 ${isRecent ? 'w-12 h-12' : 'w-24 h-24'} `}>
 					<img
-						src={persona.avatar || '/images/default-avatar.jpg'}
+						src={persona.avatar || '/images/babagpt_bw.svg'}
 						alt={`${persona.name} avatar`}
 						className={`object-cover w-full h-full rounded-full transition-transform duration-300 ${
 							isRecent ? 'hover:scale-105' : 'hover:scale-110'

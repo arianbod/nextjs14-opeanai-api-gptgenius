@@ -88,9 +88,13 @@ const ChatInterface = () => {
 			'best time to buy house 2024',
 		],
 	];
-
+	// always use standardGreetings regardless of provider
 	const greetings =
-		model.provider === 'perplexity' ? perplexityQuestions : standardGreetings;
+		!model || !model.showOnModelSelection
+			? standardGreetings
+			: model.provider === 'perplexity'
+			? perplexityQuestions
+			: standardGreetings;
 
 	useEffect(() => {
 		const interval = setInterval(() => {

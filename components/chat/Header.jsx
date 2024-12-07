@@ -1,7 +1,7 @@
 import React, { memo, useState, useRef, useEffect } from 'react';
 import { useChat } from '@/context/ChatContext';
 import { Search, X } from 'lucide-react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Header = ({ msgLen = 0 }) => {

@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { generateImage } from '@/server/chat';
 import MessageInput from './MessageInput';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 
 const ImageGenerationInterface = ({ userId, chatId }) => {
 	const [generatedImage, setGeneratedImage] = useState(null);

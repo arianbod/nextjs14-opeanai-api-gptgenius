@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import ShowTokenAmount from '../token/ShowTokenAmount';
 import { useChat } from '@/context/ChatContext';
 import { useTranslations } from '@/context/TranslationContext';

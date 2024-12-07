@@ -7,7 +7,7 @@ import {
 } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy, Maximize2, Minimize2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { useChat } from '@/context/ChatContext';
 
 const Message = ({ role, content, timestamp }) => {
@@ -24,11 +24,11 @@ const Message = ({ role, content, timestamp }) => {
 	};
 
 	return (
-		<div
+        (<div
 			className={`w-full max-w-[97vw] lg:max-w-3xl flex-wrap flex mx-auto  ${
 				isUser ? 'justify-end' : ''
 			}`}>
-			{!isUser && (
+            {!isUser && (
 				<Image
 					src={activeChat.avatar}
 					alt={role}
@@ -37,7 +37,7 @@ const Message = ({ role, content, timestamp }) => {
 					className='rounded-full bg-black/75 p-1 w-8 h-8 mt-2 '
 				/>
 			)}
-			<div
+            <div
 				className={`flex flex-col mb-4 hover:bg-base-200 rounded-lg p-4 transition-all ${
 					isUser ? 'w-1/2 bg-base-200' : 'w-full'
 				}`}>
@@ -118,8 +118,8 @@ const Message = ({ role, content, timestamp }) => {
 					</ReactMarkdown>
 				</div>
 			</div>
-		</div>
-	);
+        </div>)
+    );
 };
 
 export default memo(Message);

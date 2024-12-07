@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { fetchPerplexity } from '@/server/perplexity';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { useDebounce } from 'use-debounce';
 import Link from 'next/link';
 

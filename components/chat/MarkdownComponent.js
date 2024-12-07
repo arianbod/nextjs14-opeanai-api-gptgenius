@@ -6,7 +6,7 @@ import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const MarkdownComponent = ({ content }) => {
     return (
-        <ReactMarkdown
+        (<ReactMarkdown
             components={{
                 code({ node, inline, className, children, ...props }) {
                     const match = /language-(\w+)/.exec(className || '');
@@ -28,7 +28,7 @@ const MarkdownComponent = ({ content }) => {
             }}
         >
             {content}
-        </ReactMarkdown>
+        </ReactMarkdown>)
     );
 };
 

@@ -18,7 +18,6 @@ const WelcomePage = () => {
 		messages,
 	} = useChat();
 
-	// Use a ref to track whether we've sent the welcome message
 	const welcomeSent = useRef(false);
 
 	useEffect(() => {
@@ -33,16 +32,57 @@ const WelcomePage = () => {
 		}
 	}, [user?.userId, isLoading, model, handleModelSelect]);
 
-	// Separate effect for adding the welcome message directly
 	useEffect(() => {
 		if (model && !welcomeSent.current && messages.length === 0 && !isLoading) {
 			welcomeSent.current = true;
-			// Add welcome message directly without generating a response
+
+			const welcomeMessage = `# 👋 Welcome to BabaGPT - Your All-in-One AI Hub!
+
+## 🤖 I'm Claude, Your Personal AI Guide
+
+I'm excited to introduce you to BabaGPT, where you'll find all your AI solutions in one place:
+
+### ✨ Why Choose BabaGPT?
+- 🔐 **Enhanced Privacy**: Your data stays secure and private
+- 💎 **Cost-Effective**: Access premium AI models at better prices
+- 🎯 **Unified Platform**: Multiple AI models in one place
+- ⚡ **Seamless Integration**: Switch between models effortlessly
+
+### 🌟 Available AI Models:
+- **OpenAI**: ChatGPT 4, GPT-3.5, and more
+- **Anthropic**: Claude and other advanced models
+- **Perplexity**: For real-time analysis
+- **Additional Models**: Constantly expanding our offerings
+
+### 💡 What Can We Create Together?
+- ✍️ **Writing & Content Creation**
+  - Documents, articles, stories
+  - Marketing copy, emails, reports
+  
+- 🔍 **Analysis & Research**
+  - Data analysis and visualization
+  - Market research and insights
+  
+- 💻 **Technical Solutions**
+  - Code development and debugging
+  - Technical documentation
+  
+- 🎨 **Creative Projects**
+  - Brainstorming and ideation
+  - Creative writing and design concepts
+
+### 🚀 Ready to Start?
+Let me know what interests you most, and I'll help you:
+- Explore different AI models
+- Find the perfect solution for your needs
+- Get started with your first project
+
+What would you like to explore first? 💫`;
+
 			addMessage({
 				id: 'welcome-message',
 				role: 'assistant',
-				content:
-					"👋 Welcome! I'm Claude, your AI assistant. I'm here to help you explore all the amazing things we can do together - from writing and analysis to coding and creative projects. What interests you most about AI assistance? I'd be happy to show you some examples!",
+				content: welcomeMessage,
 				timestamp: new Date().toISOString(),
 			});
 		}
@@ -51,13 +91,6 @@ const WelcomePage = () => {
 	if (!user || isLoading) {
 		return <Loading />;
 	}
-
-	// Redirect to chat if user already has chats
-	// if (chatList?.length > 0) {
-	// 	const lang = window.location.pathname.split('/')[1] || 'en';
-	// 	window.location.href = `/${lang}/chat`;
-	// 	return null;
-	// }
 
 	return <Chat />;
 };

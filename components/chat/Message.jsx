@@ -7,7 +7,7 @@ import {
 } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy, Maximize2, Minimize2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Image from "next/legacy/image";
+import Image from 'next/legacy/image';
 import { useChat } from '@/context/ChatContext';
 
 const Message = ({ role, content, timestamp }) => {
@@ -24,22 +24,25 @@ const Message = ({ role, content, timestamp }) => {
 	};
 
 	return (
-        (<div
-			className={`w-full max-w-[97vw] lg:max-w-3xl flex-wrap flex mx-auto  ${
+		<div
+			className={`w-full max-w-[97vw] lg:max-w-3xl flex gap-0 mx-auto  ${
 				isUser ? 'justify-end' : ''
 			}`}>
-            {!isUser && (
-				<Image
-					src={activeChat.avatar}
-					alt={role}
-					width={40}
-					height={40}
-					className='rounded-full bg-black/75 p-1 w-8 h-8 mt-2 '
-				/>
+			{!isUser && (
+				<div className='w-1/12'>
+					<Image
+						src={activeChat.avatar}
+						alt={role}
+						width={40}
+						height={40}
+						objectFit='contain'
+						className='rounded-full bg-black/75 p-1 w-8 h-8 max-h-16 mt-2 '
+					/>
+				</div>
 			)}
-            <div
+			<div
 				className={`flex flex-col mb-4 hover:bg-base-200 rounded-lg p-4 transition-all ${
-					isUser ? 'w-1/2 bg-base-200' : 'w-full'
+					isUser ? 'w-1/2 bg-base-200' : 'w-11/12'
 				}`}>
 				<div className='flex justify-between items-center w-full mb-2'>
 					<span
@@ -118,8 +121,8 @@ const Message = ({ role, content, timestamp }) => {
 					</ReactMarkdown>
 				</div>
 			</div>
-        </div>)
-    );
+		</div>
+	);
 };
 
 export default memo(Message);

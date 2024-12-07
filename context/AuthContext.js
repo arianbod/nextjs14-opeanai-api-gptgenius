@@ -33,21 +33,6 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const handleRouting = () => {
-        const currentPath = window.location.pathname;
-        const lang = currentPath.split('/')[1];
-        const pathParts = currentPath.split('/');
-
-        // Only redirect if exactly at auth or root path
-        if ((currentPath === `/${lang}` || currentPath === `/${lang}/auth`) && user) {
-            router.push(`/${lang}/chat`);
-        }
-        // Only redirect if exactly at chat path without auth
-        else if (pathParts[2] === 'chat' && pathParts.length === 3 && !user) {
-            router.push(`/${lang}/auth`);
-        }
-    };
-
     const setCookieAndStorage = async (userData) => {
         try {
             const timestamp = new Date().getTime();
@@ -59,10 +44,8 @@ export const AuthProvider = ({ children }) => {
                 animalSelection: userData.animalSelection
             };
 
-            // Set local storage first
+            // Set local storage and cookie
             localStorage.setItem("user", JSON.stringify(userDataToStore));
-
-            // Set cookie with proper structure and expiration
             const expires = new Date(timestamp + SESSION_DURATION).toUTCString();
             document.cookie = `user=${encodeURIComponent(JSON.stringify(userDataToStore))}; path=/; expires=${expires}; SameSite=Lax`;
 
@@ -70,10 +53,7 @@ export const AuthProvider = ({ children }) => {
             setUser(userDataToStore);
             setTokenBalance(userData.tokenBalance);
 
-            // Get language
             const lang = window.location.pathname.split('/')[1] || 'en';
-            // from here
-            // Check if user has any existing chats
             try {
                 const response = await fetch('/api/chat/getChatList', {
                     method: 'POST',
@@ -83,24 +63,18 @@ export const AuthProvider = ({ children }) => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    // If new user (no chats), redirect to welcome page
-                    if (!data.chats?.length) {
-                        router.push(`/${lang}/welcome`);
-                    } else {
-                        // Existing user, redirect to chat
-                        router.push(`/${lang}/chat`);
-                    }
+                    const isNewUser = !data.chats?.length;
+                    return { success: true, isNewUser, lang };
                 }
             } catch (error) {
                 console.error('Error checking chat list:', error);
-                // Default to chat route if check fails
-                router.push(`/${lang}/chat`);
+                return { success: true, isNewUser: false, lang };
             }
-            // to here 
-            return true;
+
+            return { success: true, isNewUser: false, lang };
         } catch (error) {
             console.error("Error setting auth data:", error);
-            return false;
+            return { success: false, error: "Failed to store authentication data" };
         }
     };
 
@@ -108,9 +82,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await fetch('/api/auth/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, animalSelection }),
             });
 
@@ -126,21 +98,24 @@ export const AuthProvider = ({ children }) => {
                 };
             }
 
-            // If registration successful, immediately set the auth data
+            // On success
             if (data.success) {
-                const stored = await setCookieAndStorage({
+                const result = await setCookieAndStorage({
                     userId: data.userId,
                     token: data.token,
                     tokenBalance: data.tokenBalance,
-                    animalSelection: animalSelection
+                    animalSelection
                 });
 
-                if (!stored) {
+                if (!result.success) {
                     return {
                         success: false,
                         error: "Failed to store authentication data"
                     };
                 }
+
+                // Return isNewUser and lang so AuthPage can handle routing after confirmation
+                return { ...data, isNewUser: result.isNewUser, lang: result.lang };
             }
 
             return data;
@@ -179,14 +154,14 @@ export const AuthProvider = ({ children }) => {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                const stored = await setCookieAndStorage({
+                const result = await setCookieAndStorage({
                     userId: data.userId,
                     token: data.token,
                     tokenBalance: data.tokenBalance,
-                    animalSelection: animalSelection
+                    animalSelection
                 });
 
-                if (!stored) {
+                if (!result.success) {
                     return {
                         success: false,
                         error: "Failed to store authentication data"
@@ -196,7 +171,9 @@ export const AuthProvider = ({ children }) => {
                 return {
                     success: true,
                     token: data.token,
-                    message: data.message
+                    message: data.message,
+                    isNewUser: result.isNewUser,
+                    lang: result.lang
                 };
             } else {
                 let errorMessage = data.error;
@@ -226,47 +203,28 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            // 1. Clear all states
             setUser(null);
             setTokenBalance(0);
 
-            // 2. Clear all storage
             localStorage.clear();
             sessionStorage.clear();
 
-            // 3. Clear all cookies
             document.cookie.split(";").forEach(cookie => {
                 document.cookie = cookie
                     .replace(/^ +/, "")
                     .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
             });
             document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-            // 4. Get current language from path
+
             const lang = window.location.pathname.split('/')[1] || 'en';
-
-            // 5. Clear server-side session
-            // try {
-            //     await fetch('/api/auth/logout', {
-            //         method: 'POST',
-            //         credentials: 'include'
-            //     });
-            // } catch (error) {
-            //     console.error('Server logout error:', error);
-            // }
-
-            // 6. Show success message
             toast.success('Successfully logged out');
-
-            // 7. Navigate using Next.js router with refresh
-            router.refresh(); // Refresh server components
-            router.push(`/${lang}`); // Replace current route with home
+            router.refresh();
+            router.push(`/${lang}`);
             window.location.reload();
 
         } catch (error) {
             console.error('Logout error:', error);
             toast.error('Error during logout');
-
-            // Fallback using Next.js router
             router.refresh();
             router.replace(`/`);
         }
@@ -290,9 +248,11 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    useEffect(() => {
-        handleRouting();
-    }, [user]);
+    // Removed handleRouting() in useEffect to avoid unwanted redirects
+    // We'll rely on AuthPage to handle final redirect after confirmation
+    // useEffect(() => {
+    //     handleRouting();
+    // }, [user]);
 
     const value = {
         user,

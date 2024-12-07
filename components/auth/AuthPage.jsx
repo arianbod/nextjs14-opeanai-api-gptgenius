@@ -26,14 +26,15 @@ const AuthPage = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [registrationToken, setRegistrationToken] = useState('');
 	const [showTokenModal, setShowTokenModal] = useState(false);
+	const [isNewUser, setIsNewUser] = useState(false);
+	const [lang, setLang] = useState('en');
+	const [hasSavedToken, setHasSavedToken] = useState(false);
 
 	const handleAnimalSelect = (animal) => {
 		if (selectedAnimals.includes(animal)) {
-			// Remove this animal and all animals after it in the sequence
 			const index = selectedAnimals.indexOf(animal);
 			setSelectedAnimals((prev) => prev.slice(0, index));
 		} else if (selectedAnimals.length < 3) {
-			// Add the animal to the sequence
 			setSelectedAnimals((prev) => [...prev, animal]);
 		}
 	};
@@ -59,9 +60,7 @@ const AuthPage = () => {
 			if (isRegistering) {
 				const result = await register(email || null, selectedAnimals);
 
-				// First check if there's a validation error response
 				if (!result.success) {
-					// Check for email-specific errors in the validation details
 					if (
 						result.details?.some((error) =>
 							error.includes('Email is already registered')
@@ -71,7 +70,6 @@ const AuthPage = () => {
 						return;
 					}
 
-					// Handle other validation errors
 					if (result.validationErrors?.email?.length > 0) {
 						toast.error(result.validationErrors.email[0]);
 						return;
@@ -82,14 +80,14 @@ const AuthPage = () => {
 						return;
 					}
 
-					// If no specific error was found, show the generic error
 					toast.error(result.error || dict.auth.errors.register.generic);
 					return;
 				}
 
-				// Handle success case
 				setRegistrationToken(result.token);
 				setShowTokenModal(true);
+				setIsNewUser(result.isNewUser);
+				setLang(result.lang);
 			} else {
 				if (!token.trim()) {
 					toast.error(dict.auth.errors.login.tokenRequired);
@@ -102,10 +100,16 @@ const AuthPage = () => {
 					if (result.token !== token) {
 						setRegistrationToken(result.token);
 						setShowTokenModal(true);
+						setIsNewUser(result.isNewUser);
+						setLang(result.lang);
+					} else {
+						if (result.isNewUser) {
+							router.push(`/${result.lang}/welcome`);
+						} else {
+							router.push(`/${result.lang}/chat`);
+						}
 					}
-					router.push('/chat');
 				} else {
-					// Handle different types of login errors
 					if (!token.trim()) {
 						toast.error(dict.auth.errors.login.tokenRequired);
 					} else if (result.message?.includes('Invalid authentication token')) {
@@ -130,7 +134,6 @@ const AuthPage = () => {
 				}
 			}
 		} catch (error) {
-			// Handle network or unexpected errors
 			if (!navigator.onLine) {
 				toast.error(dict.auth.errors.network);
 			} else {
@@ -141,52 +144,97 @@ const AuthPage = () => {
 		}
 	};
 
-	// Token Modal Component
 	const TokenModal = () => (
 		<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-			<div className='bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4'>
+			<div className='bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4 text-black dark:text-white shadow-lg'>
 				<h2 className='text-xl font-bold mb-4'>{dict.auth.saveToken}</h2>
 				<p className='mb-4 text-sm'>{dict.auth.tokenImportant}</p>
 				<div className='flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-700 rounded'>
 					<code className='flex-1 break-all'>{registrationToken}</code>
 					<button
 						onClick={copyToken}
-						className='p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded'>
+						className='p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded'
+						aria-label='Copy Token'>
 						<FaCopy />
 					</button>
 				</div>
-				<div className='mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded'>
-					<div className='text-sm text-yellow-800 dark:text-yellow-200'>
-						{dict.auth.rememberAnimalOrder}
-						<div className='mt-2 flex gap-2'>
-							{selectedAnimals.map((animal, index) => (
-								<div
-									key={index}
-									className='px-2 py-1 bg-yellow-100 dark:bg-yellow-800 rounded'>
-									{index + 1}.{' '}
-									{dict.auth.animalList.find((a) => a.key === animal)?.label}
-								</div>
-							))}
-						</div>
+				<div className='mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded text-sm text-yellow-800 dark:text-yellow-200'>
+					<p>{dict.auth.rememberAnimalOrder}</p>
+					<div className='mt-2 flex gap-2 flex-wrap'>
+						{selectedAnimals.map((animal, index) => (
+							<div
+								key={index}
+								className='px-2 py-1 bg-yellow-100 dark:bg-yellow-800 rounded'>
+								{index + 1}.{' '}
+								{dict.auth.animalList.find((a) => a.key === animal)?.label}
+							</div>
+						))}
 					</div>
 				</div>
+
+				<div className='mt-6 text-sm space-y-2 text-black dark:text-white'>
+					<p>
+						<strong>Steps to secure your token:</strong>
+					</p>
+					<ol className='list-decimal list-inside space-y-1'>
+						<li>Copy the token above.</li>
+						<li>Store it in a password manager or a safe place.</li>
+						<li>Keep it secret—treat it like a password.</li>
+					</ol>
+				</div>
+
+				<div className='mt-4 flex items-center gap-2'>
+					<input
+						type='checkbox'
+						id='savedTokenCheck'
+						checked={hasSavedToken}
+						onChange={() => setHasSavedToken(!hasSavedToken)}
+						className='w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-gray-600'
+					/>
+					<label
+						htmlFor='savedTokenCheck'
+						className='text-sm'>
+						I have securely saved my token.
+					</label>
+				</div>
+
 				<button
 					onClick={() => {
 						setShowTokenModal(false);
-						if (isRegistering) router.push('/chat');
+						if (hasSavedToken) {
+							if (isRegistering) {
+								if (isNewUser) {
+									router.push(`/${lang}/welcome`);
+								} else {
+									router.push(`/${lang}/chat`);
+								}
+							} else {
+								if (isNewUser) {
+									router.push(`/${lang}/welcome`);
+								} else {
+									router.push(`/${lang}/chat`);
+								}
+							}
+						}
 					}}
-					className='w-full mt-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'>
-					{dict.auth.understood}
+					disabled={!hasSavedToken}
+					className={`w-full mt-4 py-2 rounded font-medium ${
+						hasSavedToken
+							? 'bg-blue-500 hover:bg-blue-600 text-white'
+							: 'bg-gray-300 text-gray-500 cursor-not-allowed'
+					}`}>
+					{hasSavedToken
+						? dict.auth.understood
+						: 'Please confirm you saved the token'}
 				</button>
 			</div>
 		</div>
 	);
 
 	return (
-		<div className='flex items-center justify-center min-h-screen lg:p-4 lg:fixed left-0 right-0 mx-auto h-fit overflow-auto'>
+		<div className='flex items-center justify-center min-h-screen lg:p-4 lg:fixed left-0 right-0 mx-auto h-fit overflow-auto bg-white dark:bg-gray-900 text-black dark:text-white'>
 			<div className='w-full max-w-md'>
-				<div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl'>
-					{/* Header section with toggles */}
+				<div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl text-black dark:text-white'>
 					<div className='relative p-6 flex justify-between items-center'>
 						<h1 className='text-xl lg:text-2xl font-bold text-center mx-auto'>
 							{isRegistering ? dict.auth.register.title : dict.auth.login.title}
@@ -197,7 +245,6 @@ const AuthPage = () => {
 						</div>
 					</div>
 
-					{/* Info Card */}
 					<div className='mx-6 mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg'>
 						<div className='flex items-start gap-2'>
 							<FaInfoCircle className='text-blue-500 mt-1 flex-shrink-0' />
@@ -215,26 +262,27 @@ const AuthPage = () => {
 					<form
 						onSubmit={handleSubmit}
 						className='p-6 space-y-6'>
-						{/* Email/Token Input */}
 						{isRegistering ? (
 							<div className='relative'>
 								<label className='block text-sm font-medium mb-1'>
 									{dict.auth.register.email}
 									<span className='text-red-500 ml-1'>*</span>
 								</label>
-								<input
-									type='email'
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
-									className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 ${
-										email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
-											? 'border-red-500 focus:ring-red-200'
-											: 'focus:ring-blue-200'
-									}`}
-									placeholder={dict.auth.register.emailPlaceholder}
-									required
-								/>
-								<FaEnvelope className='absolute left-3 top-9 text-gray-400' />
+								<div className='relative'>
+									<FaEnvelope className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400' />
+									<input
+										type='email'
+										value={email}
+										onChange={(e) => setEmail(e.target.value)}
+										className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 bg-white dark:bg-gray-700 text-black dark:text-white border-gray-300 dark:border-gray-600 ${
+											email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+												? 'focus:ring-red-200 dark:focus:ring-red-400 border-red-500 dark:border-red-400'
+												: 'focus:ring-blue-200 dark:focus:ring-blue-600'
+										}`}
+										placeholder={dict.auth.register.emailPlaceholder}
+										required
+									/>
+								</div>
 								{email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) && (
 									<p className='mt-1 text-sm text-red-500'>
 										{dict.auth.errors.email.invalid}
@@ -247,21 +295,25 @@ const AuthPage = () => {
 									{dict.auth.login.token}
 									<span className='text-red-500 ml-1'>*</span>
 								</label>
-								<input
-									type='text'
-									value={token}
-									onChange={(e) => setToken(e.target.value)}
-									className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 ${
-										token.trim() === '' ? 'border-red-500' : ''
-									}`}
-									required
-									placeholder={dict.auth.login.tokenPlaceholder}
-								/>
-								<FaLock
-									className={`absolute left-3 top-9 ${
-										token.trim() === '' ? 'text-red-400' : 'text-gray-400'
-									}`}
-								/>
+								<div className='relative'>
+									<FaLock
+										className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
+											token.trim() === '' ? 'text-red-400' : 'text-gray-400'
+										}`}
+									/>
+									<input
+										type='text'
+										value={token}
+										onChange={(e) => setToken(e.target.value)}
+										className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 bg-white dark:bg-gray-700 text-black dark:text-white border-gray-300 dark:border-gray-600 ${
+											token.trim() === ''
+												? 'border-red-500 focus:ring-red-200 dark:focus:ring-red-400 dark:border-red-400'
+												: 'focus:ring-blue-200 dark:focus:ring-blue-600'
+										}`}
+										placeholder={dict.auth.login.tokenPlaceholder}
+										required
+									/>
+								</div>
 								{token.trim() === '' && (
 									<p className='mt-1 text-sm text-red-500'>
 										{dict.auth.errors.login.tokenRequired}
@@ -270,12 +322,11 @@ const AuthPage = () => {
 							</div>
 						)}
 
-						{/* Selected Animals Display */}
 						<div className='space-y-2'>
 							<label className='block text-sm font-medium'>
 								{dict.auth.selectedAnimalsOrder}
 							</label>
-							<div className='flex gap-2 min-h-[2.5rem]'>
+							<div className='flex gap-2 min-h-[2.5rem] flex-wrap'>
 								{selectedAnimals.map((animal, index) => (
 									<div
 										key={index}
@@ -303,7 +354,6 @@ const AuthPage = () => {
 							</div>
 						</div>
 
-						{/* Animal Selection Grid */}
 						<div>
 							<label className='block text-sm font-medium mb-2'>
 								{dict.auth.selectAnimalsInOrder}
@@ -321,13 +371,14 @@ const AuthPage = () => {
 											selectedAnimals.length >= 3 &&
 											!selectedAnimals.includes(animal.key)
 										}
-										className={`p-2 rounded-lg transition-colors flex items-center justify-center ${
-											selectedAnimals.includes(animal.key)
-												? 'bg-blue-500 text-white'
-												: selectedAnimals.length >= 3
-												? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-												: 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-										}`}>
+										className={`p-2 rounded-lg transition-colors flex items-center justify-center 
+                      ${
+												selectedAnimals.includes(animal.key)
+													? 'bg-blue-500 text-white'
+													: selectedAnimals.length >= 3
+													? 'bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
+													: 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-black dark:text-white'
+											}`}>
 										<FaPaw className='mr-1' />
 										{animal.label}
 									</button>
@@ -335,7 +386,6 @@ const AuthPage = () => {
 							</div>
 						</div>
 
-						{/* Submit Button */}
 						<button
 							type='submit'
 							disabled={isSubmitting}
@@ -347,7 +397,7 @@ const AuthPage = () => {
 							{isSubmitting ? (
 								<span className='flex items-center justify-center'>
 									<svg
-										className='animate-spin h-5 w-5 mr-3'
+										className='animate-spin h-5 w-5 mr-3 text-white'
 										viewBox='0 0 24 24'>
 										<circle
 											className='opacity-25'
@@ -376,14 +426,13 @@ const AuthPage = () => {
 						</button>
 					</form>
 
-					{/* Toggle Registration/Login */}
 					<div className='px-6 pb-6'>
 						<button
 							onClick={() => {
 								setIsRegistering(!isRegistering);
 								setSelectedAnimals([]);
 							}}
-							className='w-full py-2 px-4 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors'>
+							className='w-full py-2 px-4 bg-gray-100 dark:bg-gray-700 text-black dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors'>
 							{isRegistering
 								? dict.auth.register.switchToLogin
 								: dict.auth.login.switchToRegister}
@@ -391,7 +440,6 @@ const AuthPage = () => {
 					</div>
 				</div>
 			</div>
-			{/* Token Modal */}
 			{showTokenModal && <TokenModal />}
 		</div>
 	);

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, memo } from 'react';
-import { ArrowUp, Paperclip, Camera } from 'lucide-react';
+import { ArrowUp, Paperclip, Camera, X, Loader } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const MessageInput = ({
 	inputText,
@@ -9,6 +10,7 @@ const MessageInput = ({
 	disabled,
 	msgLen,
 	modelName, // New prop for model name
+	onFileUpload,
 }) => {
 	const textareaRef = useRef(null);
 	const fileInputRef = useRef(null);
@@ -20,6 +22,10 @@ const MessageInput = ({
 		top: 0,
 		left: 0,
 	});
+	const [selectedFile, setSelectedFile] = useState(null);
+	const [uploadProgress, setUploadProgress] = useState(0);
+	const [isUploading, setIsUploading] = useState(false);
+	const uploadControllerRef = useRef(null);
 
 	const isMobile = () => {
 		const width = window.innerWidth < 768;
@@ -28,14 +34,6 @@ const MessageInput = ({
 				navigator.userAgent
 			);
 		return width || userAgent;
-	};
-
-	const debounce = (func, delay) => {
-		let timer;
-		return (...args) => {
-			if (timer) clearTimeout(timer);
-			timer = setTimeout(() => func(...args), delay);
-		};
 	};
 
 	const calculateMaxHeight = () => {
@@ -97,10 +95,8 @@ const MessageInput = ({
 		};
 
 		updateDimensions();
-		const debouncedUpdate = debounce(updateDimensions, 100);
-		window.addEventListener('resize', debouncedUpdate);
-
-		return () => window.removeEventListener('resize', debouncedUpdate);
+		window.addEventListener('resize', updateDimensions);
+		return () => window.removeEventListener('resize', updateDimensions);
 	}, []);
 
 	useEffect(() => {
@@ -134,21 +130,134 @@ const MessageInput = ({
 		setShowFileOptions(!showFileOptions);
 	};
 
-	const handleFileUpload = (e) => {
+	const handleFileUpload = async (e) => {
 		const file = e.target.files[0];
-		console.log('File selected:', file);
+		if (!file) return;
+
+		try {
+			// Validate file size (10MB limit)
+			if (file.size > 10 * 1024 * 1024) {
+				toast.error('File size should be less than 10MB');
+				return;
+			}
+
+			// Validate file type
+			const allowedTypes = [
+				'text/plain',
+				'application/pdf',
+				'application/msword',
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'text/csv',
+				'application/vnd.ms-excel',
+				'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+			];
+
+			if (!allowedTypes.includes(file.type)) {
+				toast.error('Unsupported file type');
+				return;
+			}
+
+			setSelectedFile(file);
+			setIsUploading(true);
+			setUploadProgress(0);
+
+			// Create a new AbortController for this upload
+			uploadControllerRef.current = new AbortController();
+
+			// Convert file to base64 with progress
+			const reader = new FileReader();
+
+			reader.onloadstart = () => {
+				toast.loading('Preparing file...');
+			};
+
+			reader.onprogress = (event) => {
+				if (event.lengthComputable) {
+					const progress = (event.loaded / event.total) * 100;
+					setUploadProgress(progress);
+				}
+			};
+
+			reader.onloadend = async () => {
+				try {
+					if (reader.result) {
+						const base64String = reader.result.split(',')[1];
+
+						await onFileUpload(
+							{
+								name: file.name,
+								type: file.type,
+								size: file.size,
+								content: base64String,
+							},
+							uploadControllerRef.current.signal
+						);
+
+						toast.success('File uploaded successfully');
+						setUploadProgress(100);
+
+						// Clear the file after a delay
+						setTimeout(() => {
+							setIsUploading(false);
+							setUploadProgress(0);
+							setSelectedFile(null);
+						}, 1000);
+					}
+				} catch (error) {
+					if (error.name === 'AbortError') {
+						toast.error('File upload cancelled');
+					} else {
+						toast.error('Error uploading file');
+						console.error('File upload error:', error);
+					}
+					setIsUploading(false);
+					setUploadProgress(0);
+					setSelectedFile(null);
+				}
+			};
+
+			reader.onerror = () => {
+				toast.error('Error reading file');
+				setIsUploading(false);
+				setUploadProgress(0);
+				setSelectedFile(null);
+			};
+
+			reader.readAsDataURL(file);
+		} catch (error) {
+			console.error('File handling error:', error);
+			toast.error('Error processing file');
+			setIsUploading(false);
+			setUploadProgress(0);
+			setSelectedFile(null);
+		}
+
 		setShowFileOptions(false);
 	};
 
-	const handleCameraCapture = () => {
+	const cancelUpload = () => {
+		if (uploadControllerRef.current) {
+			uploadControllerRef.current.abort();
+			uploadControllerRef.current = null;
+		}
+		setIsUploading(false);
+		setUploadProgress(0);
+		setSelectedFile(null);
 		if (fileInputRef.current) {
-			fileInputRef.current.accept = 'image/*';
-			fileInputRef.current.capture = 'environment';
-			fileInputRef.current.click();
+			fileInputRef.current.value = '';
 		}
 	};
 
-	// Determine the placeholder text dynamically
+	const removeFile = () => {
+		setSelectedFile(null);
+		setIsUploading(false);
+		setUploadProgress(0);
+		if (fileInputRef.current) {
+			fileInputRef.current.value = '';
+		}
+		onFileUpload(null);
+	};
+
 	let placeholder;
 	if (isPending) {
 		placeholder = `${modelName} is thinking...`;
@@ -165,6 +274,41 @@ const MessageInput = ({
 			className='fixed bottom-0 left-0 right-0 mx-auto lg:ml-40 px-4 w-full'>
 			<div className='max-w-3xl mx-auto'>
 				<div className='relative bg-[#2a2b36] rounded-3xl min-h-[96px] flex flex-col dark:border-2 border-white/50'>
+					{/* File Upload Progress */}
+					{selectedFile && (
+						<div className='px-4 pt-2'>
+							<div className='flex items-center gap-2 text-gray-300'>
+								<Paperclip className='w-4 h-4' />
+								<span className='text-sm truncate flex-1'>
+									{selectedFile.name}
+								</span>
+								{isUploading ? (
+									<>
+										<div className='h-1 w-24 bg-gray-700 rounded-full overflow-hidden'>
+											<div
+												className='h-full bg-blue-500 transition-all duration-300'
+												style={{ width: `${uploadProgress}%` }}
+											/>
+										</div>
+										<button
+											type='button'
+											onClick={cancelUpload}
+											className='text-gray-400 hover:text-white p-1'>
+											<X className='w-4 h-4' />
+										</button>
+									</>
+								) : (
+									<button
+										type='button'
+										onClick={removeFile}
+										className='text-gray-400 hover:text-white p-1'>
+										<X className='w-4 h-4' />
+									</button>
+								)}
+							</div>
+						</div>
+					)}
+
 					<div className='flex-1 p-4 relative'>
 						<textarea
 							ref={textareaRef}
@@ -179,8 +323,8 @@ const MessageInput = ({
 							disabled={isPending || disabled}
 							rows={1}
 							className='w-full bg-transparent text-white placeholder-gray-300
-                       resize-none focus:outline-none transition-all duration-200 
-                       ease-in-out font-sans leading-relaxed'
+                           resize-none focus:outline-none transition-all duration-200 
+                           ease-in-out font-sans leading-relaxed'
 							style={{
 								maxHeight,
 								height: 'auto',
@@ -210,8 +354,13 @@ const MessageInput = ({
 							<button
 								type='button'
 								onClick={handleAttachmentClick}
-								className='p-2 text-gray-400 hover:text-white rounded-full'>
-								<Paperclip className='w-6 h-6' />
+								className='p-2 text-gray-400 hover:text-white rounded-full'
+								disabled={isUploading}>
+								{isUploading ? (
+									<Loader className='w-6 h-6 animate-spin' />
+								) : (
+									<Paperclip className='w-6 h-6' />
+								)}
 							</button>
 
 							{showFileOptions && (
@@ -225,7 +374,13 @@ const MessageInput = ({
 									</button>
 									<button
 										type='button'
-										onClick={handleCameraCapture}
+										onClick={() => {
+											if (fileInputRef.current) {
+												fileInputRef.current.accept = 'image/*';
+												fileInputRef.current.capture = 'environment';
+												fileInputRef.current.click();
+											}
+										}}
 										className='flex items-center gap-2 p-2 hover:bg-[#3a3b46] rounded-lg text-gray-300'>
 										<Camera size={16} />
 										<span>Take Photo</span>
@@ -238,13 +393,19 @@ const MessageInput = ({
 								ref={fileInputRef}
 								onChange={handleFileUpload}
 								className='hidden'
+								accept='.txt,.pdf,.doc,.docx,.csv,.xlsx'
 							/>
 						</div>
 
 						<button
 							type='submit'
 							className='p-2 text-gray-400 hover:text-white rounded-full disabled:opacity-70 bg-base-200 disabled:bg-base-200/50 transition-all duration-200'
-							disabled={isPending || disabled || inputText.trim() === ''}
+							disabled={
+								isPending ||
+								disabled ||
+								(!inputText.trim() && !selectedFile) ||
+								isUploading
+							}
 							aria-label='Send Message'>
 							<ArrowUp className='w-6 h-6' />
 						</button>

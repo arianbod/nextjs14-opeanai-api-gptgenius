@@ -50,7 +50,7 @@ async function generateChatTitle(initialMessage) {
                     },
                     maxTokens: {
                         name: 'max_tokens',
-                        default: 20
+                        default: 120
                     }
                 }
             }
@@ -69,7 +69,7 @@ async function generateChatTitle(initialMessage) {
         }
 
         // console.log('Generated title:', title);
-        return title.trim() || "New Conversation";
+        return title || "New Conversation";
     } catch (error) {
         console.error('Error generating chat title:', error);
         return "New Conversation";
@@ -311,4 +311,34 @@ export async function getChatInfo(chatId) {
         throw new Error(error)
     }
 
+}
+
+export async function updateChatMetadata(chatId, metadata) {
+    try {
+        await prisma.chat.update({
+            where: { id: chatId },
+            data: {
+                metadata: {
+                    ...(await getChatMetadata(chatId)),
+                    ...metadata
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error updating chat metadata:', error);
+        throw error;
+    }
+}
+
+export async function getChatMetadata(chatId) {
+    try {
+        const chat = await prisma.chat.findUnique({
+            where: { id: chatId },
+            select: { metadata: true }
+        });
+        return chat?.metadata || {};
+    } catch (error) {
+        console.error('Error getting chat metadata:', error);
+        throw error;
+    }
 }

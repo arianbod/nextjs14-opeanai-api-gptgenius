@@ -4,7 +4,6 @@ import { useParams, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { AIPersonas } from '@/lib/Personas';
 import { getProviderConfig } from '@/lib/ai-providers';
-import axios from 'axios';
 import { nanoid } from 'nanoid';
 
 const ChatContext = createContext();
@@ -87,10 +86,11 @@ export const ChatProvider = ({ children }) => {
 
         try {
             setIsLoading(true);
-            const { data } = await axios.post('/api/chat/getChatInfo',
-                { userId: user.userId, chatId },
-                { headers: { 'Content-Type': 'application/json' } }
-            );
+            const { data } = await fetch('/api/chat/getChatInfo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.userId, chatId })
+            }).then(res => res.json());
 
             if (!data?.chatDataInfo?.modelCodeName) {
                 throw new Error('Invalid chat info received');
@@ -206,8 +206,8 @@ export const ChatProvider = ({ children }) => {
         setMessages(prev => prev.filter(msg => msg.id !== messageId));
     }, []);
 
-    const generateResponse = async (content) => {
-        if (!content?.trim() || !user?.userId || isGenerating || !activeChat?.model) {
+    const generateResponse = async (content, fileData = null) => {
+        if ((!content?.trim() && !fileData) || !user?.userId || isGenerating || !activeChat?.model) {
             toast.error('Please ensure all requirements are met before sending a message');
             return;
         }
@@ -215,10 +215,9 @@ export const ChatProvider = ({ children }) => {
         setIsGenerating(true);
         const userMessageId = nanoid();
         const assistantMessageId = nanoid();
+        let chatId = activeChat.id;
 
         try {
-            let chatId = activeChat.id;
-
             // If no active chat, create one first
             if (!chatId) {
                 const modelData = {
@@ -246,31 +245,49 @@ export const ChatProvider = ({ children }) => {
                 window.history.pushState(null, '', `/chat/${chatId}`);
             }
 
-            // Add the user message after chat creation
-            addMessage({
+            // Add the user message to local state
+            const userMessage = {
                 id: userMessageId,
                 role: 'user',
                 content: content.trim(),
                 timestamp: new Date().toISOString(),
-            });
+            };
+            setMessages(prev => [...prev, userMessage]);
 
             // Add empty assistant message that will be updated with the stream
-            addMessage({
+            const assistantMessage = {
                 id: assistantMessageId,
                 role: 'assistant',
                 content: '',
                 timestamp: new Date().toISOString(),
-            });
+            };
+            setMessages(prev => [...prev, assistantMessage]);
 
-            const messageResponse = await fetch('/api/chat', {
+            // First, ensure the user message is saved to the database
+            await fetch('/api/chat/addMessage', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     userId: user.userId,
                     chatId,
-                    content,
+                    content: content.trim(),
+                    role: 'user'
+                }),
+            });
+
+            // Then send request for AI response
+            const messageResponse = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: user.userId,
+                    chatId,
+                    content: content.trim(),
                     persona: activeChat.model,
                     provider: activeChat.provider,
+                    file: fileData
                 }),
             });
 
@@ -280,53 +297,45 @@ export const ChatProvider = ({ children }) => {
             const decoder = new TextDecoder();
             let accumulatedContent = '';
 
-            try {
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
 
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n');
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
 
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            try {
-                                const data = JSON.parse(line.slice(6));
-                                if (
-                                    data.content &&
-                                    typeof data.content === 'string' &&
-                                    !data.content.includes('streaming_started') &&
-                                    !data.content.includes('streaming_completed') &&
-                                    !data.content.includes('stream_ended')
-                                ) {
-                                    accumulatedContent += data.content;
-                                    updateMessage(assistantMessageId, accumulatedContent);
-                                }
-                            } catch (error) {
-                                console.error('Error parsing SSE data:', error);
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const data = JSON.parse(line.slice(6));
+                            if (
+                                data.content &&
+                                typeof data.content === 'string' &&
+                                !data.content.includes('streaming_started') &&
+                                !data.content.includes('streaming_completed') &&
+                                !data.content.includes('stream_ended')
+                            ) {
+                                accumulatedContent += data.content;
+                                updateMessage(assistantMessageId, accumulatedContent);
                             }
+                        } catch (error) {
+                            console.error('Error parsing SSE data:', error);
                         }
                     }
                 }
-            } catch (error) {
-                console.error('Stream reading error:', error);
-                throw new Error('Failed to read response stream');
             }
 
             await fetchChats();
         } catch (error) {
             console.error('Error generating response:', error);
-            removeMessage(assistantMessageId);
-            removeMessage(userMessageId);
+            setMessages(prev => prev.filter(msg => msg.id !== assistantMessageId && msg.id !== userMessageId));
             toast.error(`Failed to generate response: ${error.message}`);
         } finally {
             setIsGenerating(false);
         }
     };
 
-    const toggleSearch = useCallback(() =>
-        setIsSearchOpen(prev => !prev),
-        []);
+    const toggleSearch = useCallback(() => setIsSearchOpen(prev => !prev), []);
 
     const filteredMessages = useCallback(() => {
         return messages.filter(message => {
@@ -346,7 +355,6 @@ export const ChatProvider = ({ children }) => {
     // Set active chat based on route params
     useEffect(() => {
         if (params?.chatId && user?.userId && !activeChat.id) {
-            // Validate chat ID format if needed
             if (params.chatId.match(/^[a-zA-Z0-9-_]+$/)) {
                 setActiveChat(prev => ({ ...prev, id: params.chatId }));
             }

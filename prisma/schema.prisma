@@ -49,6 +49,22 @@ model Message {
   chatId    String
   chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+    
+  // New fields for file handling
+  fileMetadata FileMetadata?
+}
+// New model for file metadata
+model FileMetadata {
+  id            String   @id @default(uuid())
+  messageId     String   @unique
+  message       Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  fileName      String
+  fileType      String
+  fileSize      Int
+  uploadDate    DateTime @default(now())
+  contentSummary String? @db.Text  // Summary of file contents
+  processingStatus String @default("pending") // pending, completed, failed
+  analysisResult Json?   // Structured data from file analysis
 }
 
 enum type {

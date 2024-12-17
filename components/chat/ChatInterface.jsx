@@ -7,21 +7,22 @@ import AILoadingIndicator from './AILoadingIndicator';
 import { useChat } from '@/context/ChatContext';
 import Header from './Header';
 import toast from 'react-hot-toast';
-import {
-	FaLightbulb,
-	FaSearch,
-	FaRegLightbulb,
-	FaPaperPlane,
-} from 'react-icons/fa';
+import { FaSearch, FaRegLightbulb } from 'react-icons/fa';
 import { ArrowUp } from 'lucide-react';
 
 const ChatInterface = () => {
 	const { messages, isGenerating, generateResponse, model } = useChat();
 	const [inputText, setInputText] = useState('');
+	const [uploadedFile, setUploadedFile] = useState(null);
 	const messagesEndRef = useRef(null);
 	const [greetingIndex, setGreetingIndex] = useState(0);
 	const [showGreeting, setShowGreeting] = useState(true);
 	const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+
+	// Additional state for file uploading
+	const [isUploading, setIsUploading] = useState(false);
+	const [uploadProgress, setUploadProgress] = useState(0);
+	const abortControllerRef = useRef(null);
 
 	// General greetings
 	const standardGreetings = [
@@ -71,31 +72,6 @@ const ChatInterface = () => {
 			'best washing machine under 500',
 			'amazon prime day 2024 deals',
 		],
-		[
-			'why do I have a headache when I wake up',
-			'how to get rid of cold fast natural remedies',
-			'is it normal to feel tired all the time',
-		],
-		[
-			'netflix not working on smart tv how to fix',
-			'how to remove virus from laptop windows 11',
-			'forgot gmail password recovery steps',
-		],
-		[
-			'cheap flights to europe summer 2024',
-			'things to do in paris with kids',
-			'taylor swift eras tour tickets resale',
-		],
-		[
-			'who won the world cup 2006',
-			'game of thrones spin off release date',
-			'tesla new model price and features',
-		],
-		[
-			'how much should i save each month calculator',
-			'what jobs can i do from home with no experience',
-			'best time to buy house 2024',
-		],
 	];
 
 	const greetings =
@@ -119,7 +95,9 @@ const ChatInterface = () => {
 	}, [greetings.length, selectedSuggestion]);
 
 	const scrollToBottom = () => {
-		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+		if (messagesEndRef.current) {
+			messagesEndRef.current.scrollIntoView({ behavior: 'auto' }); // Change from 'smooth' to 'auto'
+		}
 	};
 
 	useEffect(() => {
@@ -128,9 +106,99 @@ const ChatInterface = () => {
 		}
 	}, [messages]);
 
+	/**
+	 * handleFileUpload now accepts raw File object from MessageInput
+	 */
+	const handleFileUpload = async (file) => {
+		if (!file) {
+			setUploadedFile(null);
+			return;
+		}
+
+		// Validate file size (10MB limit)
+		if (file.size > 10 * 1024 * 1024) {
+			toast.error('File size should be less than 10MB');
+			return;
+		}
+
+		// Validate file type
+		const allowedTypes = [
+			'text/plain',
+			'application/pdf',
+			'application/msword',
+			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'text/csv',
+			'application/vnd.ms-excel',
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		];
+
+		if (!allowedTypes.includes(file.type)) {
+			toast.error(
+				'Unsupported file type. Please upload TXT, PDF, DOC, DOCX, CSV, or XLSX files.'
+			);
+			return;
+		}
+
+		try {
+			setIsUploading(true);
+			setUploadProgress(0);
+			abortControllerRef.current = new AbortController();
+
+			// Convert file to base64 with progress
+			const base64File = await new Promise((resolve, reject) => {
+				const reader = new FileReader();
+
+				reader.onprogress = (event) => {
+					if (event.lengthComputable) {
+						const progress = (event.loaded / event.total) * 100;
+						setUploadProgress(progress);
+						// Optional: Log progress for debugging
+						// console.log(`Upload progress: ${progress}%`);
+					}
+				};
+
+				reader.onloadend = () => {
+					// console.log('File read successfully'); // Optional debug
+					const base64String = reader.result.split(',')[1];
+					resolve(base64String);
+				};
+
+				reader.onerror = () => {
+					// console.log('File reading error'); // Optional debug
+					reject(new Error('Failed to read file.'));
+				};
+
+				reader.readAsDataURL(file);
+			});
+
+			setUploadedFile({
+				name: file.name,
+				type: file.type,
+				size: file.size,
+				content: base64File,
+			});
+
+			setIsUploading(false);
+			setUploadProgress(100);
+			toast.success('File uploaded successfully!');
+		} catch (error) {
+			if (abortControllerRef.current) {
+				console.log('Upload aborted');
+			} else {
+				console.error('Error processing file:', error);
+				toast.error('Error processing file. Please try again.');
+			}
+			setIsUploading(false);
+			setUploadProgress(0);
+		}
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (!inputText.trim()) return;
+		if (!inputText.trim() && !uploadedFile) {
+			toast.error('Please enter a message or upload a file');
+			return;
+		}
 
 		if (!model) {
 			toast.error('Please select a model first');
@@ -140,9 +208,27 @@ const ChatInterface = () => {
 		const messageContent = inputText.trim();
 		setInputText('');
 
+		console.log('Submitting message:', messageContent);
+		if (uploadedFile) {
+			console.log('With file:', uploadedFile);
+		}
+
 		try {
-			await generateResponse(messageContent);
-			setSelectedSuggestion(null); // Reset suggestion hint once user sends a message
+			// Prepare file data if present
+			let fileData = null;
+			if (uploadedFile) {
+				fileData = {
+					name: uploadedFile.name,
+					type: uploadedFile.type,
+					content: uploadedFile.content,
+				};
+			}
+
+			await generateResponse(messageContent, fileData);
+			setSelectedSuggestion(null);
+			setUploadedFile(null);
+			setUploadProgress(0);
+			toast.success('Message sent successfully!');
 		} catch (error) {
 			console.error('Error sending message:', error);
 			toast.error('Failed to send message');
@@ -153,17 +239,6 @@ const ChatInterface = () => {
 		setInputText(question);
 		setSelectedSuggestion(question);
 	};
-
-	const categoryTitles = [
-		'Common Searches',
-		'How-to & DIY',
-		'Shopping & Reviews',
-		'Health & Symptoms',
-		'Tech Help',
-		'Travel & Events',
-		'Trending & News',
-		'Life Questions',
-	];
 
 	const renderPostSelectionHint = (chosenText) => (
 		<div className='flex flex-col space-y-6 w-full max-w-xl mx-auto px-4 pt-64 text-center'>
@@ -179,7 +254,6 @@ const ChatInterface = () => {
 				</p>
 				<div className='text-sm text-gray-600 dark:text-gray-300 flex flex-wrap'>
 					Now, feel free to refine your request in the text box below and press
-					
 					the{' '}
 					<div className='p-2 text-gray-400 hover:text-white rounded-full disabled:opacity-70 bg-base-200 disabled:bg-base-200/50 transition-all duration-200 '>
 						<ArrowUp className='w-6 h-6' />
@@ -210,9 +284,6 @@ const ChatInterface = () => {
 				</div>
 
 				<div className='space-y-4'>
-					<h3 className='text-md font-semibold text-gray-700 dark:text-gray-300'>
-						{categoryTitles[greetingIndex]}:
-					</h3>
 					<div className='space-y-2'>
 						{currentQuestions.map((question, idx) => (
 							<button
@@ -278,12 +349,28 @@ const ChatInterface = () => {
 		);
 	};
 
-	const renderGreeting = () => {
-		if (model?.provider === 'perplexity') {
-			return renderPerplexityGreeting();
-		} else {
-			return renderStandardGreeting();
+	/**
+	 * Implement cancellation of file upload
+	 */
+	const cancelUpload = () => {
+		if (abortControllerRef.current) {
+			// FileReader does not support aborting, so we simulate cancellation by resetting states
+			setIsUploading(false);
+			setUploadProgress(0);
+			setUploadedFile(null);
+			toast.error('File upload canceled.');
+			abortControllerRef.current = null;
 		}
+	};
+
+	/**
+	 * Implement removal of uploaded file before submission
+	 */
+	const removeFile = () => {
+		setUploadedFile(null);
+		setUploadProgress(0);
+		setIsUploading(false);
+		toast.success('File removed.');
 	};
 
 	return (
@@ -295,10 +382,10 @@ const ChatInterface = () => {
 					<div className='flex-grow animate-fade-in-down px-4 pb-20'>
 						<MessageList
 							messages={messages}
-							isLoading={isGenerating}
+							isLoading={isGenerating || isUploading}
 							messagesEndRef={messagesEndRef}
 						/>
-						{isGenerating && (
+						{(isGenerating || isUploading) && (
 							<div className='mx-4 my-2'>
 								<AILoadingIndicator />
 							</div>
@@ -310,12 +397,14 @@ const ChatInterface = () => {
 							className={`transition-opacity duration-300 ${
 								showGreeting ? 'opacity-100' : 'opacity-0'
 							}`}>
-							{isGenerating ? (
+							{isGenerating || isUploading ? (
 								<div className='mx-4 my-2'>
 									<AILoadingIndicator />
 								</div>
+							) : model?.provider === 'perplexity' ? (
+								renderPerplexityGreeting()
 							) : (
-								renderGreeting()
+								renderStandardGreeting()
 							)}
 						</div>
 					</div>
@@ -326,9 +415,15 @@ const ChatInterface = () => {
 						inputText={inputText}
 						setInputText={setInputText}
 						handleSubmit={handleSubmit}
-						isPending={isGenerating}
-						disabled={!model || isGenerating}
-						modelName={model?.name || 'AI'} // Pass the model name down
+						isPending={isGenerating || isUploading}
+						disabled={!model || isGenerating || isUploading}
+						modelName={model?.name || 'AI'}
+						onFileUpload={handleFileUpload}
+						uploadProgress={uploadProgress}
+						isUploading={isUploading}
+						uploadedFile={uploadedFile} // **Add this line**
+						onCancelUpload={cancelUpload}
+						onRemoveFile={removeFile}
 					/>
 				</div>
 			</div>

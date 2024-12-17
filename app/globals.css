@@ -65,8 +65,7 @@
 
 /* Custom scrollbar styles with fully rounded thumb and no buttons */
 * {
-	scroll-behavior: smooth;
-	  -webkit-overflow-scrolling: touch;
+	-webkit-overflow-scrolling: touch;
 
 	scrollbar-width: thin;
 	scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
@@ -191,4 +190,346 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+}
+
+.scroll-smooth {
+	scroll-behavior: smooth;
+}
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fade-in {
+	animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeInContent {
+	from {
+		opacity: 0;
+		transform: translateY(2px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-content-fade {
+	animation: fadeInContent 0.6s ease-out forwards;
+}
+
+/* Streaming content animations */
+.markdown-content {
+	transition: all 0.3s ease-out;
+}
+
+.markdown-content-animating {
+	animation: typeIn 0.3s ease-out forwards;
+	opacity: 0;
+	transform: translateY(5px);
+}
+
+@keyframes typeIn {
+	from {
+		opacity: 0;
+		transform: translateY(5px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Table styles with better compatibility */
+.markdown-content table,
+.markdown-content-animating table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1rem 0;
+	font-size: 0.9em;
+	max-width: 100%;
+	display: block;
+	overflow-x: auto;
+}
+
+/* Table cell styles */
+.markdown-content td,
+.markdown-content th,
+.markdown-content-animating td,
+.markdown-content-animating th {
+	padding: 0.75rem;
+	border: 1px solid var(--border);
+	min-width: 100px; /* Prevent cells from becoming too narrow */
+}
+
+/* Handle different table formats */
+.markdown-content table td:empty::after,
+.markdown-content-animating table td:empty::after {
+	content: '\00a0';
+}
+
+/* Table alignment fixes */
+.markdown-content table tr,
+.markdown-content-animating table tr {
+	border-top: 1px solid var(--border);
+	background: transparent;
+	margin: 0;
+	padding: 0;
+}
+
+/* Table header styles */
+.markdown-content thead,
+.markdown-content-animating thead {
+	background-color: var(--secondary);
+	font-weight: bold;
+}
+
+/* Fix table stripes */
+.markdown-content tbody tr:nth-child(2n),
+.markdown-content-animating tbody tr:nth-child(2n) {
+	background-color: var(--secondary);
+}
+
+/* Math formula styles */
+.katex-display {
+	overflow-x: auto;
+	overflow-y: hidden;
+	padding: 1rem 0;
+	margin: 1rem 0;
+}
+
+.katex {
+	font-size: 1.1em;
+}
+
+/* Code block styles */
+.markdown-content pre,
+.markdown-content-animating pre {
+	margin: 1rem 0;
+	padding: 1rem;
+	border-radius: 0.5rem;
+	overflow-x: auto;
+	background-color: var(--secondary);
+}
+
+/* Code block with line numbers */
+.markdown-content pre[class*='language-'],
+.markdown-content-animating pre[class*='language-'] {
+	counter-reset: line;
+}
+
+/* Inline code styles */
+.markdown-content code:not([class*='language-']),
+.markdown-content-animating code:not([class*='language-']) {
+	background: var(--secondary);
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 0.9em;
+	border: 1px solid var(--border);
+}
+
+/* List styles with better spacing */
+.markdown-content ul,
+.markdown-content ol,
+.markdown-content-animating ul,
+.markdown-content-animating ol {
+	padding-left: 1.5rem;
+	margin: 1rem 0;
+}
+
+.markdown-content li,
+.markdown-content-animating li {
+	margin: 0.5rem 0;
+	padding-left: 0.5rem;
+}
+
+/* Nested list styles */
+.markdown-content li > ul,
+.markdown-content li > ol,
+.markdown-content-animating li > ul,
+.markdown-content-animating li > ol {
+	margin: 0.5rem 0;
+}
+
+/* Blockquote styles */
+.markdown-content blockquote,
+.markdown-content-animating blockquote {
+	border-left: 4px solid var(--border);
+	padding: 0.5rem 0 0.5rem 1rem;
+	margin: 1rem 0;
+	color: var(--muted-foreground);
+	font-style: italic;
+}
+
+/* Heading styles */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6,
+.markdown-content-animating h1,
+.markdown-content-animating h2,
+.markdown-content-animating h3,
+.markdown-content-animating h4,
+.markdown-content-animating h5,
+.markdown-content-animating h6 {
+	margin-top: 1.5rem;
+	margin-bottom: 1rem;
+	font-weight: 600;
+	line-height: 1.25;
+}
+
+/* Link styles */
+.markdown-content a,
+.markdown-content-animating a {
+	color: var(--primary);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+/* Horizontal rule */
+.markdown-content hr,
+.markdown-content-animating hr {
+	border: 0;
+	border-top: 1px solid var(--border);
+	margin: 2rem 0;
+}
+
+/* Image styles */
+.markdown-content img,
+.markdown-content-animating img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 0.5rem;
+	margin: 1rem 0;
+}
+
+/* Fix spacing between elements */
+.markdown-content > *:first-child,
+.markdown-content-animating > *:first-child {
+	margin-top: 0 !important;
+}
+
+.markdown-content > *:last-child,
+.markdown-content-animating > *:last-child {
+	margin-bottom: 0 !important;
+}
+
+/* Add loading indicator */
+.markdown-content-animating::after {
+	content: '▋';
+	display: inline-block;
+	vertical-align: middle;
+	animation: blink 1s infinite;
+	margin-left: 0.2rem;
+	color: var(--primary);
+}
+
+@keyframes blink {
+	50% {
+		opacity: 0;
+	}
+}
+
+/* Code block styles */
+.syntax-highlighter {
+	font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New',
+		monospace;
+	font-size: 0.9rem !important;
+	line-height: 1.5 !important;
+}
+
+/* Line number styles */
+.syntax-highlighter .linenumber {
+	min-width: 2.5em !important;
+	padding-right: 1em !important;
+	text-align: right !important;
+	color: var(--tw-prose-pre-code) !important;
+	opacity: 0.5;
+}
+
+/* Selection highlight */
+.syntax-highlighter ::selection {
+	background: var(--selection-bg, rgba(255, 255, 255, 0.1));
+}
+
+/* Scrollbar styles */
+.syntax-highlighter::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+.syntax-highlighter::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.syntax-highlighter::-webkit-scrollbar-thumb {
+	background-color: var(--tw-prose-pre-code);
+	opacity: 0.2;
+	border-radius: 3px;
+}
+
+/* Token highlighting */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #6a9955;
+}
+
+.token.punctuation {
+	color: #d4d4d4;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #b5cea8;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #ce9178;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+	color: #d4d4d4;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+	color: #c586c0;
+}
+
+.token.function,
+.token.class-name {
+	color: #dcdcaa;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+	color: #d16969;
 }

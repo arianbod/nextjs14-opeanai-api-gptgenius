@@ -73,7 +73,7 @@ const Sidebar = () => {
 								const persona = getPersonaByChat(chat);
 								const avatarUrl =
 									persona?.avatar || '/images/default-avatar.png';
-								const chatTitle = chat.title.replace(/["'opening]/g, '');
+								const chatTitle = chat.title.replace(`"`, '');
 
 								return (
 									<li key={chat.id}>

@@ -29,6 +29,7 @@ export default async function RootLayout(props) {
   return (
     <html lang="en">
       <head>
+        {/* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" /> */}
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"

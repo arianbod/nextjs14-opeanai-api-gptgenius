@@ -11,6 +11,7 @@ import { useChat } from '@/context/ChatContext';
 import { useTranslations } from '@/context/TranslationContext';
 import Image from 'next/legacy/image';
 import { AIPersonas } from '@/lib/Personas';
+import SingleChat from './SingleChat';
 
 const Sidebar = () => {
 	const { user } = useAuth();
@@ -76,24 +77,13 @@ const Sidebar = () => {
 								const chatTitle = chat.title.replace(`"`, '');
 
 								return (
-									<li key={chat.id}>
-										<Link
-											href={`/chat/${chat.id}`}
-											className='flex place-items-center rounded-xl hover:bg-base-300 transition'
-											onClick={() => setSidebarOpen(false)}>
-											{/* Persona avatar */}
-											<div className='flex place-items-center place-content-center w-16 h-16 relative rounded-full overflow-hidden'>
-												<Image
-													src={avatarUrl}
-													alt={persona?.name || 'Model Avatar'}
-													width={32}
-													height={32}
-													className='object-cover rounded-full'
-												/>
-											</div>
-											<span className='text-sm font-medium'>{chatTitle}</span>
-										</Link>
-									</li>
+									<SingleChat
+										key={chat.id}
+										chatId={chat.id}
+										persona={persona}
+										avatarUrl={avatarUrl}
+										chatTitle={chatTitle}
+									/>
 								);
 							})}
 						</ul>

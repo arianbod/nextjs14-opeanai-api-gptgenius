@@ -8,6 +8,7 @@ import React, { useState } from 'react'
 
 import { ThemeProvider } from 'next-themes';
 import { TranslationsProvider } from '@/context/TranslationContext'
+import ErrorBoundary from '@/components/ErrorBoundry'
 
 const Providers = ({ children, translations }) => {
 
@@ -20,20 +21,24 @@ const Providers = ({ children, translations }) => {
     })
 
     return (
-        <QueryClientProvider client={queryClient}>
-            <MessageProvider>
+        <ErrorBoundary>
 
-                <AuthProvider>
-                    <TranslationsProvider translations={translations}>
-                        <ChatProvider>
-                            <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
-                                {children}
-                            </ThemeProvider>
-                        </ChatProvider>
-                    </TranslationsProvider>
-                </AuthProvider>
-            </MessageProvider>
-        </QueryClientProvider>
+            <QueryClientProvider client={queryClient}>
+
+                <MessageProvider>
+
+                    <AuthProvider>
+                        <TranslationsProvider translations={translations}>
+                            <ChatProvider>
+                                <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
+                                    {children}
+                                </ThemeProvider>
+                            </ChatProvider>
+                        </TranslationsProvider>
+                    </AuthProvider>
+                </MessageProvider>
+            </QueryClientProvider>
+        </ErrorBoundary>
     )
 }
 

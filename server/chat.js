@@ -136,6 +136,7 @@ export async function getChatList(userId) {
 }
 
 export async function getChatMessages(userId, chatId) {
+    
     // console.log('Fetching messages for user:', userId, 'in chat:', chatId);
     const user = await getUserById(userId);
     if (!user) {

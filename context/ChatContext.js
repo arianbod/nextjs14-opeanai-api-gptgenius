@@ -86,24 +86,26 @@ export const ChatProvider = ({ children }) => {
 
         try {
             setIsLoading(true);
-            const { data } = await fetch('/api/chat/getChatInfo', {
+            const response = await fetch('/api/chat/getChatInfo', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId: user.userId, chatId })
-            }).then(res => res.json());
+            });
 
-            if (!data?.chatDataInfo?.modelCodeName) {
+            const { chatDataInfo } = await response.json();
+            console.log("chatDataInfo is:", chatDataInfo)
+            if (!chatDataInfo?.modelCodeName) {
                 throw new Error('Invalid chat info received');
             }
 
             const selectedModel = AIPersonas.find(
-                p => p.modelCodeName === data.chatDataInfo.modelCodeName
-            ) || AIPersonas.find(p => p.provider === data.chatDataInfo.provider);
-
+                p => p.modelCodeName === chatDataInfo.modelCodeName
+            ) || AIPersonas.find(p => p.provider === chatDataInfo.provider);
+            console.log("selected model:", selectedModel)
             if (!selectedModel) {
                 const defaultModel = AIPersonas.find(p =>
-                    p.provider === data.chatDataInfo.provider &&
-                    p.modelCodeName === getProviderConfig(data.chatDataInfo.provider).defaultModel
+                    p.provider === chatDataInfo.provider &&
+                    p.modelCodeName === getProviderConfig(chatDataInfo.provider).defaultModel
                 );
 
                 if (!defaultModel) {
@@ -111,32 +113,32 @@ export const ChatProvider = ({ children }) => {
                 }
 
                 setActiveChat({
-                    id: data.chatDataInfo.id,
-                    title: data.chatDataInfo.title || '',
+                    id: chatDataInfo.id,
+                    title: chatDataInfo.title || '',
                     model: defaultModel,
                     engine: defaultModel.engine,
                     role: defaultModel.role,
                     name: defaultModel.name,
                     avatar: defaultModel.avatar,
-                    provider: data.chatDataInfo.provider,
+                    provider: chatDataInfo.provider,
                     modelCodeName: defaultModel.modelCodeName
                 });
                 setModel(defaultModel);
             } else {
                 setActiveChat({
-                    id: data.chatDataInfo.id,
-                    title: data.chatDataInfo.title || '',
+                    id: chatDataInfo.id,
+                    title: chatDataInfo.title || '',
                     model: selectedModel,
                     engine: selectedModel.engine,
                     role: selectedModel.role,
                     name: selectedModel.name,
                     avatar: selectedModel.avatar,
-                    provider: data.chatDataInfo.provider,
+                    provider: chatDataInfo.provider,
                     modelCodeName: selectedModel.modelCodeName
                 });
                 setModel(selectedModel);
             }
-
+            console.log(JSON.stringify({ userId: user.userId, chatId }))
             const messagesResponse = await fetch('/api/chat/getChatMessages', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

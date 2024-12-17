@@ -32,6 +32,7 @@ model Chat {
   model        String    @default("o1-mini") // Store the specific model
   role         String    @default("user")
   modelCodeName String    @default("o1-mini")
+  modelKey     String?
    metadata     Json?     @default("{}")  // Add this field
   user         User      @relation(fields: [userId], references: [id])
   messages     Message[]

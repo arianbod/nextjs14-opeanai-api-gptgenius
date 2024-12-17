@@ -1,6 +1,6 @@
+// FileModal.jsx
 import React from 'react';
 import { FileText, X } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
 
 const FileModal = ({ isOpen, onClose, fileData }) => {
 	if (!isOpen || !fileData) return null;
@@ -29,26 +29,20 @@ const FileModal = ({ isOpen, onClose, fileData }) => {
 				<div className='space-y-4'>
 					<div className='bg-gray-50 dark:bg-gray-900 p-4 rounded-lg'>
 						<h3 className='font-medium mb-2 text-gray-700 dark:text-gray-300'>
-							Basic Information
+							File Information
 						</h3>
 						<div className='grid grid-cols-2 gap-2 text-sm'>
 							<span className='text-gray-500'>Name:</span>
 							<span className='text-gray-900 dark:text-gray-100'>
-								{fileData.fileName}
+								{fileData.name}
 							</span>
 							<span className='text-gray-500'>Type:</span>
 							<span className='text-gray-900 dark:text-gray-100'>
-								{fileData.fileType}
+								{fileData.type}
 							</span>
 							<span className='text-gray-500'>Size:</span>
 							<span className='text-gray-900 dark:text-gray-100'>
-								{formatFileSize(fileData.fileSize)}
-							</span>
-							<span className='text-gray-500'>Uploaded:</span>
-							<span className='text-gray-900 dark:text-gray-100'>
-								{formatDistanceToNow(new Date(fileData.uploadDate), {
-									addSuffix: true,
-								})}
+								{formatFileSize(fileData.size)}
 							</span>
 						</div>
 					</div>
@@ -61,17 +55,6 @@ const FileModal = ({ isOpen, onClose, fileData }) => {
 							<p className='text-sm text-gray-900 dark:text-gray-100'>
 								{fileData.contentSummary}
 							</p>
-						</div>
-					)}
-
-					{fileData.analysisResult && (
-						<div className='bg-gray-50 dark:bg-gray-900 p-4 rounded-lg'>
-							<h3 className='font-medium mb-2 text-gray-700 dark:text-gray-300'>
-								Analysis Results
-							</h3>
-							<pre className='text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap'>
-								{JSON.stringify(fileData.analysisResult, null, 2)}
-							</pre>
 						</div>
 					)}
 				</div>

@@ -307,7 +307,7 @@ const MessageInput = ({
 								ref={fileInputRef}
 								onChange={handleFileUpload}
 								className='hidden'
-								accept='.txt,.pdf,.doc,.docx,.csv,.xlsx'
+								accept='.txt,.pdf,.doc,.docx,.csv,.xlsx,.png,.jpg,.webp,.svg'
 							/>
 						</div>
 

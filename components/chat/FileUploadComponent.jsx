@@ -18,39 +18,90 @@ const FileUploadComponent = ({
 	const fileInputRef = useRef(null);
 	const [showFileOptions, setShowFileOptions] = useState(false);
 
-	const getImageDimensions = (file) => {
-		return new Promise((resolve, reject) => {
+	const resizeImage = async (file) => {
+		return new Promise((resolve) => {
 			const img = new Image();
+			const MAX_DIMENSION = 1500; // Maximum dimension allowed
+			const MAX_FILE_SIZE = 1024 * 1024; // 1MB target size
+			let quality = 0.9;
+
 			img.onload = () => {
-				resolve({ width: img.width, height: img.height });
+				let width = img.width;
+				let height = img.height;
+				const aspectRatio = width / height;
+				let needsResize = false;
+
+				// Check if dimensions exceed max allowed
+				if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+					needsResize = true;
+					if (width > height) {
+						width = MAX_DIMENSION;
+						height = Math.round(width / aspectRatio);
+					} else {
+						height = MAX_DIMENSION;
+						width = Math.round(height * aspectRatio);
+					}
+				}
+
+				const canvas = document.createElement('canvas');
+				canvas.width = width;
+				canvas.height = height;
+				const ctx = canvas.getContext('2d');
+				ctx.drawImage(img, 0, 0, width, height);
+
+				// Function to create blob with specific quality
+				const createBlob = (q) => {
+					return new Promise((resolveBlob) => {
+						canvas.toBlob(
+							(blob) => {
+								resolveBlob(blob);
+							},
+							file.type,
+							q
+						);
+					});
+				};
+
+				// Check and reduce file size if needed
+				const processImage = async () => {
+					let blob = await createBlob(quality);
+
+					// If file is too large, reduce quality until we get under MAX_FILE_SIZE
+					while (blob.size > MAX_FILE_SIZE && quality > 0.3) {
+						needsResize = true;
+						quality -= 0.1;
+						blob = await createBlob(quality);
+					}
+
+					// If we still need to resize (either due to dimensions or file size)
+					if (needsResize && blob) {
+						const resizedFile = new File([blob], file.name, {
+							type: file.type,
+							lastModified: file.lastModified,
+						});
+						resolve(resizedFile);
+					} else {
+						resolve(file); // Return original if no resize needed
+					}
+				};
+
+				processImage();
 			};
-			img.onerror = () => {
-				reject(new Error('Failed to load image'));
-			};
+
+			img.onerror = () => resolve(file); // Fallback to original if loading fails
 			img.src = URL.createObjectURL(file);
 		});
 	};
 
 	const handleFileValidationAndUpload = async (file) => {
 		try {
-			if (file.type.startsWith('image/')) {
-				const dimensions = await getImageDimensions(file);
-				if (dimensions.width > 1568 || dimensions.height > 1568) {
-					toast.error('Image dimensions should not exceed 1568x1568 pixels');
-					return;
-				}
+			let fileToUpload = file;
 
-				const imageSizeInMegapixels =
-					(dimensions.width * dimensions.height) / 1000000;
-				if (imageSizeInMegapixels > 1.15) {
-					toast.error(
-						'Image size should not exceed 1.15 megapixels for optimal performance'
-					);
-					return;
-				}
+			if (file.type.startsWith('image/')) {
+				fileToUpload = await resizeImage(file);
 			}
 
-			await onFileUpload(file);
+			await onFileUpload(fileToUpload);
 			setShowFileOptions(false);
 		} catch (error) {
 			console.error('File handling error:', error);

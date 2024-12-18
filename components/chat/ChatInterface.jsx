@@ -181,23 +181,23 @@ const ChatInterface = () => {
 			abortControllerRef.current = new AbortController();
 
 			// Additional image validation for Claude's requirements
-			if (IMAGE_TYPES.includes(mimeType)) {
-				const dimensions = await validateImageDimensions(file);
+			// if (IMAGE_TYPES.includes(mimeType)) {
+			// 	const dimensions = await validateImageDimensions(file);
 
-				if (dimensions.width > 1568 || dimensions.height > 1568) {
-					toast.error('Image dimensions should not exceed 1568x1568 pixels');
-					setIsUploading(false);
-					return;
-				}
+			// 	if (dimensions.width > 1568 || dimensions.height > 1568) {
+			// 		toast.error('Image dimensions should not exceed 1568x1568 pixels');
+			// 		setIsUploading(false);
+			// 		return;
+			// 	}
 
-				if (dimensions.megapixels > 1.15) {
-					toast.error(
-						'Image size should not exceed 1.15 megapixels for optimal performance'
-					);
-					setIsUploading(false);
-					return;
-				}
-			}
+			// 	if (dimensions.megapixels > 1.15) {
+			// 		toast.error(
+			// 			'Image size should not exceed 1.15 megapixels for optimal performance'
+			// 		);
+			// 		setIsUploading(false);
+			// 		return;
+			// 	}
+			// }
 
 			const reader = new FileReader();
 

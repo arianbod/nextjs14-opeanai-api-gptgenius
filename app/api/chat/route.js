@@ -1,4 +1,3 @@
-// app/api/chat/route.js
 import { NextResponse } from 'next/server';
 import { addMessageToChat, getChatMessages } from '@/server/chat';
 import { getChatProvider } from '@/lib/ai-providers/server';
@@ -8,29 +7,41 @@ export const config = {
     api: {
         responseLimit: false,
         bodyParser: {
-            sizeLimit: '10mb'
+            sizeLimit: '20mb'
         }
     }
 };
 
-// Pre-create encoder for better performance
 const encoder = new TextEncoder();
-
-// Utility for SSE messages
 const createSSEMessage = (data) => encoder.encode(`data: ${JSON.stringify(data)}\n\n`);
 
 // Constants
 const BATCH_SIZE = 5;
 const ALLOWED_FILE_TYPES = [
+    // Documents
     'text/plain',
     'application/pdf',
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'text/csv',
     'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    // Images
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+    'image/svg+xml',
+    // Web files
+    'text/html',
+    'text/css',
+    'application/javascript',
+    'application/json',
+    'text/markdown'
 ];
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
 
 async function processStream(controller, aiStream, provider, providerInstance, contentChunks = []) {
     let accumulatedContent = '';
@@ -52,7 +63,6 @@ async function processStream(controller, aiStream, provider, providerInstance, c
         }
     }
 
-    // Send remaining chunks
     if (contentChunks.length > 0) {
         controller.enqueue(createSSEMessage({
             type: 'chunk',
@@ -75,7 +85,6 @@ export async function POST(request) {
     try {
         const { userId, chatId, content, persona, file } = await request.json();
 
-        // Input validation
         if (!userId || !chatId || (!content?.trim() && !file) || !persona) {
             return NextResponse.json(
                 { error: 'Missing required parameters' },
@@ -83,11 +92,11 @@ export async function POST(request) {
             );
         }
 
-        // Validate file if present
+        // File validation
         if (file) {
             if (file.size > MAX_FILE_SIZE) {
                 return NextResponse.json(
-                    { error: 'File size exceeds 10MB limit' },
+                    { error: 'File size exceeds 20MB limit' },
                     { status: 400 }
                 );
             }
@@ -100,46 +109,40 @@ export async function POST(request) {
             }
         }
 
-        // Get the provider early
         const providerInstance = getChatProvider(persona.provider);
 
-        // Initialize streaming response
         const stream = new ReadableStream({
             async start(controller) {
                 try {
-                    // Parallel operations for better performance
                     const [userMessage, previousMessages] = await Promise.all([
                         addMessageToChat(
                             userId,
                             chatId,
-                            content?.trim() || 'Uploaded a file',
+                            content?.trim() || `Uploaded a ${IMAGE_TYPES.includes(file?.type) ? 'image' : 'file'}`,
                             'user'
                         ),
                         getChatMessages(userId, chatId)
                     ]);
 
-                    // Send start message
                     controller.enqueue(createSSEMessage({
                         type: 'status',
                         content: 'streaming_started',
                         messageId: userMessage.id
                     }));
 
-                    // Format messages once
                     const formattedMessages = providerInstance.formatMessages({
                         persona,
                         previousMessages,
                         fileContent: file?.content,
-                        fileName: file?.name
+                        fileName: file?.name,
+                        fileType: file?.type
                     });
 
-                    // Start AI stream
                     const aiStream = await providerInstance.generateChatStream(
                         formattedMessages,
                         persona
                     );
 
-                    // Process the stream
                     const contentChunks = [];
                     const accumulatedContent = await processStream(
                         controller,
@@ -149,7 +152,6 @@ export async function POST(request) {
                         contentChunks
                     );
 
-                    // Store final message
                     const assistantMessage = await addMessageToChat(
                         userId,
                         chatId,
@@ -161,7 +163,6 @@ export async function POST(request) {
                         }
                     );
 
-                    // Send completion status
                     controller.enqueue(createSSEMessage({
                         type: 'status',
                         content: 'streaming_completed',
@@ -176,7 +177,6 @@ export async function POST(request) {
                     );
 
                     if (fallbackProvider && !file) {
-                        // Send fallback notification
                         controller.enqueue(createSSEMessage({
                             type: 'status',
                             content: 'switching_provider',
@@ -185,15 +185,14 @@ export async function POST(request) {
 
                         try {
                             const backupProviderInstance = getChatProvider(fallbackProvider);
-
-                            // Get previous messages again in case they've changed
                             const latestMessages = await getChatMessages(userId, chatId);
 
                             const backupMessages = backupProviderInstance.formatMessages({
                                 persona: { ...persona, provider: fallbackProvider },
                                 previousMessages: latestMessages,
                                 fileContent: file?.content,
-                                fileName: file?.name
+                                fileName: file?.name,
+                                fileType: file?.type
                             });
 
                             const backupStream = await backupProviderInstance.generateChatStream(
@@ -201,7 +200,6 @@ export async function POST(request) {
                                 { ...persona, provider: fallbackProvider }
                             );
 
-                            // Process fallback stream
                             const fallbackChunks = [];
                             const fallbackContent = await processStream(
                                 controller,
@@ -211,7 +209,6 @@ export async function POST(request) {
                                 fallbackChunks
                             );
 
-                            // Store fallback message
                             const fallbackMessage = await addMessageToChat(
                                 userId,
                                 chatId,
@@ -223,7 +220,6 @@ export async function POST(request) {
                                 }
                             );
 
-                            // Send completion status for fallback
                             controller.enqueue(createSSEMessage({
                                 type: 'status',
                                 content: 'streaming_completed',

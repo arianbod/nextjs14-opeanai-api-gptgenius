@@ -1,5 +1,3 @@
-'use client';
-
 import React, { memo, useEffect, useRef, useState } from 'react';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
@@ -10,6 +8,9 @@ import toast from 'react-hot-toast';
 import { FaSearch, FaRegLightbulb } from 'react-icons/fa';
 import { ArrowUp } from 'lucide-react';
 
+const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+
 const ChatInterface = () => {
 	const { messages, isGenerating, generateResponse, model } = useChat();
 	const [inputText, setInputText] = useState('');
@@ -19,12 +20,11 @@ const ChatInterface = () => {
 	const [showGreeting, setShowGreeting] = useState(true);
 	const [selectedSuggestion, setSelectedSuggestion] = useState(null);
 
-	// Additional state for file uploading
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const abortControllerRef = useRef(null);
 
-	// General greetings
+	// Greetings and suggestions configuration
 	const standardGreetings = [
 		{
 			title: '👋 Ask me anything!',
@@ -48,14 +48,12 @@ const ChatInterface = () => {
 		},
 	];
 
-	// Example questions for all models except Perplexity
 	const standardSuggestions = [
 		'Explain the difference between machine learning and deep learning',
 		'Help me write a short email to my team about project updates',
 		'Give me some tips for improving my time management skills',
 	];
 
-	// Categories and questions if model is Perplexity
 	const perplexityQuestions = [
 		[
 			'weather new york next 5 days in centigrade',
@@ -96,7 +94,7 @@ const ChatInterface = () => {
 
 	const scrollToBottom = () => {
 		if (messagesEndRef.current) {
-			messagesEndRef.current.scrollIntoView({ behavior: 'auto' }); // Change from 'smooth' to 'auto'
+			messagesEndRef.current.scrollIntoView({ behavior: 'auto' });
 		}
 	};
 
@@ -106,35 +104,73 @@ const ChatInterface = () => {
 		}
 	}, [messages]);
 
-	/**
-	 * handleFileUpload now accepts raw File object from MessageInput
-	 */
+	const validateImageDimensions = async (file) => {
+		return new Promise((resolve, reject) => {
+			const img = new Image();
+			img.onload = () => {
+				URL.revokeObjectURL(img.src);
+				const dimensions = {
+					width: img.width,
+					height: img.height,
+					megapixels: (img.width * img.height) / 1000000,
+				};
+				resolve(dimensions);
+			};
+			img.onerror = () => {
+				URL.revokeObjectURL(img.src);
+				reject(new Error('Failed to load image'));
+			};
+			img.src = URL.createObjectURL(file);
+		});
+	};
+
 	const handleFileUpload = async (file) => {
 		if (!file) {
 			setUploadedFile(null);
 			return;
 		}
 
-		// Validate file size (10MB limit)
-		if (file.size > 10 * 1024 * 1024) {
-			toast.error('File size should be less than 10MB');
+		if (file.size > MAX_FILE_SIZE) {
+			toast.error('File size should be less than 20MB');
 			return;
 		}
 
-		// Validate file type
-		const allowedTypes = [
-			'text/plain',
-			'application/pdf',
-			'application/msword',
-			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-			'text/csv',
-			'application/vnd.ms-excel',
-			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-		];
+		const allowedTypes = {
+			// Documents
+			'text/plain': 'TXT',
+			'application/pdf': 'PDF',
+			'application/msword': 'DOC',
+			'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+				'DOCX',
+			'text/csv': 'CSV',
+			'application/vnd.ms-excel': 'XLS',
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+				'XLSX',
+			// Images
+			'image/jpeg': 'JPEG',
+			'image/png': 'PNG',
+			'image/gif': 'GIF',
+			'image/webp': 'WEBP',
+			'image/svg+xml': 'SVG',
+			// Web files
+			'text/html': 'HTML',
+			'text/css': 'CSS',
+			'application/javascript': 'JS',
+			'application/json': 'JSON',
+			'text/markdown': 'MD',
+		};
 
-		if (!allowedTypes.includes(file.type)) {
+		const fileExtension = file.name.split('.').pop().toLowerCase();
+		const mimeType = file.type.toLowerCase();
+
+		if (
+			!allowedTypes[mimeType] &&
+			!Object.values(allowedTypes).includes(fileExtension.toUpperCase())
+		) {
 			toast.error(
-				'Unsupported file type. Please upload TXT, PDF, DOC, DOCX, CSV, or XLSX files.'
+				`Unsupported file type. Allowed types: ${[
+					...new Set(Object.values(allowedTypes)),
+				].join(', ')}`
 			);
 			return;
 		}
@@ -144,43 +180,66 @@ const ChatInterface = () => {
 			setUploadProgress(0);
 			abortControllerRef.current = new AbortController();
 
-			// Convert file to base64 with progress
-			const base64File = await new Promise((resolve, reject) => {
-				const reader = new FileReader();
+			// Additional image validation for Claude's requirements
+			if (IMAGE_TYPES.includes(mimeType)) {
+				const dimensions = await validateImageDimensions(file);
 
-				reader.onprogress = (event) => {
-					if (event.lengthComputable) {
-						const progress = (event.loaded / event.total) * 100;
-						setUploadProgress(progress);
-						// Optional: Log progress for debugging
-						// console.log(`Upload progress: ${progress}%`);
-					}
-				};
+				if (dimensions.width > 1568 || dimensions.height > 1568) {
+					toast.error('Image dimensions should not exceed 1568x1568 pixels');
+					setIsUploading(false);
+					return;
+				}
 
-				reader.onloadend = () => {
-					// console.log('File read successfully'); // Optional debug
-					const base64String = reader.result.split(',')[1];
-					resolve(base64String);
-				};
+				if (dimensions.megapixels > 1.15) {
+					toast.error(
+						'Image size should not exceed 1.15 megapixels for optimal performance'
+					);
+					setIsUploading(false);
+					return;
+				}
+			}
 
-				reader.onerror = () => {
-					// console.log('File reading error'); // Optional debug
-					reject(new Error('Failed to read file.'));
-				};
+			const reader = new FileReader();
 
-				reader.readAsDataURL(file);
+			reader.onprogress = (event) => {
+				if (event.lengthComputable) {
+					const progress = (event.loaded / event.total) * 100;
+					setUploadProgress(progress);
+				}
+			};
+
+			const fileContent = await new Promise((resolve, reject) => {
+				reader.onloadend = () => resolve(reader.result);
+				reader.onerror = () => reject(new Error('Failed to read file'));
+
+				if (
+					mimeType.startsWith('text/') ||
+					mimeType.includes('javascript') ||
+					mimeType.includes('json') ||
+					mimeType.includes('xml')
+				) {
+					reader.readAsText(file);
+				} else {
+					reader.readAsDataURL(file);
+				}
 			});
 
 			setUploadedFile({
 				name: file.name,
 				type: file.type,
 				size: file.size,
-				content: base64File,
+				content: fileContent.split(',')[1] || fileContent,
+				extension: file.name.split('.').pop().toLowerCase(),
+				isText:
+					mimeType.startsWith('text/') ||
+					mimeType.includes('javascript') ||
+					mimeType.includes('json') ||
+					mimeType.includes('xml'),
 			});
 
 			setIsUploading(false);
 			setUploadProgress(100);
-			toast.success('File uploaded successfully!');
+			toast.success(`${file.name} uploaded successfully!`);
 		} catch (error) {
 			if (abortControllerRef.current) {
 				console.log('Upload aborted');
@@ -190,6 +249,7 @@ const ChatInterface = () => {
 			}
 			setIsUploading(false);
 			setUploadProgress(0);
+			setUploadedFile(null);
 		}
 	};
 
@@ -208,13 +268,7 @@ const ChatInterface = () => {
 		const messageContent = inputText.trim();
 		setInputText('');
 
-		console.log('Submitting message:', messageContent);
-		if (uploadedFile) {
-			console.log('With file:', uploadedFile);
-		}
-
 		try {
-			// Prepare file data if present
 			let fileData = null;
 			if (uploadedFile) {
 				fileData = {
@@ -252,10 +306,10 @@ const ChatInterface = () => {
 						{chosenText}
 					</span>
 				</p>
-				<div className='text-sm text-gray-600 dark:text-gray-300 flex flex-wrap'>
+				<div className='text-sm text-gray-600 dark:text-gray-300 flex flex-wrap justify-center items-center gap-2'>
 					Now, feel free to refine your request in the text box below and press
 					the{' '}
-					<div className='p-2 text-gray-400 hover:text-white rounded-full disabled:opacity-70 bg-base-200 disabled:bg-base-200/50 transition-all duration-200 '>
+					<div className='p-2 text-gray-400 hover:text-white rounded-full bg-base-200'>
 						<ArrowUp className='w-6 h-6' />
 					</div>
 					icon to send it!
@@ -349,12 +403,8 @@ const ChatInterface = () => {
 		);
 	};
 
-	/**
-	 * Implement cancellation of file upload
-	 */
 	const cancelUpload = () => {
 		if (abortControllerRef.current) {
-			// FileReader does not support aborting, so we simulate cancellation by resetting states
 			setIsUploading(false);
 			setUploadProgress(0);
 			setUploadedFile(null);
@@ -363,9 +413,6 @@ const ChatInterface = () => {
 		}
 	};
 
-	/**
-	 * Implement removal of uploaded file before submission
-	 */
 	const removeFile = () => {
 		setUploadedFile(null);
 		setUploadProgress(0);
@@ -421,7 +468,7 @@ const ChatInterface = () => {
 						onFileUpload={handleFileUpload}
 						uploadProgress={uploadProgress}
 						isUploading={isUploading}
-						uploadedFile={uploadedFile} // **Add this line**
+						uploadedFile={uploadedFile}
 						onCancelUpload={cancelUpload}
 						onRemoveFile={removeFile}
 					/>

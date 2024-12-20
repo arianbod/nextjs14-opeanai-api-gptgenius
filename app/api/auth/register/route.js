@@ -8,7 +8,7 @@ const VALID_ANIMALS = [
     'monkey', 'giraffe', 'zebra', 'penguin', 'kangaroo', 'koala'
 ];
 
-async function validateRegistration(email, animalSelection) {
+async function validateRegistration(email, animalSelection, headers) {
     const errors = [];
 
     // Validate email if provided
@@ -17,13 +17,19 @@ async function validateRegistration(email, animalSelection) {
             errors.push('Invalid email format');
         }
 
-        // Check for existing email
+        // Check for existing verified email
         const existingUser = await prisma.user.findFirst({
-            where: { email }
+            where: {
+                AND: [
+                    { email },
+                    { isEmailVerified: true },
+                    { status: { not: 'DELETED' } }
+                ]
+            }
         });
 
         if (existingUser) {
-            errors.push('Email is already registered');
+            errors.push('Email is already registered and verified');
         }
     }
 
@@ -49,19 +55,24 @@ async function validateRegistration(email, animalSelection) {
         errors.push('Each selected animal must be unique');
     }
 
+    // Rate limiting check could be added here
+    // const ipAddress = headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+    // await checkRateLimit(ipAddress);
+
     return errors;
 }
 
 export async function POST(request) {
     try {
+        // Extract headers for security tracking
+        const headers = request.headers;
+        const ipAddress = headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+        const userAgent = headers.get('user-agent') || 'unknown';
+
         const { animalSelection, email } = await request.json();
 
-        // Rate limiting check could be added here
-        // const ipAddress = request.headers.get('x-forwarded-for') || request.connection.remoteAddress;
-        // await checkRateLimit(ipAddress);
-
         // Comprehensive validation
-        const validationErrors = await validateRegistration(email, animalSelection);
+        const validationErrors = await validateRegistration(email, animalSelection, headers);
 
         if (validationErrors.length > 0) {
             return NextResponse.json(
@@ -79,16 +90,16 @@ export async function POST(request) {
             );
         }
 
-        // Attempt to create user
+        // Attempt to create user with security context
         try {
-            const { userId, token, tokenBalance } = await createUser(animalSelection, email);
+            const result = await createUser(animalSelection, email, ipAddress, userAgent);
 
-            // Send success response with important information
-            return NextResponse.json({
+            // Structure the response based on whether email verification is needed
+            const response = {
                 success: true,
-                userId,
-                token,
-                tokenBalance,
+                userId: result.userId,
+                token: result.token,
+                tokenBalance: result.tokenBalance,
                 animalSelection,
                 message: 'Registration successful! IMPORTANT: Please save your token and remember your animal sequence exactly as selected.',
                 warnings: [
@@ -96,7 +107,21 @@ export async function POST(request) {
                     'Remember your animal sequence in exact order',
                     'You will need both the token and correct animal sequence to log in'
                 ]
-            });
+            };
+
+            // Add verification info if email was provided
+            if (email && result.verificationToken) {
+                response.emailVerification = {
+                    required: true,
+                    expiresAt: result.verificationTokenExpiry,
+                    message: 'Please check your email to verify your account'
+                };
+
+                // Here you would typically send the verification email
+                // await sendVerificationEmail(email, result.verificationToken);
+            }
+
+            return NextResponse.json(response);
 
         } catch (createError) {
             console.error('User creation error:', createError);

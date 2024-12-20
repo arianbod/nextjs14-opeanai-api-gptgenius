@@ -11,6 +11,8 @@ export const SESSION_DURATION = 10 * 24 * 60 * 60 * 1000; // 10 days in millisec
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [tokenBalance, setTokenBalance] = useState(10);
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
+    const [accountStatus, setAccountStatus] = useState('ACTIVE');
     const router = useRouter();
 
     const checkAuth = () => {
@@ -22,6 +24,12 @@ export const AuthProvider = ({ children }) => {
             const currentTime = new Date().getTime();
 
             if (currentTime - userData.timestamp >= SESSION_DURATION) {
+                logout();
+                return false;
+            }
+
+            // Check account status
+            if (userData.status === 'DELETED' || userData.status === 'INACTIVE') {
                 logout();
                 return false;
             }
@@ -41,7 +49,10 @@ export const AuthProvider = ({ children }) => {
                 token: userData.token,
                 tokenBalance: userData.tokenBalance,
                 timestamp,
-                animalSelection: userData.animalSelection
+                animalSelection: userData.animalSelection,
+                email: userData.email,
+                isEmailVerified: userData.isEmailVerified,
+                status: userData.status || 'ACTIVE'
             };
 
             // Set local storage and cookie
@@ -52,6 +63,8 @@ export const AuthProvider = ({ children }) => {
             // Update state
             setUser(userDataToStore);
             setTokenBalance(userData.tokenBalance);
+            setIsEmailVerified(userData.isEmailVerified || false);
+            setAccountStatus(userData.status || 'ACTIVE');
 
             const lang = window.location.pathname.split('/')[1] || 'en';
             try {
@@ -98,13 +111,16 @@ export const AuthProvider = ({ children }) => {
                 };
             }
 
-            // On success
+            // Handle successful registration
             if (data.success) {
                 const result = await setCookieAndStorage({
                     userId: data.userId,
                     token: data.token,
                     tokenBalance: data.tokenBalance,
-                    animalSelection
+                    animalSelection,
+                    email,
+                    isEmailVerified: false,
+                    status: 'ACTIVE'
                 });
 
                 if (!result.success) {
@@ -114,8 +130,17 @@ export const AuthProvider = ({ children }) => {
                     };
                 }
 
-                // Return isNewUser and lang so AuthPage can handle routing after confirmation
-                return { ...data, isNewUser: result.isNewUser, lang: result.lang };
+                // If email was provided, show verification notice
+                if (email && data.emailVerification?.required) {
+                    toast.success('Please check your email to verify your account');
+                }
+
+                return {
+                    ...data,
+                    isNewUser: result.isNewUser,
+                    lang: result.lang,
+                    requiresEmailVerification: Boolean(email)
+                };
             }
 
             return data;
@@ -126,6 +151,43 @@ export const AuthProvider = ({ children }) => {
                 error: 'An unexpected error occurred',
                 code: 'UNKNOWN_ERROR'
             };
+        }
+    };
+
+    const verifyEmail = async (token) => {
+        if (!user?.userId) {
+            return { success: false, error: "User not authenticated" };
+        }
+
+        try {
+            const response = await fetch('/api/auth/verify-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.userId, token }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Update local state
+                setIsEmailVerified(true);
+                setUser(prev => ({ ...prev, isEmailVerified: true }));
+
+                // Update stored data
+                const storedUser = JSON.parse(localStorage.getItem("user"));
+                storedUser.isEmailVerified = true;
+                localStorage.setItem("user", JSON.stringify(storedUser));
+
+                toast.success('Email verified successfully');
+                return { success: true };
+            }
+
+            toast.error(data.error || 'Email verification failed');
+            return { success: false, error: data.error };
+        } catch (error) {
+            console.error('Email verification error:', error);
+            toast.error('Failed to verify email');
+            return { success: false, error: 'Verification failed' };
         }
     };
 
@@ -158,7 +220,10 @@ export const AuthProvider = ({ children }) => {
                     userId: data.userId,
                     token: data.token,
                     tokenBalance: data.tokenBalance,
-                    animalSelection
+                    animalSelection,
+                    email: data.email,
+                    isEmailVerified: data.isEmailVerified,
+                    status: data.status || 'ACTIVE'
                 });
 
                 if (!result.success) {
@@ -168,12 +233,18 @@ export const AuthProvider = ({ children }) => {
                     };
                 }
 
+                // Show email verification reminder if needed
+                if (data.emailVerification?.required) {
+                    toast.info('Please verify your email address');
+                }
+
                 return {
                     success: true,
                     token: data.token,
                     message: data.message,
                     isNewUser: result.isNewUser,
-                    lang: result.lang
+                    lang: result.lang,
+                    requiresEmailVerification: data.emailVerification?.required
                 };
             } else {
                 let errorMessage = data.error;
@@ -184,12 +255,18 @@ export const AuthProvider = ({ children }) => {
                     errorMessage = `${data.error} Try again in ${data.remainingLockoutTime} minutes.`;
                 }
 
+                // Handle account status errors
+                if (data.accountStatus) {
+                    errorMessage = `Account ${data.accountStatus.status.toLowerCase()}: ${data.accountStatus.reason}`;
+                }
+
                 return {
                     success: false,
                     error: errorMessage,
                     isLocked: data.isLocked,
                     remainingAttempts: data.remainingAttempts,
-                    remainingLockoutTime: data.remainingLockoutTime
+                    remainingLockoutTime: data.remainingLockoutTime,
+                    accountStatus: data.accountStatus
                 };
             }
         } catch (error) {
@@ -205,6 +282,8 @@ export const AuthProvider = ({ children }) => {
         try {
             setUser(null);
             setTokenBalance(0);
+            setIsEmailVerified(false);
+            setAccountStatus('INACTIVE');
 
             localStorage.clear();
             sessionStorage.clear();
@@ -241,6 +320,8 @@ export const AuthProvider = ({ children }) => {
                 }
                 setUser(parsedUser);
                 setTokenBalance(parsedUser.tokenBalance);
+                setIsEmailVerified(parsedUser.isEmailVerified || false);
+                setAccountStatus(parsedUser.status || 'ACTIVE');
             } catch (error) {
                 console.error("Error parsing stored user:", error);
                 logout();
@@ -248,19 +329,16 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    // Removed handleRouting() in useEffect to avoid unwanted redirects
-    // We'll rely on AuthPage to handle final redirect after confirmation
-    // useEffect(() => {
-    //     handleRouting();
-    // }, [user]);
-
     const value = {
         user,
         tokenBalance,
+        isEmailVerified,
+        accountStatus,
         setTokenBalance,
         login,
         register,
         logout,
+        verifyEmail,
         setUser,
         checkAuth,
     };

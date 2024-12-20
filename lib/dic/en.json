@@ -52,6 +52,12 @@
 		"tokenImportant": "Important: Save this token - you'll need it to log in.",
 		"rememberAnimalOrder": "Remember your animal sequence:",
 		"understood": "I've saved my token",
+		"verifyEmail": "Verify Your Email",
+		"verificationSent": "A verification email has been sent to {email}. Please check your inbox.",
+		"verificationReminder": "Please verify your email address to enable all account features",
+		"optional": "optional",
+		"confirmTokenSaved": "I have securely saved my token",
+		"continue": "Continue",
 		"errors": {
 			"generic": "An error occurred. Please try again",
 			"network": "Network error. Please check your connection",
@@ -60,7 +66,9 @@
 			},
 			"email": {
 				"invalid": "Please enter a valid email address",
-				"required": "Email is required"
+				"required": "Email is required",
+				"alreadyVerified": "This email is already verified by another account",
+				"verificationFailed": "Email verification failed"
 			},
 			"register": {
 				"generic": "Registration failed. Please try again",
@@ -72,7 +80,9 @@
 				"invalidToken": "Invalid authentication token",
 				"incorrectSequence": "Incorrect animal sequence. ${attempts} attempts remaining",
 				"accountLocked": "Account is locked. Try again in ${minutes} minutes",
-				"tooManyAttempts": "Too many failed attempts. Please try again later"
+				"tooManyAttempts": "Too many failed attempts. Please try again later",
+				"accountInactive": "This account is currently inactive",
+				"accountDeleted": "This account has been deleted"
 			}
 		},
 		"animalList": [
@@ -226,8 +236,10 @@
 		"userInfo": "User Information",
 		"email": "Email Address",
 		"updateEmail": "Update Email",
+		"addEmail": "Add Email",
 		"newEmailPlaceholder": "Enter new email address",
 		"save": "Save Changes",
+		"updating": "Updating...",
 		"cancel": "Cancel",
 		"noEmail": "No email address set",
 		"tokenBalance": "Token Balance",
@@ -241,11 +253,17 @@
 		"emailUpdated": "Email updated successfully",
 		"updateFailed": "Failed to update email",
 		"invalidEmail": "Please enter a valid email address",
+		"verified": "Verified",
+		"unverified": "Unverified",
+		"verificationPending": "Email verification pending",
+		"resendVerification": "Resend verification email",
 		"errors": {
 			"emailTaken": "This email is already in use",
 			"invalidFormat": "Invalid email format",
 			"updateFailed": "Failed to update email",
-			"notAuthenticated": "Please login to update your settings"
+			"notAuthenticated": "Please login to update your settings",
+			"verificationExpired": "Verification link has expired",
+			"verificationInvalid": "Invalid verification link"
 		}
 	}
 }

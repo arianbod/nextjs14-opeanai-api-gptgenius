@@ -1,4 +1,4 @@
-//server-side server action server/actions/auth.js
+// server/actions/auth.js
 import prisma from '@/prisma/db';
 import crypto from 'crypto';
 
@@ -8,24 +8,72 @@ const ANIMALS = [
 ];
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
+const VERIFICATION_TOKEN_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
 
-export function generateToken() {
-    return crypto.randomBytes(16).toString('hex');
+// Enhanced token generation with version control
+export function generateToken(type = 'auth') {
+    const timestamp = Date.now().toString();
+    const random = crypto.randomBytes(32).toString('hex');
+    return crypto.createHash('sha256').update(`${timestamp}${random}${type}`).digest('hex');
 }
 
+// Enhanced hash generation with stronger params
 export function hashValue(value) {
     const salt = crypto.randomBytes(16).toString('hex');
-    const hash = crypto.pbkdf2Sync(value, salt, 1000, 64, 'sha512').toString('hex');
+    const hash = crypto.pbkdf2Sync(value, salt, 10000, 64, 'sha512').toString('hex');
     return `${salt}:${hash}`;
 }
 
 export function verifyHash(value, hashedValue) {
     const [salt, hash] = hashedValue.split(':');
-    const verifyHash = crypto.pbkdf2Sync(value, salt, 1000, 64, 'sha512').toString('hex');
+    const verifyHash = crypto.pbkdf2Sync(value, salt, 10000, 64, 'sha512').toString('hex');
     return hash === verifyHash;
 }
 
-export async function createUser(animalSelection, email = null) {
+// New function to generate email verification token
+export function generateVerificationToken() {
+    return crypto.randomBytes(32).toString('hex');
+}
+
+// New function to check user status
+export async function checkUserStatus(userId) {
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+            status: true,
+            statusReason: true,
+            loginAttempts: true,
+            lastLoginAttempt: true
+        }
+    });
+
+    if (!user) return { isValid: false, reason: 'User not found' };
+
+    // Check account status
+    if (user.status === 'DELETED') {
+        return { isValid: false, reason: 'Account has been deleted' };
+    }
+
+    if (user.status === 'INACTIVE') {
+        return { isValid: false, reason: user.statusReason || 'Account is inactive' };
+    }
+
+    // Check lockout status
+    if (user.loginAttempts >= MAX_LOGIN_ATTEMPTS && user.lastLoginAttempt) {
+        const lockoutEnd = new Date(user.lastLoginAttempt.getTime() + LOCKOUT_DURATION);
+        if (new Date() < lockoutEnd) {
+            return {
+                isValid: false,
+                reason: 'Account is temporarily locked',
+                lockoutEnd
+            };
+        }
+    }
+
+    return { isValid: true };
+}
+
+export async function createUser(animalSelection, email = null, ipAddress = null, userAgent = null) {
     // Validate animal selection array
     if (!Array.isArray(animalSelection) || animalSelection.length !== 3) {
         throw new Error('Invalid animal selection: must select exactly 3 animals');
@@ -38,19 +86,51 @@ export async function createUser(animalSelection, email = null) {
         }
     });
 
-    const token = generateToken();
+    // Check if email is already verified by another user
+    if (email) {
+        const existingUser = await prisma.user.findUnique({
+            where: { email },
+            select: { isEmailVerified: true }
+        });
+
+        if (existingUser?.isEmailVerified) {
+            throw new Error('Email is already verified by another user');
+        }
+    }
+
+    const token = generateToken('auth');
     const hashedToken = hashValue(token);
-    // Store animals in order by joining them with a delimiter
     const hashedAnimalSelection = hashValue(animalSelection.join('|'));
+    const verificationToken = email ? generateVerificationToken() : null;
 
     const user = await prisma.user.create({
         data: {
             token: hashedToken,
             animalSelection: hashedAnimalSelection,
             email,
-            tokenBalance: 3000, // Default token balance
+            tokenBalance: 3000,
             loginAttempts: 0,
-            lastLoginAttempt: null
+            lastLoginAttempt: null,
+            // New fields
+            status: 'ACTIVE',
+            statusReason: 'Account created',
+            verificationToken,
+            verificationTokenExpiry: verificationToken
+                ? new Date(Date.now() + VERIFICATION_TOKEN_EXPIRY)
+                : null,
+            lastIpAddress: ipAddress,
+            lastUserAgent: userAgent,
+            statusHistory: [{
+                status: 'ACTIVE',
+                reason: 'Account created',
+                timestamp: new Date().toISOString()
+            }],
+            loginHistory: [{
+                action: 'ACCOUNT_CREATED',
+                ipAddress,
+                userAgent,
+                timestamp: new Date().toISOString()
+            }]
         },
     });
 
@@ -58,14 +138,13 @@ export async function createUser(animalSelection, email = null) {
         userId: user.id,
         token,
         tokenBalance: user.tokenBalance,
-        animalSelection, // Return original animal selection for confirmation
+        animalSelection,
+        verificationToken,
+        verificationTokenExpiry: user.verificationTokenExpiry
     };
 }
 
-export async function authenticateUser(token, animalSelection) {
-    console.log('Authenticating user with token and ordered animals');
-
-    // Validate animal selection
+export async function authenticateUser(token, animalSelection, ipAddress = null, userAgent = null) {
     if (!Array.isArray(animalSelection) || animalSelection.length !== 3) {
         return {
             success: false,
@@ -83,7 +162,7 @@ export async function authenticateUser(token, animalSelection) {
         }
     }
 
-    // Find the user
+    // Find user by token
     const users = await prisma.user.findMany();
     let user = null;
     for (const u of users) {
@@ -98,6 +177,16 @@ export async function authenticateUser(token, animalSelection) {
             success: false,
             message: 'Invalid authentication token',
             remainingAttempts: MAX_LOGIN_ATTEMPTS
+        };
+    }
+
+    // Check user status
+    const statusCheck = await checkUserStatus(user.id);
+    if (!statusCheck.isValid) {
+        return {
+            success: false,
+            message: statusCheck.reason,
+            lockoutEnd: statusCheck.lockoutEnd
         };
     }
 
@@ -124,13 +213,22 @@ export async function authenticateUser(token, animalSelection) {
     const animalSelectionVerified = verifyHash(animalSelectionString, user.animalSelection);
 
     if (!animalSelectionVerified) {
-        // Increment login attempts
+        // Increment login attempts and update history
         const newAttempts = (user.loginAttempts || 0) + 1;
         await prisma.user.update({
             where: { id: user.id },
             data: {
                 loginAttempts: newAttempts,
                 lastLoginAttempt: new Date(),
+                loginHistory: {
+                    push: [{
+                        action: 'FAILED_LOGIN',
+                        reason: 'Invalid animal sequence',
+                        ipAddress,
+                        userAgent,
+                        timestamp: new Date().toISOString()
+                    }]
+                }
             },
         });
 
@@ -145,30 +243,39 @@ export async function authenticateUser(token, animalSelection) {
         };
     }
 
-    // Reset login attempts on successful authentication
-    await prisma.user.update({
-        where: { id: user.id },
-        data: {
-            loginAttempts: 0,
-            lastLoginAttempt: null,
-        },
-    });
-
-    // Generate new token but keep the same animal selection
-    const newToken = generateToken();
+    // Successful login - reset attempts and update history
+    const newToken = generateToken('auth');
     const hashedToken = hashValue(newToken);
 
     await prisma.user.update({
         where: { id: user.id },
         data: {
+            loginAttempts: 0,
+            lastLoginAttempt: null,
             token: hashedToken,
+            lastTokenRotation: new Date(),
+            tokenVersion: { increment: 1 },
+            lastIpAddress: ipAddress,
+            lastUserAgent: userAgent,
+            loginHistory: {
+                push: [{
+                    action: 'SUCCESSFUL_LOGIN',
+                    ipAddress,
+                    userAgent,
+                    timestamp: new Date().toISOString()
+                }]
+            }
         },
     });
 
-    // Fetch updated user data
     const updatedUser = await prisma.user.findUnique({
         where: { id: user.id },
-        select: { id: true, tokenBalance: true },
+        select: {
+            id: true,
+            tokenBalance: true,
+            isEmailVerified: true,
+            email: true
+        },
     });
 
     return {
@@ -176,14 +283,101 @@ export async function authenticateUser(token, animalSelection) {
         userId: updatedUser.id,
         tokenBalance: updatedUser.tokenBalance,
         token: newToken,
+        isEmailVerified: updatedUser.isEmailVerified,
+        email: updatedUser.email,
         message: 'Login successful! A new token has been generated for security. Please save it.',
     };
+}
+
+// New function for email verification
+export async function verifyEmail(userId, token) {
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+            verificationToken: true,
+            verificationTokenExpiry: true,
+            email: true,
+            isEmailVerified: true
+        }
+    });
+
+    if (!user) {
+        return { success: false, message: 'User not found' };
+    }
+
+    if (user.isEmailVerified) {
+        return { success: false, message: 'Email is already verified' };
+    }
+
+    if (!user.verificationToken || !user.verificationTokenExpiry) {
+        return { success: false, message: 'No verification pending' };
+    }
+
+    if (user.verificationToken !== token) {
+        return { success: false, message: 'Invalid verification token' };
+    }
+
+    if (new Date() > user.verificationTokenExpiry) {
+        return { success: false, message: 'Verification token has expired' };
+    }
+
+    await prisma.user.update({
+        where: { id: userId },
+        data: {
+            isEmailVerified: true,
+            verificationToken: null,
+            verificationTokenExpiry: null,
+            statusHistory: {
+                push: [{
+                    action: 'EMAIL_VERIFIED',
+                    timestamp: new Date().toISOString()
+                }]
+            }
+        }
+    });
+
+    return { success: true, message: 'Email verified successfully' };
+}
+
+// New function to update user status
+export async function updateUserStatus(userId, newStatus, reason, updatedBy) {
+    const statusCheck = await checkUserStatus(userId);
+    if (!statusCheck.isValid && newStatus !== 'ACTIVE') {
+        throw new Error(`Cannot update status: ${statusCheck.reason}`);
+    }
+
+    await prisma.user.update({
+        where: { id: userId },
+        data: {
+            status: newStatus,
+            statusReason: reason,
+            statusUpdatedAt: new Date(),
+            statusUpdatedBy: updatedBy,
+            statusHistory: {
+                push: [{
+                    status: newStatus,
+                    reason,
+                    updatedBy,
+                    timestamp: new Date().toISOString()
+                }]
+            }
+        }
+    });
+
+    return { success: true, message: `Status updated to ${newStatus}` };
 }
 
 export async function getUserById(userId) {
     const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { id: true, email: true, tokenBalance: true },
+        select: {
+            id: true,
+            email: true,
+            tokenBalance: true,
+            status: true,
+            isEmailVerified: true,
+            lastTokenRotation: true
+        },
     });
     return user;
 }

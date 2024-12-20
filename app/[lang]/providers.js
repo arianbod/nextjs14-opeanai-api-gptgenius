@@ -21,7 +21,7 @@ const Providers = ({ children, translations }) => {
     })
 
     return (
-        <ErrorBoundary>
+        // <ErrorBoundary>
 
             <QueryClientProvider client={queryClient}>
 
@@ -38,7 +38,7 @@ const Providers = ({ children, translations }) => {
                     </AuthProvider>
                 </MessageProvider>
             </QueryClientProvider>
-        </ErrorBoundary>
+        // </ErrorBoundary>
     )
 }
 

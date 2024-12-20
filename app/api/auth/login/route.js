@@ -1,8 +1,14 @@
+// app/api/auth/login/route.js
 import { authenticateUser } from '@/server/auth';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
     try {
+        // Extract security-related headers
+        const headers = request.headers;
+        const ipAddress = headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+        const userAgent = headers.get('user-agent') || 'unknown';
+
         const { token, animalSelection } = await request.json();
 
         // Enhanced validation with specific error messages
@@ -30,13 +36,23 @@ export async function POST(request) {
             );
         }
 
-        const result = await authenticateUser(token, animalSelection);
+        const result = await authenticateUser(token, animalSelection, ipAddress, userAgent);
 
         if (result.success) {
-            return NextResponse.json({
+            const response = {
                 ...result,
                 message: result.message || 'Login successful! Please save your new token.'
-            });
+            };
+
+            // Add email verification reminder if needed
+            if (result.email && !result.isEmailVerified) {
+                response.emailVerification = {
+                    required: true,
+                    message: 'Please verify your email address to enable full account features'
+                };
+            }
+
+            return NextResponse.json(response);
         } else {
             let statusCode = 401;
             let response = {
@@ -48,6 +64,18 @@ export async function POST(request) {
 
             if (result.isLocked) {
                 statusCode = 423; // Locked
+                // Could trigger notification to user's email if verified
+                // if (result.email && result.isEmailVerified) {
+                //     await sendAccountLockoutNotification(result.email);
+                // }
+            }
+
+            // Add account status info if relevant
+            if (result.status) {
+                response.accountStatus = {
+                    status: result.status,
+                    reason: result.statusReason
+                };
             }
 
             return NextResponse.json(response, { status: statusCode });

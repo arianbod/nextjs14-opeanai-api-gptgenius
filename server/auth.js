@@ -1,4 +1,4 @@
-// server/auth.js
+//server-side server action server/actions/auth.js
 import prisma from '@/prisma/db';
 import crypto from 'crypto';
 

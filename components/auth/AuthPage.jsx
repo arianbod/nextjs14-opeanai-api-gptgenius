@@ -1,13 +1,10 @@
 'use client';
 import React, { useState } from 'react';
 import {
-	FaUser,
 	FaEnvelope,
 	FaKey,
 	FaCopy,
-	FaPaw,
 	FaTimes,
-	FaInfoCircle,
 	FaCheckCircle,
 } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
@@ -16,6 +13,25 @@ import { useTranslations } from '@/context/TranslationContext';
 import ThemeToggle from '../sidebar/ThemeToggle';
 import LanguageToggle from '../sidebar/LanguageToggle';
 import { useRouter } from 'next/navigation';
+
+// Helper function to map animal keys to emojis
+const getAnimalEmoji = (animalKey) => {
+	const animalMap = {
+		dog: '🐶',
+		cat: '🐱',
+		elephant: '🐘',
+		lion: '🦁',
+		tiger: '🐯',
+		bear: '🐻',
+		monkey: '🐵',
+		giraffe: '🦒',
+		zebra: '🦓',
+		penguin: '🐧',
+		kangaroo: '🦘',
+		koala: '🐨',
+	};
+	return animalMap[animalKey] || '🐾';
+};
 
 const EmailVerificationModal = ({ email, onClose }) => {
 	const dict = useTranslations();
@@ -33,7 +49,8 @@ const EmailVerificationModal = ({ email, onClose }) => {
 				</div>
 				<button
 					onClick={onClose}
-					className='w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600'>
+					className='w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center justify-center'>
+					<FaCheckCircle className='mr-2' />
 					{dict.auth.understood}
 				</button>
 			</div>
@@ -41,7 +58,15 @@ const EmailVerificationModal = ({ email, onClose }) => {
 	);
 };
 
-const SaveTokenModal = ({ token, animalSelection, hasSavedToken, setHasSavedToken, onClose, isNewUser, lang }) => {
+const SaveTokenModal = ({
+	token,
+	animalSelection,
+	hasSavedToken,
+	setHasSavedToken,
+	onClose,
+	isNewUser,
+	lang,
+}) => {
 	const dict = useTranslations();
 	const router = useRouter();
 
@@ -69,16 +94,20 @@ const SaveTokenModal = ({ token, animalSelection, hasSavedToken, setHasSavedToke
 				</h2>
 				<div className='flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-700 rounded'>
 					<code className='flex-1 break-all'>{token}</code>
-					<button onClick={copyToken} className='p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded'>
+					<button
+						onClick={copyToken}
+						className='p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded'
+						aria-label={dict.auth.saveToken}>
 						<FaCopy />
 					</button>
 				</div>
 				
 				<div className='mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded text-yellow-800 dark:text-yellow-200'>
-					<div className='mt-2 flex gap-2 flex-wrap'>
+					<div className='mt-2 flex gap-2 flex-wrap justify-center'>
 						{animalSelection.map((animal, index) => (
-							<div key={index} className='px-2 py-1 bg-yellow-100 dark:bg-yellow-800 rounded'>
-								{index + 1}. {dict.auth.animalList.find((a) => a.key === animal)?.label}
+							<div key={index} className='px-2 py-1 bg-yellow-100 dark:bg-yellow-800 rounded flex items-center gap-1'>
+								<span className='font-medium'>{index + 1}.</span>
+								<span>{getAnimalEmoji(animal)}</span>
 							</div>
 						))}
 					</div>
@@ -100,7 +129,7 @@ const SaveTokenModal = ({ token, animalSelection, hasSavedToken, setHasSavedToke
 				<button
 					onClick={handleContinue}
 					disabled={!hasSavedToken}
-					className={`w-full mt-4 py-2 rounded font-medium ${
+					className={`w-full mt-4 py-2 rounded font-medium flex items-center justify-center ${
 						hasSavedToken
 							? 'bg-blue-500 hover:bg-blue-600 text-white'
 							: 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -237,11 +266,11 @@ const AuthPage = () => {
 	};
 
 	return (
-		<div className='flex items-center justify-center min-h-screen p-4'>
+		<div className='flex items-center justify-center min-h-screen p-4 bg-gray-50 dark:bg-gray-900'>
 			<div className='w-full max-w-md'>
 				<div className='bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6'>
 					<div className='flex justify-between items-center mb-6'>
-						<h1 className='text-2xl font-bold'>
+						<h1 className='text-2xl font-bold text-gray-900 dark:text-white'>
 							{isRegistering ? dict.auth.register.title : dict.auth.login.title}
 						</h1>
 						<div className='flex gap-2'>
@@ -250,12 +279,10 @@ const AuthPage = () => {
 						</div>
 					</div>
 
-					<form
-						onSubmit={handleSubmit}
-						className='space-y-6'>
+					<form onSubmit={handleSubmit} className='space-y-6'>
 						{isRegistering && (
 							<div>
-								<label className='block text-sm font-medium mb-1'>
+								<label className='block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200'>
 									{dict.auth.register.email}
 									<span className='text-gray-500 text-xs ml-1'>
 										({dict.auth.optional})
@@ -267,7 +294,7 @@ const AuthPage = () => {
 										type='email'
 										value={email}
 										onChange={(e) => setEmail(e.target.value)}
-										className='w-full pl-10 pr-3 py-2 border rounded-lg'
+										className='w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white'
 										placeholder={dict.auth.register.emailPlaceholder}
 									/>
 								</div>
@@ -276,7 +303,7 @@ const AuthPage = () => {
 
 						{!isRegistering && (
 							<div>
-								<label className='block text-sm font-medium mb-1'>
+								<label className='block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200'>
 									{dict.auth.login.token}
 									<span className='text-red-500 ml-1'>*</span>
 								</label>
@@ -286,7 +313,7 @@ const AuthPage = () => {
 										type='text'
 										value={token}
 										onChange={(e) => setToken(e.target.value)}
-										className='w-full pl-10 pr-3 py-2 border rounded-lg'
+										className='w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white'
 										placeholder={dict.auth.login.tokenPlaceholder}
 										required
 									/>
@@ -295,32 +322,28 @@ const AuthPage = () => {
 						)}
 
 						<div className='space-y-2'>
-							<label className='block text-sm font-medium'>
+							<label className='block text-sm font-medium text-gray-700 dark:text-gray-200'>
 								{dict.auth.selectedAnimalsOrder}
 								<span className='text-red-500 ml-1'>*</span>
 							</label>
-							<div className='flex flex-wrap gap-2 min-h-[2.5rem]'>
+							<div className='flex flex-wrap gap-2 min-h-[2.5rem] justify-center'>
 								{selectedAnimals.map((animal, index) => (
 									<div
 										key={index}
-										className='flex items-center gap-1 px-3 py-1 bg-blue-100 dark:bg-blue-900 rounded'>
+										className='flex items-center gap-1 px-3 py-2 bg-blue-100 dark:bg-blue-900 rounded-full'>
 										<span className='font-medium'>{index + 1}.</span>
-										<span>
-											{
-												dict.auth.animalList.find((a) => a.key === animal)
-													?.label
-											}
-										</span>
+										<span className='text-xl'>{getAnimalEmoji(animal)}</span>
 										<button
 											type='button'
 											onClick={() => removeAnimalAtIndex(index)}
-											className='ml-1 p-1 hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full'>
-											<FaTimes className='w-3 h-3' />
+											className='ml-1 p-1 hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full'
+											aria-label='Remove selected animal'>
+											<FaTimes className='w-3 h-3 text-gray-600 dark:text-gray-300' />
 										</button>
 									</div>
 								))}
 							</div>
-							<div className='grid grid-cols-3 gap-2'>
+							<div className='grid grid-cols-3 gap-3'>
 								{dict.auth.animalList.map((animal) => (
 									<button
 										key={animal.key}
@@ -330,16 +353,16 @@ const AuthPage = () => {
 											selectedAnimals.length >= 3 &&
 											!selectedAnimals.includes(animal.key)
 										}
-										className={`p-2 rounded-lg transition-colors flex items-center justify-center 
+										aria-label={animal.label}
+										className={`w-16 h-16 flex items-center justify-center text-2xl rounded-lg transition-colors 
 											${
 												selectedAnimals.includes(animal.key)
 													? 'bg-blue-500 text-white'
 													: selectedAnimals.length >= 3
-													? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-													: 'bg-gray-100 hover:bg-gray-200'
+													? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500'
+													: 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600'
 											}`}>
-										<FaPaw className='mr-1' />
-										{animal.label}
+										{getAnimalEmoji(animal.key)}
 									</button>
 								))}
 							</div>
@@ -348,7 +371,7 @@ const AuthPage = () => {
 						<button
 							type='submit'
 							disabled={isSubmitting}
-							className={`w-full py-3 rounded-lg text-white font-medium ${
+							className={`w-full py-3 rounded-lg text-white font-medium flex items-center justify-center transition-colors ${
 								isSubmitting ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
 							}`}>
 							{isSubmitting ? (
@@ -373,7 +396,7 @@ const AuthPage = () => {
 								setEmail('');
 								setToken('');
 							}}
-							className='w-full py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600'>
+							className='w-full py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center'>
 							{isRegistering
 								? dict.auth.register.switchToLogin
 								: dict.auth.login.switchToRegister}

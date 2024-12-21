@@ -42,6 +42,7 @@
 			"info": "Enter your token and select your 3 animals in the exact same order as during registration.",
 			"submit": "Login"
 		},
+		"redirecting": "Redirecting to home page...",
 		"selectThreeAnimalsInOrder": "Please select exactly 3 animals",
 		"selectedAnimalsOrder": "Your selected sequence:",
 		"selectNext": "Select next animal",

@@ -9,7 +9,7 @@ import { FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import Loading from '@/components/Loading';
 
 const VerifyEmailClient = () => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth(); // Add logout
     const searchParams = useSearchParams();
     const router = useRouter();
     const dict = useTranslations();
@@ -19,9 +19,11 @@ const VerifyEmailClient = () => {
         error: ''
     });
 
-    const handleAccountRedirect = useCallback(() => {
+    const handleHomeRedirect = useCallback(() => {
         const lang = window.location.pathname.split('/')[1] || 'en';
-        router.push(`/${lang}/account`);
+        // After verification, redirect to home and force refresh for new auth state
+        router.prefetch(`/${lang}`);
+        // window.location.reload(); // Force refresh to update auth state
     }, [router]);
 
     const verifyToken = useCallback(async (token, userId) => {
@@ -34,6 +36,8 @@ const VerifyEmailClient = () => {
         }
 
         try {
+            console.log('Attempting to verify token:', { token: token.slice(0, 8), userId });
+
             const response = await fetch('/api/auth/verify-email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -41,6 +45,7 @@ const VerifyEmailClient = () => {
             });
 
             const data = await response.json();
+            console.log('Verification response:', data);
 
             if (data.success) {
                 setVerificationState({
@@ -48,9 +53,9 @@ const VerifyEmailClient = () => {
                     error: ''
                 });
 
-                const lang = window.location.pathname.split('/')[1] || 'en';
+                // After successful verification, wait 3 seconds then redirect
                 setTimeout(() => {
-                    router.prefetch(`/${lang}/`);
+                    handleHomeRedirect();
                 }, 3000);
             } else {
                 setVerificationState({
@@ -65,7 +70,7 @@ const VerifyEmailClient = () => {
                 error: dict.auth.errors.generic
             });
         }
-    }, [router, dict.auth.errors]);
+    }, [router, dict.auth.errors, handleHomeRedirect]);
 
     useEffect(() => {
         const token = searchParams.get('token');
@@ -104,11 +109,11 @@ const VerifyEmailClient = () => {
                             </p>
                             <div className='mt-4'>
                                 <button
-                                    onClick={handleAccountRedirect}
+                                    onClick={handleHomeRedirect}
                                     type="button"
                                     className='inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors'
                                 >
-                                    {dict.account.goToAccount}
+                                    {dict.account.goToHome}
                                 </button>
                             </div>
                         </>

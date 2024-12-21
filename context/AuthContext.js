@@ -130,6 +130,21 @@ export const AuthProvider = ({ children }) => {
                     };
                 }
 
+                // Send verification email immediately if email is provided
+                if (email) {
+                    try {
+                        await fetch('/api/auth/manage-email', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                userId: data.userId,
+                                action: 'resend'
+                            }),
+                        });
+                    } catch (error) {
+                        console.error('Error sending verification email:', error);
+                    }
+                }
                 // If email was provided, show verification notice
                 if (email && data.emailVerification?.required) {
                     toast.success('Please check your email to verify your account');

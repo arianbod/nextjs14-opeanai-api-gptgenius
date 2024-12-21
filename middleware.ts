@@ -7,6 +7,8 @@ const defaultLanguage = 'en';
 
 // Define public routes that don't require authentication
 const publicPaths = [
+	'/api/auth/verify-email',
+	'/api/auth/manage-email',
 	'/api/auth/login',
 	'/api/auth/register',
 	'/images',

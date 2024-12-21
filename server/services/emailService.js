@@ -72,6 +72,7 @@ export async function sendVerificationEmail(email, verificationToken, userId) {
 
             if (response.statusCode !== 202) {
                 throw new Error(`SendGrid API error: ${response.statusCode}`);
+    
             }
 
             console.log('Email sent successfully!');

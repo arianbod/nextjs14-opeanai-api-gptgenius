@@ -35,7 +35,7 @@ const getAnimalEmoji = (animalKey) => {
 
 const EmailVerificationModal = ({ email, onClose }) => {
 	const dict = useTranslations();
-	
+
 	return (
 		<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
 			<div className='bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full mx-4'>
@@ -101,11 +101,13 @@ const SaveTokenModal = ({
 						<FaCopy />
 					</button>
 				</div>
-				
+
 				<div className='mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded text-yellow-800 dark:text-yellow-200'>
 					<div className='mt-2 flex gap-2 flex-wrap justify-center'>
 						{animalSelection.map((animal, index) => (
-							<div key={index} className='px-2 py-1 bg-yellow-100 dark:bg-yellow-800 rounded flex items-center gap-1'>
+							<div
+								key={index}
+								className='px-2 py-1 bg-yellow-100 dark:bg-yellow-800 rounded flex items-center gap-1'>
 								<span className='font-medium'>{index + 1}.</span>
 								<span>{getAnimalEmoji(animal)}</span>
 							</div>
@@ -121,9 +123,7 @@ const SaveTokenModal = ({
 						onChange={() => setHasSavedToken(!hasSavedToken)}
 						className='w-4 h-4'
 					/>
-					<label htmlFor='savedTokenCheck'>
-						{dict.auth.confirmTokenSaved}
-					</label>
+					<label htmlFor='savedTokenCheck'>{dict.auth.confirmTokenSaved}</label>
 				</div>
 
 				<button
@@ -266,20 +266,22 @@ const AuthPage = () => {
 	};
 
 	return (
-		<div className='flex items-center justify-center min-h-screen p-4 bg-gray-50 dark:bg-gray-900'>
-			<div className='w-full max-w-md'>
-				<div className='bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6'>
-					<div className='flex justify-between items-center mb-6'>
-						<h1 className='text-2xl font-bold text-gray-900 dark:text-white'>
+		<div className='w-full max-w-4xl flex place-items-center place-content-center mx-auto min-h-screen p-4 '>
+			<div className='w-full flex place-items-center place-content-center flex-col'>
+				<div className='w-full rounded-lg p-6 mx-auto flex place-items-center place-content-center flex-col'>
+					<div className='w-full flex justify-center items-center mb-6'>
+						<h1 className='text-2xl font-bold text-gray-900 dark:text-white text-center'>
 							{isRegistering ? dict.auth.register.title : dict.auth.login.title}
 						</h1>
-						<div className='flex gap-2'>
+						<div className='flex gap-2 place-items-center'>
 							<ThemeToggle />
 							<LanguageToggle />
 						</div>
 					</div>
 
-					<form onSubmit={handleSubmit} className='space-y-6'>
+					<form
+						onSubmit={handleSubmit}
+						className='space-y-6'>
 						{isRegistering && (
 							<div>
 								<label className='block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200'>
@@ -386,10 +388,8 @@ const AuthPage = () => {
 								dict.auth.login.submit
 							)}
 						</button>
-					</form>
-
-					<div className='mt-4'>
 						<button
+							type='button'
 							onClick={() => {
 								setIsRegistering(!isRegistering);
 								setSelectedAnimals([]);
@@ -401,7 +401,7 @@ const AuthPage = () => {
 								? dict.auth.register.switchToLogin
 								: dict.auth.login.switchToRegister}
 						</button>
-					</div>
+					</form>
 				</div>
 			</div>
 

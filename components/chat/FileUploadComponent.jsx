@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Loader, Paperclip, Camera } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -16,13 +16,28 @@ const FileUploadComponent = ({
 	isDragging,
 }) => {
 	const fileInputRef = useRef(null);
+	const menuRef = useRef(null);
 	const [showFileOptions, setShowFileOptions] = useState(false);
+
+	// Handle click outside
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (menuRef.current && !menuRef.current.contains(event.target)) {
+				setShowFileOptions(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, []);
 
 	const resizeImage = async (file) => {
 		return new Promise((resolve) => {
 			const img = new Image();
-			const MAX_DIMENSION = 1500; // Maximum dimension allowed
-			const MAX_FILE_SIZE = 1024 * 1024; // 1MB target size
+			const MAX_DIMENSION = 1500;
+			const MAX_FILE_SIZE = 1024 * 1024;
 			let quality = 0.9;
 
 			img.onload = () => {
@@ -31,7 +46,6 @@ const FileUploadComponent = ({
 				const aspectRatio = width / height;
 				let needsResize = false;
 
-				// Check if dimensions exceed max allowed
 				if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
 					needsResize = true;
 					if (width > height) {
@@ -49,7 +63,6 @@ const FileUploadComponent = ({
 				const ctx = canvas.getContext('2d');
 				ctx.drawImage(img, 0, 0, width, height);
 
-				// Function to create blob with specific quality
 				const createBlob = (q) => {
 					return new Promise((resolveBlob) => {
 						canvas.toBlob(
@@ -62,18 +75,15 @@ const FileUploadComponent = ({
 					});
 				};
 
-				// Check and reduce file size if needed
 				const processImage = async () => {
 					let blob = await createBlob(quality);
 
-					// If file is too large, reduce quality until we get under MAX_FILE_SIZE
 					while (blob.size > MAX_FILE_SIZE && quality > 0.3) {
 						needsResize = true;
 						quality -= 0.1;
 						blob = await createBlob(quality);
 					}
 
-					// If we still need to resize (either due to dimensions or file size)
 					if (needsResize && blob) {
 						const resizedFile = new File([blob], file.name, {
 							type: file.type,
@@ -81,14 +91,14 @@ const FileUploadComponent = ({
 						});
 						resolve(resizedFile);
 					} else {
-						resolve(file); // Return original if no resize needed
+						resolve(file);
 					}
 				};
 
 				processImage();
 			};
 
-			img.onerror = () => resolve(file); // Fallback to original if loading fails
+			img.onerror = () => resolve(file);
 			img.src = URL.createObjectURL(file);
 		});
 	};
@@ -121,31 +131,37 @@ const FileUploadComponent = ({
 	};
 
 	return (
-		<div className='relative'>
+		<div
+			className='relative'
+			ref={menuRef}>
 			<button
 				type='button'
 				onClick={handleAttachmentClick}
-				className='p-2 text-gray-400 hover:text-white rounded-full transition-colors duration-200
-                         hover:bg-gray-700'
+				className='p-2.5 text-gray-400 hover:text-white rounded-full transition-all duration-300
+                         hover:bg-gray-700 hover:shadow-lg hover:shadow-gray-700/30 
+                         active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed'
 				disabled={isUploading}>
 				{isUploading ? (
-					<Loader className='w-6 h-6 animate-spin' />
+					<Loader className='w-5 h-5 animate-spin' />
 				) : (
-					<Paperclip className='w-6 h-6' />
+					<Paperclip className='w-5 h-5' />
 				)}
 			</button>
 
 			{showFileOptions && (
 				<div
-					className='absolute bottom-12 left-0 bg-[#2a2b36] rounded-lg shadow-lg p-2 
-                               flex flex-col gap-2 border border-gray-700 min-w-[160px]'>
+					className='absolute bottom-14 left-0 bg-gray-800/95 backdrop-blur-sm rounded-xl 
+                               shadow-xl p-3 flex flex-col gap-2 border border-gray-700/50 
+                               min-w-[180px] transform transition-all duration-200 
+                               animate-in slide-in-from-bottom-2'>
 					<button
 						type='button'
 						onClick={() => fileInputRef.current?.click()}
-						className='flex items-center gap-2 p-2 hover:bg-[#3a3b46] rounded-lg 
-                                 text-gray-300 transition-colors duration-200'>
-						<Paperclip size={16} />
-						<span>Upload File</span>
+						className='flex items-center gap-3 p-2.5 hover:bg-gray-700/70 rounded-lg 
+                                 text-gray-300 hover:text-white transition-all duration-200
+                                 group relative'>
+						<Paperclip className='w-4 h-4 transition-transform group-hover:scale-110' />
+						<span className='text-sm font-medium'>Upload File</span>
 					</button>
 					<button
 						type='button'
@@ -156,10 +172,11 @@ const FileUploadComponent = ({
 								fileInputRef.current.click();
 							}
 						}}
-						className='flex items-center gap-2 p-2 hover:bg-[#3a3b46] rounded-lg 
-                                 text-gray-300 transition-colors duration-200'>
-						<Camera size={16} />
-						<span>Take Photo</span>
+						className='flex items-center gap-3 p-2.5 hover:bg-gray-700/70 rounded-lg 
+                                 text-gray-300 hover:text-white transition-all duration-200
+                                 group relative'>
+						<Camera className='w-4 h-4 transition-transform group-hover:scale-110' />
+						<span className='text-sm font-medium'>Take Photo</span>
 					</button>
 				</div>
 			)}

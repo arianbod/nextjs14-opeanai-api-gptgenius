@@ -24,7 +24,8 @@ export const ChatProvider = ({ children }) => {
         name: '',
         avatar: '',
         provider: "",
-        modelCodeName: ""
+        modelCodeName: "",
+        modelAllowed: {}
     });
     const [messages, setMessages] = useState([]);
     const [chatList, setChatList] = useState([]);
@@ -76,6 +77,7 @@ export const ChatProvider = ({ children }) => {
             avatar: selectedModel.avatar,
             provider: selectedModel.provider,
             modelCodeName: selectedModel.modelCodeName,
+            modelAllowed: selectedModel.allowed
         });
         setMessages([]);
         router.prefetch('/chat');
@@ -121,7 +123,8 @@ export const ChatProvider = ({ children }) => {
                     name: defaultModel.name,
                     avatar: defaultModel.avatar,
                     provider: chatDataInfo.provider,
-                    modelCodeName: defaultModel.modelCodeName
+                    modelCodeName: defaultModel.modelCodeName,
+                    modelAllowed: defaultModel.allowed
                 });
                 setModel(defaultModel);
             } else {
@@ -134,7 +137,8 @@ export const ChatProvider = ({ children }) => {
                     name: selectedModel.name,
                     avatar: selectedModel.avatar,
                     provider: chatDataInfo.provider,
-                    modelCodeName: selectedModel.modelCodeName
+                    modelCodeName: selectedModel.modelCodeName,
+                    modelAllowed: selectedModel.allowed
                 });
                 setModel(selectedModel);
             }
@@ -174,6 +178,7 @@ export const ChatProvider = ({ children }) => {
             avatar: "",
             provider: "",
             modelCodeName: "",
+            modelAllowed:{}
         });
         setMessages([]);
         setModel(null);

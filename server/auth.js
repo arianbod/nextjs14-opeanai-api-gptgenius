@@ -34,6 +34,21 @@ export function verifyHash(value, hashedValue) {
 export function generateVerificationToken() {
     return crypto.randomBytes(32).toString('hex');
 }
+export async function checkEmailVerification(userId) {
+    if (!userId) return false;
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { isEmailVerified: true }
+        });
+
+        return user?.isEmailVerified || false;
+    } catch (error) {
+        console.error('Database verification check error:', error);
+        return false;
+    }
+}
 
 // New function to check user status
 export async function checkUserStatus(userId) {

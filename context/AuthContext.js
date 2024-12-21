@@ -206,6 +206,73 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const updateEmail = async (newEmail) => {
+        if (!user?.userId) {
+            return { success: false, error: "User not authenticated" };
+        }
+
+        try {
+            const response = await fetch('/api/auth/manage-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: user.userId,
+                    action: 'update',
+                    email: newEmail,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Update local state
+                setUser(prev => ({ ...prev, email: newEmail, isEmailVerified: false }));
+                setIsEmailVerified(false);
+
+                // Update stored data
+                const storedUser = JSON.parse(localStorage.getItem("user"));
+                storedUser.email = newEmail;
+                storedUser.isEmailVerified = false;
+                localStorage.setItem("user", JSON.stringify(storedUser));
+
+                return { success: true, message: data.message };
+            }
+
+            return { success: false, error: data.error };
+        } catch (error) {
+            console.error('Email update error:', error);
+            return { success: false, error: 'Failed to update email' };
+        }
+    };
+
+    const resendVerificationEmail = async () => {
+        if (!user?.userId) {
+            return { success: false, error: "User not authenticated" };
+        }
+
+        try {
+            const response = await fetch('/api/auth/manage-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: user.userId,
+                    action: 'resend',
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, message: data.message };
+            }
+
+            return { success: false, error: data.error };
+        } catch (error) {
+            console.error('Resend verification error:', error);
+            return { success: false, error: 'Failed to resend verification email' };
+        }
+    };
+
     const login = async (token, animalSelection) => {
         if (!token?.trim()) {
             return {
@@ -333,10 +400,42 @@ export const AuthProvider = ({ children }) => {
                     logout();
                     return;
                 }
+
+                // Set initial state from localStorage
                 setUser(parsedUser);
                 setTokenBalance(parsedUser.tokenBalance);
                 setIsEmailVerified(parsedUser.isEmailVerified || false);
                 setAccountStatus(parsedUser.status || 'ACTIVE');
+
+                // Check current verification status
+                const checkVerificationStatus = async () => {
+                    try {
+                        const response = await fetch('/api/auth/check-verification', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userId: parsedUser.userId })
+                        });
+
+                        if (response.ok) {
+                            const { isEmailVerified } = await response.json();
+
+                            // Update state if verification status has changed
+                            if (isEmailVerified !== parsedUser.isEmailVerified) {
+                                setIsEmailVerified(isEmailVerified);
+                                setUser(prev => ({ ...prev, isEmailVerified }));
+
+                                // Update localStorage
+                                const storedUserData = JSON.parse(localStorage.getItem("user"));
+                                storedUserData.isEmailVerified = isEmailVerified;
+                                localStorage.setItem("user", JSON.stringify(storedUserData));
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Failed to check verification status:', error);
+                    }
+                };
+
+                checkVerificationStatus();
             } catch (error) {
                 console.error("Error parsing stored user:", error);
                 logout();
@@ -354,6 +453,8 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         verifyEmail,
+        updateEmail,
+        resendVerificationEmail,
         setUser,
         checkAuth,
     };

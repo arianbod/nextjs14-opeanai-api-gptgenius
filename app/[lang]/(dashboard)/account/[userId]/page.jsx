@@ -5,7 +5,6 @@ import {
 	FaEnvelope,
 	FaKey,
 	FaCopy,
-	FaHistory,
 	FaShieldAlt,
 	FaCoins,
 	FaCheckCircle,
@@ -16,10 +15,12 @@ import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from '@/context/TranslationContext';
 
-const EmailSection = ({ user, isEmailVerified, onUpdateEmail }) => {
+const EmailSection = () => {
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [newEmail, setNewEmail] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const { user, isEmailVerified, updateEmail, resendVerificationEmail } =
+		useAuth();
 	const dict = useTranslations();
 
 	const handleUpdateEmail = async (e) => {
@@ -31,24 +32,12 @@ const EmailSection = ({ user, isEmailVerified, onUpdateEmail }) => {
 
 		setIsSubmitting(true);
 		try {
-			const response = await fetch('/api/auth/manage-email', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					userId: user.userId,
-					action: 'update',
-					email: newEmail,
-				}),
-			});
-
-			const data = await response.json();
-
-			if (response.ok) {
-				toast.success(data.message);
-				onUpdateEmail(newEmail);
+			const result = await updateEmail(newEmail);
+			if (result.success) {
+				toast.success(result.message);
 				setIsUpdating(false);
 			} else {
-				toast.error(data.error || dict.account.updateFailed);
+				toast.error(result.error || dict.account.updateFailed);
 			}
 		} catch (error) {
 			toast.error(dict.account.updateFailed);
@@ -59,21 +48,11 @@ const EmailSection = ({ user, isEmailVerified, onUpdateEmail }) => {
 
 	const handleResendVerification = async () => {
 		try {
-			const response = await fetch('/api/auth/manage-email', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					userId: user.userId,
-					action: 'resend',
-				}),
-			});
-
-			const data = await response.json();
-
-			if (response.ok) {
-				toast.success(data.message);
+			const result = await resendVerificationEmail();
+			if (result.success) {
+				toast.success(result.message);
 			} else {
-				toast.error(data.error || 'Failed to resend verification email');
+				toast.error(result.error || 'Failed to resend verification email');
 			}
 		} catch (error) {
 			toast.error('Failed to resend verification email');
@@ -91,23 +70,23 @@ const EmailSection = ({ user, isEmailVerified, onUpdateEmail }) => {
 					{user?.email && (
 						<span
 							className={`text-sm px-2 py-1 rounded-full flex items-center gap-1 
-							${
-								isEmailVerified
-									? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-									: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-							}`}>
+                            ${
+															isEmailVerified
+																? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+																: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+														}`}>
 							{isEmailVerified ? (
 								<>
-									<FaCheckCircle /> {dict.account.verified}
+									<FaCheckCircle size={12} /> {dict.account.verified}
 								</>
 							) : (
 								<>
-									<FaTimesCircle /> {dict.account.unverified}
+									<FaTimesCircle size={12} /> {dict.account.unverified}
 								</>
 							)}
 						</span>
 					)}
-					{(!isEmailVerified || !user?.email) && (
+					{(!isEmailVerified || !user?.email) && !isUpdating && (
 						<button
 							onClick={() => setIsUpdating(true)}
 							className='text-sm text-blue-500 hover:text-blue-600'>
@@ -179,10 +158,6 @@ const AccountPage = () => {
 		}
 	};
 
-	const handleEmailUpdate = (newEmail) => {
-		// Update local user state if needed
-	};
-
 	return (
 		<div className='min-h-screen bg-gray-50 dark:bg-gray-900 py-8'>
 			<div className='max-w-4xl mx-auto px-4'>
@@ -199,19 +174,13 @@ const AccountPage = () => {
 
 					{/* Main Content */}
 					<div className='p-6 space-y-6'>
-						{/* User Info Section */}
 						<div className='space-y-4'>
 							<h2 className='text-lg font-semibold flex items-center gap-2'>
 								<FaUser className='text-blue-500' />
 								{dict.account.userInfo}
 							</h2>
 
-							{/* Email Section */}
-							<EmailSection
-								user={user}
-								isEmailVerified={user?.isEmailVerified}
-								onUpdateEmail={handleEmailUpdate}
-							/>
+							<EmailSection />
 
 							{/* Token Balance */}
 							<div className='p-4 bg-gray-50 dark:bg-gray-700 rounded-lg'>

@@ -9,7 +9,7 @@ import { FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import Loading from '@/components/Loading';
 
 const VerifyEmailClient = () => {
-    const { user, logout } = useAuth(); // Add logout
+    const { user } = useAuth();
     const searchParams = useSearchParams();
     const router = useRouter();
     const dict = useTranslations();
@@ -21,9 +21,11 @@ const VerifyEmailClient = () => {
 
     const handleHomeRedirect = useCallback(() => {
         const lang = window.location.pathname.split('/')[1] || 'en';
-        // After verification, redirect to home and force refresh for new auth state
-        router.prefetch(`/${lang}`);
-        // window.location.reload(); // Force refresh to update auth state
+        // After verification, redirect and force refresh
+        router.push(`/${lang}`);
+        setTimeout(() => {
+            window.location.reload();
+        }, 100);
     }, [router]);
 
     const verifyToken = useCallback(async (token, userId) => {
@@ -53,10 +55,10 @@ const VerifyEmailClient = () => {
                     error: ''
                 });
 
-                // After successful verification, wait 3 seconds then redirect
+                // After successful verification, wait 2 seconds then redirect
                 setTimeout(() => {
                     handleHomeRedirect();
-                }, 3000);
+                }, 2000);
             } else {
                 setVerificationState({
                     status: 'error',
@@ -70,7 +72,7 @@ const VerifyEmailClient = () => {
                 error: dict.auth.errors.generic
             });
         }
-    }, [router, dict.auth.errors, handleHomeRedirect]);
+    }, [dict.auth.errors, handleHomeRedirect]);
 
     useEffect(() => {
         const token = searchParams.get('token');

@@ -8,7 +8,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import Loading from '@/components/Loading';
 
-const VerifyEmailClient = () => {
+const VerifyEmailPage = () => {
     const { user } = useAuth();
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -23,9 +23,6 @@ const VerifyEmailClient = () => {
         const lang = window.location.pathname.split('/')[1] || 'en';
         // After verification, redirect and force refresh
         router.push(`/${lang}`);
-        setTimeout(() => {
-            window.location.reload();
-        }, 100);
     }, [router]);
 
     const verifyToken = useCallback(async (token, userId) => {
@@ -126,4 +123,4 @@ const VerifyEmailClient = () => {
     );
 };
 
-export default VerifyEmailClient;
+export default VerifyEmailPage;

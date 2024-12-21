@@ -58,6 +58,8 @@
 		"optional": "optional",
 		"confirmTokenSaved": "I have securely saved my token",
 		"continue": "Continue",
+		"verificationSuccess": "Your email has been verified. Redirecting to account page...",
+		"verificationFailed": "Verification Failed",
 		"errors": {
 			"generic": "An error occurred. Please try again",
 			"network": "Network error. Please check your connection",

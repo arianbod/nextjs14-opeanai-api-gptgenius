@@ -3,10 +3,33 @@
 import sgMail from '@sendgrid/mail';
 
 export async function sendVerificationEmail(email, verificationToken, userId) {
+    console.log('Starting email verification process...', {
+        email,
+        userId,
+        tokenLength: verificationToken?.length
+    });
+
     try {
+        // Check required environment variables
+        const requiredEnvVars = ['SENDGRID_API_KEY', 'FROM_EMAIL', 'FROM_NAME', 'NEXT_PUBLIC_APP_URL'];
+        const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+        if (missingVars.length > 0) {
+            console.error('Missing required environment variables:', missingVars);
+            throw new Error(`Missing environment variables: ${missingVars.join(', ')}`);
+        }
+
+        console.log('Setting SendGrid API key...');
         sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-        const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${verificationToken}&userId=${userId}`;
+        const defaultLang = process.env.DEFAULT_LANGUAGE || 'en';
+        const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${defaultLang}/verify-email?token=${verificationToken}&userId=${userId}`;
+
+        console.log('Generated verification URL:', {
+            baseUrl: process.env.NEXT_PUBLIC_APP_URL,
+            language: defaultLang,
+            fullUrl: verificationUrl
+        });
 
         const msg = {
             to: email,
@@ -31,23 +54,61 @@ export async function sendVerificationEmail(email, verificationToken, userId) {
             `
         };
 
-        const [response] = await sgMail.send(msg);
+        console.log('Preparing to send email with config:', {
+            to: msg.to,
+            from: msg.from,
+            subject: msg.subject,
+            hasText: !!msg.text,
+            hasHtml: !!msg.html
+        });
 
-        if (response.statusCode !== 202) {
-            throw new Error(`SendGrid API error: ${response.statusCode}`);
+        try {
+            const [response] = await sgMail.send(msg);
+            console.log('SendGrid API Response:', {
+                statusCode: response.statusCode,
+                headers: response.headers,
+                body: response.body
+            });
+
+            if (response.statusCode !== 202) {
+                throw new Error(`SendGrid API error: ${response.statusCode}`);
+            }
+
+            console.log('Email sent successfully!');
+            return {
+                success: true,
+                message: 'Verification email sent successfully',
+                details: {
+                    statusCode: response.statusCode,
+                    messageId: response.headers['x-message-id']
+                }
+            };
+
+        } catch (sendError) {
+            console.error('SendGrid send error:', {
+                error: sendError.message,
+                code: sendError.code,
+                response: sendError.response?.body
+            });
+            throw sendError;
         }
 
-        return {
-            success: true,
-            message: 'Verification email sent successfully'
-        };
-
     } catch (error) {
-        console.error('Error sending verification email:', error);
+        console.error('Error in sendVerificationEmail:', {
+            error: error.message,
+            stack: error.stack,
+            name: error.name
+        });
+
         return {
             success: false,
             error: 'Failed to send verification email',
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+            details: process.env.NODE_ENV === 'development' ? {
+                message: error.message,
+                code: error.code,
+                response: error.response?.body,
+                stack: error.stack
+            } : undefined
         };
     }
 }

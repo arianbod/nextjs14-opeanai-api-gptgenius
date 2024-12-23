@@ -101,19 +101,24 @@
 			}
 		},
 		"animalList": [
-			{ "key": "dog", "label": "dog" },
-			{ "key": "cat", "label": "cat" },
-			{ "key": "elephant", "label": "elephant" },
-			{ "key": "lion", "label": "lion" },
-			{ "key": "tiger", "label": "tiger" },
-			{ "key": "bear", "label": "bear" },
-			{ "key": "monkey", "label": "monkey" },
-			{ "key": "giraffe", "label": "giraffe" },
-			{ "key": "zebra", "label": "zebra" },
-			{ "key": "penguin", "label": "penguin" },
-			{ "key": "kangaroo", "label": "kangaroo" },
-			{ "key": "koala", "label": "koala" }
-		]
+			{ "key": "dog", "label": "Dog", "category": "domestic" },
+			{ "key": "cat", "label": "Cat", "category": "domestic" },
+			{ "key": "elephant", "label": "Elephant", "category": "wild" },
+			{ "key": "lion", "label": "Lion", "category": "wild" },
+			{ "key": "tiger", "label": "Tiger", "category": "wild" },
+			{ "key": "bear", "label": "Bear", "category": "wild" },
+			{ "key": "monkey", "label": "Monkey", "category": "wild" },
+			{ "key": "giraffe", "label": "Giraffe", "category": "wild" },
+			{ "key": "zebra", "label": "Zebra", "category": "wild" },
+			{ "key": "penguin", "label": "Penguin", "category": "unique" },
+			{ "key": "kangaroo", "label": "Kangaroo", "category": "wild" },
+			{ "key": "koala", "label": "Koala", "category": "wild" }
+		],
+		"animalCategories": {
+			"domestic": "Domestic Friends",
+			"wild": "Wild Wonders",
+			"unique": "Unique Creatures"
+		}
 	},
 	"personas": {
 		"names": {

@@ -2,6 +2,8 @@
 
 import React, { memo, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ThemeToggle from '@/components/sidebar/ThemeToggle';
+import LanguageToggle from '@/components/sidebar/LanguageToggle';
 
 // Animated background circles component
 const AnimatedBackground = () => {
@@ -75,7 +77,7 @@ const AnimatedBackground = () => {
 // Step indicator component
 const StepIndicator = ({ currentStep, totalSteps }) => {
 	return (
-		<div className='fixed top-8 left-1/2 transform -translate-x-1/2 flex gap-2'>
+		<div className='flex gap-2'>
 			{[...Array(totalSteps)].map((_, i) => (
 				<motion.div
 					key={i}
@@ -101,15 +103,18 @@ const StepLayout = ({
 	showBackButton = true,
 }) => {
 	return (
-		<div className='min-h-screen flex items-center justify-center p-4 relative overflow-hidden'>
+		<div className=' min-h-screen w-full max-w-4xl flex flex-col place-content-center mx-auto place-items-center p-4 relative overflow-hidden'>
 			<AnimatedBackground />
 
-			<div className='w-full max-w-xl relative'>
+			<div className='z-50 fixed top-2 left-1/2 transform -translate-x-1/2 flex place-items-center gap-2 transition-all'>
+				<ThemeToggle />
+				<LanguageToggle />
 				<StepIndicator
 					currentStep={currentStep}
 					totalSteps={totalSteps}
 				/>
-
+			</div>
+			<div className=' backdrop-blur-lg '>
 				{showBackButton && currentStep > 0 && (
 					<motion.button
 						onClick={onBack}
@@ -121,7 +126,7 @@ const StepLayout = ({
 					</motion.button>
 				)}
 
-				<div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl'>
+				<div className=' rounded-2xl p-8 flex flex-col place-items-center place-content-center m-auto '>
 					<AnimatePresence mode='wait'>
 						<motion.div
 							key={currentStep}

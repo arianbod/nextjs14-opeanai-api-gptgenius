@@ -14,24 +14,25 @@ const StepTwo = ({
 	// Render selected animals at the top
 	const SelectedAnimalsDisplay = () => (
 		<div className='flex justify-center gap-4 mb-8'>
-			{[0, 1, 2].map((index) => (
+			{selectedAnimals.map((animal, index) => (
 				<motion.div
 					key={`slot-${index}`}
 					className={`w-24 h-24 rounded-xl flex items-center justify-center 
             ${
-							selectedAnimals[index]
+							animal
 								? 'bg-white dark:bg-gray-700 shadow-lg'
 								: 'border-2 border-dashed border-gray-300 dark:border-gray-600'
 						}`}
 					initial={{ opacity: 0, y: -20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ delay: index * 0.1 }}>
-					{selectedAnimals[index] && (
+					{animal && (
 						<div className='relative w-full h-full flex items-center justify-center'>
-							<span className='text-4xl'>{selectedAnimals[index].emoji}</span>
+							<span className='text-4xl'>{animal.emoji}</span>
 							<button
 								onClick={() => onAnimalRemove(index)}
-								className='absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600'>
+								className='absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600'
+								aria-label={`Remove ${animal.label}`}>
 								×
 							</button>
 						</div>
@@ -41,7 +42,39 @@ const StepTwo = ({
 		</div>
 	);
 
-	// Animal grid layout
+	// Group animals by their category
+	const groupedAnimals = dict.auth.animalList.reduce((groups, animal) => {
+		const { category } = animal; // Using 'category' instead of 'type'
+		if (!groups[category]) {
+			groups[category] = [];
+		}
+		groups[category].push(animal);
+		return groups;
+	}, {});
+
+	// Define background colors for each category for visual differentiation
+	const categoryStyles = {
+		domestic: 'bg-yellow-100 dark:bg-yellow-900/20',
+		wild: 'bg-green-100 dark:bg-green-900/20',
+		unique: 'bg-blue-100 dark:bg-blue-900/20',
+	};
+
+	// Define emoji mapping (optional: consider adding 'emoji' to en.json)
+	const emojiMapping = {
+		dog: '🐶',
+		cat: '🐱',
+		elephant: '🐘',
+		lion: '🦁',
+		tiger: '🐯',
+		bear: '🐻',
+		monkey: '🐵',
+		giraffe: '🦒',
+		zebra: '🦓',
+		penguin: '🐧',
+		kangaroo: '🦘',
+		koala: '🐨',
+	};
+
 	return (
 		<div className='space-y-8'>
 			<div className='text-center'>
@@ -55,46 +88,47 @@ const StepTwo = ({
 
 			<SelectedAnimalsDisplay />
 
-			{/* Animal Selection Grid */}
-			<div className='grid grid-cols-3 gap-4'>
-				{dict.auth.animalList.map((animal) => {
-					const isSelected = selectedAnimals.find((a) => a.key === animal.key);
-					const isDisabled = selectedAnimals.length >= 3 && !isSelected;
+			{/* Animal Selection Groups */}
+			{Object.keys(groupedAnimals).map((category) => (
+				<div
+					key={category}
+					className='space-y-4'>
+					<h3 className='text-lg font-semibold text-gray-700 dark:text-gray-200'>
+						{dict.auth.animalCategories[category]}
+					</h3>
+					<div className='grid grid-cols-3 gap-4'>
+						{groupedAnimals[category].map((animal) => {
+							const isSelected = selectedAnimals.find(
+								(a) => a.key === animal.key
+							);
+							const isDisabled = selectedAnimals.length >= 3 && !isSelected;
 
-					return (
-						<motion.button
-							key={animal.key}
-							onClick={() => onAnimalSelect(animal.key)}
-							disabled={isDisabled}
-							className={`aspect-square rounded-xl p-4 relative
-                ${
-									isSelected
-										? 'bg-blue-50 dark:bg-blue-900/20 ring-2 ring-blue-500'
-										: isDisabled
-										? 'bg-gray-100 dark:bg-gray-700 opacity-50 cursor-not-allowed'
-										: 'bg-white dark:bg-gray-700 hover:ring-2 hover:ring-blue-500 hover:scale-105'
-								}
-                transform transition-all duration-200 shadow-sm hover:shadow-md`}
-							whileHover={!isDisabled ? { scale: 1.05 } : {}}
-							whileTap={!isDisabled ? { scale: 0.95 } : {}}>
-							<div className='w-full h-full flex items-center justify-center text-4xl'>
-								{animal.key === 'dog' && '🐶'}
-								{animal.key === 'cat' && '🐱'}
-								{animal.key === 'elephant' && '🐘'}
-								{animal.key === 'lion' && '🦁'}
-								{animal.key === 'tiger' && '🐯'}
-								{animal.key === 'bear' && '🐻'}
-								{animal.key === 'monkey' && '🐵'}
-								{animal.key === 'giraffe' && '🦒'}
-								{animal.key === 'zebra' && '🦓'}
-								{animal.key === 'penguin' && '🐧'}
-								{animal.key === 'kangaroo' && '🦘'}
-								{animal.key === 'koala' && '🐨'}
-							</div>
-						</motion.button>
-					);
-				})}
-			</div>
+							return (
+								<motion.button
+									key={animal.key}
+									onClick={() => onAnimalSelect(animal.key)}
+									disabled={isDisabled}
+									className={`aspect-square rounded-xl p-4 relative select-none
+                    ${
+											isSelected
+												? `ring-2 ring-blue-500 ${categoryStyles[category]}`
+												: isDisabled
+												? 'bg-gray-100 dark:bg-gray-700 opacity-50 cursor-not-allowed'
+												: `bg-white dark:bg-gray-700 hover:ring-2 hover:ring-blue-500 hover:scale-105`
+										}
+                    transform transition-all duration-200 shadow-sm hover:shadow-md`}
+									whileHover={!isDisabled ? { scale: 1.05 } : {}}
+									whileTap={!isDisabled ? { scale: 0.95 } : {}}
+									aria-label={`Select ${animal.label}`}>
+									<div className='w-full h-full flex items-center justify-center text-4xl'>
+										{emojiMapping[animal.key] || '🐾'}
+									</div>
+								</motion.button>
+							);
+						})}
+					</div>
+				</div>
+			))}
 
 			{error && (
 				<motion.p

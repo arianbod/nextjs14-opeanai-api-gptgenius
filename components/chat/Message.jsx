@@ -1,10 +1,10 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypePrism from 'rehype-prism-plus';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import {
 	vscDarkPlus,
 	vs,
@@ -13,6 +13,48 @@ import { Copy, Maximize2, Minimize2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Image from 'next/legacy/image';
 import { useChat } from '@/context/ChatContext';
+
+// Import common programming languages
+import javascript from 'react-syntax-highlighter/dist/cjs/languages/prism/javascript';
+import python from 'react-syntax-highlighter/dist/cjs/languages/prism/python';
+import java from 'react-syntax-highlighter/dist/cjs/languages/prism/java';
+import typescript from 'react-syntax-highlighter/dist/cjs/languages/prism/typescript';
+import sql from 'react-syntax-highlighter/dist/cjs/languages/prism/sql';
+import json from 'react-syntax-highlighter/dist/cjs/languages/prism/json';
+import bash from 'react-syntax-highlighter/dist/cjs/languages/prism/bash';
+import markdown from 'react-syntax-highlighter/dist/cjs/languages/prism/markdown';
+import css from 'react-syntax-highlighter/dist/cjs/languages/prism/css';
+import markup from 'react-syntax-highlighter/dist/cjs/languages/prism/markup';
+
+// Register essential languages
+SyntaxHighlighter.registerLanguage('javascript', javascript);
+SyntaxHighlighter.registerLanguage('python', python);
+SyntaxHighlighter.registerLanguage('java', java);
+SyntaxHighlighter.registerLanguage('typescript', typescript);
+SyntaxHighlighter.registerLanguage('sql', sql);
+SyntaxHighlighter.registerLanguage('json', json);
+SyntaxHighlighter.registerLanguage('bash', bash);
+SyntaxHighlighter.registerLanguage('markdown', markdown);
+SyntaxHighlighter.registerLanguage('css', css);
+SyntaxHighlighter.registerLanguage('markup', markup);
+SyntaxHighlighter.registerLanguage('jsx', javascript);
+SyntaxHighlighter.registerLanguage('html', markup);
+
+// Language aliases mapping
+const languageAliases = {
+	js: 'javascript',
+	py: 'python',
+	ts: 'typescript',
+	jsx: 'javascript',
+	tsx: 'typescript',
+	shell: 'bash',
+	sh: 'bash',
+	html: 'markup',
+	xml: 'markup',
+	svg: 'markup',
+	mathml: 'markup',
+	ssml: 'markup',
+};
 
 const Message = ({ role, content, timestamp }) => {
 	const [expanded, setExpanded] = useState(false);
@@ -36,6 +78,13 @@ const Message = ({ role, content, timestamp }) => {
 		return '';
 	};
 
+	// Added language normalization function
+	const normalizeLanguage = (lang) => {
+		if (!lang) return 'text';
+		const normalizedLang = lang.toLowerCase();
+		return languageAliases[normalizedLang] || normalizedLang;
+	};
+
 	const MarkdownComponents = {
 		code({ node, inline, className, children, ...props }) {
 			const match = /language-(\w+)/.exec(className || '');
@@ -52,6 +101,9 @@ const Message = ({ role, content, timestamp }) => {
 				);
 			}
 
+			// Extract and normalize language
+			const language = match ? normalizeLanguage(match[1]) : 'text';
+
 			return (
 				<div className='not-prose my-4'>
 					<div className='rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700'>
@@ -59,7 +111,7 @@ const Message = ({ role, content, timestamp }) => {
 							className='flex justify-between items-center px-4 py-2 
                                       bg-gray-100 dark:bg-gray-800'>
 							<span className='text-xs text-gray-600 dark:text-gray-300 font-mono'>
-								{match ? match[1] : 'Plain Text'}
+								{language !== 'text' ? language : 'Plain Text'}
 							</span>
 							<div className='flex gap-2'>
 								<button
@@ -96,29 +148,25 @@ const Message = ({ role, content, timestamp }) => {
 								expanded ? '' : 'max-h-[300px]'
 							} overflow-auto 
                                       bg-white dark:bg-gray-900`}>
-							{match ? (
-								<SyntaxHighlighter
-									language={match[1].toLowerCase()}
-									style={
-										document.documentElement.getAttribute('data-theme') ===
-										'dracula'
-											? vscDarkPlus
-											: vs
-									}
-									showLineNumbers={true}
-									customStyle={{
-										margin: 0,
-										padding: '1rem',
-										background: 'transparent',
-										fontSize: '0.875rem',
-									}}>
-									{codeContent}
-								</SyntaxHighlighter>
-							) : (
-								<pre className='p-4 overflow-x-auto text-gray-800 dark:text-gray-200'>
-									<code>{codeContent}</code>
-								</pre>
-							)}
+							<SyntaxHighlighter
+								language={language}
+								style={
+									document.documentElement.getAttribute('data-theme') ===
+									'dracula'
+										? vscDarkPlus
+										: vs
+								}
+								showLineNumbers={true}
+								customStyle={{
+									margin: 0,
+									padding: '1rem',
+									background: 'transparent',
+									fontSize: '0.875rem',
+								}}
+								wrapLongLines={true}
+								useInlineStyles={true}>
+								{codeContent}
+							</SyntaxHighlighter>
 							{!expanded && (
 								<div
 									className='absolute bottom-0 left-0 right-0 h-8 
@@ -130,7 +178,6 @@ const Message = ({ role, content, timestamp }) => {
 				</div>
 			);
 		},
-
 		p: ({ children }) => (
 			<div className='mb-4 last:mb-0 leading-7 text-gray-800 dark:text-gray-200'>
 				{children}
@@ -247,7 +294,10 @@ const Message = ({ role, content, timestamp }) => {
 				<div className='w-full overflow-x-auto text-wrap'>
 					<ReactMarkdown
 						remarkPlugins={[remarkGfm, remarkMath]}
-						rehypePlugins={[rehypeKatex, rehypePrism]}
+						rehypePlugins={[
+							rehypeKatex,
+							[rehypePrism, { ignoreMissing: true }],
+						]}
 						components={MarkdownComponents}>
 						{content}
 					</ReactMarkdown>

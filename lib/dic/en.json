@@ -47,7 +47,7 @@
 		"selectThreeAnimalsInOrder": "Please select exactly 3 animals",
 		"selectedAnimalsOrder": "Your selected sequence:",
 		"selectNext": "Select next animal",
-		"selectAnimalsInOrder": "Choose your security animals in order:",
+		"selectAnimalsInOrder": "You have to choose 3 animals and remember that as a password",
 		"orderMatters": "Remember: The order of animal selection matters!",
 		"tokenCopied": "Token copied to clipboard",
 		"saveToken": "Save Your Token",

@@ -69,7 +69,7 @@ const Sidebar = () => {
 								<MdAdd className='w-6 h-6' />
 							</Link>
 						</div>
-						<ul className='space-y-2'>
+						<ul className='space-y-2 w-full'>
 							{chatList.map((chat) => {
 								const persona = getPersonaByChat(chat);
 								const avatarUrl =

@@ -1,91 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import SearchComponent from './SearchComponent';
 import { AIPersonas } from '@/lib/Personas';
 import { useChat } from '@/context/ChatContext';
 import { motion } from 'framer-motion';
 import { Sparkles, Zap, Clock, Star } from 'lucide-react';
 import PersonaSuggester from './PersonaSuggester';
+import ModelCard from './ModelCard';
 
-const ModelCard = ({ persona, onSelect, isSelected }) => {
-	return (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			whileHover={{ scale: 1.02 }}
-			whileTap={{ scale: 0.98 }}
-			className={`
-        w-full p-4 rounded-xl cursor-pointer
-        bg-base-200/50 hover:bg-base-200/80
-        border border-base-300
-        transition-all duration-200
-        ${isSelected ? 'ring-2 ring-primary shadow-lg' : ''}
-      `}
-			onClick={() => onSelect(persona)}>
-			<div className='flex items-center gap-4'>
-				{/* Avatar */}
-				<div className='relative w-16 h-16 flex-shrink-0'>
-					<img
-						src={persona.avatar || '/images/babagpt_bw.svg'}
-						alt={persona.name}
-						className='w-full h-full rounded-lg object-cover'
-					/>
-					{persona.isNew && (
-						<div className='absolute -top-2 -right-2'>
-							<Sparkles className='w-5 h-5 text-primary' />
-						</div>
-					)}
-				</div>
-
-				{/* Content */}
-				<div className='flex-grow min-w-0'>
-					<div className='flex items-center gap-2 mb-1'>
-						<h3 className='text-base font-semibold text-base-content truncate'>
-							{persona.name}
-						</h3>
-						{persona.isPro && (
-							<span className='px-2 py-0.5 bg-base-100/10 text-base-200 text-sm rounded-full font-medium'>
-								PRO
-							</span>
-						)}
-					</div>
-
-					<p className='text-sm text-base-content/70 line-clamp-2 mb-2'>
-						{persona.description}
-					</p>
-
-					{/* Tags */}
-					<div className='flex flex-wrap gap-2'>
-						{persona.features?.bestFor?.slice(0, 3).map((feature, index) => (
-							<span
-								key={index}
-								className='inline-flex items-center gap-1 px-2 py-1 bg-base-300/50 
-                  rounded-full text-xs text-base-content/70'>
-								<Zap className='w-3 h-3' />
-								{feature}
-							</span>
-						))}
-					</div>
-				</div>
-
-				{/* Right section - Stats/Info */}
-				<div className='flex flex-col items-end gap-2 ml-4'>
-					{persona.rating && (
-						<div className='flex items-center gap-1'>
-							<Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
-							<span className='text-sm font-medium'>{persona.rating}</span>
-						</div>
-					)}
-					{persona.speed && (
-						<div className='flex items-center gap-1 text-base-content/60'>
-							<Clock className='w-4 h-4' />
-							<span className='text-xs'>{persona.speed}</span>
-						</div>
-					)}
-				</div>
-			</div>
-		</motion.div>
-	);
-};
+// ModelCard component remains unchanged as it fits well with our UX goals
 
 const ModelSelection = () => {
 	const { model, handleModelSelect, chatList } = useChat();
@@ -94,13 +16,10 @@ const ModelSelection = () => {
 	const AvailableAIPersonas = AIPersonas.filter(
 		(persona) => persona.showOnModelSelection === true
 	);
+
 	// Dynamically get unique categories from personas
 	const categories = useMemo(() => {
-		const uniqueCategories = new Set();
-		// Add 'all' category first
-		uniqueCategories.add('all');
-
-		// Collect all categories from personas
+		const uniqueCategories = new Set(['all']);
 		AvailableAIPersonas.forEach((persona) => {
 			if (persona.categories && Array.isArray(persona.categories)) {
 				persona.categories.forEach((category) =>
@@ -108,8 +27,6 @@ const ModelSelection = () => {
 				);
 			}
 		});
-
-		// Convert to array of objects with proper formatting
 		return Array.from(uniqueCategories).map((category) => ({
 			id: category,
 			name:
@@ -157,7 +74,6 @@ const ModelSelection = () => {
 		const recent = [];
 
 		for (const chat of chatList) {
-			// number of last used models to show
 			if (recent.length >= 2) break;
 			if (!recentModelIds.has(chat.modelCodeName)) {
 				const model = AvailableAIPersonas.find(
@@ -189,7 +105,7 @@ const ModelSelection = () => {
 							<h2 className='text-lg font-semibold mb-4 text-base-content'>
 								Recent
 							</h2>
-							<div className='space-y-3'>
+							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 								{recentModels.map((persona) => (
 									<ModelCard
 										key={persona.key}
@@ -201,8 +117,9 @@ const ModelSelection = () => {
 							</div>
 						</div>
 					)}
-				{/* <hr /> */}
+
 				<PersonaSuggester />
+
 				{/* Categories */}
 				<div className='mb-8 overflow-x-auto mx-auto flex place-items-center place-content-center'>
 					<div className='flex gap-2 pb-2 flex-wrap select-none place-content-center mx-auto'>
@@ -213,7 +130,7 @@ const ModelSelection = () => {
 								className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap
                   transition-colors duration-200 ${
 										selectedCategory === category.id
-											? 'bg-base-300'
+											? 'bg-base-300 text-base-content'
 											: 'bg-base-200 text-base-content/70 hover:bg-base-300'
 									}`}>
 								{category.name}
@@ -223,7 +140,7 @@ const ModelSelection = () => {
 				</div>
 
 				{/* All Models */}
-				<div className='space-y-3'>
+				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
 					{filteredPersonas.map((persona) => (
 						<ModelCard
 							key={persona.key}
@@ -250,4 +167,4 @@ const ModelSelection = () => {
 	);
 };
 
-export default ModelSelection;
+export default memo(ModelSelection);

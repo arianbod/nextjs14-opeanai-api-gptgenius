@@ -1,55 +1,33 @@
 {
 	"global": {
-		"title": "بابا جی پی تی",
+		"title": "باباGPT",
 		"description": "",
 		"conversations": "مکالمات",
 		"tokenBalance": "موجودی توکن",
 		"purchaseTokens": "خرید توکن",
-		"selectedAmount": "مبلغ انتخاب شده",
+		"selectedAmount": "مبلغ انتخابی",
 		"discount": "تخفیف",
 		"finalPrice": "قیمت نهایی",
 		"purchase": "خرید",
-		"tokens": "توکن ها",
+		"tokens": "توکن‌ها",
 		"sliderTitle": "جادوی تخفیف اسلایدر"
 	},
 	"sidebar": {
 		"conversations": "مکالمات"
 	},
 	"auth": {
-		"errors": {
-			"generic": "خطایی رخ داد. لطفا دوباره امتحان کنید",
-			"network": "خطای شبکه. لطفا اتصال اینترنت خود را بررسی کنید",
-			"animals": {
-				"selectThree": "لطفا دقیقا 3 حیوان را انتخاب کنید"
-			},
-			"email": {
-				"invalid": "لطفا یک آدرس ایمیل معتبر وارد کنید",
-				"required": "آدرس ایمیل الزامی است"
-			},
-			"register": {
-				"generic": "ثبت نام ناموفق. لطفا دوباره امتحان کنید",
-				"emailTaken": "این ایمیل قبلا استفاده شده است"
-			},
-			"login": {
-				"generic": "ورود ناموفق. لطفا دوباره امتحان کنید",
-				"tokenRequired": "توکن احراز هویت الزامی است",
-				"invalidToken": "توکن نامعتبر است",
-				"incorrectSequence": "${attempts} تلاش باقی مانده است",
-				"accountLocked": "حساب کاربری شما به مدت ${minutes} دقیقه قفل شده است",
-				"tooManyAttempts": "تعداد تلاش‌های ناموفق بیش از حد مجاز است. لطفا بعدا دوباره امتحان کنید"
-			}
-		},
 		"register": {
-			"title": "ثبت نام",
+			"title": "ثبت‌نام",
 			"email": "ایمیل",
 			"emailPlaceholder": "your@email.com",
 			"buttonText": "شروع کنید",
-			"submitting": "در حال ثبت نام...",
-			"successMessage": "ثبت نام موفقیت آمیز!",
-			"failureMessage": "ثبت نام ناموفق. لطفا دوباره امتحان کنید.",
-			"switchToLogin": "از قبل حساب کاربری دارید؟ ورود",
-			"info": "برای ایجاد حساب کاربری خود، به ترتیب 3 حیوان را انتخاب کنید. این توالی را به یاد داشته باشید - این الگوی امنیتی منحصر به فرد شما است.",
-			"submit": "شروع کنید"
+			"submitting": "در حال ثبت‌نام...",
+			"successMessage": "ثبت‌نام موفقیت‌آمیز بود!",
+			"failureMessage": "ثبت‌نام ناموفق بود. لطفاً دوباره تلاش کنید.",
+			"switchToLogin": "قبلاً حساب کاربری دارید؟ ورود",
+			"info": "حساب خود را با انتخاب ۳ حیوان به ترتیب ایجاد کنید. این ترتیب را به خاطر بسپارید - الگوی امنیتی منحصر به فرد شماست.",
+			"submit": "شروع کنید",
+			"emailOptional": "ایمیل شما اختیاری است."
 		},
 		"login": {
 			"title": "ورود",
@@ -59,143 +37,158 @@
 			"emailPlaceholder": "your@email.com",
 			"buttonText": "ورود",
 			"submitting": "در حال ورود...",
-			"successMessage": "ورود موفق!",
-			"failureMessage": "ورود ناموفق. لطفا دوباره امتحان کنید.",
-			"switchToRegister": "حساب کاربری ندارید؟ ثبت نام",
-			"info": "توکن خود را وارد کرده و همان 3 حیوان را به همان ترتیب که در ثبت نام انتخاب کرده اید، انتخاب کنید.",
+			"successMessage": "ورود موفقیت‌آمیز بود!",
+			"failureMessage": "ورود ناموفق بود. لطفاً دوباره تلاش کنید.",
+			"switchToRegister": "نیاز به حساب کاربری دارید؟ ثبت‌نام",
+			"info": "توکن خود را وارد کنید و ۳ حیوان خود را به همان ترتیب که در ثبت‌نام انتخاب کرده‌اید، انتخاب کنید.",
 			"submit": "ورود"
 		},
-		"selectThreeAnimalsInOrder": "لطفا دقیقا 3 حیوان را انتخاب کنید",
-		"selectedAnimalsOrder": "توالی انتخاب شده شما:",
-		"selectNext": "حیوان بعدی را انتخاب کنید",
+		"redirecting": "در حال هدایت به صفحه اصلی...",
+		"selectThreeAnimalsInOrder": "لطفاً دقیقاً ۳ حیوان انتخاب کنید",
+		"selectedAnimalsOrder": "ترتیب انتخابی شما:",
+		"selectNext": "انتخاب حیوان بعدی",
 		"selectAnimalsInOrder": "حیوانات امنیتی خود را به ترتیب انتخاب کنید:",
-		"orderMatters": "به یاد داشته باشید: ترتیب انتخاب حیوان اهمیت دارد!",
-		"tokenCopied": "توکن به کلیپ بورد کپی شد",
+		"orderMatters": "به یاد داشته باشید: ترتیب انتخاب حیوانات مهم است!",
+		"tokenCopied": "توکن به کلیپ‌بورد کپی شد",
 		"saveToken": "توکن خود را ذخیره کنید",
-		"tokenImportant": "مهم: این توکن را ذخیره کنید - برای ورود به سیستم به آن نیاز خواهید داشت.",
-		"rememberAnimalOrder": "توالی حیوانات خود را به یاد داشته باشید:",
-		"understood": "من توکن خود را ذخیره کرده ام",
-		"genericError": "خطایی رخ داد. لطفا دوباره امتحان کنید",
-		"animalList": [
-			{
-				"key": "dog",
-				"label": "سگ"
+		"tokenImportant": "مهم: این توکن را ذخیره کنید - برای ورود به آن نیاز خواهید داشت.",
+		"rememberAnimalOrder": "ترتیب حیوانات خود را به خاطر بسپارید:",
+		"understood": "توکن خود را ذخیره کرده‌ام",
+		"verifyEmail": "ایمیل خود را تایید کنید",
+		"verificationSent": "یک ایمیل تایید به {email} ارسال شده است. لطفاً صندوق ورودی خود را بررسی کنید.",
+		"verificationReminder": "لطفاً آدرس ایمیل خود را تایید کنید تا از تمام امکانات حساب استفاده کنید",
+		"optional": "اختیاری",
+		"confirmTokenSaved": "توکن خود را به صورت امن ذخیره کرده‌ام",
+		"continue": "ادامه",
+		"verificationSuccess": "ایمیل شما تایید شده است. در حال هدایت به صفحه حساب...",
+		"verificationFailed": "تایید ناموفق بود",
+		"continueWithoutEmail": "ادامه بدون ایمیل",
+		"emailLater": "می‌توانید ایمیل خود را بعداً اضافه کنید.",
+		"addEmail": "افزودن ایمیل",
+		"skip": "رد کردن",
+		"back": "بازگشت",
+		"emailBenefits": {
+			"title": "مزایای افزودن ایمیل",
+			"recovery": "بازیابی رمز عبور",
+			"security": "افزایش امنیت",
+			"updates": "دریافت به‌روزرسانی‌های مهم"
+		},
+		"errors": {
+			"generic": "خطایی رخ داده است. لطفاً دوباره تلاش کنید",
+			"network": "خطای شبکه. لطفاً اتصال خود را بررسی کنید",
+			"animals": {
+				"selectThree": "لطفاً دقیقاً ۳ حیوان انتخاب کنید"
 			},
-			{
-				"key": "cat",
-				"label": "گربه"
+			"email": {
+				"invalid": "لطفاً یک آدرس ایمیل معتبر وارد کنید",
+				"required": "ایمیل الزامی است",
+				"alreadyVerified": "این ایمیل قبلاً توسط حساب دیگری تایید شده است",
+				"verificationFailed": "تایید ایمیل ناموفق بود"
 			},
-			{
-				"key": "elephant",
-				"label": "فیل"
+			"register": {
+				"generic": "ثبت‌نام ناموفق بود. لطفاً دوباره تلاش کنید",
+				"emailTaken": "این ایمیل قبلاً ثبت شده است"
 			},
-			{
-				"key": "lion",
-				"label": "شیر"
-			},
-			{
-				"key": "tiger",
-				"label": "ببر"
-			},
-			{
-				"key": "bear",
-				"label": "خرس"
-			},
-			{
-				"key": "monkey",
-				"label": "میمون"
-			},
-			{
-				"key": "giraffe",
-				"label": "زرافه"
-			},
-			{
-				"key": "zebra",
-				"label": "زبرا"
-			},
-			{
-				"key": "penguin",
-				"label": "پنگوئن"
-			},
-			{
-				"key": "kangaroo",
-				"label": "کانگورو"
-			},
-			{
-				"key": "koala",
-				"label": "کوالا"
+			"login": {
+				"generic": "ورود ناموفق بود. لطفاً دوباره تلاش کنید",
+				"tokenRequired": "توکن احراز هویت الزامی است",
+				"invalidToken": "توکن احراز هویت نامعتبر است",
+				"incorrectSequence": "ترتیب حیوانات اشتباه است. ${attempts} تلاش باقی مانده",
+				"accountLocked": "حساب قفل شده است. لطفاً در ${minutes} دقیقه دوباره تلاش کنید",
+				"tooManyAttempts": "تلاش‌های ناموفق بیش از حد است. لطفاً بعداً دوباره تلاش کنید",
+				"accountInactive": "این حساب در حال حاضر غیرفعال است",
+				"accountDeleted": "این حساب حذف شده است"
 			}
-		]
+		},
+		"animalList": [
+			{ "key": "dog", "label": "سگ", "category": "domestic" },
+			{ "key": "cat", "label": "گربه", "category": "domestic" },
+			{ "key": "elephant", "label": "فیل", "category": "wild" },
+			{ "key": "lion", "label": "شیر", "category": "wild" },
+			{ "key": "tiger", "label": "ببر", "category": "wild" },
+			{ "key": "bear", "label": "خرس", "category": "wild" },
+			{ "key": "monkey", "label": "میمون", "category": "wild" },
+			{ "key": "giraffe", "label": "زرافه", "category": "wild" },
+			{ "key": "zebra", "label": "گورخر", "category": "wild" },
+			{ "key": "penguin", "label": "پنگوئن", "category": "unique" },
+			{ "key": "kangaroo", "label": "کانگورو", "category": "wild" },
+			{ "key": "koala", "label": "کوآلا", "category": "wild" }
+		],
+		"animalCategories": {
+			"domestic": "دوستان خانگی",
+			"wild": "شگفتی‌های وحشی",
+			"unique": "موجودات منحصر به فرد"
+		}
 	},
 	"personas": {
 		"names": {
-			"babagpt": "بابا جی پی تی",
+			"babagpt": "باباGPT",
 			"claude": "کلود",
-			"o1Preview": "o1-preview",
-			"o1Mini": "o1-mini",
+			"o1Preview": "o1-پیش‌نمایش",
+			"o1Mini": "o1-مینی",
 			"chatgpt4": "4o"
 		},
 		"roles": {
 			"searchEngine": "موتور جستجوی زنده",
-			"chatgpt": "چت جی پی تی",
+			"chatgpt": "CHATGPT",
 			"analyticalAssistant": "دستیار تحلیلی"
 		},
 		"descriptions": {
-			"babagpt": "میکسترال تجزیه و تحلیل فنی و داده ها را در قالبی دوستانه، قابل دسترس با قالب بندی عددی روشن و ارائه جذاب ارائه می دهد.",
-			"claude": "کلود در ارائه بینش های تحلیلی روشن و مختصر تبحر دارد، که آن را برای تصمیم گیری مبتنی بر داده و توضیحات تفصیلی ایده آل می کند.",
-			"o1Preview": "o1-preview برای تولید پاسخ های جامع و تفصیلی طراحی شده است، برای تجزیه و تحلیل عمیق و گفت وگوهای طولانی مناسب است.",
-			"o1Mini": "o1-mini پاسخ های سریع و کارآمد ارائه می دهد، برای پرسش های کوتاه و تعاملات سریع ایده آل است.",
-			"chatgpt4": "4o یک دستیار تحلیلی است که قادر به تنظیم خلاقیت و طول پاسخ است، برای گفتگوهای سفارشی و ظریف کامل است."
+			"babagpt": "Mixtral تحلیل‌های فنی و داده‌ها را به صورت دوستانه و قابل دسترس با فرمت‌بندی شماره‌های واضح و ارائه جذاب ارائه می‌دهد.",
+			"claude": "کلود در ارائه بینش‌های تحلیلی واضح و مختصر برتری دارد، که آن را برای تصمیم‌گیری مبتنی بر داده و توضیحات دقیق ایده‌آل می‌کند.",
+			"o1Preview": "o1-پیش‌نمایش برای تولید پاسخ‌های جامع و دقیق طراحی شده است، مناسب برای تحلیل عمیق و مکالمات طولانی.",
+			"o1Mini": "o1-مینی پاسخ‌های سریع و کارآمد ارائه می‌دهد، ایده‌آل برای سوالات کوتاه و تعاملات سریع.",
+			"chatgpt4": "4o یک دستیار تحلیلی است که قابلیت تنظیم خلاقیت و طول پاسخ را دارد، مناسب برای مکالمات سفارشی و دقیق."
 		},
 		"categories": {
-			"all": "همه مدل ها",
-			"creative": "خلاقانه",
+			"all": "همه مدل‌ها",
+			"creative": "خلاق",
 			"analytical": "تحلیلی",
-			"coding": "کدنویسی",
-			"chat": "چت",
+			"coding": "برنامه‌نویسی",
+			"chat": "گفتگو",
 			"searchEngine": "موتور جستجو"
 		},
 		"features": {
 			"suitableFor": {
 				"contentCreation": "ایجاد محتوا",
 				"academicResearch": "تحقیقات دانشگاهی",
-				"codingAssistance": "کمک به کدنویسی",
-				"dataAnalysis": "تحلیل داده ها",
-				"quickQueries": "پرسش های سریع",
+				"codingAssistance": "کمک برنامه‌نویسی",
+				"dataAnalysis": "تحلیل داده‌ها",
+				"quickQueries": "پرسش‌های سریع",
 				"customerSupport": "پشتیبانی مشتری",
-				"creativeProjects": "پروژه های خلاقانه"
+				"creativeProjects": "پروژه‌های خلاقانه"
 			},
 			"bestFor": {
-				"detailedExplanations": "توضیحات مفصل",
+				"detailedExplanations": "توضیحات دقیق",
 				"conciseSummaries": "خلاصه‌های مختصر",
 				"interactiveAssistance": "کمک تعاملی",
-				"dataDecisions": "تصمیم‌گیری‌های مبتنی بر داده",
-				"userFriendly": "توضیحات دوستانه برای کاربر",
+				"dataDecisions": "تصمیم‌گیری مبتنی بر داده",
+				"userFriendly": "توضیحات کاربرپسند",
 				"technicalAccuracy": "دقت فنی",
-				"liveData": "داده های زنده و واقعی",
+				"liveData": "داده‌های زنده واقعی",
 				"accurate": "دقیق"
 			},
 			"specificFeatures": {
-				"languageSupport": "پشتیبانی زبان",
-				"customization": "سفارشی سازی",
-				"securityFeatures": "ویژگی های امنیتی",
+				"languageSupport": "پشتیبانی زبانی",
+				"customization": "سفارشی‌سازی",
+				"securityFeatures": "ویژگی‌های امنیتی",
 				"highPerformance": "عملکرد بالا",
 				"realtimeCollaboration": "همکاری در زمان واقعی",
-				"engagingOutputs": "خروجی های جذاب",
-				"integrationCapabilities": "قابلیت های یکپارچگی"
+				"engagingOutputs": "خروجی‌های جذاب",
+				"integrationCapabilities": "قابلیت‌های یکپارچه‌سازی"
 			}
 		},
 		"labels": {
-			"pro": "پرو",
+			"pro": "حرفه‌ای",
 			"new": "جدید",
-			"rating": "رتبه‌بندی",
+			"rating": "امتیاز",
 			"speed": "سرعت",
 			"speedValues": {
 				"veryFast": "بسیار سریع",
 				"fast": "سریع",
-				"slow": "کند"
+				"slow": "آهسته"
 			},
-			"recentlyUsed": "اخیراً استفاده شده"
+			"recentlyUsed": "به‌تازگی استفاده شده"
 		}
 	},
 	"modelSelection": {
@@ -203,86 +196,94 @@
 			"placeholder": "جستجو بر اساس قابلیت، نام یا توضیحات..."
 		},
 		"sections": {
-			"recent": "اخیراً استفاده شده",
-			"allModels": "همه مدل ها",
-			"noResults": "هیچ مدلی مطابق با جستجوی شما یافت نشد."
+			"recent": "تازه‌ها",
+			"allModels": "همه مدل‌ها",
+			"noResults": "مدلی متناسب با جستجوی شما یافت نشد."
 		},
-		"needHelp": "به کمک نیاز دارید؟",
+		"needHelp": "نیاز به کمک دارید؟",
 		"backButton": "بازگشت",
-		"chooseAgain": "انتخاب مجدد"
+		"chooseAgain": "دوباره انتخاب کنید"
 	},
 	"personaSuggester": {
-		"needHelp": "به کمک نیاز دارید؟",
+		"needHelp": "نیاز به کمک دارید؟",
 		"progress": {
-			"step1": "فقط سه سؤال برای پیدا کردن بهترین راه حل برای شما.",
-			"step2": "تقریباً تمام شد، فقط دو سؤال باقی مانده است.",
-			"step3": "در حال پیدا کردن بهترین راه حل، فقط یک سؤال باقی مانده است.",
+			"step1": "فقط سه سوال برای یافتن بهترین راه‌حل برای شما.",
+			"step2": "تقریباً تمام شده، فقط دو سوال باقی مانده.",
+			"step3": "ما در حال یافتن بهترین راه‌حل هستیم، فقط یک سوال باقی مانده.",
 			"step4": "تمام شد! این لیست شماست."
 		},
 		"questions": {
 			"useCase": {
-				"title": "1. مورد استفاده اصلی شما چیست؟",
+				"title": "۱. استفاده اصلی شما چیست؟",
 				"options": {
 					"contentCreation": "ایجاد محتوا",
 					"academicResearch": "تحقیقات دانشگاهی",
-					"codingAssistance": "کمک به کدنویسی",
-					"dataAnalysis": "تحلیل داده ها",
-					"creativeProjects": "پروژه های خلاقانه"
+					"codingAssistance": "کمک برنامه‌نویسی",
+					"dataAnalysis": "تحلیل داده‌ها",
+					"creativeProjects": "پروژه‌های خلاقانه"
 				}
 			},
 			"responseType": {
-				"title": "2. چه نوع پاسخ هایی را ترجیح می دهید؟",
+				"title": "۲. چه نوع پاسخ‌هایی را ترجیح می‌دهید؟",
 				"options": {
-					"detailedExplanations": "توضیحات مفصل",
+					"detailedExplanations": "توضیحات دقیق",
 					"conciseSummaries": "خلاصه‌های مختصر",
-					"codeSnippets": "قطعات کد",
-					"visualAids": "کمک های بصری",
+					"codeSnippets": "قطعه کد",
+					"visualAids": "کمک‌های بصری",
 					"interactiveAssistance": "کمک تعاملی"
 				}
 			},
 			"features": {
-				"title": "3. آیا به ویژگی خاصی نیاز دارید؟",
+				"title": "۳. آیا به ویژگی‌های خاصی نیاز دارید؟",
 				"options": {
-					"languageSupport": "پشتیبانی زبان",
-					"integrationCapabilities": "قابلیت های یکپارچگی",
-					"customization": "سفارشی سازی",
+					"languageSupport": "پشتیبانی زبانی",
+					"integrationCapabilities": "قابلیت‌های یکپارچه‌سازی",
+					"customization": "سفارشی‌سازی",
 					"realtimeCollaboration": "همکاری در زمان واقعی",
-					"securityFeatures": "ویژگی های امنیتی"
+					"securityFeatures": "ویژگی‌های امنیتی"
 				}
 			}
 		},
 		"results": {
-			"title": "تمام شد! این شخصیت های پیشنهادی شماست:",
-			"noResults": "هیچ شخصیت مناسبی یافت نشد.",
-			"chooseAgain": "انتخاب مجدد"
+			"title": "تکمیل شد! اینها شخصیت‌های پیشنهادی شما هستند:",
+			"noResults": "شخصیت مناسبی یافت نشد.",
+			"chooseAgain": "دوباره انتخاب کنید"
 		}
 	},
 	"account": {
 		"title": "تنظیمات حساب",
-		"subtitle": "مدیریت تنظیمات و ترجیحات حساب کاربری خود",
-		"userInfo": "اطلاعات کاربر",
+		"subtitle": "مدیریت تنظیمات و ترجیحات حساب خود",
+		"userInfo": "اطلاعات کاربری",
 		"email": "آدرس ایمیل",
-		"updateEmail": "به روز رسانی ایمیل",
+		"updateEmail": "به‌روزرسانی ایمیل",
+		"addEmail": "افزودن ایمیل",
 		"newEmailPlaceholder": "آدرس ایمیل جدید را وارد کنید",
 		"save": "ذخیره تغییرات",
+		"updating": "در حال به‌روزرسانی...",
 		"cancel": "لغو",
-		"noEmail": "هیچ آدرس ایمیلی تنظیم نشده است",
+		"noEmail": "آدرس ایمیل تنظیم نشده است",
 		"tokenBalance": "موجودی توکن",
 		"authToken": "توکن احراز هویت",
 		"showToken": "نمایش توکن",
-		"hideToken": "مخفی کردن توکن",
+		"hideToken": "پنهان کردن توکن",
 		"tokenCopied": "توکن به کلیپ‌بورد کپی شد",
 		"security": "امنیت",
-		"securityInfo": "توکن و توالی حیوانات خود را ایمن نگه دارید. این ها برای احراز هویت لازم هستند و در صورت از دست دادن قابل بازیابی نیستند.",
+		"securityInfo": "توکن و ترتیب حیوانات خود را امن نگه دارید. این‌ها برای احراز هویت لازم هستند و در صورت گم شدن قابل بازیابی نیستند.",
 		"logout": "خروج",
-		"emailUpdated": "ایمیل با موفقیت به روز رسانی شد",
-		"updateFailed": "به روز رسانی ایمیل با شکست مواجه شد",
-		"invalidEmail": "لطفا یک آدرس ایمیل معتبر وارد کنید",
+		"emailUpdated": "ایمیل با موفقیت به‌روزرسانی شد",
+		"updateFailed": "به‌روزرسانی ایمیل ناموفق بود",
+		"invalidEmail": "لطفاً یک آدرس ایمیل معتبر وارد کنید",
+		"verified": "تایید شده",
+		"unverified": "تایید نشده",
+		"verificationPending": "تایید ایمیل در انتظار است",
+		"resendVerification": "ارسال مجدد ایمیل تایید",
 		"errors": {
-			"emailTaken": "این ایمیل قبلا استفاده شده است",
+			"emailTaken": "این ایمیل قبلاً استفاده شده است",
 			"invalidFormat": "فرمت ایمیل نامعتبر است",
-			"updateFailed": "به روز رسانی ایمیل با شکست مواجه شد",
-			"notAuthenticated": "لطفا برای به روز رسانی تنظیمات خود وارد سیستم شوید"
+			"updateFailed": "به‌روزرسانی ایمیل ناموفق بود",
+			"notAuthenticated": "لطفاً برای به‌روزرسانی تنظیمات وارد شوید",
+			"verificationExpired": "لینک تایید منقضی شده است",
+			"verificationInvalid": "لینک تایید نامعتبر است"
 		}
 	}
 }

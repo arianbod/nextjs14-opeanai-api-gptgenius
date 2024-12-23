@@ -72,7 +72,7 @@ const LanguageToggle = () => {
 									: 'text-base-content'
 							}`}
 							onClick={() => changeLanguage(language.code)}>
-							<span className='text-xl'>{language.flag}</span>
+							{/* <span className='text-xl'>{language.flag}</span> */}
 							<span>{language.name}</span>
 						</button>
 					))}

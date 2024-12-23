@@ -26,7 +26,8 @@
 			"failureMessage": "Registration failed. Please try again.",
 			"switchToLogin": "Already have an account? Login",
 			"info": "Create your account by selecting 3 animals in sequence. Remember this sequence - it's your unique security pattern.",
-			"submit": "Get Started"
+			"submit": "Get Started",
+			"emailOptional": "Your email is optional."
 		},
 		"login": {
 			"title": "Login",
@@ -61,6 +62,17 @@
 		"continue": "Continue",
 		"verificationSuccess": "Your email has been verified. Redirecting to account page...",
 		"verificationFailed": "Verification Failed",
+		"continueWithoutEmail": "Continue without Email",
+		"emailLater": "You can add your email later.",
+		"addEmail": "Add Email",
+		"skip": "Skip",
+		"back": "Back",
+		"emailBenefits": {
+			"title": "Benefits of Adding Your Email",
+			"recovery": "Password recovery",
+			"security": "Enhanced security",
+			"updates": "Receive important updates"
+		},
 		"errors": {
 			"generic": "An error occurred. Please try again",
 			"network": "Network error. Please check your connection",

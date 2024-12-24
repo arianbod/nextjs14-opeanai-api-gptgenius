@@ -207,7 +207,12 @@ const MessageInput = ({
 					)}
 
 					{/* Action Buttons */}
-					<div className='flex justify-between items-center p-3 pt-0'>
+					<div
+						className={`flex ${
+							allowed.send.file || allowed.send.image
+								? 'justify-between'
+								: 'justify-end'
+						}  items-center p-3 pt-0`}>
 						{(allowed.send.file || allowed.send.image) && (
 							<FileUploadComponent
 								onFileUpload={onFileUpload}

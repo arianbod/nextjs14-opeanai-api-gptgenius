@@ -134,13 +134,20 @@ export async function POST(request) {
                         messageId: userMessage.id
                     }));
 
+                    // In your chat route, before formatMessages call
+                    console.log("File Info:", {
+                        file: file,
+                        fileContent: file?.content,
+                        fileType: file?.type,
+                    });
+
                     const formattedMessages = providerInstance.formatMessages({
                         persona,
                         previousMessages,
-                        fileContent: file?.content,
-                        fileName: file?.name,
+                        fileContent: file?.content, fileName: file?.name,
                         fileType: file?.type
                     });
+
 
                     const aiStream = await providerInstance.generateChatStream(
                         formattedMessages,

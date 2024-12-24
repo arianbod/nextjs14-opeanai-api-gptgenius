@@ -46,32 +46,36 @@ const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'imag
 async function processStream(controller, aiStream, provider, providerInstance, contentChunks = []) {
     let accumulatedContent = '';
 
-    for await (const chunk of aiStream) {
-        const contentChunk = providerInstance.extractContentFromChunk(chunk);
-        if (contentChunk) {
-            accumulatedContent += contentChunk;
-            contentChunks.push(contentChunk);
+    try {
+        for await (const chunk of aiStream) {
+            const contentChunk = providerInstance.extractContentFromChunk(chunk);
+            if (contentChunk) {
+                accumulatedContent += contentChunk;
+                contentChunks.push(contentChunk);
 
-            if (contentChunks.length >= BATCH_SIZE) {
-                controller.enqueue(createSSEMessage({
-                    type: 'chunk',
-                    content: contentChunks.join(''),
-                    provider: provider
-                }));
-                contentChunks.length = 0;
+                if (contentChunks.length >= BATCH_SIZE) {
+                    controller.enqueue(createSSEMessage({
+                        type: 'chunk',
+                        content: contentChunks.join(''),
+                        provider: provider
+                    }));
+                    contentChunks.length = 0;
+                }
             }
         }
-    }
 
-    if (contentChunks.length > 0) {
-        controller.enqueue(createSSEMessage({
-            type: 'chunk',
-            content: contentChunks.join(''),
-            provider: provider
-        }));
-    }
+        if (contentChunks.length > 0) {
+            controller.enqueue(createSSEMessage({
+                type: 'chunk',
+                content: contentChunks.join(''),
+                provider: provider
+            }));
+        }
 
-    return accumulatedContent;
+        return accumulatedContent;
+    } catch (error) {
+        throw error;
+    }
 }
 
 export async function POST(request) {
@@ -171,76 +175,22 @@ export async function POST(request) {
 
                 } catch (error) {
                     console.error('Streaming error:', error);
-                    const { fallbackProvider, errorMessage } = await handleProviderError(
-                        error,
-                        persona.provider
-                    );
+                    const { errorMessage } = await handleProviderError(error, persona.provider);
 
-                    if (fallbackProvider && !file) {
-                        controller.enqueue(createSSEMessage({
-                            type: 'status',
-                            content: 'switching_provider',
-                            provider: fallbackProvider
-                        }));
-
-                        try {
-                            const backupProviderInstance = getChatProvider(fallbackProvider);
-                            const latestMessages = await getChatMessages(userId, chatId);
-
-                            const backupMessages = backupProviderInstance.formatMessages({
-                                persona: { ...persona, provider: fallbackProvider },
-                                previousMessages: latestMessages,
-                                fileContent: file?.content,
-                                fileName: file?.name,
-                                fileType: file?.type
-                            });
-
-                            const backupStream = await backupProviderInstance.generateChatStream(
-                                backupMessages,
-                                { ...persona, provider: fallbackProvider }
-                            );
-
-                            const fallbackChunks = [];
-                            const fallbackContent = await processStream(
-                                controller,
-                                backupStream,
-                                fallbackProvider,
-                                backupProviderInstance,
-                                fallbackChunks
-                            );
-
-                            const fallbackMessage = await addMessageToChat(
-                                userId,
-                                chatId,
-                                fallbackContent,
-                                'assistant',
-                                {
-                                    provider: fallbackProvider,
-                                    model: persona.modelCodeName
-                                }
-                            );
-
-                            controller.enqueue(createSSEMessage({
-                                type: 'status',
-                                content: 'streaming_completed',
-                                messageId: fallbackMessage.id
-                            }));
-
-                        } catch (fallbackError) {
-                            console.error('Fallback provider error:', fallbackError);
-                            controller.enqueue(createSSEMessage({
-                                type: 'error',
-                                content: 'Fallback provider failed',
-                                error: fallbackError.message
-                            }));
+                    // Send detailed error information
+                    controller.enqueue(createSSEMessage({
+                        type: 'error',
+                        content: errorMessage || 'An error occurred during streaming',
+                        error: {
+                            message: error.message,
+                            provider: persona.provider,
+                            model: persona.modelCodeName,
+                            code: error.code || 'UNKNOWN_ERROR',
+                            providerError: error.isClaudeError || error.isGeminiError || error.isPerplexityError || false,
+                            details: error.response?.data?.error || error.toString()
                         }
-                    } else {
-                        controller.enqueue(createSSEMessage({
-                            type: 'error',
-                            content: errorMessage || 'An error occurred during streaming',
-                            error: error.message
-                        }));
-                    }
+                    }));
+
                 } finally {
                     controller.enqueue(createSSEMessage({
                         type: 'status',
@@ -256,7 +206,17 @@ export async function POST(request) {
     } catch (error) {
         console.error('Fatal error in chat API:', error);
         return NextResponse.json(
-            { error: 'Failed to process chat request' },
+            {
+                error: 'Failed to process chat request',
+                details: error.message,
+                provider: error.provider || 'unknown',
+                code: error.code || 'UNKNOWN_ERROR',
+                providerSpecific: {
+                    isClaudeError: error.isClaudeError || false,
+                    isGeminiError: error.isGeminiError || false,
+                    isPerplexityError: error.isPerplexityError || false
+                }
+            },
             { status: 500 }
         );
     }

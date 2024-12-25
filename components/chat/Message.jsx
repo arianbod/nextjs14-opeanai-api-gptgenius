@@ -40,6 +40,25 @@ SyntaxHighlighter.registerLanguage('markup', markup);
 SyntaxHighlighter.registerLanguage('jsx', javascript);
 SyntaxHighlighter.registerLanguage('html', markup);
 
+// Helper function to detect RTL
+const isRTL = (text) => {
+	if (!text || typeof text !== 'string') return false;
+	const rtlRegex =
+		/[\u0591-\u07FF\u200F\u202B\u202E\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+	return rtlRegex.test(text.trim()[0]);
+};
+
+// Helper function to detect language
+const detectLanguage = (text) => {
+	if (!text || typeof text !== 'string') return 'default';
+	const persianRegex = /[\u0600-\u06FF]/;
+	const arabicRegex = /[\u0627-\u064A]/;
+
+	if (persianRegex.test(text)) return 'persian';
+	if (arabicRegex.test(text)) return 'arabic';
+	return 'default';
+};
+
 const Message = ({ role, content, timestamp }) => {
 	const [expanded, setExpanded] = useState(false);
 	const isUser = role === 'user';
@@ -63,43 +82,94 @@ const Message = ({ role, content, timestamp }) => {
 	};
 
 	const MarkdownComponents = {
-		p: ({ children }) => (
-			<div className='mb-4 last:mb-0 leading-7 text-gray-800 dark:text-gray-200'>
-				{children}
-			</div>
-		),
+		p: ({ children }) => {
+			const text = extractTextContent(children);
+			const rtl = isRTL(text);
+			const lang = detectLanguage(text);
 
-		h3: ({ children }) => (
-			<h3 className='text-lg font-bold mt-6 mb-4 text-gray-900 dark:text-gray-100'>
-				{children}
-			</h3>
-		),
+			return (
+				<div
+					className={`mb-4 last:mb-0 leading-7 text-gray-800 dark:text-gray-200
+                    ${rtl ? 'text-right' : 'text-left'}
+                    ${lang === 'persian' ? 'font-persian' : ''}
+                    ${lang === 'arabic' ? 'font-arabic' : ''}`}
+					dir={rtl ? 'rtl' : 'ltr'}>
+					{children}
+				</div>
+			);
+		},
+
+		h3: ({ children }) => {
+			const text = extractTextContent(children);
+			const rtl = isRTL(text);
+			const lang = detectLanguage(text);
+
+			return (
+				<h3
+					className={`text-lg font-bold mt-6 mb-4 text-gray-900 dark:text-gray-100
+                    ${rtl ? 'text-right' : 'text-left'}
+                    ${lang === 'persian' ? 'font-persian' : ''}
+                    ${lang === 'arabic' ? 'font-arabic' : ''}`}
+					dir={rtl ? 'rtl' : 'ltr'}>
+					{children}
+				</h3>
+			);
+		},
 
 		hr: () => (
 			<hr className='my-6 border-t border-gray-200 dark:border-gray-700' />
 		),
 
-		blockquote: ({ children }) => (
-			<blockquote
-				className='border-l-4 border-gray-200 dark:border-gray-700 
-                                 pl-4 my-4 italic text-gray-700 dark:text-gray-300'>
-				{children}
-			</blockquote>
-		),
+		blockquote: ({ children }) => {
+			const text = extractTextContent(children);
+			const rtl = isRTL(text);
+			const lang = detectLanguage(text);
 
-		ul: ({ children }) => (
-			<ul className='list-disc pl-6 mb-4 space-y-2 text-gray-800 dark:text-gray-200'>
-				{children}
-			</ul>
-		),
+			return (
+				<blockquote
+					className={`border-l-4 border-gray-200 dark:border-gray-700 
+                    pl-4 my-4 italic text-gray-700 dark:text-gray-300
+                    ${rtl ? 'text-right border-r-4 pr-4 pl-0 border-l-0' : ''}
+                    ${lang === 'persian' ? 'font-persian' : ''}
+                    ${lang === 'arabic' ? 'font-arabic' : ''}`}
+					dir={rtl ? 'rtl' : 'ltr'}>
+					{children}
+				</blockquote>
+			);
+		},
 
-		ol: ({ children }) => (
-			<ol className='list-decimal pl-6 mb-4 space-y-2 text-gray-800 dark:text-gray-200'>
-				{children}
-			</ol>
-		),
+		ul: ({ children }) => {
+			return (
+				<ul className='list-disc pl-6 mb-4 space-y-2 text-gray-800 dark:text-gray-200'>
+					{children}
+				</ul>
+			);
+		},
 
-		li: ({ children }) => <li className='leading-relaxed'>{children}</li>,
+		ol: ({ children }) => {
+			return (
+				<ol className='list-decimal pl-6 mb-4 space-y-2 text-gray-800 dark:text-gray-200'>
+					{children}
+				</ol>
+			);
+		},
+
+		li: ({ children }) => {
+			const text = extractTextContent(children);
+			const rtl = isRTL(text);
+			const lang = detectLanguage(text);
+
+			return (
+				<li
+					className={`leading-relaxed
+                    ${rtl ? 'text-right' : 'text-left'}
+                    ${lang === 'persian' ? 'font-persian' : ''}
+                    ${lang === 'arabic' ? 'font-arabic' : ''}`}
+					dir={rtl ? 'rtl' : 'ltr'}>
+					{children}
+				</li>
+			);
+		},
 
 		table: ({ children }) => (
 			<div className='w-full overflow-x-auto my-6'>
@@ -115,22 +185,41 @@ const Message = ({ role, content, timestamp }) => {
 			<thead className='bg-gray-100 dark:bg-gray-800'>{children}</thead>
 		),
 
-		th: ({ children }) => (
-			<th
-				className='px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 
-                         uppercase tracking-wider border-b border-gray-200 dark:border-gray-700'>
-				{children}
-			</th>
-		),
+		th: ({ children }) => {
+			const text = extractTextContent(children);
+			const rtl = isRTL(text);
+			const lang = detectLanguage(text);
 
-		td: ({ children }) => (
-			<td
-				className='px-6 py-4 text-sm border-b border-gray-200 dark:border-gray-700 
-                         text-gray-800 dark:text-gray-200 
-                         hover:bg-gray-50 dark:hover:bg-gray-800'>
-				{children}
-			</td>
-		),
+			return (
+				<th
+					className={`px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 
+                         uppercase tracking-wider border-b border-gray-200 dark:border-gray-700
+                         ${rtl ? 'text-right' : 'text-left'}
+                         ${lang === 'persian' ? 'font-persian' : ''}
+                         ${lang === 'arabic' ? 'font-arabic' : ''}`}
+					dir={rtl ? 'rtl' : 'ltr'}>
+					{children}
+				</th>
+			);
+		},
+
+		td: ({ children }) => {
+			const text = extractTextContent(children);
+			const rtl = isRTL(text);
+			const lang = detectLanguage(text);
+
+			return (
+				<td
+					className={`px-6 py-4 text-sm border-b border-gray-200 dark:border-gray-700 
+                         text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800
+                         ${rtl ? 'text-right' : 'text-left'}
+                         ${lang === 'persian' ? 'font-persian' : ''}
+                         ${lang === 'arabic' ? 'font-arabic' : ''}`}
+					dir={rtl ? 'rtl' : 'ltr'}>
+					{children}
+				</td>
+			);
+		},
 
 		code({ node, inline, className, children, ...props }) {
 			const match = /language-(\w+)/.exec(className || '');
@@ -216,7 +305,6 @@ const Message = ({ role, content, timestamp }) => {
 			);
 		},
 
-		// Math block components
 		math: ({ value }) => (
 			<div className='py-2 overflow-x-auto'>
 				<div
@@ -233,8 +321,11 @@ const Message = ({ role, content, timestamp }) => {
 			/>
 		),
 
-		// Special handler for sigma and integral symbols
 		p: ({ children }) => {
+			const text = extractTextContent(children);
+			const rtl = isRTL(text);
+			const lang = detectLanguage(text);
+
 			const content = children?.toString() || '';
 			if (content.includes('\\sum') || content.includes('\\int')) {
 				return (
@@ -247,12 +338,18 @@ const Message = ({ role, content, timestamp }) => {
 				);
 			}
 			return (
-				<div className='mb-4 last:mb-0 leading-7 text-gray-800 dark:text-gray-200'>
+				<div
+					className={`mb-4 last:mb-0 leading-7 text-gray-800 dark:text-gray-200
+                    ${rtl ? 'text-right' : 'text-left'}
+                    ${lang === 'persian' ? 'font-persian' : ''}
+                    ${lang === 'arabic' ? 'font-arabic' : ''}`}
+					dir={rtl ? 'rtl' : 'ltr'}>
 					{children}
 				</div>
 			);
 		},
 	};
+
 	return (
 		<div
 			className={`w-full max-w-[97vw] lg:max-w-3xl flex gap-0 mx-auto ${

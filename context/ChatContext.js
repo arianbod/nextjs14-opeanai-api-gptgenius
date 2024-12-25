@@ -18,47 +18,36 @@ const formatLaTeXContent = (content) => {
         return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
     });
 
-    // Clean up unnecessary dollar signs within math expressions
-    content = content.replace(/\$\{(\d+)\}\^/g, '{$1}^');
-    content = content.replace(/\$x\^/g, 'x^');
-
-    // Fix Sigma notation
+    // Fix Sigma notation with subscripts and superscripts
+    content = content.replace(/Σ[ᵢi]₌₁([³⁵⁴ⁿ\d])\s*([^=\n]+)/g, '$$\\sum_{i=1}^{$1} $2$$');
     content = content.replace(/Σ\s*\(\s*i\s*=\s*1\s*to\s*([^\)]+)\)\s*([^=\n]+)/g,
         '$$\\sum_{i=1}^{$1} $2$$');
 
-    // Fix common pattern expressions
-    content = content.replace(
-        /Σ\(i=1 to n\) (i²|i\^2) = n\(n\+1\)\(2n\+1\)\/6/g,
-        '$$\\sum_{i=1}^{n} i^2 = \\frac{n(n+1)(2n+1)}{6}$$'
-    );
-    content = content.replace(
-        /Σ\(i=1 to n\) i = n\(n\+1\)\/2/g,
-        '$$\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}$$'
-    );
-
     // Fix integral expressions
-    content = content.replace(/\$?\\\int\s*\$?x\^?\{?(\d+)\}?\$?\s*dx/g,
-        '$$\\int x^{$1} dx$$');
-    content = content.replace(/\$?\\frac\{\$?x\^(\d+)\$?\}/g,
-        '\\frac{x^$1}');
-    content = content.replace(/\\int_\{([^}]+)\}\^\{([^}]+)\}/g,
-        '\\int_{$1}^{$2}');
-
-    // Clean up multiple adjacent dollar signs
-    content = content.replace(/\${2,}/g, '$$');
-    content = content.replace(/([^$])\$([^$])/g, '$1$$2');
+    content = content.replace(/∫([^d]+)dx(?!\))/g, '$$\\int $1 dx$$');
+    content = content.replace(/∫ₐᵇ/g, '$$\\int_{a}^{b}$$');
+    content = content.replace(/∫₀¹/g, '$$\\int_{0}^{1}$$');
+    content = content.replace(/∫\[([^\]]+)\]/g, '$$\\int_{$1}$$');
 
     // Fix power expressions
-    content = content.replace(/x\^(\d+)/g, 'x^{$1}');
-    content = content.replace(/(\d+)\^(\d+)/g, '{$1}^{$2}');
+    content = content.replace(/(\d+)²/g, '$$\\{$1\\}^2$$');
+    content = content.replace(/x²/g, '$$x^2$$');
+    content = content.replace(/xⁿ/g, '$$x^n$$');
+    content = content.replace(/x³/g, '$$x^3$$');
+    content = content.replace(/([^\$])\^(\d+|\{[^}]+\})/g, '$1^{$2}');
 
     // Fix fraction expressions
-    content = content.replace(/(\d+)\/(\d+)/g, '\\frac{$1}{$2}');
+    content = content.replace(/(\d+)\/(\d+)/g, '$$\\frac{$1}{$2}$$');
+    content = content.replace(/x²\/2/g, '$$\\frac{x^2}{2}$$');
+    content = content.replace(/x³\/3/g, '$$\\frac{x^3}{3}$$');
 
-    // Replace ```math blocks with proper LaTeX delimiters
+    // Fix specific expressions
+    content = content.replace(/\(xⁿ⁺¹\)\/\(n\+1\)/g, '$$\\frac{x^{n+1}}{n+1}$$');
+
+    // Replace math blocks with proper LaTeX delimiters
     content = content.replace(/```math\n([\s\S]*?)```/g, '$$\n$1\n$$');
 
-    // Ensure all math expressions are properly wrapped in $$
+    // Clean up any remaining unformatted expressions
     content = content.replace(/([^$])\$([^$\n]+)\$([^$])/g, '$1$$2$$3');
 
     // Restore code blocks

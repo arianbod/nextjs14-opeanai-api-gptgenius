@@ -1,7 +1,7 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
 import rehypePrism from 'rehype-prism-plus';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -26,7 +26,7 @@ import markdown from 'react-syntax-highlighter/dist/cjs/languages/prism/markdown
 import css from 'react-syntax-highlighter/dist/cjs/languages/prism/css';
 import markup from 'react-syntax-highlighter/dist/cjs/languages/prism/markup';
 
-// Register essential languages
+// Register languages
 SyntaxHighlighter.registerLanguage('javascript', javascript);
 SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('java', java);
@@ -39,22 +39,6 @@ SyntaxHighlighter.registerLanguage('css', css);
 SyntaxHighlighter.registerLanguage('markup', markup);
 SyntaxHighlighter.registerLanguage('jsx', javascript);
 SyntaxHighlighter.registerLanguage('html', markup);
-
-// Language aliases mapping
-const languageAliases = {
-	js: 'javascript',
-	py: 'python',
-	ts: 'typescript',
-	jsx: 'javascript',
-	tsx: 'typescript',
-	shell: 'bash',
-	sh: 'bash',
-	html: 'markup',
-	xml: 'markup',
-	svg: 'markup',
-	mathml: 'markup',
-	ssml: 'markup',
-};
 
 const Message = ({ role, content, timestamp }) => {
 	const [expanded, setExpanded] = useState(false);
@@ -78,106 +62,7 @@ const Message = ({ role, content, timestamp }) => {
 		return '';
 	};
 
-	// Added language normalization function
-	const normalizeLanguage = (lang) => {
-		if (!lang) return 'text';
-		const normalizedLang = lang.toLowerCase();
-		return languageAliases[normalizedLang] || normalizedLang;
-	};
-
 	const MarkdownComponents = {
-		code({ node, inline, className, children, ...props }) {
-			const match = /language-(\w+)/.exec(className || '');
-			const codeContent = extractTextContent(children);
-
-			if (inline) {
-				return (
-					<code
-						className='bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 
-                                 px-1.5 py-0.5 rounded text-sm'
-						{...props}>
-						{codeContent}
-					</code>
-				);
-			}
-
-			// Extract and normalize language
-			const language = match ? normalizeLanguage(match[1]) : 'text';
-
-			return (
-				<div className='not-prose my-4'>
-					<div className='rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700'>
-						<div
-							className='flex justify-between items-center px-4 py-2 
-                                      bg-gray-100 dark:bg-gray-800'>
-							<span className='text-xs text-gray-600 dark:text-gray-300 font-mono'>
-								{language !== 'text' ? language : 'Plain Text'}
-							</span>
-							<div className='flex gap-2'>
-								<button
-									className='p-1 hover:bg-gray-200 dark:hover:bg-gray-700 
-                                             rounded transition-colors'
-									onClick={() => copyToClipboard(codeContent)}
-									title='Copy code'>
-									<Copy
-										size={12}
-										className='text-gray-600 dark:text-gray-300'
-									/>
-								</button>
-								<button
-									className='p-1 hover:bg-gray-200 dark:hover:bg-gray-700 
-                                             rounded transition-colors'
-									onClick={() => setExpanded(!expanded)}
-									title={expanded ? 'Collapse' : 'Expand'}>
-									{expanded ? (
-										<Minimize2
-											size={12}
-											className='text-gray-600 dark:text-gray-300'
-										/>
-									) : (
-										<Maximize2
-											size={12}
-											className='text-gray-600 dark:text-gray-300'
-										/>
-									)}
-								</button>
-							</div>
-						</div>
-						<div
-							className={`relative ${
-								expanded ? '' : 'max-h-[300px]'
-							} overflow-auto 
-                                      bg-white dark:bg-gray-900`}>
-							<SyntaxHighlighter
-								language={language}
-								style={
-									document.documentElement.getAttribute('data-theme') ===
-									'dracula'
-										? vscDarkPlus
-										: vs
-								}
-								showLineNumbers={true}
-								customStyle={{
-									margin: 0,
-									padding: '1rem',
-									background: 'transparent',
-									fontSize: '0.875rem',
-								}}
-								wrapLongLines={true}
-								useInlineStyles={true}>
-								{codeContent}
-							</SyntaxHighlighter>
-							{!expanded && (
-								<div
-									className='absolute bottom-0 left-0 right-0 h-8 
-                                              bg-gradient-to-t from-white dark:from-gray-900 to-transparent'
-								/>
-							)}
-						</div>
-					</div>
-				</div>
-			);
-		},
 		p: ({ children }) => (
 			<div className='mb-4 last:mb-0 leading-7 text-gray-800 dark:text-gray-200'>
 				{children}
@@ -246,8 +131,128 @@ const Message = ({ role, content, timestamp }) => {
 				{children}
 			</td>
 		),
-	};
 
+		code({ node, inline, className, children, ...props }) {
+			const match = /language-(\w+)/.exec(className || '');
+			const codeContent = extractTextContent(children);
+
+			if (inline) {
+				return (
+					<code
+						className='bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 
+                                 px-1.5 py-0.5 rounded text-sm'
+						{...props}>
+						{codeContent}
+					</code>
+				);
+			}
+
+			return (
+				<div className='not-prose my-4'>
+					<div className='rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700'>
+						<div className='flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-800'>
+							<span className='text-xs text-gray-600 dark:text-gray-300 font-mono'>
+								{match?.[1] || 'Plain Text'}
+							</span>
+							<div className='flex gap-2'>
+								<button
+									onClick={() => copyToClipboard(codeContent)}
+									className='p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors'
+									title='Copy code'>
+									<Copy
+										size={12}
+										className='text-gray-600 dark:text-gray-300'
+									/>
+								</button>
+								<button
+									onClick={() => setExpanded(!expanded)}
+									className='p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors'
+									title={expanded ? 'Collapse' : 'Expand'}>
+									{expanded ? (
+										<Minimize2
+											size={12}
+											className='text-gray-600 dark:text-gray-300'
+										/>
+									) : (
+										<Maximize2
+											size={12}
+											className='text-gray-600 dark:text-gray-300'
+										/>
+									)}
+								</button>
+							</div>
+						</div>
+						<div
+							className={`relative ${
+								expanded ? '' : 'max-h-[300px]'
+							} overflow-auto`}>
+							<SyntaxHighlighter
+								language={match?.[1] || 'text'}
+								style={
+									document.documentElement.getAttribute('data-theme') ===
+									'dracula'
+										? vscDarkPlus
+										: vs
+								}
+								showLineNumbers={true}
+								customStyle={{
+									margin: 0,
+									padding: '1rem',
+									background: 'transparent',
+									fontSize: '0.875rem',
+								}}
+								wrapLongLines={true}>
+								{codeContent}
+							</SyntaxHighlighter>
+							{!expanded && (
+								<div
+									className='absolute bottom-0 left-0 right-0 h-8 
+                                              bg-gradient-to-t from-white dark:from-gray-900 to-transparent'
+								/>
+							)}
+						</div>
+					</div>
+				</div>
+			);
+		},
+
+		// Math block components
+		math: ({ value }) => (
+			<div className='py-2 overflow-x-auto'>
+				<div
+					className='katex-display'
+					dangerouslySetInnerHTML={{ __html: value }}
+				/>
+			</div>
+		),
+
+		inlineMath: ({ value }) => (
+			<span
+				className='katex-inline'
+				dangerouslySetInnerHTML={{ __html: value }}
+			/>
+		),
+
+		// Special handler for sigma and integral symbols
+		p: ({ children }) => {
+			const content = children?.toString() || '';
+			if (content.includes('\\sum') || content.includes('\\int')) {
+				return (
+					<div className='math-content py-2'>
+						<div
+							className='katex-display'
+							dangerouslySetInnerHTML={{ __html: content }}
+						/>
+					</div>
+				);
+			}
+			return (
+				<div className='mb-4 last:mb-0 leading-7 text-gray-800 dark:text-gray-200'>
+					{children}
+				</div>
+			);
+		},
+	};
 	return (
 		<div
 			className={`w-full max-w-[97vw] lg:max-w-3xl flex gap-0 mx-auto ${
@@ -293,7 +298,7 @@ const Message = ({ role, content, timestamp }) => {
 				</div>
 				<div className='w-full overflow-x-auto text-wrap'>
 					<ReactMarkdown
-						remarkPlugins={[remarkGfm, remarkMath]}
+						remarkPlugins={[remarkMath, remarkGfm]}
 						rehypePlugins={[
 							rehypeKatex,
 							[rehypePrism, { ignoreMissing: true }],

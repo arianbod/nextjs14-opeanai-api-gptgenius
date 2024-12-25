@@ -8,6 +8,66 @@ import { nanoid } from 'nanoid';
 
 const ChatContext = createContext();
 
+const formatLaTeXContent = (content) => {
+    if (!content) return content;
+
+    // First replace code blocks to protect them
+    const codeBlocks = [];
+    content = content.replace(/```[\s\S]*?```/g, (match) => {
+        codeBlocks.push(match);
+        return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+    });
+
+    // Clean up unnecessary dollar signs within math expressions
+    content = content.replace(/\$\{(\d+)\}\^/g, '{$1}^');
+    content = content.replace(/\$x\^/g, 'x^');
+
+    // Fix Sigma notation
+    content = content.replace(/Σ\s*\(\s*i\s*=\s*1\s*to\s*([^\)]+)\)\s*([^=\n]+)/g,
+        '$$\\sum_{i=1}^{$1} $2$$');
+
+    // Fix common pattern expressions
+    content = content.replace(
+        /Σ\(i=1 to n\) (i²|i\^2) = n\(n\+1\)\(2n\+1\)\/6/g,
+        '$$\\sum_{i=1}^{n} i^2 = \\frac{n(n+1)(2n+1)}{6}$$'
+    );
+    content = content.replace(
+        /Σ\(i=1 to n\) i = n\(n\+1\)\/2/g,
+        '$$\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}$$'
+    );
+
+    // Fix integral expressions
+    content = content.replace(/\$?\\\int\s*\$?x\^?\{?(\d+)\}?\$?\s*dx/g,
+        '$$\\int x^{$1} dx$$');
+    content = content.replace(/\$?\\frac\{\$?x\^(\d+)\$?\}/g,
+        '\\frac{x^$1}');
+    content = content.replace(/\\int_\{([^}]+)\}\^\{([^}]+)\}/g,
+        '\\int_{$1}^{$2}');
+
+    // Clean up multiple adjacent dollar signs
+    content = content.replace(/\${2,}/g, '$$');
+    content = content.replace(/([^$])\$([^$])/g, '$1$$2');
+
+    // Fix power expressions
+    content = content.replace(/x\^(\d+)/g, 'x^{$1}');
+    content = content.replace(/(\d+)\^(\d+)/g, '{$1}^{$2}');
+
+    // Fix fraction expressions
+    content = content.replace(/(\d+)\/(\d+)/g, '\\frac{$1}{$2}');
+
+    // Replace ```math blocks with proper LaTeX delimiters
+    content = content.replace(/```math\n([\s\S]*?)```/g, '$$\n$1\n$$');
+
+    // Ensure all math expressions are properly wrapped in $$
+    content = content.replace(/([^$])\$([^$\n]+)\$([^$])/g, '$1$$2$$3');
+
+    // Restore code blocks
+    codeBlocks.forEach((block, i) => {
+        content = content.replace(`__CODE_BLOCK_${i}__`, block);
+    });
+
+    return content;
+};
 export const ChatProvider = ({ children }) => {
     const params = useParams();
     const { user } = useAuth();
@@ -36,6 +96,13 @@ export const ChatProvider = ({ children }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchFilter, setSearchFilter] = useState('all');
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+    const reformatExistingMessages = useCallback(() => {
+        setMessages(prevMessages => prevMessages.map(msg => ({
+            ...msg,
+            content: formatLaTeXContent(msg.content)
+        })));
+    }, []);
 
     const fetchChats = useCallback(async () => {
         if (!user?.userId) return;
@@ -95,7 +162,6 @@ export const ChatProvider = ({ children }) => {
             });
 
             const { chatDataInfo } = await response.json();
-            console.log("chatDataInfo is:", chatDataInfo)
             if (!chatDataInfo?.modelCodeName) {
                 throw new Error('Invalid chat info received');
             }
@@ -103,7 +169,7 @@ export const ChatProvider = ({ children }) => {
             const selectedModel = AIPersonas.find(
                 p => p.modelCodeName === chatDataInfo.modelCodeName
             ) || AIPersonas.find(p => p.provider === chatDataInfo.provider);
-            console.log("selected model:", selectedModel)
+
             if (!selectedModel) {
                 const defaultModel = AIPersonas.find(p =>
                     p.provider === chatDataInfo.provider &&
@@ -142,7 +208,7 @@ export const ChatProvider = ({ children }) => {
                 });
                 setModel(selectedModel);
             }
-            console.log(JSON.stringify({ userId: user.userId, chatId }))
+
             const messagesResponse = await fetch('/api/chat/getChatMessages', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -155,6 +221,8 @@ export const ChatProvider = ({ children }) => {
 
             const messagesData = await messagesResponse.json();
             setMessages(messagesData.messages || []);
+            reformatExistingMessages();
+
         } catch (error) {
             console.error('Error fetching chat data:', error);
             toast.error('Failed to load chat data. Please try again.');
@@ -165,7 +233,7 @@ export const ChatProvider = ({ children }) => {
         } finally {
             setIsLoading(false);
         }
-    }, [user?.userId, router]);
+    }, [user?.userId, router, reformatExistingMessages]);
 
     const resetChat = useCallback(() => {
         setActiveChat({
@@ -178,7 +246,7 @@ export const ChatProvider = ({ children }) => {
             avatar: "",
             provider: "",
             modelCodeName: "",
-            modelAllowed:{}
+            modelAllowed: {}
         });
         setMessages([]);
         setModel(null);
@@ -193,7 +261,7 @@ export const ChatProvider = ({ children }) => {
         const messageToAdd = {
             id: newMessage.id || nanoid(),
             role: newMessage.role || 'user',
-            content: newMessage.content || '',
+            content: formatLaTeXContent(newMessage.content) || '',
             timestamp: newMessage.timestamp || new Date().toISOString()
         };
 
@@ -204,7 +272,7 @@ export const ChatProvider = ({ children }) => {
     const updateMessage = useCallback((messageId, newContent) => {
         if (!messageId) return;
         setMessages(prev => prev.map(msg =>
-            msg.id === messageId ? { ...msg, content: newContent || '' } : msg
+            msg.id === messageId ? { ...msg, content: formatLaTeXContent(newContent) || '' } : msg
         ));
     }, []);
 
@@ -253,10 +321,11 @@ export const ChatProvider = ({ children }) => {
             }
 
             // Add the user message to local state
+            const formattedContent = formatLaTeXContent(content.trim());
             const userMessage = {
                 id: userMessageId,
                 role: 'user',
-                content: content.trim(),
+                content: formattedContent,
                 timestamp: new Date().toISOString(),
             };
             setMessages(prev => [...prev, userMessage]);
@@ -277,7 +346,7 @@ export const ChatProvider = ({ children }) => {
                 body: JSON.stringify({
                     userId: user.userId,
                     chatId,
-                    content: content.trim(),
+                    content: formattedContent,
                     role: 'user'
                 }),
             });
@@ -291,7 +360,7 @@ export const ChatProvider = ({ children }) => {
                 body: JSON.stringify({
                     userId: user.userId,
                     chatId,
-                    content: content.trim(),
+                    content: formattedContent,
                     persona: activeChat.model,
                     provider: activeChat.provider,
                     file: fileData
@@ -323,7 +392,8 @@ export const ChatProvider = ({ children }) => {
                                 !data.content.includes('stream_ended')
                             ) {
                                 accumulatedContent += data.content;
-                                updateMessage(assistantMessageId, accumulatedContent);
+                                const formattedContent = formatLaTeXContent(accumulatedContent);
+                                updateMessage(assistantMessageId, formattedContent);
                             }
                         } catch (error) {
                             console.error('Error parsing SSE data:', error);

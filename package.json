@@ -23,6 +23,7 @@
 		"axios": "^1.6.7",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
+		"copilot-node-sdk": "^3.5.0",
 		"daisyui": "^3.9.4",
 		"framer-motion": "^11.12.0",
 		"highlight.js": "^11.9.0",

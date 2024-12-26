@@ -2,100 +2,129 @@
 	"global": {
 		"title": "BabaGPT",
 		"description": "",
-		"conversations": "Konuşmalar",
+		"conversations": "konuşmalar",
 		"tokenBalance": "Token Bakiyesi",
 		"purchaseTokens": "Token Satın Al",
 		"selectedAmount": "Seçilen Miktar",
 		"discount": "İndirim",
 		"finalPrice": "Son Fiyat",
 		"purchase": "Satın Al",
-		"tokens": "tokenler",
-		"sliderTitle": "İndirim Sihri Kaydırıcısı"
+		"tokens": "token",
+		"sliderTitle": "Slider İndirim Büyüsü"
 	},
 	"sidebar": {
-		"conversations": "Konuşmalar"
+		"conversations": "konuşmalar"
 	},
 	"auth": {
 		"register": {
 			"title": "Kayıt Ol",
 			"email": "E-posta",
-			"emailPlaceholder": "mailiniz@ornek.com",
-			"buttonText": "Başla",
-			"submitting": "Kayıt olunuyor...",
+			"emailPlaceholder": "ornek@eposta.com",
+			"buttonText": "Başlayın",
+			"submitting": "Kayıt Yapılıyor...",
 			"successMessage": "Kayıt başarılı!",
 			"failureMessage": "Kayıt başarısız. Lütfen tekrar deneyin.",
-			"switchToLogin": "Zaten hesabınız var mı? Giriş yap",
-			"info": "Sırayla 3 hayvan seçerek hesabınızı oluşturun. Bu sıralamayı unutmayın - bu sizin benzersiz güvenlik modelinizdir.",
-			"submit": "Başla"
+			"switchToLogin": "Zaten hesabınız var mı? Giriş Yap",
+			"info": "Hesabınızı oluşturmak için sırasıyla 3 hayvan seçin. Bu sırayı hatırlayın - bu sizin benzersiz güvenlik deseninizdir.",
+			"submit": "Başlayın",
+			"emailOptional": "E-posta adresiniz isteğe bağlıdır."
 		},
 		"login": {
 			"title": "Giriş Yap",
-			"token": "Kimlik Doğrulama Tokeni",
-			"tokenPlaceholder": "Kimlik doğrulama tokeninizi girin",
+			"token": "Doğrulama Tokenı",
+			"tokenPlaceholder": "Doğrulama tokenınızı girin",
 			"email": "E-posta",
-			"emailPlaceholder": "mailiniz@ornek.com",
+			"emailPlaceholder": "ornek@eposta.com",
 			"buttonText": "Giriş Yap",
-			"submitting": "Giriş yapılıyor...",
+			"submitting": "Giriş Yapılıyor...",
 			"successMessage": "Giriş başarılı!",
 			"failureMessage": "Giriş başarısız. Lütfen tekrar deneyin.",
-			"switchToRegister": "Hesabınız yok mu? Kayıt ol",
-			"info": "Tokeninizi girin ve kayıt sırasında seçtiğiniz 3 hayvanı aynı sırayla seçin.",
+			"switchToRegister": "Hesabınız yok mu? Kayıt Ol",
+			"info": "Tokenınızı girin ve kayıt sırasında seçtiğiniz tam sırayla 3 hayvanı seçin.",
 			"submit": "Giriş Yap"
 		},
+		"redirecting": "Ana sayfaya yönlendiriliyor...",
 		"selectThreeAnimalsInOrder": "Lütfen tam olarak 3 hayvan seçin",
-		"selectedAnimalsOrder": "Seçtiğiniz sıralama:",
-		"selectNext": "Sonraki hayvanı seçin",
-		"selectAnimalsInOrder": "Güvenlik hayvanlarınızı sırayla seçin:",
-		"orderMatters": "Unutmayın: Hayvan seçim sırası önemlidir!",
+		"selectedAnimalsOrder": "Seçtiğiniz sıra:",
+		"selectNext": "Bir sonraki hayvanı seçin",
+		"selectAnimalsInOrder": "3 hayvan seçmeniz ve bunu bir parola olarak hatırlamanız gerekiyor",
+		"orderMatters": "Unutmayın: Hayvan seçme sırası önemlidir!",
 		"tokenCopied": "Token panoya kopyalandı",
-		"saveToken": "Tokeninizi Kaydedin",
-		"tokenImportant": "Önemli: Bu tokeni kaydedin - giriş yapmak için ihtiyacınız olacak.",
-		"rememberAnimalOrder": "Hayvan sıranızı hatırlayın:",
-		"understood": "Tokenimi kaydettim",
-		"genericError": "Bir hata oluştu. Lütfen tekrar deneyin",
+		"saveToken": "Tokenınızı Kaydedin",
+		"tokenImportant": "Önemli: Bu tokenı kaydedin - giriş yapmak için buna ihtiyacınız olacak.",
+		"rememberAnimalOrder": "Hayvan sıralamanızı hatırlayın:",
+		"understood": "Tokenımı kaydettim",
+		"verifyEmail": "E-postanızı Doğrulayın",
+		"verificationSent": "{email} adresine bir doğrulama e-postası gönderildi. Lütfen gelen kutunuzu kontrol edin.",
+		"verificationReminder": "Tüm hesap özelliklerini etkinleştirmek için e-posta adresinizi doğrulayın",
+		"optional": "isteğe bağlı",
+		"confirmTokenSaved": "Tokenımı güvenli bir şekilde kaydettim",
+		"continue": "Devam Et",
+		"verificationSuccess": "E-postanız doğrulandı. Hesap sayfasına yönlendiriliyor...",
+		"verificationFailed": "Doğrulama Başarısız",
+		"continueWithoutEmail": "E-posta olmadan devam et",
+		"emailLater": "E-postanızı daha sonra ekleyebilirsiniz.",
+		"addEmail": "E-posta Ekle",
+		"skip": "Atla",
+		"back": "Geri",
+		"emailBenefits": {
+			"title": "E-postanızı Eklememenin Avantajları",
+			"recovery": "Şifre kurtarma",
+			"security": "Gelişmiş güvenlik",
+			"updates": "Önemli güncellemeleri alın"
+		},
 		"errors": {
 			"generic": "Bir hata oluştu. Lütfen tekrar deneyin",
-			"network": "Ağ hatası. Lütfen internet bağlantınızı kontrol edin",
+			"network": "Ağ hatası. Lütfen bağlantınızı kontrol edin",
 			"animals": {
 				"selectThree": "Lütfen tam olarak 3 hayvan seçin"
 			},
 			"email": {
 				"invalid": "Lütfen geçerli bir e-posta adresi girin",
-				"required": "E-posta adresi gereklidir"
+				"required": "E-posta gerekli",
+				"alreadyVerified": "Bu e-posta başka bir hesap tarafından zaten doğrulanmış",
+				"verificationFailed": "E-posta doğrulaması başarısız"
 			},
 			"register": {
 				"generic": "Kayıt başarısız. Lütfen tekrar deneyin",
-				"emailTaken": "Bu e-posta adresi zaten kayıtlı"
+				"emailTaken": "Bu e-posta zaten kayıtlı"
 			},
 			"login": {
 				"generic": "Giriş başarısız. Lütfen tekrar deneyin",
-				"tokenRequired": "Kimlik doğrulama tokeni gereklidir",
-				"invalidToken": "Geçersiz kimlik doğrulama tokeni",
-				"incorrectSequence": "${attempts} deneme hakkınız kaldı",
-				"accountLocked": "Hesabınız ${minutes} dakika süreyle kilitlendi",
-				"tooManyAttempts": "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin"
+				"tokenRequired": "Doğrulama tokenı gerekli",
+				"invalidToken": "Geçersiz doğrulama tokenı",
+				"incorrectSequence": "Yanlış hayvan sırası. ${attempts} deneme kaldı",
+				"accountLocked": "Hesap kilitlendi. ${minutes} dakika sonra tekrar deneyin",
+				"tooManyAttempts": "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin",
+				"accountInactive": "Bu hesap şu anda etkin değil",
+				"accountDeleted": "Bu hesap silinmiş"
 			}
 		},
 		"animalList": [
-			{ "key": "dog", "label": "köpek" },
-			{ "key": "cat", "label": "kedi" },
-			{ "key": "elephant", "label": "fil" },
-			{ "key": "lion", "label": "aslan" },
-			{ "key": "tiger", "label": "kaplan" },
-			{ "key": "bear", "label": "ayı" },
-			{ "key": "monkey", "label": "maymun" },
-			{ "key": "giraffe", "label": "zürafa" },
-			{ "key": "zebra", "label": "zebra" },
-			{ "key": "penguin", "label": "penguen" },
-			{ "key": "kangaroo", "label": "kanguru" },
-			{ "key": "koala", "label": "koala" }
-		]
+			{ "key": "dog", "label": "Köpek", "category": "domestic" },
+			{ "key": "cat", "label": "Kedi", "category": "domestic" },
+			{ "key": "elephant", "label": "Fil", "category": "wild" },
+			{ "key": "lion", "label": "Aslan", "category": "wild" },
+			{ "key": "tiger", "label": "Kaplan", "category": "wild" },
+			{ "key": "bear", "label": "Ayı", "category": "wild" },
+			{ "key": "monkey", "label": "Maymun", "category": "wild" },
+			{ "key": "giraffe", "label": "Zürafa", "category": "wild" },
+			{ "key": "zebra", "label": "Zebra", "category": "wild" },
+			{ "key": "penguin", "label": "Penguen", "category": "unique" },
+			{ "key": "kangaroo", "label": "Kanguru", "category": "wild" },
+			{ "key": "koala", "label": "Koala", "category": "wild" }
+		],
+		"animalCategories": {
+			"domestic": "Evcil Dostlar",
+			"wild": "Vahşi Harikalar",
+			"unique": "Benzersiz Yaratıklar"
+		}
 	},
 	"personas": {
 		"names": {
 			"babagpt": "BabaGPT",
 			"claude": "Claude",
-			"o1Preview": "o1-preview",
+			"o1Preview": "o1-önizleme",
 			"o1Mini": "o1-mini",
 			"chatgpt4": "4o"
 		},
@@ -105,11 +134,11 @@
 			"analyticalAssistant": "Analitik Asistan"
 		},
 		"descriptions": {
-			"babagpt": "Mixtral, teknik analiz ve verileri açık sayı biçimlendirme ve etkileyici sunum ile dostça, erişilebilir bir formatta sunar.",
-			"claude": "Claude, net ve özlü analitik içgörüler sunmada uzmanlaşmıştır, veri odaklı karar verme ve detaylı açıklamalar için idealdir.",
-			"o1Preview": "o1-preview, kapsamlı ve detaylı yanıtlar üretmek için tasarlanmıştır, derinlemesine analiz ve uzun sohbetler için uygundur.",
-			"o1Mini": "o1-mini hızlı ve verimli yanıtlar sunar, kısa sorgular ve hızlı etkileşimler için idealdir.",
-			"chatgpt4": "4o, yanıt yaratıcılığını ve uzunluğunu ayarlayabilen bir analitik asistandır, özelleştirilmiş ve nüanslı sohbetler için mükemmeldir."
+			"babagpt": "Mixtral, teknik analiz ve verileri dostça, erişilebilir bir formatta, net sayı formatlaması ve ilgi çekici sunumla sağlar.",
+			"claude": "Claude, net ve özlü analitik içgörüler sunmada mükemmeldir, veri odaklı karar verme ve ayrıntılı açıklamalar için idealdir.",
+			"o1Preview": "o1-önizleme, kapsamlı ve detaylı yanıtlar üretmek için tasarlanmıştır, derinlemesine analiz ve uzun sohbetler için uygundur.",
+			"o1Mini": "o1-mini, hızlı ve verimli yanıtlar sunar, kısa sorgular ve hızlı etkileşimler için idealdir.",
+			"chatgpt4": "4o, yanıt yaratıcılığını ve uzunluğunu ayarlayabilen analitik bir asistandır, özelleştirilmiş ve nüanslı sohbetler için mükemmeldir."
 		},
 		"categories": {
 			"all": "Tüm Modeller",
@@ -123,14 +152,14 @@
 			"suitableFor": {
 				"contentCreation": "İçerik Oluşturma",
 				"academicResearch": "Akademik Araştırma",
-				"codingAssistance": "Kodlama Yardımı",
+				"codingAssistance": "Kodlama Desteği",
 				"dataAnalysis": "Veri Analizi",
 				"quickQueries": "Hızlı Sorgular",
 				"customerSupport": "Müşteri Desteği",
 				"creativeProjects": "Yaratıcı Projeler"
 			},
 			"bestFor": {
-				"detailedExplanations": "Detaylı Açıklamalar",
+				"detailedExplanations": "Ayrıntılı Açıklamalar",
 				"conciseSummaries": "Özlü Özetler",
 				"interactiveAssistance": "Etkileşimli Yardım",
 				"dataDecisions": "Veri Odaklı Kararlar",
@@ -171,41 +200,41 @@
 			"allModels": "Tüm Modeller",
 			"noResults": "Aramanızla eşleşen model bulunamadı."
 		},
-		"needHelp": "Yardıma mı İhtiyacınız Var?",
+		"needHelp": "Yardıma mı ihtiyacınız var?",
 		"backButton": "Geri",
 		"chooseAgain": "Tekrar Seç"
 	},
 	"personaSuggester": {
-		"needHelp": "Yardıma mı İhtiyacınız Var?",
+		"needHelp": "Yardıma mı ihtiyacınız var?",
 		"progress": {
-			"step1": "Sizin için en iyi çözümü bulmak için sadece üç soru.",
-			"step2": "Neredeyse bitti, sadece iki soru kaldı.",
+			"step1": "En iyi çözümü bulmak için sadece üç sorumuz kaldı.",
+			"step2": "Neredeyse tamam, sadece iki soru kaldı.",
 			"step3": "En iyi çözümü buluyoruz, sadece bir soru kaldı.",
 			"step4": "Tamamlandı! İşte listeniz."
 		},
 		"questions": {
 			"useCase": {
-				"title": "1. Temel kullanım amacınız nedir?",
+				"title": "1. Birincil kullanım amacınız nedir?",
 				"options": {
 					"contentCreation": "İçerik Oluşturma",
 					"academicResearch": "Akademik Araştırma",
-					"codingAssistance": "Kodlama Yardımı",
+					"codingAssistance": "Kodlama Desteği",
 					"dataAnalysis": "Veri Analizi",
 					"creativeProjects": "Yaratıcı Projeler"
 				}
 			},
 			"responseType": {
-				"title": "2. Ne tür yanıtları tercih edersiniz?",
+				"title": "2. Hangi tür yanıtları tercih ediyorsunuz?",
 				"options": {
-					"detailedExplanations": "Detaylı Açıklamalar",
+					"detailedExplanations": "Ayrıntılı Açıklamalar",
 					"conciseSummaries": "Özlü Özetler",
-					"codeSnippets": "Kod Parçaları",
-					"visualAids": "Görsel Yardımcılar",
+					"codeSnippets": "Kod Parçacıkları",
+					"visualAids": "Görsel Yardımlar",
 					"interactiveAssistance": "Etkileşimli Yardım"
 				}
 			},
 			"features": {
-				"title": "3. Özel bir özelliğe ihtiyacınız var mı?",
+				"title": "3. Belirli özelliklere ihtiyaç duyuyor musunuz?",
 				"options": {
 					"languageSupport": "Dil Desteği",
 					"integrationCapabilities": "Entegrasyon Yetenekleri",
@@ -224,29 +253,37 @@
 	"account": {
 		"title": "Hesap Ayarları",
 		"subtitle": "Hesap ayarlarınızı ve tercihlerinizi yönetin",
-		"userInfo": "Kullanıcı Bilgileri",
+		"userInfo": "Kullanıcı Bilgisi",
 		"email": "E-posta Adresi",
 		"updateEmail": "E-posta Güncelle",
+		"addEmail": "E-posta Ekle",
 		"newEmailPlaceholder": "Yeni e-posta adresini girin",
 		"save": "Değişiklikleri Kaydet",
+		"updating": "Güncelleniyor...",
 		"cancel": "İptal",
-		"noEmail": "E-posta adresi ayarlanmamış",
+		"noEmail": "E-posta adresi ayarlanmadı",
 		"tokenBalance": "Token Bakiyesi",
-		"authToken": "Kimlik Doğrulama Tokeni",
-		"showToken": "Tokeni Göster",
-		"hideToken": "Tokeni Gizle",
+		"authToken": "Doğrulama Tokenı",
+		"showToken": "Tokenı Göster",
+		"hideToken": "Tokenı Gizle",
 		"tokenCopied": "Token panoya kopyalandı",
 		"security": "Güvenlik",
-		"securityInfo": "Token ve hayvan sıranızı güvende tutun. Bunlar kimlik doğrulama için gereklidir ve kaybedilirse kurtarılamaz.",
+		"securityInfo": "Tokenınızı ve hayvan sıralamanızı güvende tutun. Bunlar doğrulama için gereklidir ve kaybedilirse geri alınamaz.",
 		"logout": "Çıkış Yap",
 		"emailUpdated": "E-posta başarıyla güncellendi",
 		"updateFailed": "E-posta güncellenemedi",
 		"invalidEmail": "Lütfen geçerli bir e-posta adresi girin",
+		"verified": "Doğrulandı",
+		"unverified": "Doğrulanmadı",
+		"verificationPending": "E-posta doğrulaması bekleniyor",
+		"resendVerification": "Doğrulama e-postasını tekrar gönder",
 		"errors": {
-			"emailTaken": "Bu e-posta adresi zaten kullanımda",
+			"emailTaken": "Bu e-posta zaten kullanımda",
 			"invalidFormat": "Geçersiz e-posta formatı",
 			"updateFailed": "E-posta güncellenemedi",
-			"notAuthenticated": "Lütfen ayarlarınızı güncellemek için giriş yapın"
+			"notAuthenticated": "Ayarlarınızı güncellemek için lütfen giriş yapın",
+			"verificationExpired": "Doğrulama bağlantısı süresi doldu",
+			"verificationInvalid": "Geçersiz doğrulama bağlantısı"
 		}
 	}
 }

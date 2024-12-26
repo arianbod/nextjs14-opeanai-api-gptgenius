@@ -3,6 +3,25 @@
 import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
+// Helper function to detect RTL
+const isRTL = (text) => {
+	if (!text || typeof text !== 'string') return false;
+	const rtlRegex =
+		/[\u0591-\u07FF\u200F\u202B\u202E\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+	return rtlRegex.test(text.trim()[0]);
+};
+
+// Helper function to detect language
+const detectLanguage = (text) => {
+	if (!text || typeof text !== 'string') return 'default';
+	const persianRegex = /[\u0600-\u06FF]/;
+	const arabicRegex = /[\u0627-\u064A]/;
+
+	if (persianRegex.test(text)) return 'persian';
+	if (arabicRegex.test(text)) return 'arabic';
+	return 'default';
+};
+
 const TextInputComponent = ({
 	inputText,
 	setInputText,
@@ -22,6 +41,8 @@ const TextInputComponent = ({
 		top: 0,
 		left: 0,
 	});
+	const [textDirection, setTextDirection] = useState('ltr');
+	const [textLanguage, setTextLanguage] = useState('default');
 
 	const isMobile = () => {
 		const width = window.innerWidth < 768;
@@ -72,15 +93,31 @@ const TextInputComponent = ({
 
 		const computedStyle = window.getComputedStyle(textareaRef.current);
 		const paddingLeft = parseInt(computedStyle.paddingLeft);
+		const paddingRight = parseInt(computedStyle.paddingRight);
 		const paddingTop = parseInt(computedStyle.paddingTop);
 		const lineHeight = parseInt(computedStyle.lineHeight);
 		const lines = textBeforeCursor.split('\n').length;
 
+		// Adjust cursor position based on text direction
+		const isRtl = textDirection === 'rtl';
 		setCursorCoordinates({
-			left: paddingLeft + (textWidth % textareaRef.current.offsetWidth) + 10,
+			left: isRtl
+				? textareaRef.current.offsetWidth -
+				  paddingRight -
+				  (textWidth % textareaRef.current.offsetWidth) -
+				  10
+				: paddingLeft + (textWidth % textareaRef.current.offsetWidth) + 10,
 			top: paddingTop + (lines - 1) * lineHeight,
 		});
 	};
+
+	// Update text direction and language when input changes
+	useEffect(() => {
+		const rtl = isRTL(inputText);
+		const lang = detectLanguage(inputText);
+		setTextDirection(rtl ? 'rtl' : 'ltr');
+		setTextLanguage(lang);
+	}, [inputText]);
 
 	useEffect(() => {
 		const updateDimensions = () => {
@@ -136,12 +173,20 @@ const TextInputComponent = ({
 				onKeyDown={handleKeyDown}
 				disabled={isPending || disabled}
 				rows={1}
-				className='w-full bg-transparent text-white placeholder-gray-300
+				className={`w-full bg-transparent text-white placeholder-gray-300
                            resize-none focus:outline-none transition-all duration-200 
-                           ease-in-out font-sans leading-relaxed'
+                           ease-in-out leading-relaxed
+                           ${textLanguage === 'persian' ? 'font-persian' : ''}
+                           ${textLanguage === 'arabic' ? 'font-arabic' : ''}
+                           ${
+															textDirection === 'rtl'
+																? 'text-right'
+																: 'text-left'
+														}`}
 				style={{
 					maxHeight,
 					height: 'auto',
+					direction: textDirection,
 				}}
 				placeholder={placeholder}
 			/>

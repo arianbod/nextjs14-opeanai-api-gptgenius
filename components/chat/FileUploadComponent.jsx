@@ -5,6 +5,25 @@ import PropTypes from 'prop-types';
 import { Loader, Paperclip, Camera } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+// Helper function to detect RTL
+const isRTL = (text) => {
+	if (!text || typeof text !== 'string') return false;
+	const rtlRegex =
+		/[\u0591-\u07FF\u200F\u202B\u202E\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+	return rtlRegex.test(text.trim()[0]);
+};
+
+// Helper function to detect language
+const detectLanguage = (text) => {
+	if (!text || typeof text !== 'string') return 'default';
+	const persianRegex = /[\u0600-\u06FF]/;
+	const arabicRegex = /[\u0627-\u064A]/;
+
+	if (persianRegex.test(text)) return 'persian';
+	if (arabicRegex.test(text)) return 'arabic';
+	return 'default';
+};
+
 const FileUploadComponent = ({
 	onFileUpload,
 	isUploading,
@@ -18,6 +37,7 @@ const FileUploadComponent = ({
 	const fileInputRef = useRef(null);
 	const menuRef = useRef(null);
 	const [showFileOptions, setShowFileOptions] = useState(false);
+	const [menuDirection, setMenuDirection] = useState('ltr');
 
 	// Handle click outside
 	useEffect(() => {
@@ -127,6 +147,11 @@ const FileUploadComponent = ({
 	const handleFileUpload = async (e) => {
 		const file = e.target.files[0];
 		if (!file) return;
+
+		// Update menu direction based on file name
+		const rtl = isRTL(file.name);
+		setMenuDirection(rtl ? 'rtl' : 'ltr');
+
 		await handleFileValidationAndUpload(file);
 	};
 
@@ -150,16 +175,24 @@ const FileUploadComponent = ({
 
 			{showFileOptions && (
 				<div
-					className='absolute bottom-14 left-0 bg-gray-800/95 backdrop-blur-sm rounded-xl 
+					className={`absolute bottom-14 ${
+						menuDirection === 'rtl' ? 'right-0' : 'left-0'
+					}
+                               bg-gray-800/95 backdrop-blur-sm rounded-xl 
                                shadow-xl p-3 flex flex-col gap-2 border border-gray-700/50 
                                min-w-[180px] transform transition-all duration-200 
-                               animate-in slide-in-from-bottom-2'>
+                               animate-in slide-in-from-bottom-2`}
+					dir={menuDirection}>
 					<button
 						type='button'
 						onClick={() => fileInputRef.current?.click()}
-						className='flex items-center gap-3 p-2.5 hover:bg-gray-700/70 rounded-lg 
+						className={`flex items-center gap-3 p-2.5 hover:bg-gray-700/70 rounded-lg 
                                  text-gray-300 hover:text-white transition-all duration-200
-                                 group relative'>
+                                 group relative ${
+																		menuDirection === 'rtl'
+																			? 'flex-row-reverse'
+																			: ''
+																	}`}>
 						<Paperclip className='w-4 h-4 transition-transform group-hover:scale-110' />
 						<span className='text-sm font-medium'>Upload File</span>
 					</button>
@@ -172,9 +205,13 @@ const FileUploadComponent = ({
 								fileInputRef.current.click();
 							}
 						}}
-						className='flex items-center gap-3 p-2.5 hover:bg-gray-700/70 rounded-lg 
+						className={`flex items-center gap-3 p-2.5 hover:bg-gray-700/70 rounded-lg 
                                  text-gray-300 hover:text-white transition-all duration-200
-                                 group relative'>
+                                 group relative ${
+																		menuDirection === 'rtl'
+																			? 'flex-row-reverse'
+																			: ''
+																	}`}>
 						<Camera className='w-4 h-4 transition-transform group-hover:scale-110' />
 						<span className='text-sm font-medium'>Take Photo</span>
 					</button>

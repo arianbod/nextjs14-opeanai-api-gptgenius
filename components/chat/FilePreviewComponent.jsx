@@ -4,7 +4,25 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Loader, Minimize2, Maximize2, X, Paperclip } from 'lucide-react';
 
-const IMAGE_TYPES = [
+// Helper functions for RTL and language detection
+const isRTL = (text) => {
+	if (!text || typeof text !== 'string') return false;
+	const rtlRegex =
+		/[\u0591-\u07FF\u200F\u202B\u202E\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+	return rtlRegex.test(text.trim()[0]);
+};
+
+const detectLanguage = (text) => {
+	if (!text || typeof text !== 'string') return 'default';
+	const persianRegex = /[\u0600-\u06FF]/;
+	const arabicRegex = /[\u0627-\u064A]/;
+
+	if (persianRegex.test(text)) return 'persian';
+	if (arabicRegex.test(text)) return 'arabic';
+	return 'default';
+};
+
+export const IMAGE_TYPES = [
 	'image/jpeg',
 	'image/png',
 	'image/gif',
@@ -16,12 +34,22 @@ const FilePreviewComponent = ({ file, onRemove }) => {
 	const [previewUrl, setPreviewUrl] = useState('');
 	const [expanded, setExpanded] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [textDirection, setTextDirection] = useState('ltr');
+	const [textLanguage, setTextLanguage] = useState('default');
 
 	useEffect(() => {
-		if (file && IMAGE_TYPES.includes(file.type)) {
-			const url = `data:${file.type};base64,${file.content}`;
-			setPreviewUrl(url);
-			return () => URL.revokeObjectURL(url);
+		if (file) {
+			if (IMAGE_TYPES.includes(file.type)) {
+				const url = `data:${file.type};base64,${file.content}`;
+				setPreviewUrl(url);
+				return () => URL.revokeObjectURL(url);
+			}
+
+			// Set direction and language for file name
+			const rtl = isRTL(file.name);
+			const lang = detectLanguage(file.name);
+			setTextDirection(rtl ? 'rtl' : 'ltr');
+			setTextLanguage(lang);
 		}
 	}, [file]);
 
@@ -73,9 +101,24 @@ const FilePreviewComponent = ({ file, onRemove }) => {
 				) : (
 					<div className='flex items-center gap-3 p-3 bg-gray-800 rounded-lg'>
 						<Paperclip className='w-5 h-5 text-gray-400' />
-						<div className='flex-1 min-w-0'>
-							<p className='text-sm text-gray-200 truncate'>{file.name}</p>
-							<p className='text-xs text-gray-400'>
+						<div
+							className={`flex-1 min-w-0 ${
+								textDirection === 'rtl' ? 'text-right' : 'text-left'
+							}`}>
+							<p
+								className={`text-sm text-gray-200 truncate
+                                ${
+																	textLanguage === 'persian'
+																		? 'font-persian'
+																		: ''
+																}
+                                ${
+																	textLanguage === 'arabic' ? 'font-arabic' : ''
+																}`}
+								dir={textDirection}>
+								{file.name}
+							</p>
+							<p className='text-xs text-gray-400 ltr'>
 								{(file.size / 1024 / 1024).toFixed(2)} MB
 							</p>
 						</div>
@@ -112,5 +155,5 @@ FilePreviewComponent.propTypes = {
 	onRemove: PropTypes.func.isRequired,
 };
 
-export { IMAGE_TYPES };
+// export { IMAGE_TYPES };
 export default FilePreviewComponent;

@@ -7,6 +7,25 @@ import FilePreviewComponent, { IMAGE_TYPES } from './FilePreviewComponent';
 import { useChat } from '@/context/ChatContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
+// Helper function to detect RTL
+const isRTL = (text) => {
+	if (!text || typeof text !== 'string') return false;
+	const rtlRegex =
+		/[\u0591-\u07FF\u200F\u202B\u202E\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+	return rtlRegex.test(text.trim()[0]);
+};
+
+// Helper function to detect language
+const detectLanguage = (text) => {
+	if (!text || typeof text !== 'string') return 'default';
+	const persianRegex = /[\u0600-\u06FF]/;
+	const arabicRegex = /[\u0627-\u064A]/;
+
+	if (persianRegex.test(text)) return 'persian';
+	if (arabicRegex.test(text)) return 'arabic';
+	return 'default';
+};
+
 const MessageInput = ({
 	inputText,
 	setInputText,
@@ -24,17 +43,27 @@ const MessageInput = ({
 }) => {
 	const [isDragging, setIsDragging] = useState(false);
 	const [showUnsupportedAlert, setShowUnsupportedAlert] = useState(false);
+	const [textDirection, setTextDirection] = useState('ltr');
+	const [textLanguage, setTextLanguage] = useState('default');
 	const { activeChat } = useChat();
+
 	const allowed = activeChat?.modelAllowed || {
 		send: { text: true, file: false, image: false },
 		receive: { text: true, file: false, image: false },
 	};
 
+	// Update text direction and language based on input text
+	React.useEffect(() => {
+		const rtl = isRTL(inputText);
+		const lang = detectLanguage(inputText);
+		setTextDirection(rtl ? 'rtl' : 'ltr');
+		setTextLanguage(lang);
+	}, [inputText]);
+
 	const handleDragEnter = (e) => {
 		e.preventDefault();
 		e.stopPropagation();
 
-		// Check permissions before allowing drag
 		if (!allowed.send.file && !allowed.send.image) {
 			setShowUnsupportedAlert(true);
 			return;
@@ -59,7 +88,6 @@ const MessageInput = ({
 		e.stopPropagation();
 		setIsDragging(false);
 
-		// Check permissions before handling drop
 		if (!allowed.send.file && !allowed.send.image) {
 			setShowUnsupportedAlert(true);
 			return;
@@ -70,7 +98,6 @@ const MessageInput = ({
 			const file = files[0];
 			const isImage = file.type.startsWith('image/');
 
-			// Validate file type against permissions
 			if (isImage && !allowed.send.image) {
 				setShowUnsupportedAlert(true);
 				return;
@@ -142,7 +169,10 @@ const MessageInput = ({
 												? 'border-blue-500 dark:border-blue-500'
 												: 'border-white/50'
 										} 
-                    transition-colors duration-200`}>
+                    transition-colors duration-200
+                    ${textLanguage === 'persian' ? 'font-persian' : ''}
+                    ${textLanguage === 'arabic' ? 'font-arabic' : ''}`}
+					dir={textDirection}>
 					{/* Drag overlay */}
 					{isDragging && (
 						<div className='absolute inset-0 bg-blue-500 bg-opacity-10 rounded-3xl flex items-center justify-center'>
@@ -162,7 +192,10 @@ const MessageInput = ({
 								) : (
 									<Paperclip className='w-4 h-4' />
 								)}
-								<span className='text-sm truncate flex-1'>
+								<span
+									className={`text-sm truncate flex-1 ${
+										textDirection === 'rtl' ? 'text-right' : 'text-left'
+									}`}>
 									{uploadedFile && IMAGE_TYPES.includes(uploadedFile.type)
 										? 'Processing image...'
 										: 'Uploading file...'}

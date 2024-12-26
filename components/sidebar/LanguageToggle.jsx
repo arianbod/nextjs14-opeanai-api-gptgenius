@@ -10,6 +10,7 @@ const languages = [
 	{ code: 'en', name: 'English', flag: '🇬🇧' },
 	{ code: 'fa', name: 'فارسی', flag: '🇮🇷' },
 	{ code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+	{ code: 'gr', name: 'Ελληνικά', flag: '🇬🇷' },
 	// Add more languages as needed
 ];
 

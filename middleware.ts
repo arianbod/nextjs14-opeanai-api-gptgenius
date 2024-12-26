@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const supportedLanguages = ['en', 'fa', 'tr'];
+const supportedLanguages = ['en', 'fa', 'tr', 'gr'];
 const defaultLanguage = 'en';
 
 // Define public routes that don't require authentication

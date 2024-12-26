@@ -1,0 +1,289 @@
+{
+	"global": {
+		"title": "BabaGPT",
+		"description": "",
+		"conversations": "συνομιλίες",
+		"tokenBalance": "Υπόλοιπο Token",
+		"purchaseTokens": "Αγορά Tokens",
+		"selectedAmount": "Επιλεγμένο Ποσό",
+		"discount": "Έκπτωση",
+		"finalPrice": "Τελική Τιμή",
+		"purchase": "Αγορά",
+		"tokens": "tokens",
+		"sliderTitle": "Slider Έκπτωση Μαγική"
+	},
+	"sidebar": {
+		"conversations": "συνομιλίες"
+	},
+	"auth": {
+		"register": {
+			"title": "Εγγραφή",
+			"email": "Ηλεκτρονικό Ταχυδρομείο",
+			"emailPlaceholder": "paradeigma@email.com",
+			"buttonText": "Ξεκινήστε",
+			"submitting": "Εγγραφή...",
+			"successMessage": "Η εγγραφή ήταν επιτυχής!",
+			"failureMessage": "Η εγγραφή απέτυχε. Παρακαλώ δοκιμάστε ξανά.",
+			"switchToLogin": "Έχετε ήδη λογαριασμό; Συνδεθείτε",
+			"info": "Δημιουργήστε το λογαριασμό σας επιλέγοντας 3 ζώα διαδοχικά. Θυμηθείτε αυτή τη σειρά - είναι το μοναδικό σας μοτίβο ασφαλείας.",
+			"submit": "Ξεκινήστε",
+			"emailOptional": "Το email σας είναι προαιρετικό."
+		},
+		"login": {
+			"title": "Σύνδεση",
+			"token": "Token Αυθεντικοποίησης",
+			"tokenPlaceholder": "Εισαγάγετε το token αυθεντικοποίησής σας",
+			"email": "Ηλεκτρονικό Ταχυδρομείο",
+			"emailPlaceholder": "paradeigma@email.com",
+			"buttonText": "Σύνδεση",
+			"submitting": "Σύνδεση...",
+			"successMessage": "Η σύνδεση ήταν επιτυχής!",
+			"failureMessage": "Η σύνδεση απέτυχε. Παρακαλώ δοκιμάστε ξανά.",
+			"switchToRegister": "Χρειάζεστε λογαριασμό; Εγγραφείτε",
+			"info": "Εισαγάγετε το token σας και επιλέξτε τα 3 ζώα σας με την ίδια σειρά όπως κατά την εγγραφή.",
+			"submit": "Σύνδεση"
+		},
+		"redirecting": "Μεταπήδηση στην αρχική σελίδα...",
+		"selectThreeAnimalsInOrder": "Παρακαλώ επιλέξτε ακριβώς 3 ζώα",
+		"selectedAnimalsOrder": "Η επιλεγμένη σειρά σας:",
+		"selectNext": "Επιλέξτε το επόμενο ζώο",
+		"selectAnimalsInOrder": "Πρέπει να επιλέξετε 3 ζώα και να τα θυμάστε ως κωδικό",
+		"orderMatters": "Θυμηθείτε: Η σειρά επιλογής ζώων έχει σημασία!",
+		"tokenCopied": "Το token αντιγράφηκε στο πρόχειρο",
+		"saveToken": "Αποθηκεύστε το Token σας",
+		"tokenImportant": "Σημαντικό: Αποθηκεύστε αυτό το token - θα το χρειαστείτε για σύνδεση.",
+		"rememberAnimalOrder": "Θυμηθείτε τη σειρά των ζώων σας:",
+		"understood": "Έχω αποθηκεύσει το token μου",
+		"verifyEmail": "Επαληθεύστε το Email σας",
+		"verificationSent": "Ένα email επαλήθευσης εστάλη στο {email}. Παρακαλώ ελέγξτε το inbox σας.",
+		"verificationReminder": "Παρακαλώ επαληθεύστε τη διεύθυνση email σας για να ενεργοποιήσετε όλα τα χαρακτηριστικά του λογαριασμού",
+		"optional": "προαιρετικό",
+		"confirmTokenSaved": "Έχω αποθηκεύσει με ασφάλεια το token μου",
+		"continue": "Συνέχεια",
+		"verificationSuccess": "Το email σας επαληθεύτηκε. Μεταπήδηση στη σελίδα λογαριασμού...",
+		"verificationFailed": "Η επαλήθευση απέτυχε",
+		"continueWithoutEmail": "Συνέχεια χωρίς Email",
+		"emailLater": "Μπορείτε να προσθέσετε το email σας αργότερα.",
+		"addEmail": "Προσθήκη Email",
+		"skip": "Παράκαμψη",
+		"back": "Πίσω",
+		"emailBenefits": {
+			"title": "Οφέλη από την Προσθήκη του Email σας",
+			"recovery": "Ανάκτηση Κωδικού Πρόσβασης",
+			"security": "Βελτιωμένη Ασφάλεια",
+			"updates": "Λήψη Σημαντικών Ενημερώσεων"
+		},
+		"errors": {
+			"generic": "Παρουσιάστηκε σφάλμα. Παρακαλώ δοκιμάστε ξανά",
+			"network": "Σφάλμα δικτύου. Παρακαλώ ελέγξτε τη σύνδεσή σας",
+			"animals": {
+				"selectThree": "Παρακαλώ επιλέξτε ακριβώς 3 ζώα"
+			},
+			"email": {
+				"invalid": "Παρακαλώ εισάγετε μια έγκυρη διεύθυνση email",
+				"required": "Το email είναι απαραίτητο",
+				"alreadyVerified": "Αυτό το email έχει ήδη επαληθευτεί από έναν άλλο λογαριασμό",
+				"verificationFailed": "Η επαλήθευση email απέτυχε"
+			},
+			"register": {
+				"generic": "Η εγγραφή απέτυχε. Παρακαλώ δοκιμάστε ξανά",
+				"emailTaken": "Αυτό το email είναι ήδη καταχωρημένο"
+			},
+			"login": {
+				"generic": "Η σύνδεση απέτυχε. Παρακαλώ δοκιμάστε ξανά",
+				"tokenRequired": "Απαιτείται το token αυθεντικοποίησης",
+				"invalidToken": "Μη έγκυρο token αυθεντικοποίησης",
+				"incorrectSequence": "Λανθασμένη σειρά ζώων. ${attempts} προσπάθειες απομένουν",
+				"accountLocked": "Ο λογαριασμός είναι κλειδωμένος. Προσπαθήστε ξανά σε ${minutes} λεπτά",
+				"tooManyAttempts": "Πάρα πολλές αποτυχημένες προσπάθειες. Παρακαλώ δοκιμάστε ξανά αργότερα",
+				"accountInactive": "Αυτός ο λογαριασμός είναι προσωρινά ανενεργός",
+				"accountDeleted": "Αυτός ο λογαριασμός έχει διαγραφεί"
+			}
+		},
+		"animalList": [
+			{ "key": "dog", "label": "Σκύλος", "category": "domestic" },
+			{ "key": "cat", "label": "Γάτα", "category": "domestic" },
+			{ "key": "elephant", "label": "Ελέφαντας", "category": "wild" },
+			{ "key": "lion", "label": "Λιοντάρι", "category": "wild" },
+			{ "key": "tiger", "label": "Τίγρης", "category": "wild" },
+			{ "key": "bear", "label": "Αρκούδα", "category": "wild" },
+			{ "key": "monkey", "label": "Πίθηκος", "category": "wild" },
+			{ "key": "giraffe", "label": "Καμηλοπάρδαλη", "category": "wild" },
+			{ "key": "zebra", "label": "Ζέβρα", "category": "wild" },
+			{ "key": "penguin", "label": "Πιγκουίνος", "category": "unique" },
+			{ "key": "kangaroo", "label": "Κάγκουρου", "category": "wild" },
+			{ "key": "koala", "label": "Κοάλα", "category": "wild" }
+		],
+		"animalCategories": {
+			"domestic": "Οικιακοί Φίλοι",
+			"wild": "Αγριές Θαυμάσιες",
+			"unique": "Μοναδικά Πλάσματα"
+		}
+	},
+	"personas": {
+		"names": {
+			"babagpt": "BabaGPT",
+			"claude": "Claude",
+			"o1Preview": "o1-προεπισκόπηση",
+			"o1Mini": "o1-mini",
+			"chatgpt4": "4o"
+		},
+		"roles": {
+			"searchEngine": "Ζωντανή Μηχανή Αναζήτησης",
+			"chatgpt": "CHATGPT",
+			"analyticalAssistant": "Αναλυτικός Βοηθός"
+		},
+		"descriptions": {
+			"babagpt": "Το Mixtral παρέχει τεχνική ανάλυση και δεδομένα σε φιλική, προσβάσιμη μορφή με καθαρή μορφοποίηση αριθμών και ελκυστική παρουσίαση.",
+			"claude": "Ο Claude διαπρέπει στην παροχή σαφών και συνοπτικών αναλυτικών πληροφοριών, καθιστώντας τον ιδανικό για λήψη αποφάσεων βάσει δεδομένων και λεπτομερείς εξηγήσεις.",
+			"o1Preview": "Το o1-προεπισκόπηση σχεδιάστηκε για την παραγωγή ολοκληρωμένων και λεπτομερών απαντήσεων, κατάλληλο για εις βάθος ανάλυση και εκτεταμένες συζητήσεις.",
+			"o1Mini": "Το o1-mini προσφέρει γρήγορες και αποδοτικές απαντήσεις, ιδανικό για σύντομες ερωτήσεις και γρήγορες αλληλεπιδράσεις.",
+			"chatgpt4": "Το 4o είναι ένας αναλυτικός βοηθός ικανός να προσαρμόζει τη δημιουργικότητα και το μήκος των απαντήσεων, ιδανικός για εξατομικευμένες και λεπτές συζητήσεις."
+		},
+		"categories": {
+			"all": "Όλα τα Μοντέλα",
+			"creative": "Δημιουργικά",
+			"analytical": "Αναλυτικά",
+			"coding": "Κωδικοποίηση",
+			"chat": "Συνομιλία",
+			"searchEngine": "Μηχανή Αναζήτησης"
+		},
+		"features": {
+			"suitableFor": {
+				"contentCreation": "Δημιουργία Περιεχομένου",
+				"academicResearch": "Ακαδημαϊκή Έρευνα",
+				"codingAssistance": "Βοήθεια Κωδικοποίησης",
+				"dataAnalysis": "Ανάλυση Δεδομένων",
+				"quickQueries": "Γρήγορες Ερωτήσεις",
+				"customerSupport": "Εξυπηρέτηση Πελατών",
+				"creativeProjects": "Δημιουργικά Έργα"
+			},
+			"bestFor": {
+				"detailedExplanations": "Λεπτομερείς Εξηγήσεις",
+				"conciseSummaries": "Συνοπτικές Περίληψεις",
+				"interactiveAssistance": "Διαδραστική Βοήθεια",
+				"dataDecisions": "Αποφάσεις Βασισμένες σε Δεδομένα",
+				"userFriendly": "Φιλικές προς τον Χρήστη Εξηγήσεις",
+				"technicalAccuracy": "Τεχνική Ακρίβεια",
+				"liveData": "Ζωντανά Πραγματικά Δεδομένα",
+				"accurate": "Ακριβής"
+			},
+			"specificFeatures": {
+				"languageSupport": "Υποστήριξη Γλωσσών",
+				"customization": "Προσαρμογή",
+				"securityFeatures": "Χαρακτηριστικά Ασφάλειας",
+				"highPerformance": "Υψηλή Απόδοση",
+				"realtimeCollaboration": "Συνεργασία σε Πραγματικό Χρόνο",
+				"engagingOutputs": "Ελκυστικές Εξόδους",
+				"integrationCapabilities": "Δυνατότητες Ενοποίησης"
+			}
+		},
+		"labels": {
+			"pro": "PRO",
+			"new": "ΝΕΟ",
+			"rating": "Βαθμολογία",
+			"speed": "Ταχύτητα",
+			"speedValues": {
+				"veryFast": "Πολύ Γρήγορο",
+				"fast": "Γρήγορο",
+				"slow": "Αργό"
+			},
+			"recentlyUsed": "Πρόσφατα Χρησιμοποιημένα"
+		}
+	},
+	"modelSelection": {
+		"search": {
+			"placeholder": "Αναζήτηση κατά ικανότητα, όνομα ή περιγραφή..."
+		},
+		"sections": {
+			"recent": "Πρόσφατα",
+			"allModels": "Όλα τα Μοντέλα",
+			"noResults": "Δεν βρέθηκαν μοντέλα που να ταιριάζουν με την αναζήτησή σας."
+		},
+		"needHelp": "Χρειάζεστε Βοήθεια?",
+		"backButton": "Πίσω",
+		"chooseAgain": "Επιλέξτε Ξανά"
+	},
+	"personaSuggester": {
+		"needHelp": "Χρειάζεστε Βοήθεια?",
+		"progress": {
+			"step1": "Μόνο τρία ερωτήματα για να βρούμε την καλύτερη λύση για εσάς.",
+			"step2": "Σχεδόν τελείωσαν, απομένουν μόνο δύο ερωτήματα.",
+			"step3": "Βρίσκουμε την καλύτερη λύση, απομένει μόνο ένα ερώτημα.",
+			"step4": "Ολοκληρώθηκε! Αυτή είναι η λίστα σας."
+		},
+		"questions": {
+			"useCase": {
+				"title": "1. Ποια είναι η κύρια χρήση σας;",
+				"options": {
+					"contentCreation": "Δημιουργία Περιεχομένου",
+					"academicResearch": "Ακαδημαϊκή Έρευνα",
+					"codingAssistance": "Βοήθεια Κωδικοποίησης",
+					"dataAnalysis": "Ανάλυση Δεδομένων",
+					"creativeProjects": "Δημιουργικά Έργα"
+				}
+			},
+			"responseType": {
+				"title": "2. Τι είδους απαντήσεις προτιμάτε;",
+				"options": {
+					"detailedExplanations": "Λεπτομερείς Εξηγήσεις",
+					"conciseSummaries": "Συνοπτικές Περίληψεις",
+					"codeSnippets": "Αποσπάσματα Κώδικα",
+					"visualAids": "Οπτικές Βοήθειες",
+					"interactiveAssistance": "Διαδραστική Βοήθεια"
+				}
+			},
+			"features": {
+				"title": "3. Χρειάζεστε κάποιες συγκεκριμένες λειτουργίες;",
+				"options": {
+					"languageSupport": "Υποστήριξη Γλωσσών",
+					"integrationCapabilities": "Δυνατότητες Ενοποίησης",
+					"customization": "Προσαρμογή",
+					"realtimeCollaboration": "Συνεργασία σε Πραγματικό Χρόνο",
+					"securityFeatures": "Χαρακτηριστικά Ασφάλειας"
+				}
+			}
+		},
+		"results": {
+			"title": "Ολοκληρώθηκε! Εδώ είναι τα προτεινόμενα προσωπικά σας:",
+			"noResults": "Δεν βρέθηκαν κατάλληλα προσωπικά.",
+			"chooseAgain": "Επιλέξτε Ξανά"
+		}
+	},
+	"account": {
+		"title": "Ρυθμίσεις Λογαριασμού",
+		"subtitle": "Διαχειριστείτε τις ρυθμίσεις και τις προτιμήσεις του λογαριασμού σας",
+		"userInfo": "Πληροφορίες Χρήστη",
+		"email": "Διεύθυνση Email",
+		"updateEmail": "Ενημέρωση Email",
+		"addEmail": "Προσθήκη Email",
+		"newEmailPlaceholder": "Εισάγετε τη νέα διεύθυνση email",
+		"save": "Αποθήκευση Αλλαγών",
+		"updating": "Ενημέρωση...",
+		"cancel": "Ακύρωση",
+		"noEmail": "Δεν έχει οριστεί διεύθυνση email",
+		"tokenBalance": "Υπόλοιπο Token",
+		"authToken": "Token Αυθεντικοποίησης",
+		"showToken": "Εμφάνιση Token",
+		"hideToken": "Απόκρυψη Token",
+		"tokenCopied": "Το token αντιγράφηκε στο πρόχειρο",
+		"security": "Ασφάλεια",
+		"securityInfo": "Κρατήστε ασφαλή το token και τη σειρά των ζώων σας. Αυτά απαιτούνται για την αυθεντικοποίηση και δεν μπορούν να ανακτηθούν αν χαθούν.",
+		"logout": "Αποσύνδεση",
+		"emailUpdated": "Το email ενημερώθηκε με επιτυχία",
+		"updateFailed": "Η ενημέρωση του email απέτυχε",
+		"invalidEmail": "Παρακαλώ εισάγετε μια έγκυρη διεύθυνση email",
+		"verified": "Επαληθευμένο",
+		"unverified": "Μη Επαληθευμένο",
+		"verificationPending": "Επαλήθευση email σε αναμονή",
+		"resendVerification": "Αποστολή νέου email επαλήθευσης",
+		"errors": {
+			"emailTaken": "Αυτό το email είναι ήδη σε χρήση",
+			"invalidFormat": "Μη έγκυρη μορφή email",
+			"updateFailed": "Η ενημέρωση του email απέτυχε",
+			"notAuthenticated": "Παρακαλώ συνδεθείτε για να ενημερώσετε τις ρυθμίσεις σας",
+			"verificationExpired": "Η σύνδεση επαλήθευσης έχει λήξει",
+			"verificationInvalid": "Μη έγκυρη σύνδεση επαλήθευσης"
+		}
+	}
+}

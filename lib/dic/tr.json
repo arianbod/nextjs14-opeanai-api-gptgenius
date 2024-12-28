@@ -1,103 +1,116 @@
 {
 	"global": {
-		"title": "BabaGPT",
+		"title": "Baba GPT",
 		"description": "",
-		"conversations": "konuşmalar",
-		"tokenBalance": "Token Bakiyesi",
-		"purchaseTokens": "Token Satın Al",
+		"conversations": "Sohbetler",
+		"tokenBalance": "Jeton Bakiyesi",
+		"purchaseTokens": "Jeton Satın Al",
 		"selectedAmount": "Seçilen Miktar",
 		"discount": "İndirim",
 		"finalPrice": "Son Fiyat",
 		"purchase": "Satın Al",
-		"tokens": "token",
-		"sliderTitle": "Slider İndirim Büyüsü"
+		"tokens": "Jetonlar",
+		"sliderTitle": "Kaydırıcı İndirim Sihri"
 	},
 	"sidebar": {
-		"conversations": "konuşmalar"
+		"conversations": "Sohbetler"
 	},
 	"auth": {
+		"welcome": {
+			"title": "Baba GPT'ye Hoş Geldiniz",
+			"description": "Çabasız sohbetler ve analizler için akıllı yapay zeka arkadaşınız. Gelişmiş yapay zeka teknolojisi ile güvenli ve anonim etkileşimler deneyimleyin.",
+			"features": {
+				"title": "Temel Özellikler",
+				"list": {
+					"conversations": "Gelişmiş AI Sohbetleri ve Analizleri",
+					"language": "Çok Dilli Destek",
+					"security": "Güvenli Token Tabanlı Kimlik Doğrulama",
+					"email": "Opsiyonel E-posta Entegrasyonu"
+				}
+			}
+		},
 		"register": {
-			"title": "Kayıt Ol",
+			"title": "Kaydol",
 			"email": "E-posta",
-			"emailPlaceholder": "ornek@eposta.com",
-			"buttonText": "Başlayın",
-			"submitting": "Kayıt Yapılıyor...",
+			"emailPlaceholder": "sen@eposta.com",
+			"buttonText": "Başla",
+			"submitting": "Kaydoluyor...",
 			"successMessage": "Kayıt başarılı!",
 			"failureMessage": "Kayıt başarısız. Lütfen tekrar deneyin.",
-			"switchToLogin": "Zaten hesabınız var mı? Giriş Yap",
-			"info": "Hesabınızı oluşturmak için sırasıyla 3 hayvan seçin. Bu sırayı hatırlayın - bu sizin benzersiz güvenlik deseninizdir.",
-			"submit": "Başlayın",
-			"emailOptional": "E-posta adresiniz isteğe bağlıdır."
+			"switchToLogin": "Zaten bir hesabınız var mı? Giriş yapın",
+			"info": "Hesabınızı sırayla 3 hayvan seçerek oluşturun. Bu dizilimi hatırlayın - bu sizin benzersiz güvenlik deseninizdir.",
+			"submit": "Başla",
+			"emailOptional": "E-postanız isteğe bağlıdır."
 		},
 		"login": {
 			"title": "Giriş Yap",
-			"token": "Doğrulama Tokenı",
-			"tokenPlaceholder": "Doğrulama tokenınızı girin",
+			"token": "Kimlik Doğrulama Jetonu",
+			"tokenPlaceholder": "Kimlik doğrulama jetonunuzu girin",
 			"email": "E-posta",
-			"emailPlaceholder": "ornek@eposta.com",
+			"emailPlaceholder": "sen@eposta.com",
 			"buttonText": "Giriş Yap",
 			"submitting": "Giriş Yapılıyor...",
 			"successMessage": "Giriş başarılı!",
 			"failureMessage": "Giriş başarısız. Lütfen tekrar deneyin.",
-			"switchToRegister": "Hesabınız yok mu? Kayıt Ol",
-			"info": "Tokenınızı girin ve kayıt sırasında seçtiğiniz tam sırayla 3 hayvanı seçin.",
+			"switchToRegister": "Bir hesabınız mı yok? Kaydolun",
+			"info": "Jetonunuzu girin ve kayıt sırasında seçtiğiniz aynı sırayla 3 hayvanınızı seçin.",
 			"submit": "Giriş Yap"
 		},
 		"redirecting": "Ana sayfaya yönlendiriliyor...",
 		"selectThreeAnimalsInOrder": "Lütfen tam olarak 3 hayvan seçin",
-		"selectedAnimalsOrder": "Seçtiğiniz sıra:",
-		"selectNext": "Bir sonraki hayvanı seçin",
-		"selectAnimalsInOrder": "3 hayvan seçmeniz ve bunu bir parola olarak hatırlamanız gerekiyor",
-		"orderMatters": "Unutmayın: Hayvan seçme sırası önemlidir!",
-		"tokenCopied": "Token panoya kopyalandı",
-		"saveToken": "Tokenınızı Kaydedin",
-		"tokenImportant": "Önemli: Bu tokenı kaydedin - giriş yapmak için buna ihtiyacınız olacak.",
+		"selectedAnimalsOrder": "Seçtiğiniz hayvan sırası:",
+		"selectNext": "Bir Sonraki Hayvanı Seçin",
+		"selectAnimalsInOrder": "3 hayvan seçmeli ve bunların sırasını şifreniz olarak hatırlamalısınız",
+		"orderMatters": "Unutmayın: Hayvan seçiminin sırası önemlidir!",
+		"tokenCopied": "Jeton panoya kopyalandı",
+		"saveToken": "Jetonunuzu Kaydedin",
+		"tokenImportant": "Önemli: Bu jetonu kaydedin - giriş yapmak için buna ihtiyacınız olacak.",
 		"rememberAnimalOrder": "Hayvan sıralamanızı hatırlayın:",
-		"understood": "Tokenımı kaydettim",
-		"verifyEmail": "E-postanızı Doğrulayın",
+		"understood": "Jetonumu kaydettim",
+		"verifyEmail": "E-postanızı doğrulayın",
 		"verificationSent": "{email} adresine bir doğrulama e-postası gönderildi. Lütfen gelen kutunuzu kontrol edin.",
-		"verificationReminder": "Tüm hesap özelliklerini etkinleştirmek için e-posta adresinizi doğrulayın",
-		"optional": "isteğe bağlı",
-		"confirmTokenSaved": "Tokenımı güvenli bir şekilde kaydettim",
+		"verificationReminder": "Hesap tüm özelliklerini etkinleştirmek için lütfen e-posta adresinizi doğrulayın",
+		"optional": "İsteğe Bağlı",
+		"confirmTokenSaved": "Jetonumu güvenli bir şekilde kaydettim",
 		"continue": "Devam Et",
-		"verificationSuccess": "E-postanız doğrulandı. Hesap sayfasına yönlendiriliyor...",
-		"verificationFailed": "Doğrulama Başarısız",
+		"verificationSuccess": "E-postanız doğrulandı. Hesap sayfanıza yönlendiriliyorsunuz...",
+		"verificationFailed": "Doğrulama başarısız",
 		"continueWithoutEmail": "E-posta olmadan devam et",
 		"emailLater": "E-postanızı daha sonra ekleyebilirsiniz.",
 		"addEmail": "E-posta Ekle",
 		"skip": "Atla",
 		"back": "Geri",
 		"emailBenefits": {
-			"title": "E-postanızı Eklememenin Avantajları",
-			"recovery": "Şifre kurtarma",
-			"security": "Gelişmiş güvenlik",
-			"updates": "Önemli güncellemeleri alın"
+			"title": "E-postanızı Eklemek İçin Avantajlar",
+			"recovery": "Şifre Kurtarma",
+			"security": "Geliştirilmiş Güvenlik",
+			"updates": "Önemli Güncellemeler Almak"
 		},
 		"errors": {
-			"generic": "Bir hata oluştu. Lütfen tekrar deneyin",
-			"network": "Ağ hatası. Lütfen bağlantınızı kontrol edin",
+			"generic": "Bir hata oluştu. Lütfen tekrar deneyin.",
+			"network": "Ağ hatası. Lütfen bağlantınızı kontrol edin.",
 			"animals": {
-				"selectThree": "Lütfen tam olarak 3 hayvan seçin"
+				"selectThree": "Lütfen tam olarak 3 hayvan seçin."
 			},
 			"email": {
-				"invalid": "Lütfen geçerli bir e-posta adresi girin",
-				"required": "E-posta gerekli",
-				"alreadyVerified": "Bu e-posta başka bir hesap tarafından zaten doğrulanmış",
-				"verificationFailed": "E-posta doğrulaması başarısız"
+				"invalid": "Lütfen geçerli bir e-posta adresi girin.",
+				"required": "E-posta gerekli.",
+				"alreadyVerified": "Bu e-posta başka bir hesap tarafından zaten doğrulandı.",
+				"verificationFailed": "E-posta doğrulaması başarısız oldu."
 			},
 			"register": {
-				"generic": "Kayıt başarısız. Lütfen tekrar deneyin",
-				"emailTaken": "Bu e-posta zaten kayıtlı"
+				"generic": "Kayıt başarısız. Lütfen tekrar deneyin.",
+				"emailTaken": "Bu e-posta zaten kayıtlı."
 			},
 			"login": {
-				"generic": "Giriş başarısız. Lütfen tekrar deneyin",
-				"tokenRequired": "Doğrulama tokenı gerekli",
-				"invalidToken": "Geçersiz doğrulama tokenı",
-				"incorrectSequence": "Yanlış hayvan sırası. ${attempts} deneme kaldı",
-				"accountLocked": "Hesap kilitlendi. ${minutes} dakika sonra tekrar deneyin",
-				"tooManyAttempts": "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin",
-				"accountInactive": "Bu hesap şu anda etkin değil",
-				"accountDeleted": "Bu hesap silinmiş"
+				"generic": "Giriş başarısız. Lütfen tekrar deneyin.",
+				"tokenRequired": "Kimlik doğrulama jetonu gereklidir.",
+				"invalidToken": "Geçersiz kimlik doğrulama jetonu.",
+				"incorrectSequence": "Yanlış hayvan sırası. {attempts} deneme hakkınız kaldı.",
+				"accountLocked": "Hesap kilitlendi. Lütfen {minutes} dakika sonra tekrar deneyin.",
+				"tooManyAttempts": "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin.",
+				"accountInactive": "Bu hesap şu anda etkin değil.",
+				"accountDeleted": "Bu hesap silindi."
 			}
 		},
 		"animalList": [
@@ -122,23 +135,28 @@
 	},
 	"personas": {
 		"names": {
-			"babagpt": "BabaGPT",
+			"babagpt": "Baba GPT",
 			"claude": "Claude",
-			"o1Preview": "o1-önizleme",
-			"o1Mini": "o1-mini",
+			"o1Preview": "o1-Önizleme",
+			"o1Mini": "o1-Mini",
 			"chatgpt4": "4o"
 		},
 		"roles": {
 			"searchEngine": "Canlı Arama Motoru",
-			"chatgpt": "CHATGPT",
-			"analyticalAssistant": "Analitik Asistan"
+			"chatgpt": "Chat GPT",
+			"analyticalAssistant": "Analitik Asistan",
+			"visualAnalysisAssistant": "Görsel Analiz Asistanı",
+			"versatileAIAssistant": "Çok Yönlü AI Asistanı"
 		},
 		"descriptions": {
-			"babagpt": "Mixtral, teknik analiz ve verileri dostça, erişilebilir bir formatta, net sayı formatlaması ve ilgi çekici sunumla sağlar.",
-			"claude": "Claude, net ve özlü analitik içgörüler sunmada mükemmeldir, veri odaklı karar verme ve ayrıntılı açıklamalar için idealdir.",
-			"o1Preview": "o1-önizleme, kapsamlı ve detaylı yanıtlar üretmek için tasarlanmıştır, derinlemesine analiz ve uzun sohbetler için uygundur.",
-			"o1Mini": "o1-mini, hızlı ve verimli yanıtlar sunar, kısa sorgular ve hızlı etkileşimler için idealdir.",
-			"chatgpt4": "4o, yanıt yaratıcılığını ve uzunluğunu ayarlayabilen analitik bir asistandır, özelleştirilmiş ve nüanslı sohbetler için mükemmeldir."
+			"babagpt": "Mixtral, net sayı formatlaması ve ilgi çekici sunumla teknik ve veri analizlerini dostça ve erişilebilir bir şekilde sağlar.",
+			"claude": "Claude, veri odaklı kararlar ve hassas açıklamalar için ideal, net ve özlü analitik içgörüler sunmada mükemmeldir.",
+			"o1Preview": "o1-Önizleme, kapsamlı ve doğru yanıtlar üretmek için tasarlanmıştır, derinlemesine analiz ve uzun sohbetler için uygundur.",
+			"o1Mini": "o1-Mini, hızlı ve verimli yanıtlar sunar, kısa sorgular ve hızlı etkileşimler için idealdir.",
+			"chatgpt4": "4o, yaratıcılığı ve yanıt uzunluğunu ayarlayabilen analitik bir asistandır, özelleştirilmiş ve hassas sohbetler için uygundur.",
+			"x": "X, genel AI etkileşimleri için tasarlanmış gelişmiş bir analitik asistandır.",
+			"gemini": "Gemini, doğal dil anlayışı ile görsel yetenekleri birleştiren çok yönlü bir AI asistandır.",
+			"perplexity": "Perplexity, gerçek zamanlı arama sağlayan ve özlü ve doğru yanıtlar ile ilgi çekici sunum sunan AI destekli bir arama motorudur."
 		},
 		"categories": {
 			"all": "Tüm Modeller",
@@ -146,45 +164,69 @@
 			"analytical": "Analitik",
 			"coding": "Kodlama",
 			"chat": "Sohbet",
-			"searchEngine": "Arama Motoru"
+			"searchEngine": "Arama Motoru",
+			"vision": "Görsel",
+			"complex_reasoning": "Karmaşık Muhakeme",
+			"unique": "Benzersiz Modeller",
+			"internet_search": "İnternet Araması"
 		},
 		"features": {
 			"suitableFor": {
-				"contentCreation": "İçerik Oluşturma",
-				"academicResearch": "Akademik Araştırma",
-				"codingAssistance": "Kodlama Desteği",
-				"dataAnalysis": "Veri Analizi",
-				"quickQueries": "Hızlı Sorgular",
-				"customerSupport": "Müşteri Desteği",
-				"creativeProjects": "Yaratıcı Projeler"
+				"content_creation": "İçerik Oluşturma",
+				"academic_research": "Akademik Araştırma",
+				"coding_assistance": "Kodlama Yardımı",
+				"data_analysis": "Veri Analizi",
+				"quick_queries": "Hızlı Sorgular",
+				"customer_support": "Müşteri Desteği",
+				"creative_projects": "Yaratıcı Projeler",
+				"image_analysis": "Görsel Analiz",
+				"visual_description": "Görsel Tanımlama",
+				"document_understanding": "Belge Anlama",
+				"image_understanding": "Görsel Anlama",
+				"multi_modal_interaction": "Çok Modlu Etkileşim",
+				"detailed_visual_analysis": "Ayrıntılı Görsel Analiz",
+				"interactive_coding": "Etkileşimli Kodlama",
+				"technical_support": "Teknik Destek",
+				"adaptive_communication": "Uyarlanabilir İletişim",
+				"advanced_security": "Gelişmiş Güvenlik",
+				"real_time_collaboration": "Gerçek Zamanlı İşbirliği"
 			},
 			"bestFor": {
-				"detailedExplanations": "Ayrıntılı Açıklamalar",
-				"conciseSummaries": "Özlü Özetler",
-				"interactiveAssistance": "Etkileşimli Yardım",
-				"dataDecisions": "Veri Odaklı Kararlar",
-				"userFriendly": "Kullanıcı Dostu Açıklamalar",
-				"technicalAccuracy": "Teknik Doğruluk",
-				"liveData": "Canlı Gerçek Veriler",
-				"accurate": "Doğru"
+				"detailed_explanations": "Ayrıntılı Açıklamalar",
+				"concise_summaries": "Özlü Özetler",
+				"interactive_assistance": "Etkileşimli Yardım",
+				"data_driven_decisions": "Veri Odaklı Kararlar",
+				"user_friendly_explanations": "Kullanıcı Dostu Açıklamalar",
+				"technical_accuracy": "Teknik Doğruluk",
+				"live_real_data": "Canlı Gerçek Veri",
+				"accurate": "Doğru",
+				"visual_content_analysis": "Görsel İçerik Analizi",
+				"image_based_queries": "Görsel Tabanlı Sorgular",
+				"visual_problem_solving": "Görsel Problem Çözme",
+				"fast_responses": "Hızlı Yanıtlar",
+				"visual_analysis": "Görsel Analiz",
+				"in_depth_analysis": "Derinlemesine Analiz",
+				"customized_learning": "Özelleştirilmiş Öğrenme",
+				"interactive_coding": "Etkileşimli Kodlama"
 			},
 			"specificFeatures": {
-				"languageSupport": "Dil Desteği",
+				"language_support": "Dil Desteği",
 				"customization": "Özelleştirme",
-				"securityFeatures": "Güvenlik Özellikleri",
-				"highPerformance": "Yüksek Performans",
-				"realtimeCollaboration": "Gerçek Zamanlı İşbirliği",
-				"engagingOutputs": "Etkileyici Çıktılar",
-				"integrationCapabilities": "Entegrasyon Yetenekleri"
+				"security_features": "Güvenlik Özellikleri",
+				"high_performance": "Yüksek Performans",
+				"real_time_collaboration": "Gerçek Zamanlı İşbirliği",
+				"engaging_outputs": "Etkileyici Çıktılar",
+				"integration_capabilities": "Entegrasyon Yetenekleri",
+				"code_generation": "Kod Üretimi"
 			}
 		},
 		"labels": {
 			"pro": "PRO",
-			"new": "YENİ",
-			"rating": "Değerlendirme",
+			"new": "Yeni",
+			"rating": "Puan",
 			"speed": "Hız",
 			"speedValues": {
-				"veryFast": "Çok Hızlı",
+				"very_fast": "Çok Hızlı",
 				"fast": "Hızlı",
 				"slow": "Yavaş"
 			},
@@ -192,55 +234,71 @@
 		}
 	},
 	"modelSelection": {
-		"search": {
-			"placeholder": "Yetenek, isim veya açıklamaya göre ara..."
-		},
-		"sections": {
-			"recent": "Son Kullanılanlar",
-			"allModels": "Tüm Modeller",
-			"noResults": "Aramanızla eşleşen model bulunamadı."
-		},
 		"needHelp": "Yardıma mı ihtiyacınız var?",
 		"backButton": "Geri",
-		"chooseAgain": "Tekrar Seç"
+		"chooseAgain": "Tekrar Seç",
+		"searchPlaceholder": "Özellik, isim veya açıklama ile ara...",
+		"recent": "Son",
+		"allModels": "Tüm Modeller",
+		"noModelsFound": "Aramanıza uygun model bulunamadı.",
+		"categories": {
+			"all": "Tüm Modeller",
+			"creative": "Yaratıcı",
+			"analytical": "Analitik",
+			"coding": "Kodlama",
+			"chat": "Sohbet",
+			"searchEngine": "Arama Motoru",
+			"vision": "Görsel",
+			"complex_reasoning": "Karmaşık Muhakeme",
+			"unique": "Benzersiz Modeller",
+			"internet_search": "İnternet Araması"
+		}
+	},
+	"modelCard": {
+		"capabilities": {
+			"vision": "Görsel",
+			"analytical": "Analitik",
+			"coding": "Kodlama",
+			"chat": "Sohbet"
+		}
 	},
 	"personaSuggester": {
 		"needHelp": "Yardıma mı ihtiyacınız var?",
 		"progress": {
-			"step1": "En iyi çözümü bulmak için sadece üç sorumuz kaldı.",
+			"step1": "Size en iyi çözümü bulmak için sadece üç soru kaldı.",
 			"step2": "Neredeyse tamam, sadece iki soru kaldı.",
 			"step3": "En iyi çözümü buluyoruz, sadece bir soru kaldı.",
 			"step4": "Tamamlandı! İşte listeniz."
 		},
 		"questions": {
 			"useCase": {
-				"title": "1. Birincil kullanım amacınız nedir?",
+				"title": "1. Baba GPT'yi şu anda ne için kullanıyorsunuz?",
 				"options": {
-					"contentCreation": "İçerik Oluşturma",
-					"academicResearch": "Akademik Araştırma",
-					"codingAssistance": "Kodlama Desteği",
-					"dataAnalysis": "Veri Analizi",
-					"creativeProjects": "Yaratıcı Projeler"
+					"writing_assistance": "Yazma Yardımı",
+					"research_and_analysis": "Araştırma ve Analiz",
+					"coding_help": "Kodlama Yardımı",
+					"data_insights": "Veri İçgörüleri",
+					"creative_projects": "Yaratıcı Projeler"
 				}
 			},
 			"responseType": {
-				"title": "2. Hangi tür yanıtları tercih ediyorsunuz?",
+				"title": "2. Hangi tür yanıtları faydalı buluyorsunuz?",
 				"options": {
-					"detailedExplanations": "Ayrıntılı Açıklamalar",
-					"conciseSummaries": "Özlü Özetler",
-					"codeSnippets": "Kod Parçacıkları",
-					"visualAids": "Görsel Yardımlar",
-					"interactiveAssistance": "Etkileşimli Yardım"
+					"in_depth_explanations": "Derinlemesine Açıklamalar",
+					"quick_summaries": "Hızlı Özetler",
+					"code_examples": "Kod Örnekleri",
+					"visual_representations": "Görsel Temsilatlar",
+					"interactive_guidance": "Etkileşimli Rehberlik"
 				}
 			},
 			"features": {
-				"title": "3. Belirli özelliklere ihtiyaç duyuyor musunuz?",
+				"title": "3. Belirli özelliklere mi ihtiyacınız var?",
 				"options": {
-					"languageSupport": "Dil Desteği",
-					"integrationCapabilities": "Entegrasyon Yetenekleri",
-					"customization": "Özelleştirme",
-					"realtimeCollaboration": "Gerçek Zamanlı İşbirliği",
-					"securityFeatures": "Güvenlik Özellikleri"
+					"multi_language_support": "Çok Dilli Destek",
+					"tool_integration": "Araç Entegrasyonu",
+					"customizable_settings": "Özelleştirilebilir Ayarlar",
+					"real_time_collaboration": "Gerçek Zamanlı İşbirliği",
+					"enhanced_security": "Geliştirilmiş Güvenlik"
 				}
 			}
 		},
@@ -253,37 +311,156 @@
 	"account": {
 		"title": "Hesap Ayarları",
 		"subtitle": "Hesap ayarlarınızı ve tercihlerinizi yönetin",
-		"userInfo": "Kullanıcı Bilgisi",
+		"userInfo": "Kullanıcı Bilgileri",
 		"email": "E-posta Adresi",
-		"updateEmail": "E-posta Güncelle",
+		"updateEmail": "E-postayı Güncelle",
 		"addEmail": "E-posta Ekle",
 		"newEmailPlaceholder": "Yeni e-posta adresini girin",
 		"save": "Değişiklikleri Kaydet",
 		"updating": "Güncelleniyor...",
 		"cancel": "İptal",
-		"noEmail": "E-posta adresi ayarlanmadı",
-		"tokenBalance": "Token Bakiyesi",
-		"authToken": "Doğrulama Tokenı",
-		"showToken": "Tokenı Göster",
-		"hideToken": "Tokenı Gizle",
-		"tokenCopied": "Token panoya kopyalandı",
+		"noEmail": "Ayarlanmış e-posta adresi yok",
+		"tokenBalance": "Jeton Bakiyesi",
+		"authToken": "Kimlik Doğrulama Jetonu",
+		"showToken": "Jetonu Göster",
+		"hideToken": "Jetonu Gizle",
+		"tokenCopied": "Jeton panoya kopyalandı",
 		"security": "Güvenlik",
-		"securityInfo": "Tokenınızı ve hayvan sıralamanızı güvende tutun. Bunlar doğrulama için gereklidir ve kaybedilirse geri alınamaz.",
+		"securityInfo": "Jetonunuzu ve hayvan sıralamanızı güvenli tutun. Kimlik doğrulama için gereklidir ve kaybedildiğinde geri alınamazlar.",
 		"logout": "Çıkış Yap",
 		"emailUpdated": "E-posta başarıyla güncellendi",
-		"updateFailed": "E-posta güncellenemedi",
+		"updateFailed": "E-posta güncelleme başarısız",
 		"invalidEmail": "Lütfen geçerli bir e-posta adresi girin",
 		"verified": "Doğrulandı",
 		"unverified": "Doğrulanmadı",
-		"verificationPending": "E-posta doğrulaması bekleniyor",
-		"resendVerification": "Doğrulama e-postasını tekrar gönder",
+		"verificationPending": "E-posta doğrulaması beklemede",
+		"resendVerification": "Doğrulama E-postasını Yeniden Gönder",
 		"errors": {
-			"emailTaken": "Bu e-posta zaten kullanımda",
+			"emailTaken": "Bu e-posta zaten kullanılıyor",
 			"invalidFormat": "Geçersiz e-posta formatı",
-			"updateFailed": "E-posta güncellenemedi",
-			"notAuthenticated": "Ayarlarınızı güncellemek için lütfen giriş yapın",
-			"verificationExpired": "Doğrulama bağlantısı süresi doldu",
+			"updateFailed": "E-posta güncelleme başarısız",
+			"notAuthenticated": "Ayarları güncellemek için lütfen giriş yapın",
+			"verificationExpired": "Doğrulama bağlantısının süresi doldu",
 			"verificationInvalid": "Geçersiz doğrulama bağlantısı"
 		}
+	},
+	"chatInterface": {
+		"searchInModels": "Bir AI Modeli Seçin",
+		"greetings": {
+			"askAnythingTitle": "👋 Her Şeyi Sorabilirsiniz!",
+			"askAnythingSubtitle": "Hızlı sorulardan derin tartışmalara kadar, sizin için buradayım.",
+			"sparkCreativityTitle": "💡 Yaratıcılığı Ateşle",
+			"sparkCreativitySubtitle": "Taze fikirlere mi ihtiyacınız var? Beyin fırtınası yapalım ve yenilikçi olalım.",
+			"researchExplainTitle": "📚 Araştır ve Açıkla",
+			"researchExplainSubtitle": "Özetlerden ayrıntılı açıklamalara kadar, sadece sorun.",
+			"getInsightsTitle": "🔍 Belirli İçgörüler Edinin",
+			"getInsightsSubtitle": "Zor konuları adım adım parçalayarak daha iyi anlayın.",
+			"boostProductivityTitle": "💪 Verimliliği Artır",
+			"boostProductivitySubtitle": "Metin taslaklarından kodlama ipuçlarına kadar—haydi bunu gerçekleştirelim.",
+			"startWritingHere": "Burada Yazmaya Başlayın!"
+		},
+		"suggestions": {
+			"machineLearning": "Makine öğrenimi ile derin öğrenme arasındaki farkı açıkla",
+			"writeEmail": "Proje güncellemeleri hakkında ekibime kısa bir e-posta yazmama yardım et",
+			"timeManagement": "Zaman yönetimi becerilerimi geliştirmek için bazı ipuçları ver"
+		},
+		"perplexityQuestions": {
+			"weather_ny": "New York hava durumu önümüzdeki 5 gün Celsius derecesinde",
+			"restaurants_antalya": "Antalya, Türkiye yakınlarında en iyi restoranlar şu anda açık",
+			"get_to_times_square": "JFK'den Times Square'e nasıl gidilir",
+			"reset_iphone": "Parolasız iPhone nasıl sıfırlanır",
+			"easy_chicken_recipes": "Bu akşam için kolay tavuk tarifleri",
+			"lose_belly_fat": "Evde karın yağını hızlıca kaybetmenin yolları",
+			"iphone_vs_samsung": "iPhone 15 vs Samsung S24 hangisi daha iyi",
+			"best_washing_machine": "500 altında en iyi çamaşır makinesi",
+			"amazon_prime_deals": "Amazon Prime Day 2024 fırsatları"
+		},
+		"postSelectionHint": {
+			"greatChoice": "Harika Seçim! 🎉",
+			"youSelected": "Seçiminiz:",
+			"refineRequest": "Şimdi, aşağıdaki metin kutusunda isteğinizi geliştirmekten çekinmeyin ve",
+			"sendIcon": "göndermek için simgeye basın!"
+		},
+		"perplexityGreeting": {
+			"needInspiration": "İlham mı gerekiyor?",
+			"clickExample": "Herhangi bir örneğe tıklayın veya kendi sorunuz yazın!",
+			"followUp": "Her zaman takip soruları sorabilir veya isteminizi geliştirebilirsiniz!"
+		},
+		"standardGreeting": {
+			"needIdeas": "Bazı fikirlere mi ihtiyacınız var? Bunlardan birini deneyin:",
+			"ready": "Siz hazır olduğunuzda!"
+		},
+		"errors": {
+			"failedToLoadImage": "Görüntü yüklenemedi",
+			"fileSizeExceeded": "Dosya boyutu 20MB'den küçük olmalıdır",
+			"unsupportedFileType": "Desteklenmeyen dosya türü. İzin verilen türler:",
+			"failedToReadFile": "Dosya okunamadı",
+			"fileProcessingError": "Dosya işlenirken hata oluştu. Lütfen tekrar deneyin.",
+			"enterMessageOrFile": "Lütfen bir mesaj girin veya bir dosya yükleyin",
+			"selectModelFirst": "Lütfen önce bir model seçin",
+			"sendMessageError": "Mesaj gönderilemedi",
+			"uploadCanceled": "Dosya yüklemesi iptal edildi.",
+			"fileRemoved": "Dosya kaldırıldı."
+		},
+		"fileTypes": {
+			"TXT": "TXT",
+			"PDF": "PDF",
+			"DOC": "DOC",
+			"DOCX": "DOCX",
+			"CSV": "CSV",
+			"XLS": "XLS",
+			"XLSX": "XLSX",
+			"JPEG": "JPEG",
+			"PNG": "PNG",
+			"GIF": "GIF",
+			"WEBP": "WEBP",
+			"SVG": "SVG",
+			"HTML": "HTML",
+			"CSS": "CSS",
+			"JS": "JS",
+			"JSON": "JSON",
+			"MD": "MD"
+		},
+		"uploadSuccess": "Dosya {fileName} başarıyla yüklendi!",
+		"defaultModelName": "IA",
+		"messageSent": "Mesaj başarıyla gönderildi!",
+		"blackFridaySpecial": "Black Friday Özel!",
+		"exclusiveOffer": "Tüm jeton yüklemelerinde %50 özel indirimden yararlanın. Acele edin, teklif yakında sona eriyor!",
+		"rechargeNowWithDiscount": "Black Friday İndirimi ile Şimdi Yükle"
+	},
+	"memberProfile": {
+		"global": {
+			"rechargeNow": "Şimdi Yükle",
+			"rechargeTokens": "Jeton Yükle",
+			"fiftyPercentOff": "Yüzde 50 İndirim",
+			"blackFridaySpecial": "Black Friday Özel!",
+			"exclusiveOffer": "Tüm jeton yüklemelerinde %50 özel indirimden yararlanın. Acele edin, teklif yakında sona eriyor!",
+			"rechargeNowWithDiscount": "Black Friday İndirimi ile Şimdi Yükle"
+		},
+		"ariaLabels": {
+			"hideToken": "Jetonu Gizle",
+			"showToken": "Jetonu Göster",
+			"copyToken": "Jetonu Kopyala",
+			"logout": "Çıkış Yap",
+			"logoutAccount": "Hesabınızdan Çıkış Yapın",
+			"rechargeTokens": "Jeton Yükle",
+			"rechargeNowWithDiscount": "Black Friday İndirimi ile Şimdi Yükle"
+		},
+		"buttons": {
+			"logout": "Çıkış Yap",
+			"rechargeNow": "Şimdi Yükle",
+			"rechargeNowWithDiscount": "Black Friday İndirimi ile Şimdi Yükle"
+		},
+		"modal": {
+			"title": "Black Friday Özel!",
+			"description": "Tüm jeton yüklemelerinde %50 özel indirimden yararlanın. Acele edin, teklif yakında sona eriyor!"
+		},
+		"successMessages": {
+			"copyToken": "Jeton kopyalandı!"
+		},
+		"errorMessages": {
+			"copyTokenFailed": "Jeton kopyalama başarısız oldu."
+		},
+		"infoText": "Lütfen jetonunuzu kopyalayın ve güvenli bir şekilde saklayın. Gelecekteki girişler için buna ihtiyacınız olacak."
 	}
 }

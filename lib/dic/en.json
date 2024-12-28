@@ -1,361 +1,362 @@
 {
 	"global": {
-		"title": "بابا GPT",
+		"title": "Baba GPT",
 		"description": "",
-		"conversations": "گفتگوها",
-		"tokenBalance": "تعادل توکن",
-		"purchaseTokens": "خرید توکن",
-		"selectedAmount": "مقدار انتخابی",
-		"discount": "تخفیف",
-		"finalPrice": "قیمت نهایی",
-		"purchase": "خرید",
-		"tokens": "توکن‌ها",
-		"sliderTitle": "جادوی تخفیف اسلایدر"
+		"conversations": "Conversations",
+		"tokenBalance": "Token Balance",
+		"purchaseTokens": "Purchase Tokens",
+		"selectedAmount": "Selected Amount",
+		"discount": "Discount",
+		"finalPrice": "Final Price",
+		"purchase": "Purchase",
+		"tokens": "Tokens",
+		"sliderTitle": "Slider Discount Magic"
 	},
 	"sidebar": {
-		"conversations": "گفتگوها"
+		"conversations": "Conversations"
 	},
 	"auth": {
 		"welcome": {
-			"title": "به بابا GPT خوش آمدید",
-			"description": "همراه هوش مصنوعی هوشمند شما برای گفتگوها و تحلیل‌های بی‌دردسر. تجربه تعاملات امن و ناشناس با فناوری هوش مصنوعی پیشرفته.",
+			"title": "Welcome to Baba GPT",
+			"description": "Your intelligent AI companion for effortless conversations and analyses. Experience secure and anonymous interactions with advanced AI technology.",
 			"features": {
-				"title": "ویژگی‌های کلیدی",
+				"title": "Key Features",
 				"list": {
-					"conversations": "گفتگوها و تحلیل‌های پیشرفته هوش مصنوعی",
-					"language": "پشتیبانی از چند زبان",
-					"security": "احراز هویت امن مبتنی بر توکن",
-					"email": "ادغام ایمیل اختیاری"
+					"conversations": "Advanced AI Conversations and Analyses",
+					"language": "Multilingual Support",
+					"security": "Secure Token-Based Authentication",
+					"email": "Optional Email Integration"
 				}
 			}
 		},
 		"register": {
-			"title": "ثبت‌نام",
-			"email": "ایمیل",
+			"title": "Register",
+			"email": "Email",
 			"emailPlaceholder": "your@email.com",
-			"buttonText": "شروع کنید",
-			"submitting": "در حال ثبت‌نام...",
-			"successMessage": "ثبت‌نام موفقیت‌آمیز بود!",
-			"failureMessage": "ثبت‌نام ناموفق بود. لطفاً دوباره تلاش کنید.",
-			"switchToLogin": "قبلاً حساب دارید؟ وارد شوید",
-			"info": "حساب خود را با انتخاب ۳ حیوان به ترتیب ایجاد کنید. این ترتیب را به خاطر بسپارید - الگوی امنیتی منحصر به فرد شماست.",
-			"submit": "شروع کنید",
-			"emailOptional": "ایمیل شما اختیاری است."
+			"buttonText": "Get Started",
+			"submitting": "Registering...",
+			"successMessage": "Registration successful!",
+			"failureMessage": "Registration failed. Please try again.",
+			"switchToLogin": "Already have an account? Log in",
+			"info": "Create your account by selecting 3 animals in order. Remember this sequence - it’s your unique security pattern.",
+			"submit": "Get Started",
+			"emailOptional": "Your email is optional."
 		},
 		"login": {
-			"title": "ورود",
-			"token": "توکن احراز هویت",
-			"tokenPlaceholder": "توکن احراز هویت خود را وارد کنید",
-			"email": "ایمیل",
+			"title": "Login",
+			"token": "Authentication Token",
+			"tokenPlaceholder": "Enter your authentication token",
+			"email": "Email",
 			"emailPlaceholder": "your@email.com",
-			"buttonText": "ورود",
-			"submitting": "در حال ورود...",
-			"successMessage": "ورود موفقیت‌آمیز بود!",
-			"failureMessage": "ورود ناموفق بود. لطفاً دوباره تلاش کنید.",
-			"switchToRegister": "نیاز به حساب دارید؟ ثبت‌نام کنید",
-			"info": "توکن خود را وارد کنید و ۳ حیوان خود را به همان ترتیب که در ثبت‌نام انتخاب کرده‌اید، انتخاب کنید.",
-			"submit": "ورود"
+			"buttonText": "Login",
+			"submitting": "Logging in...",
+			"successMessage": "Login successful!",
+			"failureMessage": "Login failed. Please try again.",
+			"switchToRegister": "Need an account? Register",
+			"info": "Enter your token and select your 3 animals in the same order you chose during registration.",
+			"submit": "Login"
 		},
-		"redirecting": "در حال هدایت به صفحه اصلی...",
-		"selectThreeAnimalsInOrder": "لطفاً دقیقاً ۳ حیوان انتخاب کنید",
-		"selectedAnimalsOrder": "ترتیب انتخابی شما:",
-		"selectNext": "انتخاب حیوان بعدی",
-		"selectAnimalsInOrder": "باید ۳ حیوان انتخاب کنید و آن را به عنوان رمز عبور به خاطر بسپارید",
-		"orderMatters": "به یاد داشته باشید: ترتیب انتخاب حیوان اهمیت دارد!",
-		"tokenCopied": "توکن به کلیپ‌بورد کپی شد",
-		"saveToken": "توکن خود را ذخیره کنید",
-		"tokenImportant": "مهم: این توکن را ذخیره کنید - برای ورود به سیستم به آن نیاز خواهید داشت.",
-		"rememberAnimalOrder": "ترتیب حیوان خود را به خاطر بسپارید:",
-		"understood": "توکن خود را ذخیره کرده‌ام",
-		"verifyEmail": "ایمیل خود را تایید کنید",
-		"verificationSent": "یک ایمیل تایید به {email} ارسال شده است. لطفاً صندوق ورودی خود را بررسی کنید.",
-		"verificationReminder": "لطفاً آدرس ایمیل خود را تایید کنید تا همه ویژگی‌های حساب فعال شوند",
-		"optional": "اختیاری",
-		"confirmTokenSaved": "توکن خود را به طور امن ذخیره کرده‌ام",
-		"continue": "ادامه",
-		"verificationSuccess": "ایمیل شما تایید شده است. در حال هدایت به صفحه حساب کاربری...",
-		"verificationFailed": "تایید ناموفق بود",
-		"continueWithoutEmail": "ادامه بدون ایمیل",
-		"emailLater": "می‌توانید ایمیل خود را بعداً اضافه کنید.",
-		"addEmail": "افزودن ایمیل",
-		"skip": "رد کردن",
-		"back": "بازگشت",
+		"redirecting": "Redirecting to the main page...",
+		"selectThreeAnimalsInOrder": "Please select exactly 3 animals",
+		"selectedAnimalsOrder": "Your selected order:",
+		"selectNext": "Select Next Animal",
+		"selectAnimalsInOrder": "You must select 3 animals and remember their order as your password",
+		"orderMatters": "Remember: The order of animal selection matters!",
+		"tokenCopied": "Token copied to clipboard",
+		"saveToken": "Save your token",
+		"tokenImportant": "Important: Save this token - you will need it to log in.",
+		"rememberAnimalOrder": "Remember your animal order:",
+		"understood": "I have saved my token",
+		"verifyEmail": "Verify your email",
+		"verificationSent": "A verification email has been sent to {email}. Please check your inbox.",
+		"verificationReminder": "Please verify your email address to activate all account features",
+		"optional": "Optional",
+		"confirmTokenSaved": "I have securely saved my token",
+		"continue": "Continue",
+		"verificationSuccess": "Your email has been verified. Redirecting to your account page...",
+		"verificationFailed": "Verification failed",
+		"continueWithoutEmail": "Continue without email",
+		"emailLater": "You can add your email later.",
+		"addEmail": "Add Email",
+		"skip": "Skip",
+		"back": "Back",
 		"emailBenefits": {
-			"title": "مزایای افزودن ایمیل شما",
-			"recovery": "بازیابی رمز عبور",
-			"security": "افزایش امنیت",
-			"updates": "دریافت به‌روزرسانی‌های مهم"
+			"title": "Benefits of Adding Your Email",
+			"recovery": "Password Recovery",
+			"security": "Enhanced Security",
+			"updates": "Receive Important Updates"
 		},
 		"errors": {
-			"generic": "یک خطا رخ داد. لطفاً دوباره تلاش کنید",
-			"network": "خطای شبکه. لطفاً اتصال خود را بررسی کنید",
+			"generic": "An error occurred. Please try again.",
+			"network": "Network error. Please check your connection.",
 			"animals": {
-				"selectThree": "لطفاً دقیقاً ۳ حیوان انتخاب کنید"
+				"selectThree": "Please select exactly 3 animals."
 			},
 			"email": {
-				"invalid": "لطفاً یک آدرس ایمیل معتبر وارد کنید",
-				"required": "ایمیل الزامی است",
-				"alreadyVerified": "این ایمیل قبلاً توسط حساب دیگری تایید شده است",
-				"verificationFailed": "تایید ایمیل ناموفق بود"
+				"invalid": "Please enter a valid email address.",
+				"required": "Email is required.",
+				"alreadyVerified": "This email has already been verified by another account.",
+				"verificationFailed": "Email verification failed."
 			},
 			"register": {
-				"generic": "ثبت‌نام ناموفق بود. لطفاً دوباره تلاش کنید",
-				"emailTaken": "این ایمیل قبلاً ثبت شده است"
+				"generic": "Registration failed. Please try again.",
+				"emailTaken": "This email is already registered."
 			},
 			"login": {
-				"generic": "ورود ناموفق بود. لطفاً دوباره تلاش کنید",
-				"tokenRequired": "توکن احراز هویت الزامی است",
-				"invalidToken": "توکن احراز هویت نامعتبر است",
-				"incorrectSequence": "ترتیب حیوانات نادرست است. {attempts} تلاش باقی مانده",
-				"accountLocked": "حساب قفل شده است. لطفاً بعد از {minutes} دقیقه دوباره تلاش کنید",
-				"tooManyAttempts": "تلاش‌های ناموفق زیاد است. لطفاً بعداً دوباره تلاش کنید",
-				"accountInactive": "این حساب در حال حاضر غیرفعال است",
-				"accountDeleted": "این حساب حذف شده است"
+				"generic": "Login failed. Please try again.",
+				"tokenRequired": "Authentication token is required.",
+				"invalidToken": "Invalid authentication token.",
+				"incorrectSequence": "Incorrect animal sequence. {attempts} attempts remaining.",
+				"accountLocked": "Account is locked. Please try again after {minutes} minutes.",
+				"tooManyAttempts": "Too many failed attempts. Please try again later.",
+				"accountInactive": "This account is currently inactive.",
+				"accountDeleted": "This account has been deleted."
 			}
 		},
 		"animalList": [
-			{ "key": "dog", "label": "سگ", "category": "domestic" },
-			{ "key": "cat", "label": "گربه", "category": "domestic" },
-			{ "key": "elephant", "label": "فیل", "category": "wild" },
-			{ "key": "lion", "label": "شیر", "category": "wild" },
-			{ "key": "tiger", "label": "ببر", "category": "wild" },
-			{ "key": "bear", "label": "خرس", "category": "wild" },
-			{ "key": "monkey", "label": "میمون", "category": "wild" },
-			{ "key": "giraffe", "label": "زرافه", "category": "wild" },
-			{ "key": "zebra", "label": "گورخر", "category": "wild" },
-			{ "key": "penguin", "label": "پنگوئن", "category": "unique" },
-			{ "key": "kangaroo", "label": "کانگورو", "category": "wild" },
-			{ "key": "koala", "label": "کوالا", "category": "wild" }
+			{ "key": "dog", "label": "Dog", "category": "domestic" },
+			{ "key": "cat", "label": "Cat", "category": "domestic" },
+			{ "key": "elephant", "label": "Elephant", "category": "wild" },
+			{ "key": "lion", "label": "Lion", "category": "wild" },
+			{ "key": "tiger", "label": "Tiger", "category": "wild" },
+			{ "key": "bear", "label": "Bear", "category": "wild" },
+			{ "key": "monkey", "label": "Monkey", "category": "wild" },
+			{ "key": "giraffe", "label": "Giraffe", "category": "wild" },
+			{ "key": "zebra", "label": "Zebra", "category": "wild" },
+			{ "key": "penguin", "label": "Penguin", "category": "unique" },
+			{ "key": "kangaroo", "label": "Kangaroo", "category": "wild" },
+			{ "key": "koala", "label": "Koala", "category": "wild" }
 		],
 		"animalCategories": {
-			"domestic": "دوستان اهلی",
-			"wild": "شگفتی‌های وحشی",
-			"unique": "موجودات منحصر به فرد"
+			"domestic": "Domestic Friends",
+			"wild": "Wild Wonders",
+			"unique": "Unique Creatures"
 		}
 	},
 	"personas": {
 		"names": {
-			"babagpt": "بابا GPT",
-			"claude": "کلود",
-			"o1Preview": "o1-پیش‌نمایش",
-			"o1Mini": "o1-مینی",
+			"babagpt": "Baba GPT",
+			"claude": "Claude",
+			"o1Preview": "o1-Preview",
+			"o1Mini": "o1-Mini",
 			"chatgpt4": "4o"
 		},
 		"roles": {
-			"searchEngine": "موتور جستجوی زنده",
-			"chatgpt": "چت GPT",
-			"analyticalAssistant": "دستیار تحلیلی",
-			"visualAnalysisAssistant": "دستیار تحلیل بصری",
-			"versatileAIAssistant": "دستیار هوش مصنوعی چندکاره"
+			"searchEngine": "Live Search Engine",
+			"chatgpt": "Chat GPT",
+			"analyticalAssistant": "Analytical Assistant",
+			"visualAnalysisAssistant": "Visual Analysis Assistant",
+			"versatileAIAssistant": "Versatile AI Assistant"
 		},
 		"descriptions": {
-			"babagpt": "Mixtral تحلیل‌های فنی و داده‌ها را به صورت دوستانه و قابل دسترس با فرمت‌بندی اعداد واضح و ارائه جذاب ارائه می‌دهد.",
-			"claude": "کلود در ارائه بینش‌های تحلیلی واضح و مختصر برتر است و برای تصمیم‌گیری‌های مبتنی بر داده و توضیحات دقیق ایده‌آل است.",
-			"o1Preview": "o1-پیش‌نمایش برای تولید پاسخ‌های جامع و دقیق طراحی شده است، مناسب برای تحلیل عمیق و گفتگوهای طولانی.",
-			"o1Mini": "o1-مینی پاسخ‌های سریع و کارآمد ارائه می‌دهد، ایده‌آل برای پرسش‌های کوتاه و تعاملات سریع.",
-			"chatgpt4": "4o یک دستیار تحلیلی است که قادر به تنظیم خلاقیت و طول پاسخ‌ها است، مناسب برای گفتگوهای سفارشی و دقیق.",
-			"x": "X یک دستیار تحلیلی پیشرفته است که برای تعاملات عمومی هوش مصنوعی طراحی شده است.",
-			"gemini": "Gemini یک دستیار هوش مصنوعی چندکاره است که درک زبان طبیعی را با قابلیت‌های بینایی ترکیب می‌کند.",
-			"perplexity": "Perplexity یک موتور جستجوی مبتنی بر هوش مصنوعی است که جستجوی بلادرنگ با پاسخ‌های مختصر و دقیق و ارائه جذاب را فراهم می‌کند."
+			"babagpt": "Mixtral provides technical and data analyses in a friendly and accessible manner with clear number formatting and engaging presentation.",
+			"claude": "Claude excels at providing clear and concise analytical insights, ideal for data-driven decision-making and precise explanations.",
+			"o1Preview": "o1-Preview is designed to generate comprehensive and accurate responses, suitable for in-depth analysis and lengthy conversations.",
+			"o1Mini": "o1-Mini offers quick and efficient responses, ideal for short queries and fast interactions.",
+			"chatgpt4": "4o is an analytical assistant capable of adjusting creativity and response length, suitable for customized and precise conversations.",
+			"x": "X is an advanced analytical assistant designed for general AI interactions.",
+			"gemini": "Gemini is a versatile AI assistant that combines natural language understanding with visual capabilities.",
+			"perplexity": "Perplexity is an AI-powered search engine that provides real-time search with concise and accurate responses and engaging presentation."
 		},
 		"categories": {
-			"all": "همه مدل‌ها",
-			"creative": "خلاق",
-			"analytical": "تحلیلی",
-			"coding": "کدنویسی",
-			"chat": "چت",
-			"searchEngine": "موتور جستجو",
-			"vision": "بینایی",
-			"complex_reasoning": "استدلال پیچیده",
-			"unique": "مدل‌های منحصر به فرد",
-			"internet_search": "جستجوی اینترنتی"
+			"all": "All Models",
+			"creative": "Creative",
+			"analytical": "Analytical",
+			"coding": "Coding",
+			"chat": "Chat",
+			"searchEngine": "Search Engine",
+			"vision": "Vision",
+			"complex_reasoning": "Complex Reasoning",
+			"unique": "Unique Models",
+			"internet_search": "Internet Search"
 		},
 		"features": {
 			"suitableFor": {
-				"content_creation": "ایجاد محتوا",
-				"academic_research": "تحقیق آکادمیک",
-				"coding_assistance": "کمک به کدنویسی",
-				"data_analysis": "تحلیل داده‌ها",
-				"quick_queries": "پرسش‌های سریع",
-				"customer_support": "پشتیبانی مشتری",
-				"creative_projects": "پروژه‌های خلاقانه",
-				"image_analysis": "تحلیل تصویر",
-				"visual_description": "توضیح بصری",
-				"document_understanding": "درک اسناد",
-				"image_understanding": "درک تصویر",
-				"multi_modal_interaction": "تعامل چندرسانه‌ای",
-				"detailed_visual_analysis": "تحلیل بصری دقیق",
-				"interactive_coding": "کدنویسی تعاملی",
-				"technical_support": "پشتیبانی فنی",
-				"adaptive_communication": "ارتباط تطبیقی",
-				"advanced_security": "امنیت پیشرفته",
-				"real_time_collaboration": "همکاری بلادرنگ"
+				"content_creation": "Content Creation",
+				"academic_research": "Academic Research",
+				"coding_assistance": "Coding Assistance",
+				"data_analysis": "Data Analysis",
+				"quick_queries": "Quick Queries",
+				"customer_support": "Customer Support",
+				"creative_projects": "Creative Projects",
+				"image_analysis": "Image Analysis",
+				"visual_description": "Visual Description",
+				"document_understanding": "Document Understanding",
+				"image_understanding": "Image Understanding",
+				"multi_modal_interaction": "Multi-Modal Interaction",
+				"detailed_visual_analysis": "Detailed Visual Analysis",
+				"interactive_coding": "Interactive Coding",
+				"technical_support": "Technical Support",
+				"adaptive_communication": "Adaptive Communication",
+				"advanced_security": "Advanced Security",
+				"real_time_collaboration": "Real-Time Collaboration"
 			},
 			"bestFor": {
-				"detailed_explanations": "توضیحات دقیق",
-				"concise_summaries": "خلاصه‌های مختصر",
-				"interactive_assistance": "کمک تعاملی",
-				"data_driven_decisions": "تصمیم‌گیری مبتنی بر داده",
-				"user_friendly_explanations": "توضیحات کاربرپسند",
-				"technical_accuracy": "دقت فنی",
-				"live_real_data": "داده‌های واقعی بلادرنگ",
-				"accurate": "دقیق",
-				"visual_content_analysis": "تحلیل محتوای بصری",
-				"image_based_queries": "پرسش‌های مبتنی بر تصویر",
-				"visual_problem_solving": "حل مسئله بصری",
-				"fast_responses": "پاسخ‌های سریع",
-				"visual_analysis": "تحلیل بصری",
-				"in_depth_analysis": "تحلیل عمیق",
-				"customized_learning": "یادگیری سفارشی",
-				"interactive_coding": "کدنویسی تعاملی"
+				"detailed_explanations": "Detailed Explanations",
+				"concise_summaries": "Concise Summaries",
+				"interactive_assistance": "Interactive Assistance",
+				"data_driven_decisions": "Data-Driven Decisions",
+				"user_friendly_explanations": "User-Friendly Explanations",
+				"technical_accuracy": "Technical Accuracy",
+				"live_real_data": "Live Real Data",
+				"accurate": "Accurate",
+				"visual_content_analysis": "Visual Content Analysis",
+				"image_based_queries": "Image-Based Queries",
+				"visual_problem_solving": "Visual Problem Solving",
+				"fast_responses": "Fast Responses",
+				"visual_analysis": "Visual Analysis",
+				"in_depth_analysis": "In-Depth Analysis",
+				"customized_learning": "Customized Learning",
+				"interactive_coding": "Interactive Coding"
 			},
 			"specificFeatures": {
-				"language_support": "پشتیبانی از زبان",
-				"customization": "سفارشی‌سازی",
-				"security_features": "ویژگی‌های امنیتی",
-				"high_performance": "عملکرد بالا",
-				"real_time_collaboration": "همکاری بلادرنگ",
-				"engaging_outputs": "خروجی‌های جذاب",
-				"integration_capabilities": "قابلیت‌های ادغام",
-				"code_generation": "تولید کد"
+				"language_support": "Language Support",
+				"customization": "Customization",
+				"security_features": "Security Features",
+				"high_performance": "High Performance",
+				"real_time_collaboration": "Real-Time Collaboration",
+				"engaging_outputs": "Engaging Outputs",
+				"integration_capabilities": "Integration Capabilities",
+				"code_generation": "Code Generation"
 			}
 		},
 		"labels": {
 			"pro": "PRO",
-			"new": "جدید",
-			"rating": "امتیاز",
-			"speed": "سرعت",
+			"new": "New",
+			"rating": "Rating",
+			"speed": "Speed",
 			"speedValues": {
-				"very_fast": "بسیار سریع",
-				"fast": "سریع",
-				"slow": "آهسته"
+				"very_fast": "Very Fast",
+				"fast": "Fast",
+				"slow": "Slow"
 			},
-			"recentlyUsed": "به‌تازگی استفاده شده"
+			"recentlyUsed": "Recently Used"
 		}
 	},
 	"modelSelection": {
-		"needHelp": "نیاز به کمک دارید؟",
-		"backButton": "بازگشت",
-		"chooseAgain": "دوباره انتخاب کنید",
-		"searchPlaceholder": "جستجو بر اساس قابلیت، نام یا توضیحات...",
-		"recent": "جدیدترین‌ها",
-		"allModels": "همه مدل‌ها",
-		"noModelsFound": "هیچ مدلی مطابق با جستجوی شما یافت نشد.",
+		"needHelp": "Need help?",
+		"backButton": "Back",
+		"chooseAgain": "Choose Again",
+		"searchPlaceholder": "Search by feature, name, or description...",
+		"recent": "Recent",
+		"allModels": "All Models",
+		"noModelsFound": "No models found matching your search.",
 		"categories": {
-			"all": "همه مدل‌ها",
-			"creative": "خلاق",
-			"analytical": "تحلیلی",
-			"coding": "کدنویسی",
-			"chat": "چت",
-			"searchEngine": "موتور جستجو",
-			"vision": "بینایی",
-			"complex_reasoning": "استدلال پیچیده",
-			"unique": "مدل‌های منحصر به فرد",
-			"internet_search": "جستجوی اینترنتی"
+			"all": "All Models",
+			"creative": "Creative",
+			"analytical": "Analytical",
+			"coding": "Coding",
+			"chat": "Chat",
+			"searchEngine": "Search Engine",
+			"vision": "Vision",
+			"complex_reasoning": "Complex Reasoning",
+			"unique": "Unique Models",
+			"internet_search": "Internet Search"
 		}
 	},
 	"modelCard": {
 		"capabilities": {
-			"vision": "بینایی",
-			"analytical": "تحلیلی",
-			"coding": "کدنویسی",
-			"chat": "چت"
+			"vision": "Vision",
+			"analytical": "Analytical",
+			"coding": "Coding",
+			"chat": "Chat"
 		}
 	},
 	"personaSuggester": {
-		"needHelp": "نیاز به کمک دارید؟",
+		"needHelp": "Need help?",
 		"progress": {
-			"step1": "تنها سه سؤال برای یافتن بهترین راه‌حل برای شما.",
-			"step2": "تقریباً رسیدیم، تنها دو سؤال باقی مانده است.",
-			"step3": "ما در حال یافتن بهترین راه‌حل هستیم، تنها یک سؤال باقی مانده است.",
-			"step4": "پایان! این لیست شماست."
+			"step1": "Only three questions left to find the best solution for you.",
+			"step2": "Almost there, only two questions remaining.",
+			"step3": "We are finding the best solution, only one question left.",
+			"step4": "Done! Here is your list."
 		},
 		"questions": {
 			"useCase": {
-				"title": "1. چه کاری را در حال حاضر با بابا GPT انجام می‌دهید؟",
+				"title": "1. What are you currently using Baba GPT for?",
 				"options": {
-					"writing_assistance": "کمک به نوشتن",
-					"research_and_analysis": "تحقیق و تحلیل",
-					"coding_help": "کمک به کدنویسی",
-					"data_insights": "بینش‌های داده‌ای",
-					"creative_projects": "پروژه‌های خلاقانه"
+					"writing_assistance": "Writing Assistance",
+					"research_and_analysis": "Research and Analysis",
+					"coding_help": "Coding Help",
+					"data_insights": "Data Insights",
+					"creative_projects": "Creative Projects"
 				}
 			},
 			"responseType": {
-				"title": "2. چه نوع پاسخ‌هایی را برای خود مفید می‌بینید؟",
+				"title": "2. What type of responses do you find useful?",
 				"options": {
-					"in_depth_explanations": "توضیحات عمیق",
-					"quick_summaries": "خلاصه‌های سریع",
-					"code_examples": "مثال‌های کد",
-					"visual_representations": "نمایش‌های بصری",
-					"interactive_guidance": "راهنمایی تعاملی"
+					"in_depth_explanations": "In-Depth Explanations",
+					"quick_summaries": "Quick Summaries",
+					"code_examples": "Code Examples",
+					"visual_representations": "Visual Representations",
+					"interactive_guidance": "Interactive Guidance"
 				}
 			},
 			"features": {
-				"title": "3. آیا به ویژگی‌های خاصی نیاز دارید؟",
+				"title": "3. Do you need any specific features?",
 				"options": {
-					"multi_language_support": "پشتیبانی از چند زبان",
-					"tool_integration": "ادغام با ابزارهای دیگر",
-					"customizable_settings": "تنظیمات قابل سفارشی‌سازی",
-					"real_time_collaboration": "همکاری در زمان واقعی",
-					"enhanced_security": "امنیت پیشرفته"
+					"multi_language_support": "Multi-Language Support",
+					"tool_integration": "Tool Integration",
+					"customizable_settings": "Customizable Settings",
+					"real_time_collaboration": "Real-Time Collaboration",
+					"enhanced_security": "Enhanced Security"
 				}
 			}
 		},
 		"results": {
-			"title": "تکمیل شد! در اینجا شخصیت‌های پیشنهادی شما هستند:",
-			"noResults": "هیچ شخصیت مناسبی یافت نشد.",
-			"chooseAgain": "دوباره انتخاب کنید"
+			"title": "Completed! Here are your suggested personas:",
+			"noResults": "No suitable personas found.",
+			"chooseAgain": "Choose Again"
 		}
 	},
 	"account": {
-		"title": "تنظیمات حساب",
-		"subtitle": "مدیریت تنظیمات و ترجیحات حساب کاربری خود",
-		"userInfo": "اطلاعات کاربر",
-		"email": "آدرس ایمیل",
-		"updateEmail": "به‌روزرسانی ایمیل",
-		"addEmail": "افزودن ایمیل",
-		"newEmailPlaceholder": "آدرس ایمیل جدید را وارد کنید",
-		"save": "ذخیره تغییرات",
-		"updating": "در حال به‌روزرسانی...",
-		"cancel": "لغو",
-		"noEmail": "هیچ آدرس ایمیلی تنظیم نشده است",
-		"tokenBalance": "تعادل توکن",
-		"authToken": "توکن احراز هویت",
-		"showToken": "نمایش توکن",
-		"hideToken": "پنهان کردن توکن",
-		"tokenCopied": "توکن به کلیپ‌بورد کپی شد",
-		"security": "امنیت",
-		"securityInfo": "توکن و ترتیب حیوان خود را امن نگه دارید. این‌ها برای احراز هویت لازم هستند و در صورت از دست رفتن قابل بازیابی نیستند.",
-		"logout": "خروج",
-		"emailUpdated": "ایمیل با موفقیت به‌روزرسانی شد",
-		"updateFailed": "به‌روزرسانی ایمیل ناموفق بود",
-		"invalidEmail": "لطفاً یک آدرس ایمیل معتبر وارد کنید",
-		"verified": "تایید شده",
-		"unverified": "تایید نشده",
-		"verificationPending": "تایید ایمیل در انتظار است",
-		"resendVerification": "ارسال مجدد ایمیل تایید",
+		"title": "Account Settings",
+		"subtitle": "Manage your account settings and preferences",
+		"userInfo": "User Information",
+		"email": "Email Address",
+		"updateEmail": "Update Email",
+		"addEmail": "Add Email",
+		"newEmailPlaceholder": "Enter new email address",
+		"save": "Save Changes",
+		"updating": "Updating...",
+		"cancel": "Cancel",
+		"noEmail": "No email address set",
+		"tokenBalance": "Token Balance",
+		"authToken": "Authentication Token",
+		"showToken": "Show Token",
+		"hideToken": "Hide Token",
+		"tokenCopied": "Token copied to clipboard",
+		"security": "Security",
+		"securityInfo": "Keep your token and animal sequence secure. They are required for authentication and cannot be recovered if lost.",
+		"logout": "Logout",
+		"emailUpdated": "Email successfully updated",
+		"updateFailed": "Email update failed",
+		"invalidEmail": "Please enter a valid email address",
+		"verified": "Verified",
+		"unverified": "Unverified",
+		"verificationPending": "Email verification pending",
+		"resendVerification": "Resend Verification Email",
 		"errors": {
-			"emailTaken": "این ایمیل در حال استفاده است",
-			"invalidFormat": "فرمت ایمیل نامعتبر است",
-			"updateFailed": "به‌روزرسانی ایمیل ناموفق بود",
-			"notAuthenticated": "لطفاً برای به‌روزرسانی تنظیمات وارد شوید",
-			"verificationExpired": "پیوند تایید منقضی شده است",
-			"verificationInvalid": "پیوند تایید نامعتبر است"
+			"emailTaken": "This email is already in use",
+			"invalidFormat": "Invalid email format",
+			"updateFailed": "Email update failed",
+			"notAuthenticated": "Please log in to update settings",
+			"verificationExpired": "Verification link has expired",
+			"verificationInvalid": "Invalid verification link"
 		}
 	},
 	"chatInterface": {
+		"searchInModels": "Select an AI Model",
 		"greetings": {
-			"askAnythingTitle": "👋 هر چیزی بپرسید!",
-			"askAnythingSubtitle": "از پرسش‌های سریع تا عمیق، من اینجا هستم برای شما.",
-			"sparkCreativityTitle": "💡 جرقه خلاقیت",
-			"sparkCreativitySubtitle": "نیاز به ایده‌های تازه دارید؟ بیایید طوفان فکری کنیم و نوآوری کنیم.",
-			"researchExplainTitle": "📚 تحقیق و توضیح",
-			"researchExplainSubtitle": "از خلاصه‌ها تا توضیحات دقیق، فقط بپرسید.",
-			"getInsightsTitle": "🔍 دریافت بینش‌های خاص",
-			"getInsightsSubtitle": "موضوعات سخت را گام به گام تجزیه کنید تا بهتر بفهمید.",
-			"boostProductivityTitle": "💪 افزایش بهره‌وری",
-			"boostProductivitySubtitle": "از نوشتن پیش‌نویس‌ها تا نکات کدنویسی—بیایید انجامش دهیم.",
+			"askAnythingTitle": "👋 Ask Anything!",
+			"askAnythingSubtitle": "From quick questions to deep discussions, I'm here for you.",
+			"sparkCreativityTitle": "💡 Spark Creativity",
+			"sparkCreativitySubtitle": "Need fresh ideas? Let's brainstorm and innovate.",
+			"researchExplainTitle": "📚 Research and Explain",
+			"researchExplainSubtitle": "From summaries to detailed explanations, just ask.",
+			"getInsightsTitle": "🔍 Get Specific Insights",
+			"getInsightsSubtitle": "Break down tough topics step-by-step to understand better.",
+			"boostProductivityTitle": "💪 Boost Productivity",
+			"boostProductivitySubtitle": "From drafting texts to coding tips—let's get it done.",
 			"startWritingHere": "Start Writing Here!"
 		},
 		"suggestions": {
@@ -422,6 +423,44 @@
 		},
 		"uploadSuccess": "File {fileName} uploaded successfully!",
 		"defaultModelName": "AI",
-		"messageSent": "Message sent successfully!"
+		"messageSent": "Message sent successfully!",
+		"blackFridaySpecial": "Black Friday Special!",
+		"exclusiveOffer": "Enjoy an exclusive 50% OFF on all token recharges. Hurry, offer ends soon!",
+		"rechargeNowWithDiscount": "Recharge Now with Black Friday Discount"
+	},
+	"memberProfile": {
+		"global": {
+			"rechargeNow": "Recharge Now",
+			"rechargeTokens": "Recharge Tokens",
+			"fiftyPercentOff": "50% OFF",
+			"blackFridaySpecial": "Black Friday Special!",
+			"exclusiveOffer": "Enjoy an exclusive 50% OFF on all token recharges. Hurry, offer ends soon!",
+			"rechargeNowWithDiscount": "Recharge Now with Black Friday Discount"
+		},
+		"ariaLabels": {
+			"hideToken": "Hide token",
+			"showToken": "Show token",
+			"copyToken": "Copy token",
+			"logout": "Logout",
+			"logoutAccount": "Logout from your account",
+			"rechargeTokens": "Recharge Tokens",
+			"rechargeNowWithDiscount": "Recharge Now with Black Friday Discount"
+		},
+		"buttons": {
+			"logout": "Logout",
+			"rechargeNow": "Recharge Now",
+			"rechargeNowWithDiscount": "Recharge Now with Black Friday Discount"
+		},
+		"modal": {
+			"title": "Black Friday Special!",
+			"description": "Enjoy an exclusive 50% OFF on all token recharges. Hurry, offer ends soon!"
+		},
+		"successMessages": {
+			"copyToken": "Token copied!"
+		},
+		"errorMessages": {
+			"copyTokenFailed": "Failed to copy token."
+		},
+		"infoText": "Please copy and save your token securely. You will need it for future logins."
 	}
 }

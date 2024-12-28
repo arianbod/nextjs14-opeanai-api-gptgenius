@@ -15,13 +15,12 @@ import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from '@/context/TranslationContext';
 
-const EmailSection = () => {
+const EmailSection = ({ isRTL, dict }) => {
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [newEmail, setNewEmail] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { user, isEmailVerified, updateEmail, resendVerificationEmail } =
 		useAuth();
-	const { dict } = useTranslations();
 
 	const handleUpdateEmail = async (e) => {
 		e.preventDefault();
@@ -61,12 +60,21 @@ const EmailSection = () => {
 
 	return (
 		<div className='space-y-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg'>
-			<div className='flex items-center justify-between'>
-				<div className='flex items-center gap-2'>
+			<div
+				className={`flex items-center justify-between ${
+					isRTL ? 'flex-row-reverse' : 'flex-row'
+				}`}>
+				<div
+					className={`flex items-center gap-2 ${
+						isRTL ? 'flex-row-reverse' : 'flex-row'
+					}`}>
 					<FaEnvelope className='text-gray-400' />
 					<span className='text-sm font-medium'>{dict.account.email}</span>
 				</div>
-				<div className='flex items-center gap-2'>
+				<div
+					className={`flex items-center gap-2 ${
+						isRTL ? 'flex-row-reverse' : 'flex-row'
+					}`}>
 					{user?.email && (
 						<span
 							className={`text-sm px-2 py-1 rounded-full flex items-center gap-1 
@@ -97,7 +105,10 @@ const EmailSection = () => {
 			</div>
 
 			{user?.email && !isEmailVerified && !isUpdating && (
-				<div className='flex items-center justify-between bg-yellow-50 dark:bg-yellow-900/20 p-2 rounded'>
+				<div
+					className={`flex items-center justify-between bg-yellow-50 dark:bg-yellow-900/20 p-2 rounded ${
+						isRTL ? 'flex-row-reverse' : 'flex-row'
+					}`}>
 					<span className='text-sm text-yellow-800 dark:text-yellow-200'>
 						{dict.account.verificationPending}
 					</span>
@@ -122,7 +133,8 @@ const EmailSection = () => {
 						className='w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-600'
 						disabled={isSubmitting}
 					/>
-					<div className='flex gap-2'>
+					<div
+						className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}>
 						<button
 							type='submit'
 							disabled={isSubmitting}
@@ -148,7 +160,7 @@ const EmailSection = () => {
 
 const AccountPage = () => {
 	const { user, tokenBalance, logout } = useAuth();
-	const { dict } = useTranslations();
+	const { dict, isRTL } = useTranslations();
 	const [showToken, setShowToken] = useState(false);
 
 	const copyToken = () => {
@@ -159,7 +171,11 @@ const AccountPage = () => {
 	};
 
 	return (
-		<div className='min-h-screen bg-gray-50 dark:bg-gray-900 py-8'>
+		<div
+			className={`min-h-screen py-8 ${
+				isRTL ? 'text-right' : 'text-left'
+			} bg-gray-50 dark:bg-gray-900`}
+			dir={isRTL ? 'rtl' : 'ltr'}>
 			<div className='max-w-4xl mx-auto px-4'>
 				<div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl'>
 					{/* Header */}
@@ -180,12 +196,21 @@ const AccountPage = () => {
 								{dict.account.userInfo}
 							</h2>
 
-							<EmailSection />
+							<EmailSection
+								isRTL={isRTL}
+								dict={dict}
+							/>
 
 							{/* Token Balance */}
 							<div className='p-4 bg-gray-50 dark:bg-gray-700 rounded-lg'>
-								<div className='flex items-center justify-between'>
-									<div className='flex items-center gap-2'>
+								<div
+									className={`flex items-center justify-between ${
+										isRTL ? 'flex-row-reverse' : 'flex-row'
+									}`}>
+									<div
+										className={`flex items-center gap-2 ${
+											isRTL ? 'flex-row-reverse' : 'flex-row'
+										}`}>
 										<FaCoins className='text-yellow-500' />
 										<span className='text-sm font-medium'>
 											{dict.account.tokenBalance}
@@ -197,8 +222,14 @@ const AccountPage = () => {
 
 							{/* Authentication Token */}
 							<div className='p-4 bg-gray-50 dark:bg-gray-700 rounded-lg'>
-								<div className='flex items-center justify-between mb-2'>
-									<div className='flex items-center gap-2'>
+								<div
+									className={`flex items-center justify-between mb-2 ${
+										isRTL ? 'flex-row-reverse' : 'flex-row'
+									}`}>
+									<div
+										className={`flex items-center gap-2 ${
+											isRTL ? 'flex-row-reverse' : 'flex-row'
+										}`}>
 										<FaKey className='text-green-500' />
 										<span className='text-sm font-medium'>
 											{dict.account.authToken}
@@ -232,7 +263,10 @@ const AccountPage = () => {
 
 							{/* Security Info */}
 							<div className='p-4 bg-gray-50 dark:bg-gray-700 rounded-lg'>
-								<div className='flex items-center gap-2 mb-2'>
+								<div
+									className={`flex items-center gap-2 mb-2 ${
+										isRTL ? 'flex-row-reverse' : 'flex-row'
+									}`}>
 									<FaShieldAlt className='text-red-500' />
 									<span className='text-sm font-medium'>
 										{dict.account.security}

@@ -12,9 +12,9 @@ import Modal from '@/components/Modal'; // Ensure you have a Modal component
 
 const MemberProfile = () => {
 	const { user, logout } = useAuth();
-	const { dict } = useTranslations();
 	const [isTokenVisible, setIsTokenVisible] = useState(false);
 	const [showPromo, setShowPromo] = useState(false);
+	const { isRTL, dict } = useTranslations();
 
 	// Persist token visibility state
 	useEffect(() => {
@@ -51,10 +51,15 @@ const MemberProfile = () => {
 		navigator.clipboard
 			.writeText(user.token)
 			.then(() => {
-				toast.success(dict.auth.tokenCopied || 'Token copied!');
+				toast.success(
+					dict.memberProfile.successMessages.copyToken || 'Token copied!'
+				);
 			})
 			.catch(() => {
-				toast.error(dict.auth.tokenCopyFailed || 'Failed to copy token.');
+				toast.error(
+					dict.memberProfile.errorMessages.copyTokenFailed ||
+						'Failed to copy token.'
+				);
 			});
 	};
 
@@ -71,7 +76,10 @@ const MemberProfile = () => {
 
 	return (
 		<>
-			<div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full transition-transform '>
+			<div
+				className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full transition-transform ${
+					isRTL ? 'text-right' : 'text-left'
+				}`}>
 				{/* User Information and Login Token */}
 				<div className='flex flex-col items-center justify-between'>
 					<div className='flex items-center space-x-4'>
@@ -103,7 +111,11 @@ const MemberProfile = () => {
 									<button
 										onClick={() => setIsTokenVisible(!isTokenVisible)}
 										className='text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition'
-										aria-label={isTokenVisible ? 'Hide token' : 'Show token'}>
+										aria-label={
+											isTokenVisible
+												? dict.memberProfile.ariaLabels.hideToken
+												: dict.memberProfile.ariaLabels.showToken
+										}>
 										{isTokenVisible ? (
 											<FiEyeOff size={18} />
 										) : (
@@ -113,13 +125,13 @@ const MemberProfile = () => {
 									<button
 										onClick={copyToken}
 										className='text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition'
-										aria-label='Copy token'>
+										aria-label={dict.memberProfile.ariaLabels.copyToken}>
 										<FiCopy size={18} />
 									</button>
 								</div>
 							</div>
 							<p className='text-xs text-gray-500 dark:text-gray-400 mt-1'>
-								{dict.auth.OTPDescription ||
+								{dict.memberProfile.infoText ||
 									'Please copy and save your token securely. You will need it for future logins.'}
 							</p>
 						</div>
@@ -128,11 +140,13 @@ const MemberProfile = () => {
 					{/* Logout Button */}
 					<button
 						onClick={logout}
-						className='flex items-center gap-2 text-red-600 dark:text-red-200 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 px-3 py-2 rounded-full transition-colors'
-						aria-label='Logout'
-						title='Logout from your account'>
+						className='flex items-center gap-2 text-red-600 dark:text-red-200 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 px-3 py-2 rounded-full transition-colors mt-4'
+						aria-label={dict.memberProfile.ariaLabels.logout}
+						title={dict.memberProfile.ariaLabels.logoutAccount}>
 						<FiLogOut size={20} />
-						<span className='text-sm font-medium'>Logout</span>
+						<span className='text-sm font-medium'>
+							{dict.memberProfile.buttons.logout}
+						</span>
 					</button>
 				</div>
 
@@ -140,7 +154,10 @@ const MemberProfile = () => {
 				<div className='my-6 border-t border-gray-200 dark:border-gray-700'></div>
 
 				{/* Token Balance and Recharge */}
-				<div className='flex items-center justify-between flex-wrap'>
+				<div
+					className={`flex items-center justify-between flex-wrap ${
+						isRTL ? 'flex-row-reverse' : 'flex-row'
+					}`}>
 					{/* Token Balance */}
 					<ShowTokenAmount />
 
@@ -152,14 +169,16 @@ const MemberProfile = () => {
 						<Link
 							href='/token/'
 							className='flex items-center space-x-2 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white px-4 py-2 rounded-full shadow-lg transition transform'
-							aria-label='Recharge Tokens'>
+							aria-label={dict.memberProfile.ariaLabels.rechargeTokens}>
 							<IoMdRefresh size={20} />
-							<span className='text-sm font-semibold'>Recharge Now</span>
+							<span className='text-sm font-semibold'>
+								{dict.memberProfile.buttons.rechargeNow}
+							</span>
 							<motion.span
 								className='bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full'
 								animate={{ scale: [1, 1.2, 1] }}
 								transition={{ repeat: Infinity, duration: 1.5 }}>
-								50% OFF
+								{dict.memberProfile.global.fiftyPercentOff}
 							</motion.span>
 						</Link>
 					</motion.div>
@@ -167,11 +186,10 @@ const MemberProfile = () => {
 
 				{/* Additional Guidance */}
 				{/* <div className='mt-6'>
-					<p className='text-xs text-gray-500 dark:text-gray-400'>
-						{dict.auth.tokenReminder ||
-							'Remember your token for your next login.'}
-					</p>
-				</div> */}
+                    <p className='text-xs text-gray-500 dark:text-gray-400'>
+                        {dict.auth.tokenReminder || 'Remember your token for your next login.'}
+                    </p>
+                </div> */}
 			</div>
 
 			{/* Black Friday Promotion Modal */}
@@ -192,12 +210,10 @@ const MemberProfile = () => {
 						</motion.div>
 
 						<h2 className='text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-200'>
-							Black Friday Special!
+							{dict.memberProfile.modal.title}
 						</h2>
 						<p className='text-gray-600 dark:text-gray-300 mb-6'>
-							Enjoy an exclusive{' '}
-							<span className='font-bold text-green-500'>50% OFF</span> on all
-							token recharges. Hurry, offer ends soon!
+							{dict.memberProfile.modal.description}
 						</p>
 						<motion.div
 							className='flex justify-center'
@@ -205,12 +221,16 @@ const MemberProfile = () => {
 							animate={{ scale: 1 }}
 							transition={{ duration: 0.5 }}>
 							<Link
-								href='/token/'
+								href='token/'
 								className='flex items-center space-x-2 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white px-6 py-3 rounded-full shadow-lg transition transform'
 								onClick={handleClosePromo}
-								aria-label='Recharge Now with Black Friday Discount'>
+								aria-label={
+									dict.memberProfile.ariaLabels.rechargeNowWithDiscount
+								}>
 								<IoMdRefresh size={20} />
-								<span className='font-semibold'>Recharge Now</span>
+								<span className='font-semibold'>
+									{dict.memberProfile.buttons.rechargeNowWithDiscount}
+								</span>
 							</Link>
 						</motion.div>
 					</motion.div>

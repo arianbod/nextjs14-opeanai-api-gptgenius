@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from '@/context/TranslationContext';
 
 const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
@@ -9,7 +10,7 @@ const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 		setSearchValue(value);
 		onSearch(value);
 	};
-
+	const { isRTL, dict } = useTranslations();
 	return (
 		<motion.div
 			className='sticky top-0 z-20 w-full bg-base-100/95 backdrop-blur-xl overflow-x-hidden'
@@ -23,7 +24,7 @@ const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 							translateY: isExpanded ? -2 : 0,
 						}}
 						className=' text-lg font-semibold text-base-content ml-4 select-none'>
-						{!isExpanded && 'Select an AI Model'}
+						{!isExpanded && dict.chatInterface.searchInModels}
 					</motion.h1>
 
 					<div className='relative'>

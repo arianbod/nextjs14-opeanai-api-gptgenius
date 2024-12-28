@@ -11,7 +11,16 @@ const languages = [
 	{ code: 'fa', name: 'فارسی', flag: '🇮🇷' },
 	{ code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
 	{ code: 'gr', name: 'Ελληνικά', flag: '🇬🇷' },
-	// Add more languages as needed
+	{ code: 'ar', name: 'العربية', flag: '🇦🇪' },
+	{ code: 'fr', name: 'Français', flag: '🇫🇷' },
+	{ code: 'it', name: 'Italiano', flag: '🇮🇹' },
+	// { code: 'es', name: 'Español', flag: '🇪🇸' },
+	// { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+	// { code: 'pt', name: 'Português', flag: '🇵🇹' },
+	// { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+	// { code: 'ja', name: '日本語', flag: '🇯🇵' },
+	// { code: 'ko', name: '한국어', flag: '🇰🇷' },
+	// { code: 'zh', name: '中文', flag: '🇨🇳' },
 ];
 
 const LanguageToggle = () => {

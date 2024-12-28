@@ -10,7 +10,7 @@ import { ThemeProvider } from 'next-themes';
 import { TranslationsProvider } from '@/context/TranslationContext'
 import ErrorBoundary from '@/components/ErrorBoundry'
 
-const Providers = ({ children, translations }) => {
+const Providers = ({ children, translations, lang }) => {
 
     const queryClient = new QueryClient({
         defaultOptions: {
@@ -23,21 +23,21 @@ const Providers = ({ children, translations }) => {
     return (
         // <ErrorBoundary>
 
-            <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient}>
 
-                <MessageProvider>
+            <MessageProvider>
 
-                    <AuthProvider>
-                        <TranslationsProvider translations={translations}>
-                            <ChatProvider>
-                                <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
-                                    {children}
-                                </ThemeProvider>
-                            </ChatProvider>
-                        </TranslationsProvider>
-                    </AuthProvider>
-                </MessageProvider>
-            </QueryClientProvider>
+                <AuthProvider>
+                    <TranslationsProvider translations={translations} lang={lang}>
+                        <ChatProvider>
+                            <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
+                                {children}
+                            </ThemeProvider>
+                        </ChatProvider>
+                    </TranslationsProvider>
+                </AuthProvider>
+            </MessageProvider>
+        </QueryClientProvider>
         // </ErrorBoundary>
     )
 }

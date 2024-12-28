@@ -1,3 +1,5 @@
+// @/components/ModelCard.js
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -8,30 +10,32 @@ import {
 	Image,
 	Brain,
 	Code,
-	Globe,
 	MessagesSquare,
 } from 'lucide-react';
+import { useTranslations } from '@/context/TranslationContext';
 
 const CapabilityBadge = ({ type }) => {
+	const { t } = useTranslations();
+
 	const badges = {
 		vision: {
 			icon: Image,
-			label: 'Vision',
+			label: t('modelCard.capabilities.vision'),
 			className: 'bg-purple-500/10 text-purple-500',
 		},
 		analytical: {
 			icon: Brain,
-			label: 'Analytical',
+			label: t('modelCard.capabilities.analytical'),
 			className: 'bg-blue-500/10 text-blue-500',
 		},
 		coding: {
 			icon: Code,
-			label: 'Coding',
+			label: t('modelCard.capabilities.coding'),
 			className: 'bg-green-500/10 text-green-500',
 		},
 		chat: {
 			icon: MessagesSquare,
-			label: 'Chat',
+			label: t('modelCard.capabilities.chat'),
 			className: 'bg-yellow-500/10 text-yellow-500',
 		},
 	};
@@ -51,6 +55,8 @@ const CapabilityBadge = ({ type }) => {
 };
 
 const ModelCard = ({ persona, onSelect, isSelected }) => {
+	const { t } = useTranslations();
+
 	// Clean up the name by removing "with vision" suffix
 	const displayName = persona.name.replace(/\s+with\s+vision$/i, '');
 
@@ -61,12 +67,12 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 			whileHover={{ scale: 1.02 }}
 			whileTap={{ scale: 0.98 }}
 			className={`
-        w-full p-4 rounded-xl cursor-pointer
-        bg-base-200/50 hover:bg-base-200/80
-        border border-base-300
-        transition-all duration-200
-        ${isSelected ? 'ring-2 ring-primary shadow-lg' : ''}
-      `}
+                w-full p-4 rounded-xl cursor-pointer
+                bg-base-200/50 hover:bg-base-200/80
+                border border-base-300
+                transition-all duration-200
+                ${isSelected ? 'ring-2 ring-primary shadow-lg' : ''}
+            `}
 			onClick={() => onSelect(persona)}>
 			<div className='flex items-center gap-4 flex-col'>
 				{/* Avatar */}
@@ -91,7 +97,7 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 						</h3>
 						{persona.isPro && (
 							<span className='px-2 py-0.5 bg-base-100/50 text-blue-500 text-[10px] rounded-full font-medium'>
-								PRO
+								{t('personas.labels.pro')}
 							</span>
 						)}
 					</div>
@@ -101,19 +107,24 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 						{persona.categories?.map((category) => (
 							<CapabilityBadge
 								key={category}
-								type={category}
+								type={category.toLowerCase().replace(/\s+/g, '_')} // Ensure consistency with translation keys
 							/>
 						))}
 					</div>
 
+					{/* Features */}
 					<div className='flex flex-wrap gap-2 justify-center'>
 						{persona.features?.bestFor?.slice(0, 2).map((feature, index) => (
 							<span
 								key={index}
 								className='inline-flex items-center gap-1 px-2 py-1 bg-base-300/50 
-                rounded-full text-xs text-base-content/70'>
+                                    rounded-full text-xs text-base-content/70'>
 								<Zap className='w-3 h-3' />
-								{feature}
+								{t(
+									`personas.features.bestFor.${feature
+										.toLowerCase()
+										.replace(/\s+/g, '_')}`
+								)}
 							</span>
 						))}
 					</div>
@@ -130,7 +141,13 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 					{persona.speed && (
 						<div className='flex items-center gap-1 text-base-content/60'>
 							<Clock className='w-4 h-4' />
-							<span className='text-xs'>{persona.speed}</span>
+							<span className='text-xs'>
+								{t(
+									`personas.labels.speedValues.${persona.speed
+										.toLowerCase()
+										.replace(/\s+/g, '_')}`
+								)}
+							</span>
 						</div>
 					)}
 				</div>

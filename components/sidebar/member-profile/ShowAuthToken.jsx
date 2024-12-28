@@ -6,7 +6,7 @@ import { FaCopy, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const ShowAuthToken = () => {
 	const { user } = useAuth();
-	const dict = useTranslations();
+	const { dict } = useTranslations();
 	const [isTokenVisible, setIsTokenVisible] = useState(false);
 
 	const copyToken = () => {

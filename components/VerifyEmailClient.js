@@ -12,7 +12,7 @@ const VerifyEmailPage = () => {
     const { user } = useAuth();
     const searchParams = useSearchParams();
     const router = useRouter();
-    const dict = useTranslations();
+    const { dict } = useTranslations();
 
     const [verificationState, setVerificationState] = useState({
         status: 'verifying',

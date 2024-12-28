@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { AIPersonas } from '@/lib/Personas';
 import { FaTimes } from 'react-icons/fa';
 import { motion, AnimatePresence, useCycle } from 'framer-motion';
+import { useTranslations } from '@/context/TranslationContext';
 
 const PersonaSuggester = ({ onSelect }) => {
+	const { dict } = useTranslations(); // Access translations
 	const [isOpen, setIsOpen] = useState(false);
 	const [step, setStep] = useState(1);
 	const [responses, setResponses] = useState({
@@ -19,10 +21,10 @@ const PersonaSuggester = ({ onSelect }) => {
 
 	// Dynamic progress messages
 	const progressMessages = {
-		1: 'Only three questions to find the best solution for you.',
-		2: 'Almost there, only two questions left.',
-		3: 'We are finding the best solution, only one question left.',
-		4: 'Finished! This is your list.',
+		1: dict.personaSuggester.progress.step1,
+		2: dict.personaSuggester.progress.step2,
+		3: dict.personaSuggester.progress.step3,
+		4: dict.personaSuggester.progress.step4,
 	};
 
 	// Toggle the suggester modal
@@ -87,7 +89,7 @@ const PersonaSuggester = ({ onSelect }) => {
 		// If no matches found, suggest 'o1-mini'
 		if (recommendations.length === 0) {
 			const o1Mini = AIPersonas.find(
-				(persona) => persona.key === 'CHATGPT-o1-mini'
+				(persona) => persona.key === 'chatgpt4' // Adjust key as per en.json
 			);
 			if (o1Mini) {
 				recommendations = [o1Mini];
@@ -121,7 +123,7 @@ const PersonaSuggester = ({ onSelect }) => {
 			<button
 				onClick={toggleSuggester}
 				className='px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-				Need Help?
+				{dict.personaSuggester.needHelp}
 			</button>
 
 			{/* Suggestion Modal */}
@@ -185,59 +187,24 @@ const PersonaSuggester = ({ onSelect }) => {
 									exit={{ x: -300, opacity: 0 }}
 									transition={{ duration: 0.5 }}>
 									<h2 className='text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200'>
-										1. What is your primary use-case?
+										{dict.personaSuggester.questions.useCase.title}
 									</h2>
 									<div className='flex flex-col space-y-3'>
-										<button
-											name='useCase'
-											value='Content Creation'
-											onClick={(e) => {
-												handleResponse(e);
-												handleNext();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Content Creation
-										</button>
-										<button
-											name='useCase'
-											value='Academic Research'
-											onClick={(e) => {
-												handleResponse(e);
-												handleNext();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Academic Research
-										</button>
-										<button
-											name='useCase'
-											value='Coding Assistance'
-											onClick={(e) => {
-												handleResponse(e);
-												handleNext();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Coding Assistance
-										</button>
-										<button
-											name='useCase'
-											value='Data Analysis'
-											onClick={(e) => {
-												handleResponse(e);
-												handleNext();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Data Analysis
-										</button>
-										<button
-											name='useCase'
-											value='Creative Projects'
-											onClick={(e) => {
-												handleResponse(e);
-												handleNext();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Creative Projects
-										</button>
+										{Object.entries(
+											dict.personaSuggester.questions.useCase.options
+										).map(([key, label]) => (
+											<button
+												key={key}
+												name='useCase'
+												value={key}
+												onClick={(e) => {
+													handleResponse(e);
+													handleNext();
+												}}
+												className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
+												{label}
+											</button>
+										))}
 									</div>
 								</motion.div>
 							)}
@@ -250,68 +217,33 @@ const PersonaSuggester = ({ onSelect }) => {
 									exit={{ x: -300, opacity: 0 }}
 									transition={{ duration: 0.5 }}>
 									<h2 className='text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200'>
-										2. What type of responses do you prefer?
+										{dict.personaSuggester.questions.responseType.title}
 									</h2>
 									<p className='text-sm text-gray-500 dark:text-gray-400 mb-4'>
-										Almost there, only two questions left.
+										{dict.personaSuggester.progress.step2}
 									</p>
 									<div className='flex flex-col space-y-3'>
-										<button
-											name='responseType'
-											value='Detailed Explanations'
-											onClick={(e) => {
-												handleResponse(e);
-												handleNext();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Detailed Explanations
-										</button>
-										<button
-											name='responseType'
-											value='Concise Summaries'
-											onClick={(e) => {
-												handleResponse(e);
-												handleNext();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Concise Summaries
-										</button>
-										<button
-											name='responseType'
-											value='Code Snippets'
-											onClick={(e) => {
-												handleResponse(e);
-												handleNext();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Code Snippets
-										</button>
-										<button
-											name='responseType'
-											value='Visual Aids'
-											onClick={(e) => {
-												handleResponse(e);
-												handleNext();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Visual Aids
-										</button>
-										<button
-											name='responseType'
-											value='Interactive Assistance'
-											onClick={(e) => {
-												handleResponse(e);
-												handleNext();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Interactive Assistance
-										</button>
+										{Object.entries(
+											dict.personaSuggester.questions.responseType.options
+										).map(([key, label]) => (
+											<button
+												key={key}
+												name='responseType'
+												value={key}
+												onClick={(e) => {
+													handleResponse(e);
+													handleNext();
+												}}
+												className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
+												{label}
+											</button>
+										))}
 									</div>
 									{/* Back Button */}
 									<button
 										onClick={handleBack}
 										className='mt-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-										Back
+										{dict.auth.back}
 									</button>
 								</motion.div>
 							)}
@@ -324,68 +256,33 @@ const PersonaSuggester = ({ onSelect }) => {
 									exit={{ x: -300, opacity: 0 }}
 									transition={{ duration: 0.5 }}>
 									<h2 className='text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200'>
-										3. Do you require any specific features?
+										{dict.personaSuggester.questions.features.title}
 									</h2>
 									<p className='text-sm text-gray-500 dark:text-gray-400 mb-4'>
-										We are finding the best solution, only one question left.
+										{dict.personaSuggester.progress.step3}
 									</p>
 									<div className='flex flex-col space-y-3'>
-										<button
-											name='specificFeatures'
-											value='Language Support'
-											onClick={(e) => {
-												handleResponse(e);
-												handleSuggest();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Language Support
-										</button>
-										<button
-											name='specificFeatures'
-											value='Integration Capabilities'
-											onClick={(e) => {
-												handleResponse(e);
-												handleSuggest();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Integration Capabilities
-										</button>
-										<button
-											name='specificFeatures'
-											value='Customization'
-											onClick={(e) => {
-												handleResponse(e);
-												handleSuggest();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Customization
-										</button>
-										<button
-											name='specificFeatures'
-											value='Real-Time Collaboration'
-											onClick={(e) => {
-												handleResponse(e);
-												handleSuggest();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Real-Time Collaboration
-										</button>
-										<button
-											name='specificFeatures'
-											value='Security Features'
-											onClick={(e) => {
-												handleResponse(e);
-												handleSuggest();
-											}}
-											className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-											Security Features
-										</button>
+										{Object.entries(
+											dict.personaSuggester.questions.features.options
+										).map(([key, label]) => (
+											<button
+												key={key}
+												name='specificFeatures'
+												value={key}
+												onClick={(e) => {
+													handleResponse(e);
+													handleSuggest();
+												}}
+												className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
+												{label}
+											</button>
+										))}
 									</div>
 									{/* Back Button */}
 									<button
 										onClick={handleBack}
 										className='mt-4 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-										Back
+										{dict.auth.back}
 									</button>
 								</motion.div>
 							)}
@@ -398,10 +295,10 @@ const PersonaSuggester = ({ onSelect }) => {
 									exit={{ x: -300, opacity: 0 }}
 									transition={{ duration: 0.5 }}>
 									<h2 className='text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200'>
-										Completed! Here are your recommended personas:
+										{dict.personaSuggester.results.title}
 									</h2>
 									<p className='text-sm text-gray-500 dark:text-gray-400 mb-4 text-center'>
-										Finished! This is your list.
+										{dict.personaSuggester.progress.step4}
 									</p>
 									{suggestedPersonas.length > 0 ? (
 										<div className='space-y-4 max-h-64 overflow-y-auto'>
@@ -420,10 +317,11 @@ const PersonaSuggester = ({ onSelect }) => {
 													/>
 													<div>
 														<h3 className='text-lg font-semibold text-gray-800 dark:text-gray-200'>
-															{persona.name}
+															{dict.personas.names[persona.key] || persona.name}
 														</h3>
 														<p className='text-sm text-gray-600 dark:text-gray-300'>
-															{persona.description}
+															{dict.personas.descriptions[persona.key] ||
+																persona.description}
 														</p>
 													</div>
 												</div>
@@ -431,14 +329,14 @@ const PersonaSuggester = ({ onSelect }) => {
 										</div>
 									) : (
 										<p className='text-gray-500 dark:text-gray-400 text-center'>
-											No suitable personas found.
+											{dict.personaSuggester.results.noResults}
 										</p>
 									)}
 									{/* Reset Button */}
 									<button
 										onClick={() => setStep(1)}
 										className='mt-6 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-gray-500'>
-										Choose Again
+										{dict.personaSuggester.results.chooseAgain}
 									</button>
 								</motion.div>
 							)}

@@ -7,8 +7,15 @@ import Header from './Header';
 import toast from 'react-hot-toast';
 import { FaSearch, FaRegLightbulb } from 'react-icons/fa';
 import { ArrowUp } from 'lucide-react';
+import { useTranslations } from '@/context/TranslationContext';
 
-const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+const IMAGE_TYPES = [
+	'image/jpeg',
+	'image/png',
+	'image/gif',
+	'image/webp',
+	'image/svg+xml',
+];
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
 const ChatInterface = () => {
@@ -23,52 +30,53 @@ const ChatInterface = () => {
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const abortControllerRef = useRef(null);
+	const { dict, t } = useTranslations();
 
 	// Greetings and suggestions configuration
 	const standardGreetings = [
 		{
-			title: '👋 Ask me anything!',
-			subtitle: "From quick queries to deep dives, I'm here for you.",
+			title: t('chatInterface.greetings.askAnythingTitle'),
+			subtitle: t('chatInterface.greetings.askAnythingSubtitle'),
 		},
 		{
-			title: '💡 Spark Creativity',
-			subtitle: "Need fresh ideas? Let's brainstorm and innovate.",
+			title: t('chatInterface.greetings.sparkCreativityTitle'),
+			subtitle: t('chatInterface.greetings.sparkCreativitySubtitle'),
 		},
 		{
-			title: '📚 Research & Explain',
-			subtitle: 'From summaries to detailed explanations, just ask away.',
+			title: t('chatInterface.greetings.researchExplainTitle'),
+			subtitle: t('chatInterface.greetings.researchExplainSubtitle'),
 		},
 		{
-			title: '🔍 Get Specific Insights',
-			subtitle: 'Break down tough topics step-by-step to understand better.',
+			title: t('chatInterface.greetings.getInsightsTitle'),
+			subtitle: t('chatInterface.greetings.getInsightsSubtitle'),
 		},
 		{
-			title: '💪 Boost Productivity',
-			subtitle: "From writing drafts to coding tips—let's get it done.",
+			title: t('chatInterface.greetings.boostProductivityTitle'),
+			subtitle: t('chatInterface.greetings.boostProductivitySubtitle'),
 		},
 	];
 
 	const standardSuggestions = [
-		'Explain the difference between machine learning and deep learning',
-		'Help me write a short email to my team about project updates',
-		'Give me some tips for improving my time management skills',
+		t('chatInterface.suggestions.machineLearning'),
+		t('chatInterface.suggestions.writeEmail'),
+		t('chatInterface.suggestions.timeManagement'),
 	];
 
 	const perplexityQuestions = [
 		[
-			'weather new york next 5 days in centigrade',
-			'best restaurants near antalya, turkey open now',
-			'how to get to times square from jfk',
+			t('chatInterface.perplexityQuestions.weatherNY'),
+			t('chatInterface.perplexityQuestions.restaurantsAntalya'),
+			t('chatInterface.perplexityQuestions.getToTimesSquare'),
 		],
 		[
-			'how to reset iphone without password',
-			'easy chicken recipes for dinner tonight',
-			'fastest way to lose belly fat at home',
+			t('chatInterface.perplexityQuestions.resetIphone'),
+			t('chatInterface.perplexityQuestions.easyChickenRecipes'),
+			t('chatInterface.perplexityQuestions.loseBellyFat'),
 		],
 		[
-			'iphone 15 vs samsung s24 which is better',
-			'best washing machine under 500',
-			'amazon prime day 2024 deals',
+			t('chatInterface.perplexityQuestions.iphoneVsSamsung'),
+			t('chatInterface.perplexityQuestions.bestWashingMachine'),
+			t('chatInterface.perplexityQuestions.amazonPrimeDeals'),
 		],
 	];
 
@@ -118,7 +126,7 @@ const ChatInterface = () => {
 			};
 			img.onerror = () => {
 				URL.revokeObjectURL(img.src);
-				reject(new Error('Failed to load image'));
+				reject(new Error(t('chatInterface.errors.failedToLoadImage')));
 			};
 			img.src = URL.createObjectURL(file);
 		});
@@ -131,33 +139,34 @@ const ChatInterface = () => {
 		}
 
 		if (file.size > MAX_FILE_SIZE) {
-			toast.error('File size should be less than 20MB');
+			toast.error(t('chatInterface.errors.fileSizeExceeded'));
 			return;
 		}
 
 		const allowedTypes = {
 			// Documents
-			'text/plain': 'TXT',
-			'application/pdf': 'PDF',
-			'application/msword': 'DOC',
+			'text/plain': t('chatInterface.fileTypes.TXT'),
+			'application/pdf': t('chatInterface.fileTypes.PDF'),
+			'application/msword': t('chatInterface.fileTypes.DOC'),
 			'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-				'DOCX',
-			'text/csv': 'CSV',
-			'application/vnd.ms-excel': 'XLS',
-			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-				'XLSX',
+				t('chatInterface.fileTypes.DOCX'),
+			'text/csv': t('chatInterface.fileTypes.CSV'),
+			'application/vnd.ms-excel': t('chatInterface.fileTypes.XLS'),
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': t(
+				'chatInterface.fileTypes.XLSX'
+			),
 			// Images
-			'image/jpeg': 'JPEG',
-			'image/png': 'PNG',
-			'image/gif': 'GIF',
-			'image/webp': 'WEBP',
-			'image/svg+xml': 'SVG',
+			'image/jpeg': t('chatInterface.fileTypes.JPEG'),
+			'image/png': t('chatInterface.fileTypes.PNG'),
+			'image/gif': t('chatInterface.fileTypes.GIF'),
+			'image/webp': t('chatInterface.fileTypes.WEBP'),
+			'image/svg+xml': t('chatInterface.fileTypes.SVG'),
 			// Web files
-			'text/html': 'HTML',
-			'text/css': 'CSS',
-			'application/javascript': 'JS',
-			'application/json': 'JSON',
-			'text/markdown': 'MD',
+			'text/html': t('chatInterface.fileTypes.HTML'),
+			'text/css': t('chatInterface.fileTypes.CSS'),
+			'application/javascript': t('chatInterface.fileTypes.JS'),
+			'application/json': t('chatInterface.fileTypes.JSON'),
+			'text/markdown': t('chatInterface.fileTypes.MD'),
 		};
 
 		const fileExtension = file.name.split('.').pop().toLowerCase();
@@ -168,9 +177,11 @@ const ChatInterface = () => {
 			!Object.values(allowedTypes).includes(fileExtension.toUpperCase())
 		) {
 			toast.error(
-				`Unsupported file type. Allowed types: ${[
-					...new Set(Object.values(allowedTypes)),
-				].join(', ')}`
+				`${t('chatInterface.errors.unsupportedFileType')} ${Object.values(
+					allowedTypes
+				)
+					.map((type) => type.toUpperCase())
+					.join(', ')}`
 			);
 			return;
 		}
@@ -182,21 +193,19 @@ const ChatInterface = () => {
 
 			// Additional image validation for Claude's requirements
 			// if (IMAGE_TYPES.includes(mimeType)) {
-			// 	const dimensions = await validateImageDimensions(file);
+			//     const dimensions = await validateImageDimensions(file);
 
-			// 	if (dimensions.width > 1568 || dimensions.height > 1568) {
-			// 		toast.error('Image dimensions should not exceed 1568x1568 pixels');
-			// 		setIsUploading(false);
-			// 		return;
-			// 	}
+			//     if (dimensions.width > 1568 || dimensions.height > 1568) {
+			//         toast.error(t('chatInterface.errors.imageDimensionsExceeded'));
+			//         setIsUploading(false);
+			//         return;
+			//     }
 
-			// 	if (dimensions.megapixels > 1.15) {
-			// 		toast.error(
-			// 			'Image size should not exceed 1.15 megapixels for optimal performance'
-			// 		);
-			// 		setIsUploading(false);
-			// 		return;
-			// 	}
+			//     if (dimensions.megapixels > 1.15) {
+			//         toast.error(t('chatInterface.errors.imageMegapixelsExceeded'));
+			//         setIsUploading(false);
+			//         return;
+			//     }
 			// }
 
 			const reader = new FileReader();
@@ -210,7 +219,8 @@ const ChatInterface = () => {
 
 			const fileContent = await new Promise((resolve, reject) => {
 				reader.onloadend = () => resolve(reader.result);
-				reader.onerror = () => reject(new Error('Failed to read file'));
+				reader.onerror = () =>
+					reject(new Error(t('chatInterface.errors.failedToReadFile')));
 
 				if (
 					mimeType.startsWith('text/') ||
@@ -239,13 +249,13 @@ const ChatInterface = () => {
 
 			setIsUploading(false);
 			setUploadProgress(100);
-			toast.success(`${file.name} uploaded successfully!`);
+			toast.success(t('chatInterface.uploadSuccess', { fileName: file.name }));
 		} catch (error) {
 			if (abortControllerRef.current) {
-				console.log('Upload aborted');
+				console.log(t('chatInterface.errors.uploadCanceled'));
 			} else {
-				console.error('Error processing file:', error);
-				toast.error('Error processing file. Please try again.');
+				console.error(t('chatInterface.errors.fileProcessingError'), error);
+				toast.error(t('chatInterface.errors.fileProcessingError'));
 			}
 			setIsUploading(false);
 			setUploadProgress(0);
@@ -256,12 +266,12 @@ const ChatInterface = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (!inputText.trim() && !uploadedFile) {
-			toast.error('Please enter a message or upload a file');
+			toast.error(t('chatInterface.errors.enterMessageOrFile'));
 			return;
 		}
 
 		if (!model) {
-			toast.error('Please select a model first');
+			toast.error(t('chatInterface.errors.selectModelFirst'));
 			return;
 		}
 
@@ -282,10 +292,10 @@ const ChatInterface = () => {
 			setSelectedSuggestion(null);
 			setUploadedFile(null);
 			setUploadProgress(0);
-			toast.success('Message sent successfully!');
+			toast.success(t('chatInterface.messageSent'));
 		} catch (error) {
-			console.error('Error sending message:', error);
-			toast.error('Failed to send message');
+			console.error(t('chatInterface.errors.sendMessageError'), error);
+			toast.error(t('chatInterface.errors.sendMessageError'));
 		}
 	};
 
@@ -298,21 +308,20 @@ const ChatInterface = () => {
 		<div className='flex flex-col space-y-6 w-full max-w-xl mx-auto px-4 pt-64 text-center'>
 			<div className='p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg'>
 				<h2 className='text-2xl font-bold text-gray-800 dark:text-gray-50 mb-3'>
-					Great Choice! 🎉
+					{t('chatInterface.postSelectionHint.greatChoice')}
 				</h2>
 				<p className='text-sm text-gray-600 dark:text-gray-300 mb-3'>
-					You selected:{' '}
+					{t('chatInterface.postSelectionHint.youSelected')}{' '}
 					<span className='font-medium text-gray-700 dark:text-gray-300'>
 						{chosenText}
 					</span>
 				</p>
 				<div className='text-sm text-gray-600 dark:text-gray-300 flex flex-wrap justify-center items-center gap-2'>
-					Now, feel free to refine your request in the text box below and press
-					the{' '}
+					{t('chatInterface.postSelectionHint.refineRequest')}
 					<div className='p-2 text-gray-400 hover:text-white rounded-full bg-base-200'>
 						<ArrowUp className='w-6 h-6' />
 					</div>
-					icon to send it!
+					{t('chatInterface.postSelectionHint.sendIcon')}
 				</div>
 			</div>
 		</div>
@@ -329,11 +338,11 @@ const ChatInterface = () => {
 			<div className='flex flex-col space-y-6 w-full max-w-xl mx-auto px-4 pt-64'>
 				<div className='text-center space-y-2'>
 					<h2 className='text-2xl font-bold text-gray-800 dark:text-gray-100'>
-						Need Inspiration?{' '}
+						{t('chatInterface.perplexityGreeting.needInspiration')}{' '}
 						<FaSearch className='inline-block ml-1 text-blue-500' />
 					</h2>
 					<p className='text-sm text-gray-600 dark:text-gray-400'>
-						Click any example or type your own question!
+						{t('chatInterface.perplexityGreeting.clickExample')}
 					</p>
 				</div>
 
@@ -354,7 +363,7 @@ const ChatInterface = () => {
 				</div>
 
 				<div className='text-center text-sm text-gray-500 dark:text-gray-400'>
-					You can ask follow-up questions or refine your prompt at any time!
+					{t('chatInterface.perplexityGreeting.followUp')}
 				</div>
 			</div>
 		);
@@ -380,7 +389,7 @@ const ChatInterface = () => {
 
 				<div className='space-y-2 w-full'>
 					<p className='text-sm text-gray-600 dark:text-gray-400'>
-						Need some ideas? Try one of these:
+						{t('chatInterface.standardGreeting.needIdeas')}
 					</p>
 					{standardSuggestions.map((suggestion, idx) => (
 						<button
@@ -397,7 +406,7 @@ const ChatInterface = () => {
 
 				<div className='mt-4 text-sm text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2'>
 					<span className='w-2 h-2 bg-green-500 rounded-full animate-pulse'></span>
-					Ready when you are!
+					{t('chatInterface.standardGreeting.ready')}
 				</div>
 			</div>
 		);
@@ -408,7 +417,7 @@ const ChatInterface = () => {
 			setIsUploading(false);
 			setUploadProgress(0);
 			setUploadedFile(null);
-			toast.error('File upload canceled.');
+			toast.error(t('chatInterface.errors.uploadCanceled'));
 			abortControllerRef.current = null;
 		}
 	};
@@ -417,7 +426,7 @@ const ChatInterface = () => {
 		setUploadedFile(null);
 		setUploadProgress(0);
 		setIsUploading(false);
-		toast.success('File removed.');
+		toast.success(t('chatInterface.errors.fileRemoved'));
 	};
 
 	return (
@@ -464,7 +473,7 @@ const ChatInterface = () => {
 						handleSubmit={handleSubmit}
 						isPending={isGenerating || isUploading}
 						disabled={!model || isGenerating || isUploading}
-						modelName={model?.name || 'AI'}
+						modelName={model?.name || t('chatInterface.defaultModelName')}
 						onFileUpload={handleFileUpload}
 						uploadProgress={uploadProgress}
 						isUploading={isUploading}

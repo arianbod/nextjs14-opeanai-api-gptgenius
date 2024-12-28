@@ -6,7 +6,7 @@ import { FaGift, FaStar, FaRocket, FaCrown, FaGem } from 'react-icons/fa';
 import { useTranslations } from '@/context/TranslationContext';
 
 const TokenSlider = ({ isOpen, onClose }) => {
-	const dict = useTranslations();
+	const { dict } = useTranslations();
 	const [value, setValue] = useState(discountSpots[0].price);
 	const [currentDiscount, setCurrentDiscount] = useState(
 		discountSpots[0].discountPercentage

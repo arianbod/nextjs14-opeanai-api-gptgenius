@@ -10,7 +10,7 @@ import { useTranslations } from '@/context/TranslationContext';
 
 const SidebarHeader = () => {
 	const { resetChat } = useChat();
-	const dict = useTranslations();
+	const { dict } = useTranslations();
 
 	return (
 		<div className='flex flex-col py-6 px-6'>

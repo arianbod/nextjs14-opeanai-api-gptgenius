@@ -17,7 +17,7 @@ const Sidebar = () => {
 	const { user } = useAuth();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const { chatList, resetChat } = useChat();
-	const dict = useTranslations();
+	const { dict } = useTranslations();
 
 	if (!user) {
 		return null;

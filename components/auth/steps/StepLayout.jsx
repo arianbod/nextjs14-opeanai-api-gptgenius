@@ -4,6 +4,7 @@ import React, { memo, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from '@/components/sidebar/ThemeToggle';
 import LanguageToggle from '@/components/sidebar/LanguageToggle';
+import { useTranslations } from '@/context/TranslationContext';
 
 // Animated background circles component
 const AnimatedBackground = () => {
@@ -102,6 +103,7 @@ const StepLayout = ({
 	onBack,
 	showBackButton = true,
 }) => {
+	const { dict } = useTranslations();
 	return (
 		<div className=' min-h-screen w-full max-w-4xl flex flex-col place-content-center mx-auto place-items-center p-4 relative overflow-hidden'>
 			<AnimatedBackground />
@@ -122,7 +124,7 @@ const StepLayout = ({
 						initial={{ opacity: 0, x: -20 }}
 						animate={{ opacity: 1, x: 0 }}
 						exit={{ opacity: 0, x: -20 }}>
-						← Back
+						← {dict.auth.back}
 					</motion.button>
 				)}
 

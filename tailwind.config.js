@@ -1,4 +1,3 @@
-// tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: [
@@ -9,11 +8,10 @@ module.exports = {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
-				persian: ['Vazirmatn', 'ui-sans-serif', 'system-ui'],
-				arabic: ['Noto Sans Arabic', 'ui-sans-serif', 'system-ui'],
+				sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+				persian: ['Vazirmatn', 'system-ui', 'sans-serif'],
+				arabic: ['Noto Sans Arabic', 'system-ui', 'sans-serif'],
 			},
-
 			backdropBlur: {
 				xs: '2px'
 			},
@@ -65,6 +63,10 @@ module.exports = {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			spacing: {
+				'start': 'var(--space-start)',
+				'end': 'var(--space-end)'
 			}
 		}
 	},
@@ -72,10 +74,12 @@ module.exports = {
 		require('@tailwindcss/typography'),
 		require('daisyui'),
 		require('tailwindcss-filters'),
-		require("tailwindcss-animate")
+		require("tailwindcss-animate"),
+		require('tailwindcss-logical')
 	],
 	daisyui: {
 		themes: ["winter", "dracula"],
+		rtl: true,
 	},
-	darkMode: ['class', '[data-theme="dracula"]', "class"],
+	darkMode: ['class', '[data-theme="dracula"]'],
 };

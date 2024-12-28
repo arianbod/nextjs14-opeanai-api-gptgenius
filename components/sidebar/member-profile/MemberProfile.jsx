@@ -12,7 +12,7 @@ import Modal from '@/components/Modal'; // Ensure you have a Modal component
 
 const MemberProfile = () => {
 	const { user, logout } = useAuth();
-	const dict = useTranslations();
+	const { dict } = useTranslations();
 	const [isTokenVisible, setIsTokenVisible] = useState(false);
 	const [showPromo, setShowPromo] = useState(false);
 

@@ -68,7 +68,7 @@ const loadInitialState = (key, defaultValue) => {
 
 const AuthPage = () => {
 	const router = useRouter();
-	const dict = useTranslations();
+	const { dict } = useTranslations();
 	const { login, register } = useAuth();
 
 	// Core authentication state
@@ -171,10 +171,13 @@ const AuthPage = () => {
 	};
 	// Add this component to handle mode switching
 	const ModeSwitcher = ({ isRegistering, onSwitch }) => {
+		const isRTL = document.dir === 'rtl';
 		return (
 			<button
 				onClick={() => onSwitch(!isRegistering)}
-				className='text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 absolute top-4 left-4'>
+				className={`text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 absolute top-4 ${
+					isRTL ? 'right-4' : 'left-4'
+				}`}>
 				{isRegistering
 					? dict.auth.login.switchToLogin
 					: dict.auth.register.switchToRegister}

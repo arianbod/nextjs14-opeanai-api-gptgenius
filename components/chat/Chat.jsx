@@ -5,17 +5,13 @@ import ChatInterface from './ChatInterface';
 import { useTranslations } from '@/context/TranslationContext';
 
 const Chat = ({ lang }) => {
-	const dict = useTranslations();
+	const { dict } = useTranslations();
 
 	return (
-		
-			
-					<ChatInterface
-						lang={lang}
-						dict={dict}
-					/>			
-		
-		
+		<ChatInterface
+			lang={lang}
+			dict={dict}
+		/>
 	);
 };
 

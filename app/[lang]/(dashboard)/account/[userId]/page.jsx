@@ -21,7 +21,7 @@ const EmailSection = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { user, isEmailVerified, updateEmail, resendVerificationEmail } =
 		useAuth();
-	const dict = useTranslations();
+	const { dict } = useTranslations();
 
 	const handleUpdateEmail = async (e) => {
 		e.preventDefault();
@@ -148,7 +148,7 @@ const EmailSection = () => {
 
 const AccountPage = () => {
 	const { user, tokenBalance, logout } = useAuth();
-	const dict = useTranslations();
+	const { dict } = useTranslations();
 	const [showToken, setShowToken] = useState(false);
 
 	const copyToken = () => {

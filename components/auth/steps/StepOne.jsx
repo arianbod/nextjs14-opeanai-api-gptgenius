@@ -1,21 +1,29 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { FiUserPlus, FiLogIn } from 'react-icons/fi';
+import { useTranslations } from '@/context/TranslationContext';
 
-const StepOne = ({ isRegistering, onModeChange, onNext, dict }) => {
+const StepOne = ({ isRegistering, onModeChange, onNext }) => {
+	const { dict, isRTL } = useTranslations();
+
+	// Safeguard against undefined translations
+	if (!dict || !dict.auth) {
+		return <div>Loading...</div>; // Or any other fallback UI
+	}
+
 	const options = [
 		{
 			id: 'register',
-			title: dict.auth.register.title,
+			title: dict.auth.register?.title || 'Register',
 			icon: FiUserPlus,
-			description: dict.auth.register.info,
+			description: dict.auth.register?.info || '',
 			isActive: isRegistering,
 		},
 		{
 			id: 'login',
-			title: dict.auth.login.title,
+			title: dict.auth.login?.title || 'Login',
 			icon: FiLogIn,
-			description: dict.auth.login.info,
+			description: dict.auth.login?.info || '',
 			isActive: !isRegistering,
 		},
 	];
@@ -26,38 +34,28 @@ const StepOne = ({ isRegistering, onModeChange, onNext, dict }) => {
 		onNext();
 	};
 
-	// Added feature list to showcase BabaGPT's capabilities
-	const features = [
-		'Advanced AI Conversations & Analysis',
-		'Multi-Language Support',
-		'Secure Token-Based Authentication',
-		'Optional Email Integration',
-	];
+	// Features with safe access
+	const features = Object.values(dict.auth.welcome?.features?.list || {});
 
 	return (
 		<div className='space-y-8'>
-			{/* Added container for welcome section with enhanced styling */}
 			<div className='space-y-4'>
 				<motion.h1
 					className='text-3xl font-bold text-center text-gray-800 dark:text-white'
 					initial={{ opacity: 0, y: -20 }}
 					animate={{ opacity: 1, y: 0 }}>
-					Welcome to BabaGPT
+					{dict.auth.welcome?.title || 'Welcome to BabaGPT'}
 				</motion.h1>
 
-				{/* Added explanation section */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ delay: 0.2 }}
 					className='text-center space-y-4'>
 					<p className='text-gray-600 dark:text-gray-300'>
-						Your intelligent AI companion for seamless conversations and
-						analysis. Experience secure, anonymous interactions with
-						cutting-edge AI technology.
+						{dict.auth.welcome?.description || ''}
 					</p>
 
-					{/* Feature list */}
 					<div className='flex flex-wrap justify-center gap-2 mt-4'>
 						{features.map((feature, index) => (
 							<motion.span
@@ -79,18 +77,30 @@ const StepOne = ({ isRegistering, onModeChange, onNext, dict }) => {
 						key={option.id}
 						onClick={() => handleSelect(option.id)}
 						className={`group relative w-full p-6 rounded-xl shadow-lg transition-all duration-300 border-2 
-                        ${
-													option.isActive
-														? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500'
-														: 'bg-white dark:bg-gray-700 border-transparent hover:border-blue-500'
-												}`}
-						initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+              ${
+								option.isActive
+									? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500'
+									: 'bg-white dark:bg-gray-700 border-transparent hover:border-blue-500'
+							}`}
+						initial={{
+							opacity: 0,
+							x: isRTL
+								? index % 2 === 0
+									? 20
+									: -20
+								: index % 2 === 0
+								? -20
+								: 20,
+						}}
 						animate={{ opacity: 1, x: 0 }}
 						transition={{ delay: index * 0.2 }}
 						whileHover={{ scale: 1.02 }}
 						whileTap={{ scale: 0.98 }}>
 						<div className='flex items-center gap-4'>
-							<div className='p-3 bg-blue-100 dark:bg-blue-900 rounded-lg'>
+							<div
+								className={`p-3 bg-blue-100 dark:bg-blue-900 rounded-lg ${
+									isRTL ? 'order-last' : ''
+								}`}>
 								<option.icon
 									className={`w-6 h-6 ${
 										option.isActive
@@ -99,7 +109,7 @@ const StepOne = ({ isRegistering, onModeChange, onNext, dict }) => {
 									}`}
 								/>
 							</div>
-							<div className='text-left'>
+							<div className={`${isRTL ? 'text-right' : 'text-left'}`}>
 								<h2 className='text-xl font-semibold text-gray-800 dark:text-white'>
 									{option.title}
 								</h2>
@@ -111,7 +121,9 @@ const StepOne = ({ isRegistering, onModeChange, onNext, dict }) => {
 
 						{option.isActive && (
 							<motion.div
-								className='absolute -right-2 -top-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center'
+								className={`absolute w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center ${
+									isRTL ? '-left-2 -top-2' : '-right-2 -top-2'
+								}`}
 								initial={{ scale: 0 }}
 								animate={{ scale: 1 }}>
 								<span className='text-white text-sm'>✓</span>

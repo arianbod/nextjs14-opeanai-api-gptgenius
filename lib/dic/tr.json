@@ -365,15 +365,15 @@
 			"timeManagement": "Zaman yönetimi becerilerimi geliştirmek için bazı ipuçları ver"
 		},
 		"perplexityQuestions": {
-			"weather_ny": "New York hava durumu önümüzdeki 5 gün Celsius derecesinde",
-			"restaurants_antalya": "Antalya, Türkiye yakınlarında en iyi restoranlar şu anda açık",
-			"get_to_times_square": "JFK'den Times Square'e nasıl gidilir",
-			"reset_iphone": "Parolasız iPhone nasıl sıfırlanır",
-			"easy_chicken_recipes": "Bu akşam için kolay tavuk tarifleri",
-			"lose_belly_fat": "Evde karın yağını hızlıca kaybetmenin yolları",
-			"iphone_vs_samsung": "iPhone 15 vs Samsung S24 hangisi daha iyi",
-			"best_washing_machine": "500 altında en iyi çamaşır makinesi",
-			"amazon_prime_deals": "Amazon Prime Day 2024 fırsatları"
+			"weatherNy": "New York hava durumu önümüzdeki 5 gün Celsius derecesinde",
+			"restaurantsAntalya": "Antalya, Türkiye yakınlarında en iyi restoranlar şu anda açık",
+			"getToTimesSquare": "JFK'den Times Square'e nasıl gidilir",
+			"resetIphone": "Parolasız iPhone nasıl sıfırlanır",
+			"easyChickenRecipes": "Bu akşam için kolay tavuk tarifleri",
+			"loseBellyFat": "Evde karın yağını hızlıca kaybetmenin yolları",
+			"iphoneVsSamsung": "iPhone 15 vs Samsung S24 hangisi daha iyi",
+			"bestWashingMachine": "500 altında en iyi çamaşır makinesi",
+			"amazonPrimeDeals": "Amazon Prime Day 2024 fırsatları"
 		},
 		"postSelectionHint": {
 			"greatChoice": "Harika Seçim! 🎉",

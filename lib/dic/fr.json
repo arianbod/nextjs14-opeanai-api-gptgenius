@@ -365,15 +365,15 @@
 			"timeManagement": "Donnez-moi quelques conseils pour améliorer mes compétences en gestion du temps"
 		},
 		"perplexityQuestions": {
-			"weather_ny": "météo New York les 5 prochains jours en degrés Celsius",
-			"restaurants_antalya": "meilleurs restaurants près d'Antalya, Turquie ouverts maintenant",
-			"get_to_times_square": "comment se rendre à Times Square depuis JFK",
-			"reset_iphone": "comment réinitialiser un iPhone sans mot de passe",
-			"easy_chicken_recipes": "recettes de poulet faciles pour le dîner ce soir",
-			"lose_belly_fat": "méthode la plus rapide pour perdre la graisse abdominale à la maison",
-			"iphone_vs_samsung": "iPhone 15 vs Samsung S24 lequel est meilleur",
-			"best_washing_machine": "meilleure machine à laver sous 500",
-			"amazon_prime_deals": "offres Prime Day 2024 sur Amazon"
+			"weatherNy": "météo New York les 5 prochains jours en degrés Celsius",
+			"restaurantsAntalya": "meilleurs restaurants près d'Antalya, Turquie ouverts maintenant",
+			"getToTimesSquare": "comment se rendre à Times Square depuis JFK",
+			"resetIphone": "comment réinitialiser un iPhone sans mot de passe",
+			"easyChickenRecipes": "recettes de poulet faciles pour le dîner ce soir",
+			"loseBellyFat": "méthode la plus rapide pour perdre la graisse abdominale à la maison",
+			"iphoneVsSamsung": "iPhone 15 vs Samsung S24 lequel est meilleur",
+			"bestWashingMachine": "meilleure machine à laver sous 500",
+			"amazonPrimeDeals": "offres Prime Day 2024 sur Amazon"
 		},
 		"postSelectionHint": {
 			"greatChoice": "Super Choix ! 🎉",

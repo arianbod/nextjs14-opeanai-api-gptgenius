@@ -18,7 +18,8 @@ export const metadata = {
 };
 
 export default async function RootLayout({ params, children }) {
-  const { lang } = params;
+  const resolvedParams = await Promise.resolve(params);
+  const lang = resolvedParams.lang;
   const dict = await getDictionary(lang);
   const isRTL = RTL_LANGUAGES.includes(lang);
 

@@ -1,3 +1,4 @@
+'use client';
 import Sidebar from '@/components/sidebar/Sidebar';
 import { useTranslations } from '@/context/TranslationContext';
 import React from 'react';

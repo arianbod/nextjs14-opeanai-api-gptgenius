@@ -365,15 +365,15 @@
 			"timeManagement": "Δώστε μου μερικές συμβουλές για τη βελτίωση των δεξιοτήτων διαχείρισης χρόνου μου"
 		},
 		"perplexityQuestions": {
-			"weather_ny": "καιρός Νέα Υόρκη επόμενες 5 ημέρες σε βαθμούς Κελσίου",
-			"restaurants_antalya": "καλύτερα εστιατόρια κοντά στην Αντάλεια, Τουρκία ανοιχτά τώρα",
-			"get_to_times_square": "πώς να φτάσω στο Times Square από το JFK",
-			"reset_iphone": "πώς να επαναφέρω iPhone χωρίς κωδικό",
-			"easy_chicken_recipes": "εύκολες συνταγές κοτόπουλου για δείπνο απόψε",
-			"lose_belly_fat": "ταχύτερος τρόπος για να χάσω κοιλιακό λίπος στο σπίτι",
-			"iphone_vs_samsung": "iPhone 15 vs Samsung S24 ποιο είναι καλύτερο",
-			"best_washing_machine": "καλύτερο πλυντήριο κάτω από 500",
-			"amazon_prime_deals": "συμφωνίες Prime Day 2024 στο Amazon"
+			"weatherNy": "καιρός Νέα Υόρκη επόμενες 5 ημέρες σε βαθμούς Κελσίου",
+			"restaurantsAntalya": "καλύτερα εστιατόρια κοντά στην Αντάλεια, Τουρκία ανοιχτά τώρα",
+			"getToTimesSquare": "πώς να φτάσω στο Times Square από το JFK",
+			"resetIphone": "πώς να επαναφέρω iPhone χωρίς κωδικό",
+			"easyChickenRecipes": "εύκολες συνταγές κοτόπουλου για δείπνο απόψε",
+			"loseBellyFat": "ταχύτερος τρόπος για να χάσω κοιλιακό λίπος στο σπίτι",
+			"iphoneVsSamsung": "iPhone 15 vs Samsung S24 ποιο είναι καλύτερο",
+			"bestWashingMachine": "καλύτερο πλυντήριο κάτω από 500",
+			"amazonPrimeDeals": "συμφωνίες Prime Day 2024 στο Amazon"
 		},
 		"postSelectionHint": {
 			"greatChoice": "Υπέροχη Επιλογή! 🎉",

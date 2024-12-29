@@ -77,7 +77,7 @@ const MessageList = ({ messages, isLoading, messagesEndRef }) => {
 			if (scrollContainerRef.current) {
 				lastScrollPositionRef.current = scrollContainerRef.current.scrollTop;
 			}
-		}, 100),
+		}, 5000),
 		[messages.length, isAutoScrollEnabled, isScrolledUp]
 	);
 

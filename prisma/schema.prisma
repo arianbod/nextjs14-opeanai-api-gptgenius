@@ -27,7 +27,7 @@ model User {
   updatedAt       DateTime  @updatedAt
   loginAttempts   Int       @default(0)
   lastLoginAttempt DateTime?
-  preferences UserPreferences?
+  UserPreferences  UserPreferences?
   // New fields for enhanced security and tracking
   status          UserStatus @default(ACTIVE)
   statusReason    String?
@@ -80,7 +80,7 @@ model Chat {
   modelCodeName String    @default("o1-mini")
   modelKey     String?
   metadata     Json?     @default("{}")  
-  user         User      @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages     Message[]
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt

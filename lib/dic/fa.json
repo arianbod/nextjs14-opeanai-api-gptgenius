@@ -248,7 +248,7 @@
 			"coding": "برنامه‌نویسی",
 			"chat": "چت",
 			"searchEngine": "موتور جستجو",
-			"vision": "بصری",
+			"vision": "پردازش تصویری",
 			"complex_reasoning": "استدلال پیچیده",
 			"unique": "مدل‌های منحصر به فرد",
 			"internet_search": "جستجوی اینترنتی"
@@ -256,7 +256,7 @@
 	},
 	"modelCard": {
 		"capabilities": {
-			"vision": "بصری",
+			"vision": "پردازش تصویری",
 			"analytical": "تحلیلی",
 			"coding": "برنامه‌نویسی",
 			"chat": "چت"

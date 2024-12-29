@@ -9,6 +9,7 @@ import React, { useState } from 'react'
 import { ThemeProvider } from 'next-themes';
 import { TranslationsProvider } from '@/context/TranslationContext'
 import ErrorBoundary from '@/components/ErrorBoundry'
+import { PreferencesProvider } from '@/context/preferencesContext'
 
 const Providers = ({ children, translations, lang }) => {
 
@@ -28,13 +29,16 @@ const Providers = ({ children, translations, lang }) => {
             <MessageProvider>
 
                 <AuthProvider>
-                    <TranslationsProvider translations={translations} lang={lang}>
-                        <ChatProvider>
-                            <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
-                                {children}
-                            </ThemeProvider>
-                        </ChatProvider>
-                    </TranslationsProvider>
+                    <PreferencesProvider>
+
+                        <TranslationsProvider translations={translations} lang={lang}>
+                            <ChatProvider>
+                                <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
+                                    {children}
+                                </ThemeProvider>
+                            </ChatProvider>
+                        </TranslationsProvider>
+                    </PreferencesProvider>
                 </AuthProvider>
             </MessageProvider>
         </QueryClientProvider>

@@ -6,9 +6,10 @@ import FileUploadComponent from './FileUploadComponent';
 import FilePreviewComponent, { IMAGE_TYPES } from './FilePreviewComponent';
 import { useChat } from '@/context/ChatContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useTranslations } from '@/context/TranslationContext';
 
 // Helper function to detect RTL
-const isRTL = (text) => {
+const isRTLText = (text) => {
 	if (!text || typeof text !== 'string') return false;
 	const rtlRegex =
 		/[\u0591-\u07FF\u200F\u202B\u202E\uFB1D-\uFDFD\uFE70-\uFEFC]/;
@@ -46,7 +47,7 @@ const MessageInput = ({
 	const [textDirection, setTextDirection] = useState('ltr');
 	const [textLanguage, setTextLanguage] = useState('default');
 	const { activeChat } = useChat();
-
+	const { isRTL } = useTranslations();
 	const allowed = activeChat?.modelAllowed || {
 		send: { text: true, file: false, image: false },
 		receive: { text: true, file: false, image: false },
@@ -54,7 +55,7 @@ const MessageInput = ({
 
 	// Update text direction and language based on input text
 	React.useEffect(() => {
-		const rtl = isRTL(inputText);
+		const rtl = isRTLText(inputText);
 		const lang = detectLanguage(inputText);
 		setTextDirection(rtl ? 'rtl' : 'ltr');
 		setTextLanguage(lang);
@@ -142,7 +143,9 @@ const MessageInput = ({
 		<form
 			onSubmit={onSubmit}
 			onPaste={handlePaste}
-			className='fixed bottom-0 left-0 right-0 mx-auto lg:ml-40 px-4 w-full'
+			className={`fixed bottom-0 left-0 right-0 mx-auto  lg:${
+				isRTL ? 'mr-40' : 'ml-40'
+			} px-4 w-full`}
 			onDragEnter={handleDragEnter}
 			onDragLeave={handleDragLeave}
 			onDragOver={handleDragOver}

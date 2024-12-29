@@ -126,7 +126,6 @@ export async function createUser(animalSelection, email = null, ipAddress = null
             tokenBalance: 3000,
             loginAttempts: 0,
             lastLoginAttempt: null,
-            // New fields
             status: 'ACTIVE',
             statusReason: 'Account created',
             verificationToken,
@@ -145,8 +144,30 @@ export async function createUser(animalSelection, email = null, ipAddress = null
                 ipAddress,
                 userAgent,
                 timestamp: new Date().toISOString()
-            }]
+            }],
+            // Add preferences initialization
+            preferences: {
+                create: {
+                    currentLanguage: 'en',
+                    isSidebarPinned: true,
+                    languageHistory: [{
+                        code: 'en',
+                        name: 'English',
+                        lastUsed: new Date().toISOString(),
+                        useCount: 1
+                    }],
+                    userAgentHistory: userAgent ? [{
+                        browser: userAgent.match(/(?:firefox|opera|safari|chrome|msie|trident(?=\/))\/?\s*(\d+)/i)?.[1] || 'Unknown',
+                        os: 'Unknown', // You'll need to parse this from userAgent
+                        device: /mobile|tablet|android/i.test(userAgent) ? 'Mobile' : 'Desktop',
+                        timestamp: new Date().toISOString()
+                    }] : []
+                }
+            }
         },
+        include: {
+            preferences: true
+        }
     });
 
     return {
@@ -155,7 +176,8 @@ export async function createUser(animalSelection, email = null, ipAddress = null
         tokenBalance: user.tokenBalance,
         animalSelection,
         verificationToken,
-        verificationTokenExpiry: user.verificationTokenExpiry
+        verificationTokenExpiry: user.verificationTokenExpiry,
+        preferences: user.preferences
     };
 }
 

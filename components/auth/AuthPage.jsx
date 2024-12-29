@@ -146,8 +146,14 @@ const AuthPage = () => {
 				return;
 			}
 
-			// Call register only after validations pass
-			const result = await register(email || null, animalKeys);
+			// Get any pre-selected language from preferences
+			const { tempLanguage } = usePreferences();
+
+			// Call register with additional language info
+			const result = await register(email || null, animalKeys, {
+				language: tempLanguage ? tempLanguage.code : null,
+			});
+
 			console.log('Registration result:', result);
 
 			if (!result.success) {

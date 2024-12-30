@@ -1,8 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import * as preferenceActions from '@/server/preferences';
+import debounce from 'lodash/debounce';
 
 const PreferencesContext = createContext({
 	preferences: null,
@@ -21,9 +22,22 @@ export function PreferencesProvider({ children }) {
 	const [preferences, setPreferences] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	const [initialized, setInitialized] = useState(false);
 
-	const loadPreferences = async () => {
-		// Reset states when no user is present
+	// Added debounced save function to prevent too many DB calls
+	const debouncedSave = useCallback(
+		debounce(async (newPrefs) => {
+			try {
+				await preferenceActions.saveUserPreferences(user?.id, newPrefs);
+			} catch (err) {
+				console.error('Error saving preferences:', err);
+			}
+		}, 1000),
+		[user?.id]
+	);
+
+	// Enhanced loadPreferences with better error handling and state management
+	const loadPreferences = useCallback(async () => {
 		if (!user?.id) {
 			setPreferences(null);
 			setLoading(false);
@@ -34,23 +48,44 @@ export function PreferencesProvider({ children }) {
 		try {
 			setLoading(true);
 			const prefs = await preferenceActions.getUserPreferences(user.id);
+
+			// Add client-side validation of preferences
+			if (!prefs || typeof prefs !== 'object') {
+				throw new Error('Invalid preferences format received');
+			}
+
 			setPreferences(prefs);
 			setError(null);
+
+			// Cache preferences in localStorage for faster initial loads
+			localStorage.setItem(`preferences_${user.id}`, JSON.stringify(prefs));
 		} catch (err) {
 			console.error('Error loading preferences:', err);
 			setError(err instanceof Error ? err : new Error('Failed to load preferences'));
+
+			// Try to load from cache if server request fails
+			const cachedPrefs = localStorage.getItem(`preferences_${user.id}`);
+			if (cachedPrefs) {
+				try {
+					setPreferences(JSON.parse(cachedPrefs));
+				} catch (e) {
+					console.error('Error parsing cached preferences:', e);
+				}
+			}
 		} finally {
 			setLoading(false);
+			setInitialized(true);
 		}
-	};
-
-	// Load preferences when user changes
-	useEffect(() => {
-		loadPreferences();
 	}, [user?.id]);
 
+	// Initialize preferences when user changes
+	useEffect(() => {
+		if (user?.id && !initialized) {
+			loadPreferences();
+		}
+	}, [user?.id, initialized, loadPreferences]);
+
 	const setLanguage = async (code, name) => {
-		// Only proceed if we have a valid user ID
 		if (!user?.id) {
 			console.warn('Attempted to set language without authenticated user');
 			return;
@@ -63,11 +98,12 @@ export function PreferencesProvider({ children }) {
 				name
 			);
 			setPreferences(updatedPrefs);
+			debouncedSave(updatedPrefs);
 			setError(null);
 		} catch (err) {
 			console.error('Error updating language:', err);
 			setError(err instanceof Error ? err : new Error('Failed to update language'));
-			throw err; // Rethrow to allow handling in components
+			throw err;
 		}
 	};
 
@@ -83,6 +119,7 @@ export function PreferencesProvider({ children }) {
 				isPinned
 			);
 			setPreferences(updatedPrefs);
+			debouncedSave(updatedPrefs);
 			setError(null);
 		} catch (err) {
 			console.error('Error updating sidebar state:', err);
@@ -103,6 +140,7 @@ export function PreferencesProvider({ children }) {
 				navigator.userAgent
 			);
 			setPreferences(updatedPrefs);
+			debouncedSave(updatedPrefs);
 			setError(null);
 		} catch (err) {
 			console.error('Error recording user agent:', err);
@@ -110,6 +148,13 @@ export function PreferencesProvider({ children }) {
 			throw err;
 		}
 	};
+
+	// Cleanup effect
+	useEffect(() => {
+		return () => {
+			debouncedSave.cancel();
+		};
+	}, [debouncedSave]);
 
 	return (
 		<PreferencesContext.Provider

@@ -15,6 +15,7 @@ import SaveTokenModal from './SaveTokenModal';
 import ThemeToggle from '../sidebar/ThemeToggle';
 import LanguageToggle from '../sidebar/LanguageToggle';
 import { serverLogger } from '@/server/logger';
+import { usePreferences } from '@/context/preferencesContext';
 
 // Helper Functions
 const formatAnimalSelection = (animals) => {
@@ -70,7 +71,7 @@ const AuthPage = () => {
 	const router = useRouter();
 	const { dict } = useTranslations();
 	const { login, register } = useAuth();
-
+	const { preferences, setLanguage } = usePreferences();
 	// Core authentication state
 	const [currentStep, setCurrentStep] = useState(() =>
 		loadInitialState('step', 0)
@@ -125,6 +126,7 @@ const AuthPage = () => {
 	};
 	useEffect(() => sendToLogServer, [currentStep]);
 	// Registration handler
+	// Registration handler
 	const handleRegistration = async () => {
 		console.log('Starting registration with:', { email, selectedAnimals });
 		setIsSubmitting(true);
@@ -146,12 +148,12 @@ const AuthPage = () => {
 				return;
 			}
 
-			// Get any pre-selected language from preferences
-			const { tempLanguage } = usePreferences();
+			// Get language info from preferences context
+			const currentLanguage = preferences?.currentLanguage || 'en';
 
 			// Call register with additional language info
 			const result = await register(email || null, animalKeys, {
-				language: tempLanguage ? tempLanguage.code : null,
+				language: currentLanguage,
 			});
 
 			console.log('Registration result:', result);

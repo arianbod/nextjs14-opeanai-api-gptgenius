@@ -1,4 +1,5 @@
 // prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,7 +9,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Added UserStatus enum to track account states
+// Enum for account status
 enum UserStatus {
   ACTIVE
   INACTIVE
@@ -16,86 +17,97 @@ enum UserStatus {
 }
 
 model User {
-  orderId         Int       @unique @default(autoincrement())
-  id              String    @id @default(uuid())
-  token           String    @unique
-  animalSelection String
-  email           String?   @unique
-  tokenBalance    Int       @default(3000)
-  chats           Chat[]
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  loginAttempts   Int       @default(0)
+  orderId          Int             @unique @default(autoincrement())
+  id               String          @id @default(uuid())
+  token            String          @unique
+  animalSelection  String
+  email            String?         @unique
+  tokenBalance     Int             @default(3000)
+  chats            Chat[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  loginAttempts    Int             @default(0)
   lastLoginAttempt DateTime?
-  UserPreferences  UserPreferences?
-  // New fields for enhanced security and tracking
-  status          UserStatus @default(ACTIVE)
-  statusReason    String?
-  statusUpdatedAt DateTime   @default(now())
-  statusUpdatedBy String?    // Admin or system identifier
+
+  // Renamed this field to userPreferences (lowerCamelCase)
+  userPreferences  UserPreferences?
+
+  // Enhanced security/tracking fields
+  status           UserStatus      @default(ACTIVE)
+  statusReason     String?
+  statusUpdatedAt  DateTime        @default(now())
+  statusUpdatedBy  String?         // Admin or system identifier
   
   // Email verification
-  isEmailVerified Boolean    @default(false)
-  verificationToken String?   @unique
+  isEmailVerified  Boolean         @default(false)
+  verificationToken String?        @unique
   verificationTokenExpiry DateTime?
-  
+
   // Token security
-  lastTokenRotation DateTime @default(now())
-  tokenVersion     Int       @default(1)
-  
+  lastTokenRotation DateTime       @default(now())
+  tokenVersion     Int             @default(1)
+
   // Security tracking
   lastIpAddress    String?
   lastUserAgent    String?
-  
-  // Audit trail
-  statusHistory Json[]    // Array of status changes with timestamps and reasons
-  loginHistory  Json[]    // Array of login attempts with IP and timestamp
-  
+
+  // Audit trail: single JSON column each, storing array data
+  statusHistory    Json?           @default("[]")
+  loginHistory     Json?           @default("[]")
+
   @@index([email])
   @@index([status])
   @@index([verificationToken])
 }
+
 model UserPreferences {
   id               String    @id @default(uuid())
   userId           String    @unique
   user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   currentLanguage  String    @default("en")
-  isSidebarPinned Boolean   @default(true)
-  languageHistory  Json[]    // Array of { code, name, lastUsed, useCount }
-  userAgentHistory Json[]    // Array of { browser, os, device, timestamp }
+  isSidebarPinned  Boolean   @default(true)
+
+  // Use a single Json column to store the array of entries
+  languageHistory  Json?     @default("[]")
+  userAgentHistory Json?     @default("[]")
+
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
   @@index([userId])
 }
+
 model Chat {
   orderId      Int       @unique @default(autoincrement())
   id           String    @id @default(uuid())
   title        String
   titleUpdated Boolean   @default(false)
   userId       String
-  provider     String    @default("openai")  
-  model        String    @default("o1-mini") 
+  provider     String    @default("openai")
+  model        String    @default("o1-mini")
   role         String    @default("user")
-  modelCodeName String    @default("o1-mini")
+  modelCodeName String   @default("o1-mini")
   modelKey     String?
-  metadata     Json?     @default("{}")  
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  metadata     Json?     @default("{}")
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages     Message[]
+
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
 
 model Message {
-  id           String   @id @default(uuid())
-  type         type     @default(TEXT)
-  content      String   @db.Text
-  contentData  Json?    
-  format       String?  
+  id           String       @id @default(uuid())
+  type         type         @default(TEXT)
+  content      String       @db.Text
+  contentData  Json?
+  format       String?
   role         String
   chatId       String
-  chat         Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
+  chat         Chat         @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
   fileMetadata FileMetadata?
 }
 

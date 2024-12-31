@@ -18,12 +18,14 @@ import SingleChat from './SingleChat';
 import { AIPersonas } from '@/lib/Personas';
 import MemberProfile from './member-profile/MemberProfile';
 import { PenBoxIcon } from 'lucide-react';
+import { useParams } from 'next/navigation';
 const Sidebar = ({ isPinned, setIsPinned, isHovered, setIsHovered }) => {
 	const { user } = useAuth();
 	const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 	const { chatList, resetChat } = useChat();
 	const { dict, isRTL } = useTranslations();
 	const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+	const params = useParams();
 
 	if (!user) return null;
 
@@ -125,15 +127,15 @@ const Sidebar = ({ isPinned, setIsPinned, isHovered, setIsHovered }) => {
 					<TokenSection className='px-4 py-2 mb-2' />
 
 					{/* Chat List - Expanded for Mobile */}
-					<div className='flex-1 overflow-y-auto px-4'>
+					<div className='flex-1 overflow-y-auto px-2'>
 						<div className='flex items-center justify-between mb-4'>
 							<h3 className='text-md font-semibold text-base-content/50'>
 								{dict.sidebar.conversations}
 							</h3>
 							<Link
 								onClick={() => resetChat()}
-								href='/chat'
-								className='flex items-center gap-4 hover:bg-base-300 rounded-full transition-colors p-1'>
+								href={`${params.lang}/chat`}
+								className='flex items-center gap-4 text-blue-500  hover:bg-base-300 rounded-full transition-colors p-2'>
 								<PenBoxIcon className='w-6 h-6' />
 							</Link>
 						</div>

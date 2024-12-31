@@ -131,6 +131,10 @@
 			"domestic": "دوستان خانگی",
 			"wild": "شگفتی‌های وحشی",
 			"unique": "مخلوقات منحصر به فرد"
+		},
+		"accountManagement": {
+			"accountSetting": "تنظیمات حساب",
+			"logout": "خروج"
 		}
 	},
 	"personas": {

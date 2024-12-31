@@ -66,17 +66,22 @@ const MemberProfile = () => {
 					{/* Account Settings Link */}
 					<Link
 						href={`/account/${user.userId}`}
-						className='flex items-center gap-2 p-2 hover:bg-base-300 rounded-lg transition-colors w-full'>
+						className='flex place-items-center gap-2 p-2 hover:bg-base-300 rounded-lg transition-colors w-full'>
 						<FaUser className='w-4 h-4' />
-						<span className='text-sm'>Account Settings</span>
+						<span className='text-sm'>
+							{dict.auth.accountManagement.accountSetting}
+						</span>
 					</Link>
 
 					{/* Logout Button */}
 					<button
 						onClick={logout}
-						className='flex items-center gap-2 p-2 hover:bg-base-300 rounded-lg transition-colors w-full text-error'>
+						className='flex place-items-center gap-2 p-2 hover:bg-base-300 rounded-lg transition-colors w-full text-error'>
 						<FaSignOutAlt className='w-4 h-4' />
-						<span className='text-sm'>Logout</span>
+						<span className='text-sm'>
+							{' '}
+							{dict.auth.accountManagement.logout}
+						</span>
 					</button>
 				</div>
 			</div>

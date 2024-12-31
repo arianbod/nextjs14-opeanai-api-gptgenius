@@ -131,7 +131,11 @@
 			"domestic": "أصدقاء أليفة",
 			"wild": "عجائب برية",
 			"unique": "مخلوقات فريدة"
-		}
+		},"accountManagement": {
+    "accountSetting": "إعدادات الحساب",
+    "logout": "تسجيل الخروج"
+}
+
 	},
 	"personas": {
 		"names": {

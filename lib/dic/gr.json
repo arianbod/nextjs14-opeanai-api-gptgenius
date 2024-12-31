@@ -1,6 +1,6 @@
 {
 	"global": {
-		"title": "Baba GPT",
+		"title": "BabaGPT",
 		"description": "",
 		"conversations": "Συζητήσεις",
 		"tokenBalance": "Ισορροπία Διακριτικών",
@@ -17,7 +17,7 @@
 	},
 	"auth": {
 		"welcome": {
-			"title": "Καλώς ήρθατε στο Baba GPT",
+			"title": "Καλώς ήρθατε στο BabaGPT",
 			"description": "Ο έξυπνος σύντροφος AI σας για απρόσκοπτες συνομιλίες και αναλύσεις. Ζήστε ασφαλείς και ανώνυμες αλληλεπιδράσεις με προηγμένη τεχνολογία AI.",
 			"features": {
 				"title": "Κύρια Χαρακτηριστικά",
@@ -131,11 +131,15 @@
 			"domestic": "Οικιακοί Φίλοι",
 			"wild": "Αγριές Θαύματα",
 			"unique": "Μοναδικά Πλάσματα"
+		},
+		"accountManagement": {
+			"accountSetting": "Ρυθμίσεις Λογαριασμού",
+			"logout": "Αποσύνδεση"
 		}
 	},
 	"personas": {
 		"names": {
-			"babagpt": "Baba GPT",
+			"babagpt": "BabaGPT",
 			"claude": "Κλώουντ",
 			"o1Preview": "o1-Προεπισκόπηση",
 			"o1Mini": "o1-Mini",
@@ -272,7 +276,7 @@
 		},
 		"questions": {
 			"useCase": {
-				"title": "1. Για τι χρησιμοποιείτε αυτή τη στιγμή το Baba GPT;",
+				"title": "1. Για τι χρησιμοποιείτε αυτή τη στιγμή το BabaGPT;",
 				"options": {
 					"writing_assistance": "Βοήθεια στη Γραφή",
 					"research_and_analysis": "Έρευνα και Ανάλυση",

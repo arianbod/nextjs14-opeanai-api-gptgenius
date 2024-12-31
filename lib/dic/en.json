@@ -1,6 +1,6 @@
 {
 	"global": {
-		"title": "Baba GPT",
+		"title": "BabaGPT",
 		"description": "",
 		"conversations": "Conversations",
 		"tokenBalance": "Token Balance",
@@ -17,7 +17,7 @@
 	},
 	"auth": {
 		"welcome": {
-			"title": "Welcome to Baba GPT",
+			"title": "Welcome to BabaGPT",
 			"description": "Your intelligent AI companion for effortless conversations and analyses. Experience secure and anonymous interactions with advanced AI technology.",
 			"features": {
 				"title": "Key Features",
@@ -133,12 +133,13 @@
 			"unique": "Unique Creatures"
 		},
 		"accountManagement": {
-			"accountSetting": "Account Settings"
+			"accountSetting": "Account Settings",
+			"logout": "logout"
 		}
 	},
 	"personas": {
 		"names": {
-			"babagpt": "Baba GPT",
+			"babagpt": "BabaGPT",
 			"claude": "Claude",
 			"o1Preview": "o1-Preview",
 			"o1Mini": "o1-Mini",
@@ -275,7 +276,7 @@
 		},
 		"questions": {
 			"useCase": {
-				"title": "1. What are you currently using Baba GPT for?",
+				"title": "1. What are you currently using BabaGPT for?",
 				"options": {
 					"writing_assistance": "Writing Assistance",
 					"research_and_analysis": "Research and Analysis",

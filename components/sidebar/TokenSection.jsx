@@ -23,9 +23,8 @@ const TokenSection = ({ className }) => {
 				{/* Buy Button */}
 				<Link
 					href='/token'
-					className='group flex items-center gap-1.5 px-3 py-1.5 
-                             bg-primary hover:bg-primary-focus text-primary-content 
-                             rounded-full text-sm transition-colors'>
+					className='group flex gap-1.5 px-3 py-1.5 place-items-center transition-all
+                             rounded-full text-sm'>
 					<FaPlus className='w-3 h-3' />
 					<span className='hidden sm:inline'>
 						{t('global.purchaseTokens') || 'Buy Tokens'}

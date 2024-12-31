@@ -1,6 +1,6 @@
 {
 	"global": {
-		"title": "Baba GPT",
+		"title": "BabaGPT",
 		"description": "",
 		"conversations": "Sohbetler",
 		"tokenBalance": "Jeton Bakiyesi",
@@ -17,7 +17,7 @@
 	},
 	"auth": {
 		"welcome": {
-			"title": "Baba GPT'ye Hoş Geldiniz",
+			"title": "BabaGPT'ye Hoş Geldiniz",
 			"description": "Çabasız sohbetler ve analizler için akıllı yapay zeka arkadaşınız. Gelişmiş yapay zeka teknolojisi ile güvenli ve anonim etkileşimler deneyimleyin.",
 			"features": {
 				"title": "Temel Özellikler",
@@ -131,11 +131,15 @@
 			"domestic": "Evcil Dostlar",
 			"wild": "Vahşi Harikalar",
 			"unique": "Benzersiz Yaratıklar"
+		},
+		"accountManagement": {
+			"accountSetting": "Hesap Ayarları",
+			"logout": "Çıkış Yap"
 		}
 	},
 	"personas": {
 		"names": {
-			"babagpt": "Baba GPT",
+			"babagpt": "BabaGPT",
 			"claude": "Claude",
 			"o1Preview": "o1-Önizleme",
 			"o1Mini": "o1-Mini",
@@ -272,7 +276,7 @@
 		},
 		"questions": {
 			"useCase": {
-				"title": "1. Baba GPT'yi şu anda ne için kullanıyorsunuz?",
+				"title": "1. BabaGPT'yi şu anda ne için kullanıyorsunuz?",
 				"options": {
 					"writing_assistance": "Yazma Yardımı",
 					"research_and_analysis": "Araştırma ve Analiz",

@@ -28,17 +28,17 @@ export function PreferencesProvider({ children }) {
 	const debouncedSave = useCallback(
 		debounce(async (newPrefs) => {
 			try {
-				await preferenceActions.saveUserPreferences(user?.id, newPrefs);
+				await preferenceActions.saveUserPreferences(user?.userId, newPrefs);
 			} catch (err) {
 				console.error('Error saving preferences:', err);
 			}
 		}, 1000),
-		[user?.id]
+		[user?.userId]
 	);
 
 	// Enhanced loadPreferences with better error handling and state management
 	const loadPreferences = useCallback(async () => {
-		if (!user?.id) {
+		if (!user?.userId) {
 			setPreferences(null);
 			setLoading(false);
 			setError(null);
@@ -47,7 +47,7 @@ export function PreferencesProvider({ children }) {
 
 		try {
 			setLoading(true);
-			const prefs = await preferenceActions.getUserPreferences(user.id);
+			const prefs = await preferenceActions.getUserPreferences(user.userId);
 
 			// Add client-side validation of preferences
 			if (!prefs || typeof prefs !== 'object') {
@@ -58,13 +58,13 @@ export function PreferencesProvider({ children }) {
 			setError(null);
 
 			// Cache preferences in localStorage for faster initial loads
-			localStorage.setItem(`preferences_${user.id}`, JSON.stringify(prefs));
+			localStorage.setItem(`preferences_${user.userId}`, JSON.stringify(prefs));
 		} catch (err) {
 			console.error('Error loading preferences:', err);
 			setError(err instanceof Error ? err : new Error('Failed to load preferences'));
 
 			// Try to load from cache if server request fails
-			const cachedPrefs = localStorage.getItem(`preferences_${user.id}`);
+			const cachedPrefs = localStorage.getItem(`preferences_${user.userId}`);
 			if (cachedPrefs) {
 				try {
 					setPreferences(JSON.parse(cachedPrefs));
@@ -76,24 +76,24 @@ export function PreferencesProvider({ children }) {
 			setLoading(false);
 			setInitialized(true);
 		}
-	}, [user?.id]);
+	}, [user?.userId]);
 
 	// Initialize preferences when user changes
 	useEffect(() => {
-		if (user?.id && !initialized) {
+		if (user?.userId && !initialized) {
 			loadPreferences();
 		}
-	}, [user?.id, initialized, loadPreferences]);
+	}, [user?.userId, initialized, loadPreferences]);
 
 	const setLanguage = async (code, name) => {
-		if (!user?.id) {
+		if (!user?.userId) {
 			console.warn('Attempted to set language without authenticated user');
 			return;
 		}
 
 		try {
 			const updatedPrefs = await preferenceActions.updateLanguagePreference(
-				user.id,
+				user.userId,
 				code,
 				name
 			);
@@ -108,14 +108,14 @@ export function PreferencesProvider({ children }) {
 	};
 
 	const setSidebarPinned = async (isPinned) => {
-		if (!user?.id) {
+		if (!user?.userId) {
 			console.warn('Attempted to set sidebar state without authenticated user');
 			return;
 		}
 
 		try {
 			const updatedPrefs = await preferenceActions.updateSidebarPinned(
-				user.id,
+				user.userId,
 				isPinned
 			);
 			setPreferences(updatedPrefs);
@@ -129,14 +129,14 @@ export function PreferencesProvider({ children }) {
 	};
 
 	const recordUserAgent = async () => {
-		if (!user?.id) {
+		if (!user?.userId) {
 			console.warn('Attempted to record user agent without authenticated user');
 			return;
 		}
 
 		try {
 			const updatedPrefs = await preferenceActions.recordUserAgent(
-				user.id,
+				user.userId,
 				navigator.userAgent
 			);
 			setPreferences(updatedPrefs);

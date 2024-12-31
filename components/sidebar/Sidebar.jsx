@@ -19,6 +19,7 @@ import { AIPersonas } from '@/lib/Personas';
 import MemberProfile from './member-profile/MemberProfile';
 import { PenBoxIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
+import LocaleLink from '../hoc/LocalLink';
 const Sidebar = ({ isPinned, setIsPinned, isHovered, setIsHovered }) => {
 	const { user } = useAuth();
 	const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -132,12 +133,12 @@ const Sidebar = ({ isPinned, setIsPinned, isHovered, setIsHovered }) => {
 							<h3 className='text-md font-semibold text-base-content/50'>
 								{dict.sidebar.conversations}
 							</h3>
-							<Link
+							<LocaleLink
 								onClick={() => resetChat()}
-								href={`${params.lang}/chat`}
+								href={`/chat`}
 								className='flex items-center gap-4 text-blue-500  hover:bg-base-300 rounded-full transition-colors p-2'>
 								<PenBoxIcon className='w-6 h-6' />
-							</Link>
+							</LocaleLink>
 						</div>
 						<ul className='space-y-2 w-full'>
 							{chatList.map((chat) => {

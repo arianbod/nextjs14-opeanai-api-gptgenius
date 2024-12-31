@@ -425,6 +425,7 @@
 			"JSON": "JSON",
 			"MD": "MD"
 		},
+		"messageInput": {},
 		"uploadSuccess": "File {fileName} uploaded successfully!",
 		"defaultModelName": "AI",
 		"messageSent": "Message sent successfully!",

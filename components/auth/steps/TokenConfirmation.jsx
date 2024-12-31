@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiCopy, FiEye, FiEyeOff, FiCheckCircle } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
+import LocaleLink from '@/components/hoc/LocalLink';
 
 const TokenConfirmation = ({
 	isLogin,
@@ -165,7 +166,7 @@ const TokenConfirmation = ({
 
 			{/* Action Button */}
 			{(isLogin || (!isLogin && hasConfirmedSave)) && (
-				<Link
+				<LocaleLink
 					href='/'
 					onClick={() => {
 						if (isLogin) {
@@ -189,7 +190,7 @@ const TokenConfirmation = ({
 						} transition-colors duration-300`}>
 					<FiCheckCircle className='inline' />
 					{isSubmitting ? dict.auth.submitting : dict.auth.continue}
-				</Link>
+				</LocaleLink>
 			)}
 
 			{/* Error Message */}

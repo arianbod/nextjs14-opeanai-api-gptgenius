@@ -6,9 +6,10 @@ import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { fetchPerplexity } from '@/server/perplexity';
-import Image from "next/legacy/image";
+import Image from 'next/legacy/image';
 import { useDebounce } from 'use-debounce';
 import Link from 'next/link';
+import LocaleLink from '../hoc/LocalLink';
 
 // Inside SearchInterface component
 
@@ -112,7 +113,7 @@ const SearchInterface = () => {
 					<h3 className='text-xl font-semibold mb-4'>Search Results:</h3>
 					<ul className='space-y-4'>
 						{results.map((result) => (
-							<Link
+							<LocaleLink
 								key={result.id}
 								className='p-4 border border-gray-200 dark:border-gray-700 rounded-md'
 								href={result.url}
@@ -133,7 +134,7 @@ const SearchInterface = () => {
 								<p className='text-gray-700 dark:text-gray-300'>
 									{result.snippet}
 								</p>
-							</Link>
+							</LocaleLink>
 						))}
 					</ul>
 				</div>

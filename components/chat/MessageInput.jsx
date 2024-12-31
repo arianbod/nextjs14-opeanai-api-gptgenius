@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { ArrowUp, Camera, Paperclip, X, Upload } from 'lucide-react';
 import TextInputComponent from './TextInputComponent';
@@ -52,6 +52,9 @@ const MessageInput = ({
 		send: { text: true, file: false, image: false },
 		receive: { text: true, file: false, image: false },
 	};
+
+	// Ref for the textarea
+	const textareaRef = useRef(null);
 
 	// Update text direction and language based on input text
 	React.useEffect(() => {
@@ -139,6 +142,20 @@ const MessageInput = ({
 		handleSubmit(e);
 	};
 
+	// Handle clicks on the form to focus the textarea
+	const handleFormClick = (e) => {
+		// If the click originated from a button or its child, do not focus the textarea
+		if (
+			e.target.tagName.toLowerCase() === 'button' ||
+			e.target.closest('button')
+		) {
+			return;
+		}
+		if (textareaRef.current) {
+			textareaRef.current.focus();
+		}
+	};
+
 	return (
 		<form
 			onSubmit={onSubmit}
@@ -149,7 +166,9 @@ const MessageInput = ({
 			onDragEnter={handleDragEnter}
 			onDragLeave={handleDragLeave}
 			onDragOver={handleDragOver}
-			onDrop={handleDrop}>
+			onDrop={handleDrop}
+			onClick={handleFormClick} // Add onClick handler here
+		>
 			<div className='max-w-3xl mx-auto'>
 				{showUnsupportedAlert && (
 					<Alert className='mb-2 bg-red-500/10 text-red-400'>
@@ -159,7 +178,9 @@ const MessageInput = ({
 						</AlertDescription>
 						<button
 							onClick={() => setShowUnsupportedAlert(false)}
-							className='absolute right-2 top-2 text-red-400 hover:text-red-300'>
+							className='absolute right-2 top-2 text-red-400 hover:text-red-300'
+							type='button' // Ensure button type is specified to prevent form submission
+						>
 							<X className='w-4 h-4' />
 						</button>
 					</Alert>
@@ -167,14 +188,14 @@ const MessageInput = ({
 
 				<div
 					className={`relative bg-[#2a2b36] rounded-3xl min-h-[96px] flex flex-col dark:border-2 
-                    ${
-											isDragging
-												? 'border-blue-500 dark:border-blue-500'
-												: 'border-white/50'
-										} 
-                    transition-colors duration-200
-                    ${textLanguage === 'persian' ? 'font-persian' : ''}
-                    ${textLanguage === 'arabic' ? 'font-arabic' : ''}`}
+                        ${
+													isDragging
+														? 'border-blue-500 dark:border-blue-500'
+														: 'border-white/50'
+												} 
+                        transition-colors duration-200
+                        ${textLanguage === 'persian' ? 'font-persian' : ''}
+                        ${textLanguage === 'arabic' ? 'font-arabic' : ''}`}
 					dir={textDirection}>
 					{/* Drag overlay */}
 					{isDragging && (
@@ -230,6 +251,7 @@ const MessageInput = ({
 					{/* Text Input */}
 					{allowed.send.text && (
 						<TextInputComponent
+							ref={textareaRef} // Pass the ref here
 							inputText={inputText}
 							setInputText={setInputText}
 							handleSubmit={handleSubmit}
@@ -269,15 +291,15 @@ const MessageInput = ({
 						<button
 							type='submit'
 							className={`p-2 rounded-full transition-all duration-200
-                                ${
-																	isPending ||
-																	disabled ||
-																	(!inputText.trim() && !uploadedFile) ||
-																	isUploading ||
-																	(!allowed.send.text && !uploadedFile)
-																		? 'text-gray-500 bg-gray-700/50 cursor-not-allowed'
-																		: 'text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 shadow-lg'
-																}`}
+                                    ${
+																			isPending ||
+																			disabled ||
+																			(!inputText.trim() && !uploadedFile) ||
+																			isUploading ||
+																			(!allowed.send.text && !uploadedFile)
+																				? 'text-gray-500 bg-gray-700/50 cursor-not-allowed'
+																				: 'text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 shadow-lg'
+																		}`}
 							disabled={
 								isPending ||
 								disabled ||

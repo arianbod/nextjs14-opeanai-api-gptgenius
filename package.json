@@ -62,7 +62,11 @@
 		"use-debounce": "^10.0.3"
 	},
 	"devDependencies": {
-		"prisma": "^5.22.0"
+		"@types/node": "^22.10.2",
+		"@types/react": "^19.0.2",
+		"@types/react-dom": "^19.0.2",
+		"prisma": "^5.22.0",
+		"typescript": "^5.7.2"
 	},
 	"overrides": {
 		"react": "19.0.0-rc-66855b96-20241106",

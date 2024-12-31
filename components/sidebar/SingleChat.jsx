@@ -1,11 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import React, { memo } from 'react';
+import LocaleLink from '../hoc/LocalLink';
 
 const SingleChat = ({ persona, avatarUrl, chatTitle, chatId }) => {
+	const params = useParams();
 	return (
 		<li>
-			<Link
+			<LocaleLink
 				href={`/chat/${chatId}`}
 				className='flex place-items-center rounded-xl hover:bg-base-300 transition w-full justify-between'
 				onClick={() => setSidebarOpen(false)}>
@@ -20,7 +23,7 @@ const SingleChat = ({ persona, avatarUrl, chatTitle, chatId }) => {
 					/>
 				</div>
 				<span className='text-sm font-medium w-5/6'>{chatTitle}</span>
-			</Link>
+			</LocaleLink>
 		</li>
 	);
 };

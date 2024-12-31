@@ -7,18 +7,19 @@ import Image from 'next/image';
 import ShowTokenAmount from '../token/ShowTokenAmount';
 import { useChat } from '@/context/ChatContext';
 import { useTranslations } from '@/context/TranslationContext';
+import { useParams } from 'next/navigation';
 
 const SidebarHeader = () => {
 	const { resetChat } = useChat();
 	const { dict } = useTranslations();
-
+	const params = useParams();
 	return (
 		<div className='flex flex-col py-6 px-6'>
 			<div className='flex items-center justify-between mb-4'>
 				<div className='flex items-center gap-4'>
 					<Link
 						onClick={() => resetChat()}
-						href='/chat'
+						href={`/${params.lang}/chat`}
 						className='relative w-16 h-16 overflow-hidden'>
 						<Image
 							alt='logo'
@@ -33,7 +34,7 @@ const SidebarHeader = () => {
 					<div>
 						<Link
 							onClick={() => resetChat()}
-							href='/chat'
+							href={`/${params.lang}/chat`}
 							className='text-2xl tracking-wide capitalize font-semibold'>
 							{dict.global.title}
 						</Link>

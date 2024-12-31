@@ -6,6 +6,7 @@ import { useTranslations } from '@/context/TranslationContext';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { FaCoins, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import LocaleLink from '@/components/hoc/LocalLink';
 
 const MemberProfile = () => {
 	const { user, tokenBalance, logout } = useAuth();
@@ -64,14 +65,14 @@ const MemberProfile = () => {
 				{/* Expanded Menu - Always visible on desktop, toggleable on mobile */}
 				<div className={`${isExpanded || 'hidden lg:block'} mt-2 space-y-1`}>
 					{/* Account Settings Link */}
-					<Link
+					<LocaleLink
 						href={`/account/${user.userId}`}
 						className='flex place-items-center gap-2 p-2 hover:bg-base-300 rounded-lg transition-colors w-full'>
 						<FaUser className='w-4 h-4' />
 						<span className='text-sm'>
 							{dict.auth.accountManagement.accountSetting}
 						</span>
-					</Link>
+					</LocaleLink>
 
 					{/* Logout Button */}
 					<button

@@ -45,7 +45,7 @@ const LanguageToggle = () => {
 		}
 
 		// Only try to update preferences if user is authenticated
-		if (user?.id) {
+		if (user?.userId) {
 			try {
 				await setLanguage(langDetails.code, langDetails.name);
 			} catch (error) {

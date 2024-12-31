@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from '@/context/TranslationContext';
 import { FaCoins, FaPlus } from 'react-icons/fa'; // Using FontAwesome icons
+import LocaleLink from '../hoc/LocalLink';
 
 const TokenSection = ({ className }) => {
 	const { tokenBalance } = useAuth();
@@ -21,7 +22,7 @@ const TokenSection = ({ className }) => {
 				</div>
 
 				{/* Buy Button */}
-				<Link
+				<LocaleLink
 					href='/token'
 					className='group flex gap-1.5 px-3 py-1.5 place-items-center transition-all
                              rounded-full text-sm'>
@@ -29,7 +30,7 @@ const TokenSection = ({ className }) => {
 					<span className='hidden sm:inline'>
 						{t('global.purchaseTokens') || 'Buy Tokens'}
 					</span>
-				</Link>
+				</LocaleLink>
 			</div>
 		</div>
 	);

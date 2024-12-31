@@ -47,7 +47,7 @@ const MessageInput = ({
 	const [textDirection, setTextDirection] = useState('ltr');
 	const [textLanguage, setTextLanguage] = useState('default');
 	const { activeChat } = useChat();
-	const { isRTL } = useTranslations();
+	const { isRTL, dict } = useTranslations();
 	const allowed = activeChat?.modelAllowed || {
 		send: { text: true, file: false, image: false },
 		receive: { text: true, file: false, image: false },
@@ -202,7 +202,10 @@ const MessageInput = ({
 						<div className='absolute inset-0 bg-blue-500 bg-opacity-10 rounded-3xl flex items-center justify-center'>
 							<div className='flex flex-col items-center gap-2 text-blue-500'>
 								<Upload className='w-8 h-8 animate-bounce' />
-								<p className='text-sm font-medium'>Drop your file here</p>
+								<p className='text-sm font-medium'>
+									{dict.chatInterface.messageInput.dropFileMessage}
+									
+								</p>
 							</div>
 						</div>
 					)}
@@ -314,7 +317,7 @@ const MessageInput = ({
 
 					{/* Footer Message */}
 					<div className='text-center w-full text-[11px] text-white/70 py-1 font-medium'>
-						<h2>AI Models can make mistakes. Please double-check responses.</h2>
+						<h2>{dict.chatInterface.messageInput.footerMessage}</h2>
 					</div>
 				</div>
 			</div>

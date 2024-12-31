@@ -1,0 +1,479 @@
+{
+	"global": {
+		"title": "בבאGPT",
+		"description": "",
+		"conversations": "שיחות",
+		"tokenBalance": "מאזן אסימונים",
+		"purchaseTokens": "רכישת אסימונים",
+		"selectedAmount": "סכום נבחר",
+		"discount": "הנחה",
+		"finalPrice": "מחיר סופי",
+		"purchase": "רכישה",
+		"tokens": "אסימונים",
+		"sliderTitle": "הנחת סליידר קסומה"
+	},
+	"sidebar": {
+		"conversations": "שיחות"
+	},
+	"auth": {
+		"welcome": {
+			"title": "ברוכים הבאים לבבאGPT",
+			"description": "המלווה האינטליגנטי שלך לשיחות וניתוחים קלים. חווה אינטראקציות מאובטחות ואנונימיות עם טכנולוגיית AI מתקדמת.",
+			"features": {
+				"title": "תכונות מרכזיות",
+				"list": {
+					"conversations": "שיחות וניתוחים מתקדמים עם AI",
+					"language": "תמיכה רב לשונית",
+					"security": "אימות מבוסס אסימונים מאובטח",
+					"email": "שילוב דוא\"ל אופציונלי"
+				}
+			}
+		},
+		"register": {
+			"title": "הרשמה",
+			"email": "דוא\"ל",
+			"emailPlaceholder": "your@email.com",
+			"buttonText": "התחל",
+			"submitting": "רושמים...",
+			"successMessage": "ההרשמה הצליחה!",
+			"failureMessage": "ההרשמה נכשלה. נא לנסות שוב.",
+			"switchToLogin": "כבר יש לך חשבון? היכנס",
+			"info": "צור את החשבון שלך על ידי בחירת 3 חיות בסדר מסוים. זכור את הרצף הזה - זו תבנית האבטחה הייחודית שלך.",
+			"submit": "התחל",
+			"emailOptional": "הדוא\"ל שלך אינו חובה."
+		},
+		"login": {
+			"title": "התחברות",
+			"token": "אסימון אימות",
+			"tokenPlaceholder": "הכנס את אסימון האימות שלך",
+			"email": "דוא\"ל",
+			"emailPlaceholder": "your@email.com",
+			"buttonText": "התחבר",
+			"submitting": "מתחברים...",
+			"successMessage": "ההתחברות הצליחה!",
+			"failureMessage": "ההתחברות נכשלה. נא לנסות שוב.",
+			"switchToRegister": "צריך חשבון? הירשם",
+			"info": "הכנס את האסימון שלך ובחר את 3 החיות שלך באותו סדר שבחרת במהלך ההרשמה.",
+			"submit": "התחבר"
+		},
+		"redirecting": "מועברים לעמוד הראשי...",
+		"selectThreeAnimalsInOrder": "אנא בחר בדיוק 3 חיות",
+		"selectedAnimalsOrder": "הסדר שבחרת:",
+		"selectNext": "בחר חיה הבאה",
+		"selectAnimalsInOrder": "עליך לבחור 3 חיות ולזכור את סדרן כסיסמה שלך",
+		"orderMatters": "זכור: סדר בחירת החיות חשוב!",
+		"tokenCopied": "אסימון הועתק ללוח",
+		"saveToken": "שמור את האסימון שלך",
+		"tokenImportant": "חשוב: שמור את האסימון הזה - תזדקק לו כדי להתחבר.",
+		"rememberAnimalOrder": "זכור את סדר החיות שלך:",
+		"understood": "שמתי את האסימון שלי",
+		"verifyEmail": "אמת את הדוא\"ל שלך",
+		"verificationSent": "דוא\"ל לאימות נשלח ל-{email}. נא בדוק את התיבת דואר הנכנס שלך.",
+		"verificationReminder": "אנא אמת את כתובת הדוא\"ל שלך כדי להפעיל את כל תכונות החשבון",
+		"optional": "אופציונלי",
+		"confirmTokenSaved": "שמתי את האסימון שלי בצורה מאובטחת",
+		"continue": "המשך",
+		"verificationSuccess": "הדוא\"ל שלך אומת. מועברים לעמוד החשבון שלך...",
+		"verificationFailed": "האימות נכשל",
+		"continueWithoutEmail": "המשך ללא דוא\"ל",
+		"emailLater": "אתה יכול להוסיף את הדוא\"ל שלך מאוחר יותר.",
+		"addEmail": "הוסף דוא\"ל",
+		"skip": "דלג",
+		"back": "חזור",
+		"emailBenefits": {
+			"title": "יתרונות של הוספת הדוא\"ל שלך",
+			"recovery": "שחזור סיסמה",
+			"security": "אבטחה מוגברת",
+			"updates": "קבלת עדכונים חשובים"
+		},
+		"errors": {
+			"generic": "אירעה שגיאה. נא לנסות שוב.",
+			"network": "שגיאת רשת. נא לבדוק את החיבור שלך.",
+			"animals": {
+				"selectThree": "אנא בחר בדיוק 3 חיות."
+			},
+			"email": {
+				"invalid": "אנא הזן כתובת דוא\"ל חוקית.",
+				"required": "דוא\"ל נדרש.",
+				"alreadyVerified": "דוא\"ל זה כבר אומת על ידי חשבון אחר.",
+				"verificationFailed": "אימות הדוא\"ל נכשל."
+			},
+			"register": {
+				"generic": "ההרשמה נכשלה. נא לנסות שוב.",
+				"emailTaken": "דוא\"ל זה כבר רשום."
+			},
+			"login": {
+				"generic": "ההתחברות נכשלה. נא לנסות שוב.",
+				"tokenRequired": "אסימון אימות נדרש.",
+				"invalidToken": "אסימון אימות לא חוקי.",
+				"incorrectSequence": "סדר החיות שגוי. נותרו {attempts} נסיונות.",
+				"accountLocked": "החשבון נעול. נא לנסות שוב לאחר {minutes} דקות.",
+				"tooManyAttempts": "יותר מדי נסיונות נכשלים. נא לנסות שוב מאוחר יותר.",
+				"accountInactive": "החשבון הזה אינו פעיל כרגע.",
+				"accountDeleted": "החשבון הזה נמחק."
+			}
+		},
+		"animalList": [
+			{ "key": "dog", "label": "כלב", "category": "domestic" },
+			{ "key": "cat", "label": "חתול", "category": "domestic" },
+			{ "key": "elephant", "label": "פיל", "category": "wild" },
+			{ "key": "lion", "label": "אריה", "category": "wild" },
+			{ "key": "tiger", "label": "טיגריס", "category": "wild" },
+			{ "key": "bear", "label": "דוב", "category": "wild" },
+			{ "key": "monkey", "label": "קוף", "category": "wild" },
+			{ "key": "giraffe", "label": "ג'ירפה", "category": "wild" },
+			{ "key": "zebra", "label": "זברה", "category": "wild" },
+			{ "key": "penguin", "label": "פינגווין", "category": "unique" },
+			{ "key": "kangaroo", "label": "קנגורו", "category": "wild" },
+			{ "key": "koala", "label": "קואלה", "category": "wild" }
+		],
+		"animalCategories": {
+			"domestic": "חברים ביתיים",
+			"wild": "פלאי הטבע",
+			"unique": "יצורים ייחודיים"
+		},
+		"accountManagement": {
+			"accountSetting": "הגדרות חשבון",
+			"logout": "התנתקות"
+		}
+	},
+	"personas": {
+		"names": {
+			"babagpt": "בבאGPT",
+			"claude": "קלוד",
+			"o1Preview": "o1-תצוגה מקדימה",
+			"o1Mini": "o1-מיני",
+			"chatgpt4": "4o"
+		},
+		"roles": {
+			"searchEngine": "מנוע חיפוש חי",
+			"chatgpt": "צ'אט GPT",
+			"analyticalAssistant": "עוזר אנליטי",
+			"visualAnalysisAssistant": "עוזר לניתוחים חזותיים",
+			"versatileAIAssistant": "עוזר AI רב-תכליתי"
+		},
+		"descriptions": {
+			"babagpt": "Mixtral מספק ניתוחים טכניים ונתונים בצורה ידידותית ונגישה עם עיצוב מספרים ברור והצגה מרתקת.",
+			"claude": "קלוד מצטיין במתן תובנות אנליטיות ברורות ותמציתיות, אידיאלי לקבלת החלטות מבוססות נתונים והסברים מדויקים.",
+			"o1Preview": "o1-תצוגה מקדימה מיועד ליצירת תגובות מקיפות ומדויקות, מתאים לניתוחים מעמיקים ושיחות ארוכות.",
+			"o1Mini": "o1-מיני מציע תגובות מהירות ויעילות, אידיאלי לשאלות קצרות ואינטראקציות מהירות.",
+			"chatgpt4": "4o הוא עוזר אנליטי היכול להתאים את היצירתיות ואורך התגובה, מתאים לשיחות מותאמות ומדויקות.",
+			"x": "X הוא עוזר אנליטי מתקדם המיועד לאינטראקציות AI כלליות.",
+			"gemini": "Gemini הוא עוזר AI רב-תכליתי שמשלב הבנת שפה טבעית עם יכולות חזותיות.",
+			"perplexity": "Perplexity הוא מנוע חיפוש מונע AI שמספק חיפוש בזמן אמת עם תגובות תמציתיות ומדויקות והצגה מרתקת."
+		},
+		"categories": {
+			"all": "כל הדגמים",
+			"creative": "יצירתי",
+			"analytical": "אנליטי",
+			"coding": "קידוד",
+			"chat": "שיחה",
+			"searchEngine": "מנוע חיפוש",
+			"vision": "חזון",
+			"complex_reasoning": "הסקת מסקנות מורכבת",
+			"unique": "דגמים ייחודיים",
+			"internet_search": "חיפוש אינטרנט"
+		},
+		"features": {
+			"suitableFor": {
+				"content_creation": "יצירת תוכן",
+				"academic_research": "מחקר אקדמי",
+				"coding_assistance": "עזרה בקידוד",
+				"data_analysis": "ניתוח נתונים",
+				"quick_queries": "שאילתות מהירות",
+				"customer_support": "תמיכת לקוחות",
+				"creative_projects": "פרויקטים יצירתיים",
+				"image_analysis": "ניתוח תמונות",
+				"visual_description": "תיאור חזותי",
+				"document_understanding": "הבנת מסמכים",
+				"image_understanding": "הבנת תמונות",
+				"multi_modal_interaction": "אינטראקציה מולטי-מודאלית",
+				"detailed_visual_analysis": "ניתוח חזותי מפורט",
+				"interactive_coding": "קידוד אינטראקטיבי",
+				"technical_support": "תמיכה טכנית",
+				"adaptive_communication": "תקשורת אדפטיבית",
+				"advanced_security": "אבטחה מתקדמת",
+				"real_time_collaboration": "שיתוף פעולה בזמן אמת"
+			},
+			"bestFor": {
+				"detailed_explanations": "הסברים מפורטים",
+				"concise_summaries": "סיכומים תמציתיים",
+				"interactive_assistance": "סיוע אינטראקטיבי",
+				"data_driven_decisions": "החלטות מבוססות נתונים",
+				"user_friendly_explanations": "הסברים ידידותיים למשתמש",
+				"technical_accuracy": "דיוק טכני",
+				"live_real_data": "נתונים אמיתיים חיים",
+				"accurate": "מדויק",
+				"visual_content_analysis": "ניתוח תוכן חזותי",
+				"image_based_queries": "שאילתות מבוססות תמונה",
+				"visual_problem_solving": "פתרון בעיות חזותי",
+				"fast_responses": "תגובות מהירות",
+				"visual_analysis": "ניתוח חזותי",
+				"in_depth_analysis": "ניתוח מעמיק",
+				"customized_learning": "למידה מותאמת",
+				"interactive_coding": "קידוד אינטראקטיבי"
+			},
+			"specificFeatures": {
+				"language_support": "תמיכה בשפות",
+				"customization": "התאמה אישית",
+				"security_features": "תכונות אבטחה",
+				"high_performance": "ביצועים גבוהים",
+				"real_time_collaboration": "שיתוף פעולה בזמן אמת",
+				"engaging_outputs": "פלטים מרתקים",
+				"integration_capabilities": "יכולות אינטגרציה",
+				"code_generation": "יצירת קוד"
+			}
+		},
+		"labels": {
+			"pro": "PRO",
+			"new": "חדש",
+			"rating": "דירוג",
+			"speed": "מהירות",
+			"speedValues": {
+				"very_fast": "מאוד מהיר",
+				"fast": "מהיר",
+				"slow": "איטי"
+			},
+			"recentlyUsed": "שימוש אחרון"
+		}
+	},
+	"modelSelection": {
+		"needHelp": "צריך עזרה?",
+		"backButton": "חזור",
+		"chooseAgain": "בחר שוב",
+		"searchPlaceholder": "חפש לפי תכונה, שם או תיאור...",
+		"recent": "נראה לאחרונה",
+		"allModels": "כל הדגמים",
+		"noModelsFound": "לא נמצאו דגמים התואמים לחיפוש שלך.",
+		"categories": {
+			"all": "כל הדגמים",
+			"creative": "יצירתי",
+			"analytical": "אנליטי",
+			"coding": "קידוד",
+			"chat": "שיחה",
+			"searchEngine": "מנוע חיפוש",
+			"vision": "חזון",
+			"complex_reasoning": "הסקת מסקנות מורכבת",
+			"unique": "דגמים ייחודיים",
+			"internet_search": "חיפוש אינטרנט"
+		}
+	},
+	"modelCard": {
+		"capabilities": {
+			"vision": "חזון",
+			"analytical": "אנליטי",
+			"coding": "קידוד",
+			"chat": "שיחה"
+		}
+	},
+	"personaSuggester": {
+		"needHelp": "צריך עזרה?",
+		"progress": {
+			"step1": "נשארו רק שלוש שאלות כדי למצוא את הפתרון הטוב ביותר עבורך.",
+			"step2": "כמעט סיימנו, נותרו רק שתי שאלות.",
+			"step3": "אנחנו מוצאים את הפתרון הטוב ביותר, נותרה שאלה אחת.",
+			"step4": "בוצע! הנה הרשימה שלך."
+		},
+		"questions": {
+			"useCase": {
+				"title": "1. למה אתה משתמש כרגע בבבאGPT?",
+				"options": {
+					"writing_assistance": "עזרה בכתיבה",
+					"research_and_analysis": "מחקר וניתוח",
+					"coding_help": "עזרה בקידוד",
+					"data_insights": "תובנות נתונים",
+					"creative_projects": "פרויקטים יצירתיים"
+				}
+			},
+			"responseType": {
+				"title": "2. איזה סוג של תגובות אתה מוצא כמועילות?",
+				"options": {
+					"in_depth_explanations": "הסברים מעמיקים",
+					"quick_summaries": "סיכומים מהירים",
+					"code_examples": "דוגמאות קוד",
+					"visual_representations": "ייצוגים חזותיים",
+					"interactive_guidance": "הכוונה אינטראקטיבית"
+				}
+			},
+			"features": {
+				"title": "3. האם אתה צריך תכונות מסוימות?",
+				"options": {
+					"multi_language_support": "תמיכה רב-לשונית",
+					"tool_integration": "אינטגרציה עם כלים",
+					"customizable_settings": "הגדרות מותאמות",
+					"real_time_collaboration": "שיתוף פעולה בזמן אמת",
+					"enhanced_security": "אבטחה מוגברת"
+				}
+			}
+		},
+		"results": {
+			"title": "הושלם! הנה הפרסונות המוצעות עבורך:",
+			"noResults": "לא נמצאו פרסונות מתאימות.",
+			"chooseAgain": "בחר שוב"
+		}
+	},
+	"account": {
+		"title": "הגדרות חשבון",
+		"subtitle": "נהל את הגדרות וההעדפות של החשבון שלך",
+		"userInfo": "מידע משתמש",
+		"email": "כתובת דוא\"ל",
+		"updateEmail": "עדכן דוא\"ל",
+		"addEmail": "הוסף דוא\"ל",
+		"newEmailPlaceholder": "הכנס כתובת דוא\"ל חדשה",
+		"save": "שמור שינויים",
+		"updating": "מעדכנים...",
+		"cancel": "בטל",
+		"noEmail": "אין כתובת דוא\"ל מוגדרת",
+		"tokenBalance": "מאזן אסימונים",
+		"authToken": "אסימון אימות",
+		"showToken": "הצג אסימון",
+		"hideToken": "הסתר אסימון",
+		"tokenCopied": "אסימון הועתק ללוח",
+		"security": "אבטחה",
+		"securityInfo": "שמור את האסימון שלך ואת סדר החיות בצורה מאובטחת. הם נדרשים לאימות ולא ניתן לשחזרם אם יאבדו.",
+		"logout": "התנתקות",
+		"emailUpdated": "הדוא\"ל עודכן בהצלחה",
+		"updateFailed": "עדכון הדוא\"ל נכשל",
+		"invalidEmail": "אנא הזן כתובת דוא\"ל חוקית",
+		"verified": "מאומת",
+		"unverified": "לא מאומת",
+		"verificationPending": "אימות דוא\"ל בתהליך",
+		"resendVerification": "שלח שוב דוא\"ל לאימות",
+		"errors": {
+			"emailTaken": "דוא\"ל זה כבר בשימוש",
+			"invalidFormat": "פורמט דוא\"ל לא חוקי",
+			"updateFailed": "עדכון הדוא\"ל נכשל",
+			"notAuthenticated": "אנא התחבר כדי לעדכן הגדרות",
+			"verificationExpired": "קישור האימות פג",
+			"verificationInvalid": "קישור האימות לא חוקי"
+		}
+	},
+	"chatInterface": {
+		"searchInModels": "בחר דגם AI",
+		"greetings": {
+			"askAnythingTitle": "👋 שאל כל דבר!",
+			"askAnythingSubtitle": "משאלות מהירות ועד דיונים מעמיקים, אני כאן בשבילך.",
+			"sparkCreativityTitle": "💡 לעורר יצירתיות",
+			"sparkCreativitySubtitle": "צריך רעיונות חדשים? בוא נחשוב יחד ונחדש.",
+			"researchExplainTitle": "📚 מחקר והסבר",
+			"researchExplainSubtitle": "מסיכומים להסברים מפורטים, פשוט שאל.",
+			"getInsightsTitle": "🔍 קבל תובנות ספציפיות",
+			"getInsightsSubtitle": "פירוק נושאים קשים שלב אחר שלב כדי להבין טוב יותר.",
+			"boostProductivityTitle": "💪 להגביר פרודוקטיביות",
+			"boostProductivitySubtitle": "מכתיבת טקסטים ועד טיפים לקידוד—בוא נעשה את זה.",
+			"startWritingHere": "התחל לכתוב כאן!"
+		},
+		"suggestions": {
+			"machineLearning": "הסבר את ההבדל בין למידת מכונה ולמידה עמוקה",
+			"writeEmail": "עזור לי לכתוב דוא\"ל קצר לצוות שלי על עדכוני הפרויקט",
+			"timeManagement": "תן לי כמה טיפים לשיפור כישורי ניהול הזמן שלי"
+		},
+		"perplexityQuestions": {
+			"weatherNY": "מזג אוויר ניו יורק ב-5 הימים הבאים במעלות צלזיוס",
+			"restaurantsAntalya": "המסעדות הטובות ביותר בקרבת אנטאליה, טורקיה פתוחות עכשיו",
+			"getToTimesSquare": "איך להגיע לטיימס סקוור מ-JFK",
+			"resetIphone": "איך לאפס אייפון בלי סיסמה",
+			"easyChickenRecipes": "מתכונים קלים לעוף לארוחת ערב הערב",
+			"loseBellyFat": "הדרך המהירה ביותר להיפטר משומן בבטן בבית",
+			"iphoneVsSamsung": "אייפון 15 מול סמסונג s24 איזה מהם טוב יותר",
+			"bestWashingMachine": "מכונת כביסה הטובה ביותר מתחת ל-500",
+			"amazonPrimeDeals": "מבצעים של יום הפריים של אמזון 2024"
+		},
+		"postSelectionHint": {
+			"greatChoice": "בחירה מצוינת! 🎉",
+			"youSelected": "בחרת:",
+			"refineRequest": "עכשיו, אתה מוזמן לחדד את הבקשה שלך בתיבת הטקסט למטה וללחוץ על",
+			"sendIcon": "האייקון לשליחה!"
+		},
+		"perplexityGreeting": {
+			"needInspiration": "צריך השראה?",
+			"clickExample": "לחץ על כל דוגמה או הקלד את השאלה שלך!",
+			"followUp": "אתה יכול לשאול שאלות המשך או לחדד את הבקשה שלך בכל זמן!"
+		},
+		"standardGreeting": {
+			"needIdeas": "צריך כמה רעיונות? נסה אחד מהבאים:",
+			"ready": "מוכן כשתהיה!"
+		},
+		"errors": {
+			"failedToLoadImage": "טעינת התמונה נכשלה",
+			"fileSizeExceeded": "גודל הקובץ צריך להיות פחות מ-20MB",
+			"unsupportedFileType": "סוג קובץ לא נתמך. סוגים מותרים:",
+			"failedToReadFile": "קריאת הקובץ נכשלה",
+			"fileProcessingError": "שגיאה בעיבוד הקובץ. נא לנסות שוב.",
+			"enterMessageOrFile": "אנא הזן הודעה או העלה קובץ",
+			"selectModelFirst": "אנא בחר דגם תחילה",
+			"sendMessageError": "שליחת ההודעה נכשלה",
+			"uploadCanceled": "ההעלאה בוטלה.",
+			"fileRemoved": "הקובץ הוסר."
+		},
+		"fileTypes": {
+			"TXT": "TXT",
+			"PDF": "PDF",
+			"DOC": "DOC",
+			"DOCX": "DOCX",
+			"CSV": "CSV",
+			"XLS": "XLS",
+			"XLSX": "XLSX",
+			"JPEG": "JPEG",
+			"PNG": "PNG",
+			"GIF": "GIF",
+			"WEBP": "WEBP",
+			"SVG": "SVG",
+			"HTML": "HTML",
+			"CSS": "CSS",
+			"JS": "JS",
+			"JSON": "JSON",
+			"MD": "MD"
+		},
+		"messageInput": {
+			"writingStatus": {
+				"thinking": "חושב...",
+				"startYourMessageHere": "התחל לכתוב כאן!",
+				"writeYourResponseHere": "כתוב את התגובה שלך כאן"
+			},
+			"dropFileMessage": "גרור את הקובץ שלך לכאן",
+			"footerMessage": "דגמי AI יכולים לטעות. נא לבדוק את התגובות פעמיים."
+		},
+		"uploadSuccess": "הקובץ {fileName} הועלה בהצלחה!",
+		"defaultModelName": "AI",
+		"messageSent": "ההודעה נשלחה בהצלחה!",
+		"blackFridaySpecial": "מבצע יום שישי השחור!",
+		"exclusiveOffer": "הנאה מהנחה בלעדית של 50% על כל טעימות האסימונים. מהרו, ההצעה מסתיימת בקרוב!",
+		"rechargeNowWithDiscount": "טען עכשיו עם הנחת יום שישי השחור"
+	},
+	"memberProfile": {
+		"global": {
+			"rechargeNow": "טען עכשיו",
+			"rechargeTokens": "טען אסימונים",
+			"fiftyPercentOff": "50% הנחה",
+			"blackFridaySpecial": "מבצע יום שישי השחור!",
+			"exclusiveOffer": "הנאה מהנחה בלעדית של 50% על כל טעימות האסימונים. מהרו, ההצעה מסתיימת בקרוב!",
+			"rechargeNowWithDiscount": "טען עכשיו עם הנחת יום שישי השחור"
+		},
+		"ariaLabels": {
+			"hideToken": "הסתר אסימון",
+			"showToken": "הצג אסימון",
+			"copyToken": "העתק אסימון",
+			"logout": "התנתקות",
+			"logoutAccount": "התנתקות מהחשבון שלך",
+			"rechargeTokens": "טען אסימונים",
+			"rechargeNowWithDiscount": "טען עכשיו עם הנחת יום שישי השחור"
+		},
+		"buttons": {
+			"logout": "התנתקות",
+			"rechargeNow": "טען עכשיו",
+			"rechargeNowWithDiscount": "טען עכשיו עם הנחת יום שישי השחור"
+		},
+		"modal": {
+			"title": "מבצע יום שישי השחור!",
+			"description": "הנאה מהנחה בלעדית של 50% על כל טעימות האסימונים. מהרו, ההצעה מסתיימת בקרוב!"
+		},
+		"successMessages": {
+			"copyToken": "אסימון הועתק!"
+		},
+		"errorMessages": {
+			"copyTokenFailed": "העתקת האסימון נכשלה."
+		},
+		"infoText": "אנא העתק ושמור את האסימון שלך בצורה בטוחה. תזדקק לו להתחבר בעתיד."
+	}
+}

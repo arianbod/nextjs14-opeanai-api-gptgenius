@@ -425,6 +425,16 @@
 			"JSON": "JSON",
 			"MD": "MD"
 		},
+
+		"messageInput": {
+			"writingStatus": {
+				"thinking": "est en train de réfléchir...",
+				"startYourMessageHere": "Commencez à Écrire Ici !",
+				"writeYourResponseHere": "Écrivez votre réponse ici"
+			},
+			"dropFileMessage": "Déposez votre fichier ici",
+			"footerMessage": "Les modèles d'IA peuvent faire des erreurs. Veuillez vérifier les réponses."
+		},
 		"uploadSuccess": "Fichier {fileName} téléchargé avec succès !",
 		"defaultModelName": "IA",
 		"messageSent": "Message envoyé avec succès !",

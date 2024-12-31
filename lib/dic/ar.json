@@ -131,11 +131,11 @@
 			"domestic": "أصدقاء أليفة",
 			"wild": "عجائب برية",
 			"unique": "مخلوقات فريدة"
-		},"accountManagement": {
-    "accountSetting": "إعدادات الحساب",
-    "logout": "تسجيل الخروج"
-}
-
+		},
+		"accountManagement": {
+			"accountSetting": "إعدادات الحساب",
+			"logout": "تسجيل الخروج"
+		}
 	},
 	"personas": {
 		"names": {
@@ -424,6 +424,16 @@
 			"JS": "JS",
 			"JSON": "JSON",
 			"MD": "MD"
+		},
+
+		"messageInput": {
+			"writingStatus": {
+				"thinking": "...يفكر",
+				"startYourMessageHere": "!ابدأ الكتابة هنا",
+				"writeYourResponseHere": "اكتب ردك هنا"
+			},
+			"dropFileMessage": "أسقط الملف هنا",
+			"footerMessage": "يمكن لنماذج الذكاء الاصطناعي أن تخطئ. يرجى التحقق من الردود مرة أخرى."
 		},
 		"uploadSuccess": "تم تحميل الملف {fileName} بنجاح!",
 		"defaultModelName": "AI",

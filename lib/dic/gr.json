@@ -425,6 +425,15 @@
 			"JSON": "JSON",
 			"MD": "MD"
 		},
+		"messageInput": {
+			"writingStatus": {
+				"thinking": "σκέφτεται...",
+				"startYourMessageHere": "Ξεκινήστε να γράφετε εδώ!",
+				"writeYourResponseHere": "Γράψτε την απάντησή σας εδώ"
+			},
+			"dropFileMessage": "Αφήστε το αρχείο σας εδώ",
+			"footerMessage": "Τα μοντέλα AI μπορεί να κάνουν λάθη. Παρακαλώ επαληθεύστε τις απαντήσεις."
+		},
 		"uploadSuccess": "Το αρχείο {fileName} μεταφορτώθηκε επιτυχώς!",
 		"defaultModelName": "AI",
 		"messageSent": "Το μήνυμα στάλθηκε επιτυχώς!",

@@ -2,6 +2,7 @@
 
 import React, { forwardRef, useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useTranslations } from '@/context/TranslationContext';
 
 // Helper function to detect RTL
 const isRTL = (text) => {
@@ -37,6 +38,7 @@ const TextInputComponent = forwardRef(
 		},
 		ref
 	) => {
+		const { dict } = useTranslations();
 		const textareaRef = ref || useRef(null);
 		const [maxHeight, setMaxHeight] = useState('none');
 		const [isMobileDevice, setIsMobileDevice] = useState(false);
@@ -158,10 +160,10 @@ const TextInputComponent = forwardRef(
 		};
 
 		let placeholder = isPending
-			? `${modelName} is thinking...`
+			? `${modelName} ${dict.chatInterface.messageInput.thinking} `
 			: msgLen < 1
-			? 'Start Writing Here!'
-			: 'Write your response here';
+			? dict.chatInterface.messageInput.writingStatus.startYourMessageHere
+			: dict.chatInterface.messageInput.writingStatus.writeYourResponseHere;
 
 		return (
 			<div className='flex-1 p-4 relative'>
@@ -181,20 +183,16 @@ const TextInputComponent = forwardRef(
                                resize-none focus:outline-none transition-all duration-200 
                                ease-in-out leading-relaxed
                                ${
-																	
-																		
-																		
-																
 																	textLanguage === 'persian'
 																		? 'font-persian'
-																										: ''
-																								}
+																		: ''
+																}
 								                               ${textLanguage === 'arabic' ? 'font-arabic' : ''}
 								                               ${
-																	textDirection === 'rtl'
-																		? 'text-right'
-																		: 'text-left'
-																}`}
+																									textDirection === 'rtl'
+																										? 'text-right'
+																										: 'text-left'
+																								}`}
 					style={{
 						maxHeight,
 						height: 'auto',

@@ -425,7 +425,15 @@
 			"JSON": "JSON",
 			"MD": "MD"
 		},
-		"messageInput": {},
+		"messageInput": {
+			"writingStatus": {
+				"thinking": "is thinking...",
+				"startYourMessageHere": "Start Writing Here!",
+				"writeYourResponseHere": "Write your response here"
+			},
+			"dropFileMessage": "Drop your file here",
+			"footerMessage": "AI Models can make mistakes. Please double-check responses."
+		},
 		"uploadSuccess": "File {fileName} uploaded successfully!",
 		"defaultModelName": "AI",
 		"messageSent": "Message sent successfully!",

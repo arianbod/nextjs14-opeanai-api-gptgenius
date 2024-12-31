@@ -9,15 +9,47 @@ import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from '@/context/TranslationContext';
 
 const languages = [
-	{ code: 'en', name: 'English', flag: '🇬🇧' },
-	{ code: 'fa', name: 'فارسی', flag: '🇮🇷' },
-	{ code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
-	{ code: 'gr', name: 'Ελληνικά', flag: '🇬🇷' },
-	{ code: 'ar', name: 'العربية', flag: '🇦🇪' },
-	{ code: 'fr', name: 'Français', flag: '🇫🇷' },
-	{ code: 'it', name: 'Italiano', flag: '🇮🇹' },
+	{
+		code: 'en',
+		name: 'English',
+		flag: '🇬🇧',
+	},
+	{
+		code: 'fa',
+		name: 'فارسی',
+		flag: '🇮🇷',
+	},
+	{
+		code: 'tr',
+		name: 'Türkçe',
+		flag: '🇹🇷',
+	},
+	{
+		code: 'gr',
+		name: 'Ελληνικά',
+		flag: '🇬🇷',
+	},
+	{
+		code: 'ar',
+		name: 'العربية',
+		flag: '🇦🇪',
+	},
+	{
+		code: 'fr',
+		name: 'Français',
+		flag: '🇫🇷',
+	},
+	{
+		code: 'it',
+		name: 'Italiano',
+		flag: '🇮🇹',
+	},
+	{
+		code: 'he',
+		name: 'עברית',
+		flag: '🇮🇱',
+	},
 ];
-
 const LanguageToggle = () => {
 	const router = useRouter();
 	const pathname = usePathname();

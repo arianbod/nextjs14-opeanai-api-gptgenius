@@ -425,6 +425,16 @@
 			"JSON": "JSON",
 			"MD": "MD"
 		},
+
+		"messageInput": {
+			"writingStatus": {
+				"thinking": "...در حال فکر کردن",
+				"startYourMessageHere": "!اینجا شروع به نوشتن کنید",
+				"writeYourResponseHere": "پاسخ خود را اینجا بنویسید"
+			},
+			"dropFileMessage": "فایل خود را اینجا رها کنید",
+			"footerMessage": "مدل‌های هوش مصنوعی ممکن است اشتباه کنند. لطفاً پاسخ‌ها را دوباره بررسی کنید."
+		},
 		"uploadSuccess": "فایل {fileName} با موفقیت آپلود شد!",
 		"defaultModelName": "هوش مصنوعی",
 		"messageSent": "پیام با موفقیت ارسال شد!",

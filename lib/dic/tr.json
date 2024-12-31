@@ -425,6 +425,15 @@
 			"JSON": "JSON",
 			"MD": "MD"
 		},
+		"messageInput": {
+			"writingStatus": {
+				"thinking": "düşünüyor...",
+				"startYourMessageHere": "Buradan Yazmaya Başlayın!",
+				"writeYourResponseHere": "Yanıtınızı buraya yazın"
+			},
+			"dropFileMessage": "Dosyanızı buraya bırakın",
+			"footerMessage": "AI Modelleri hata yapabilir. Lütfen yanıtları tekrar kontrol edin."
+		},
 		"uploadSuccess": "Dosya {fileName} başarıyla yüklendi!",
 		"defaultModelName": "IA",
 		"messageSent": "Mesaj başarıyla gönderildi!",

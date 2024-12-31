@@ -167,7 +167,7 @@ const TokenConfirmation = ({
 			{/* Action Button */}
 			{(isLogin || (!isLogin && hasConfirmedSave)) && (
 				<LocaleLink
-					href='/'
+					href='/chat'
 					onClick={() => {
 						if (isLogin) {
 							onComplete();

@@ -161,6 +161,16 @@ export const MODELS = {
 } as const;
 
 // =======================================
+// Type Definitions for Providers and Models
+// =======================================
+
+type Provider = keyof typeof MODELS;
+
+type Model = {
+	[K in keyof typeof MODELS]: keyof (typeof MODELS)[K];
+}[keyof typeof MODELS];
+
+// =======================================
 // Utility Functions
 // =======================================
 
@@ -168,8 +178,11 @@ export const MODELS = {
  * Get configuration for a specific model
  * @throws Error if model not found
  */
-export function getModel(provider: string, model: string) {
-	const config = MODELS[provider]?.[model];
+export function getModel<
+	K extends Provider,
+	M extends keyof (typeof MODELS)[K]
+>(provider: K, model: M): (typeof MODELS)[K][M] {
+	const config = MODELS[provider][model];
 	if (!config) {
 		throw new Error(`No configuration found for ${provider}/${model}`);
 	}

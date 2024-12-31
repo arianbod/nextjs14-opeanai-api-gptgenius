@@ -251,7 +251,7 @@ const AccountPage = () => {
 									</div>
 								</div>
 								{showToken ? (
-									<div className='bg-gray-100 dark:bg-gray-600 p-2 rounded break-all font-mono text-sm'>
+									<div className='bg-gray-100 dark:bg-gray-600 p-2 rounded break-all  text-sm'>
 										{user?.token}
 									</div>
 								) : (

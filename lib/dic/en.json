@@ -131,6 +131,9 @@
 			"domestic": "Domestic Friends",
 			"wild": "Wild Wonders",
 			"unique": "Unique Creatures"
+		},
+		"accountManagement": {
+			"accountSetting": "Account Settings"
 		}
 	},
 	"personas": {

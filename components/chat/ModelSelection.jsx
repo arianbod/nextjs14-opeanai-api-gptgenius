@@ -110,7 +110,7 @@ const ModelSelection = () => {
 					!searchTerm &&
 					selectedCategory === 'all' && (
 						<div className='mb-8'>
-							<h2 className='text-lg font-semibold mb-4 text-base-content'>
+							<h2 className='text-lg font-semibold mb-4 text-base-content font-persian'>
 								{t('modelSelection.recent')}
 							</h2>
 							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>

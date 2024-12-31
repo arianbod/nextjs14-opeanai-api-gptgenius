@@ -9,8 +9,9 @@ module.exports = {
 		extend: {
 			fontFamily: {
 				sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-				persian: ['Vazirmatn', 'system-ui', 'sans-serif'],
-				arabic: ['Noto Sans Arabic', 'system-ui', 'sans-serif'],
+				persian: ['var(--font-vazirmatn)', 'system-ui', 'sans-serif'],
+				'noto-sans-arabic': ['var(--font-noto-sans-arabic)']
+				,
 			},
 			backdropBlur: {
 				xs: '2px'

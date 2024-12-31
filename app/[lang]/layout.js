@@ -5,6 +5,25 @@ import Providers from './providers';
 import { Toaster } from 'react-hot-toast';
 import en from '@/lib/dic/en.json';
 import { getDictionary } from '@/lib/dictionary';
+import { Vazirmatn, Noto_Sans_Arabic } from 'next/font/google';
+
+// Initialize the fonts
+const vazirmatn = Vazirmatn({
+  subsets: ['arabic'],
+  display: 'swap',
+  variable: '--font-vazirmatn',
+  preload: true,
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
+});
+
+// Fix: Changed from Vazirmatn to Noto_Sans_Arabic
+const notoSansArabic = Noto_Sans_Arabic({
+  subsets: ['arabic'],
+  display: 'swap',
+  variable: '--font-noto-sans-arabic',
+  preload: true,
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
+});
 
 const RTL_LANGUAGES = ['fa', 'ar'];
 
@@ -23,22 +42,25 @@ export default async function RootLayout({ params, children }) {
   const dict = await getDictionary(lang);
   const isRTL = RTL_LANGUAGES.includes(lang);
 
-  // Fixed font selection logic
-  let fontToUse;
-  switch (lang) {
-    case "fa":
-      fontToUse = "font-persian";
-      break;
-    case "ar":
-      fontToUse = "font-arabic";
-      break;
-    default:
-      fontToUse = "font-sans";
-      break;
-  }
+  // Updated font selection logic
+  const fontClass = lang === "fa" ? vazirmatn.variable :
+    lang === "ar" ? notoSansArabic.variable :
+      vazirmatn.variable;
+
+  // Updated className logic for different languages
+  const getFontFamily = (lang) => {
+    switch (lang) {
+      case 'fa':
+        return 'var(--font-vazirmatn)';
+      case 'ar':
+        return 'var(--font-noto-sans-arabic)';
+      default:
+        return 'var(--font-vazirmatn)';
+    }
+  };
 
   return (
-    <html lang={lang} dir={isRTL ? 'rtl' : 'ltr'}>
+    <html lang={lang} dir={isRTL ? 'rtl' : 'ltr'} className={fontClass}>
       <head>
         <link
           rel="stylesheet"
@@ -46,10 +68,17 @@ export default async function RootLayout({ params, children }) {
           integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV"
           crossOrigin="anonymous"
         />
+        <style>{`
+          :root {
+            --font-family: ${getFontFamily(lang)};
+          }
+          body {
+            font-family: var(--font-family);
+          }
+        `}</style>
       </head>
       <body
         className={`
-          ${fontToUse} 
           ${isRTL ? 'rtl text-right' : 'ltr text-left'}
           flex 
           max-w-full 

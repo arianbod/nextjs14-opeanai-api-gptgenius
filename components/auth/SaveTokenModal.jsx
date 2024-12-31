@@ -72,7 +72,7 @@ const SaveTokenModal = ({
 									<FiCopy size={20} />
 								</motion.button>
 							</div>
-							<div className='font-mono text-sm break-all bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-600'>
+							<div className=' text-sm break-all bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-600'>
 								{token}
 							</div>
 						</div>

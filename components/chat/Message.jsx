@@ -240,7 +240,7 @@ const Message = ({ role, content, timestamp }) => {
 				<div className='not-prose my-4'>
 					<div className='rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700'>
 						<div className='flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-800'>
-							<span className='text-xs text-gray-600 dark:text-gray-300 font-mono'>
+							<span className='text-xs text-gray-600 dark:text-gray-300 '>
 								{match?.[1] || 'Plain Text'}
 							</span>
 							<div className='flex gap-2'>

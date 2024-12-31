@@ -71,7 +71,7 @@ const TokenConfirmation = ({
 		return (
 			<div className='relative'>
 				<motion.div
-					className='font-mono text-sm break-all bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-600'
+					className=' text-sm break-all bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-600'
 					initial={{ opacity: 0.8 }}
 					animate={{ opacity: 1 }}
 					transition={{ duration: 0.5 }}>

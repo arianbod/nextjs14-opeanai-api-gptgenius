@@ -15,30 +15,34 @@ const SidebarHeader = () => {
 	const params = useParams();
 	return (
 		<div className='flex flex-col py-6 px-6'>
-			<div className='flex items-center justify-between mb-4'>
-				<div className='flex items-center gap-4'>
+			<div className='flex flex-col items-center justify-between mb-4'>
+				<div className=' flex flex-col items-center gap-4'>
 					<Link
+						className='flex gap-4 place-items-center'
 						onClick={() => resetChat()}
-						href={`/${params.lang}/chat`}
-						className='relative w-16 h-16 overflow-hidden'>
-						<Image
-							alt='logo'
-							src='/images/babagpt_bw.svg'
-							width={64}
-							height={64}
-							// fill='contain'
+						href={`/${params.lang}/chat`}>
+						<div className='relative w-16 h-16  '>
+							<Image
+								alt='logo'
+								src='/images/babagpt_bw.svg'
+								width={64}
+								height={64}
+								// fill='contain'
 
-							className='rounded-full shadow-lg bg-slate-800 w-16 h-16 p-1'
-						/>
-					</Link>
-					<div>
-						<Link
+								className='rounded-full shadow-lg bg-slate-800 w-16 h-16 '
+							/>
+						</div>
+						<h1 className='text-2xl tracking-wide capitalize font-semibold'>
+							{dict.global.title}
+						</h1>
+						{/* <Link
 							onClick={() => resetChat()}
 							href={`/${params.lang}/chat`}
 							className='text-2xl tracking-wide capitalize font-semibold'>
-							{dict.global.title}
-						</Link>
-						<div className='flex gap-2  place-items-center justify-start'>
+						</Link> */}
+					</Link>
+					<div className='flex flex-col'>
+						<div className='flex gap-2  place-items-center justify-center'>
 							<ThemeToggle />
 							<LanguageToggle />
 						</div>
@@ -46,7 +50,6 @@ const SidebarHeader = () => {
 					</div>
 				</div>
 			</div>
-			<div className='flex justify-between space-x-2 place-items-center'></div>
 		</div>
 	);
 };

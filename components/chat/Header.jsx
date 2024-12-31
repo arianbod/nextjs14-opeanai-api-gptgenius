@@ -1,7 +1,7 @@
 import React, { memo, useState, useRef, useEffect } from 'react';
 import { useChat } from '@/context/ChatContext';
 import { Search, X } from 'lucide-react';
-import Image from "next/legacy/image";
+import Image from 'next/legacy/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Header = ({ msgLen = 0 }) => {
@@ -56,7 +56,7 @@ const Header = ({ msgLen = 0 }) => {
 				className='fixed rounded-b-lg top-0 left-0 lg:pl-72 right-0 shadow-lg z-30 bg-base-200/95 backdrop-blur-xl'>
 				<div className='max-w-3xl mx-auto h-full'>
 					<motion.div
-						className='px-6 py-2 flex justify-between items-center'
+						className=' pl-12 px-6 py-2 pt-3 flex justify-between items-center'
 						animate={{
 							paddingBottom: isExpanded ? '0.5rem' : '0.5rem',
 							borderBottom: isExpanded
@@ -76,7 +76,7 @@ const Header = ({ msgLen = 0 }) => {
 								width={24}
 								height={24}
 							/>
-							<div className='flex flex-col justify-start'>
+							<div className='flex flex-col justify-center'>
 								<span>{activeChat.name}</span>
 								<span className='text-sm text-base-content/50 -mt-1 capitalize'>
 									{activeChat.role}

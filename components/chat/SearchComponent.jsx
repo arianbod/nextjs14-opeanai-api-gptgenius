@@ -17,17 +17,17 @@ const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 			initial={{ height: '4rem' }}
 			animate={{ height: isExpanded ? '6rem' : '4rem' }}>
 			<div className='max-w-4xl mx-auto h-full px-6'>
-				<div className='flex items-center justify-between h-16'>
+				<div className='flex items-center place-content-center justify-center h-16 '>
 					<motion.h1
 						animate={{
 							scale: isExpanded ? 0.9 : 1,
 							translateY: isExpanded ? -2 : 0,
 						}}
-						className=' text-lg font-semibold text-base-content ml-4 select-none'>
+						className=' text-lg font-semibold text-base-content text-center ml-4 select-none '>
 						{!isExpanded && dict.chatInterface.searchInModels}
 					</motion.h1>
 
-					<div className='relative'>
+					{/* <div className='relative'>
 						<motion.div
 							className='flex items-center'
 							animate={{
@@ -64,7 +64,7 @@ const SearchComponent = ({ onSearch, placeholder = 'Search...' }) => {
 								</button>
 							)}
 						</motion.div>
-					</div>
+					</div> */}
 				</div>
 			</div>
 		</motion.div>

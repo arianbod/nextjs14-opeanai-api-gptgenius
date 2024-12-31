@@ -13,26 +13,26 @@ const MobileHeader = () => {
 
 	return (
 		<div className='p-2'>
-			<div className='flex items-center justify-between mb-2'>
+			<div className='flex flex-col place-items-center justify-between mb-2'>
 				{/* Logo and Title */}
 				<Link
 					onClick={() => resetChat()}
 					href='/chat'
 					className='relative flex items-center gap-2'>
-					<div className='w-8 h-8 relative'>
+					<div className='w-12 h-12 relative'>
 						<Image
 							alt='logo'
 							src='/images/babagpt_bw.svg'
 							layout='fill'
 							objectFit='contain'
-							className='rounded-full shadow-lg bg-slate-800 p-1'
+							className='rounded-full shadow-lg bg-slate-800'
 						/>
 					</div>
-					<span className='font-semibold text-base'>{dict.global.title}</span>
+					<span className='font-semibold text-lg'>{dict.global.title}</span>
 				</Link>
 
 				{/* Theme and Language Toggles */}
-				<div className='flex gap-1'>
+				<div className='flex gap-1 place-items-center'>
 					<ThemeToggle />
 					<LanguageToggle />
 				</div>

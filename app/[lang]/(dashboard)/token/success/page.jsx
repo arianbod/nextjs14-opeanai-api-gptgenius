@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from '@/context/TranslationContext';
 import { useAuth } from '@/context/AuthContext';
@@ -8,12 +8,12 @@ import { motion } from 'framer-motion';
 import { FiCheckCircle, FiLoader } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 
-const SuccessPage = () => {
+// Separate component to handle search params
+const PaymentVerification = () => {
 	const router = useRouter();
-	const { dict } = useTranslations();
 	const { setTokenBalance } = useAuth();
 	const searchParams = useSearchParams();
-	const [status, setStatus] = useState('loading'); // 'loading', 'success', 'error'
+	const [status, setStatus] = useState('loading');
 	const [error, setError] = useState('');
 
 	useEffect(() => {
@@ -134,13 +134,27 @@ const SuccessPage = () => {
 		}
 	};
 
+	return renderContent();
+};
+
+// Loading fallback component
+const LoadingFallback = () => (
+	<div className='w-20 h-20 flex items-center justify-center mx-auto'>
+		<FiLoader className='w-12 h-12 text-blue-500 animate-spin' />
+	</div>
+);
+
+// Main SuccessPage component
+const SuccessPage = () => {
 	return (
 		<div className='min-h-screen flex items-center justify-center'>
 			<motion.div
 				initial={{ scale: 0.8, opacity: 0 }}
 				animate={{ scale: 1, opacity: 1 }}
 				className='bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl text-center max-w-md mx-4'>
-				{renderContent()}
+				<Suspense fallback={<LoadingFallback />}>
+					<PaymentVerification />
+				</Suspense>
 			</motion.div>
 		</div>
 	);

@@ -1,163 +1,241 @@
 'use client';
-import React, { useState, useEffect, useRef, memo } from 'react';
-import Slider from 'rc-slider';
-import { discountSpots } from '@/lib/discountSpots';
-import { FaGift, FaStar, FaRocket, FaCrown, FaGem } from 'react-icons/fa';
+
+import React, { useState, useEffect, memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaTimes, FaGem, FaCrown, FaRocket } from 'react-icons/fa';
+import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from '@/context/TranslationContext';
+import { toast } from 'react-hot-toast';
+
+// Add Stripe script component
+const StripeScript = memo(() => {
+	useEffect(() => {
+		const script = document.createElement('script');
+		script.src = 'https://js.stripe.com/v3/';
+		script.async = true;
+		document.body.appendChild(script);
+
+		return () => {
+			document.body.removeChild(script);
+		};
+	}, []);
+
+	return null;
+});
+
+// Package options
+const packages = [
+	{
+		id: 'basic',
+		name: 'Basic',
+		price: 1,
+		tokens: 1000,
+		icon: FaRocket,
+		color: 'from-blue-500 to-blue-600',
+	},
+	{
+		id: 'premium',
+		name: 'Premium',
+		price: 15,
+		tokens: 2500,
+		icon: FaCrown,
+		color: 'from-purple-500 to-purple-600',
+		popular: true,
+	},
+	{
+		id: 'pro',
+		name: 'Pro',
+		price: 25,
+		tokens: 5000,
+		icon: FaGem,
+		color: 'from-indigo-500 to-indigo-600',
+	},
+];
+
+const TokenPackage = ({ pkg, selected, onSelect }) => {
+	const Icon = pkg.icon;
+
+	return (
+		<motion.div
+			whileHover={{ scale: 1.02 }}
+			whileTap={{ scale: 0.98 }}
+			className={`relative p-6 rounded-xl cursor-pointer transition-all duration-300 ${
+				selected
+					? 'bg-gradient-to-r ' + pkg.color + ' text-white shadow-lg'
+					: 'bg-white dark:bg-gray-800 hover:shadow-md'
+			}`}
+			onClick={() => onSelect(pkg)}>
+			{pkg.popular && (
+				<div className='absolute -top-3 -right-3'>
+					<span className='bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-xs px-3 py-1 rounded-full shadow-md'>
+						Popular
+					</span>
+				</div>
+			)}
+
+			<div className='flex flex-col items-center text-center space-y-4'>
+				<Icon className='w-8 h-8' />
+				<h3 className='text-xl font-bold'>{pkg.name}</h3>
+				<div className='text-3xl font-bold'>${pkg.price}</div>
+				<div
+					className={`text-sm ${
+						selected ? 'text-white' : 'text-gray-500 dark:text-gray-400'
+					}`}>
+					{pkg.tokens.toLocaleString()} Tokens
+				</div>
+			</div>
+		</motion.div>
+	);
+};
 
 const TokenSlider = ({ isOpen, onClose }) => {
 	const { dict } = useTranslations();
-	const [value, setValue] = useState(discountSpots[0].price);
-	const [currentDiscount, setCurrentDiscount] = useState(
-		discountSpots[0].discountPercentage
-	);
-	const [currentTokens, setCurrentTokens] = useState(discountSpots[0].tokens);
-	const [activeSpot, setActiveSpot] = useState(discountSpots[0].key);
-	const modalRef = useRef(null);
+	const { user } = useAuth();
+	const [selectedPackage, setSelectedPackage] = useState(null);
+	const [isProcessing, setIsProcessing] = useState(false);
 
+	// Log component mount and props
 	useEffect(() => {
-		const applicableSpot = discountSpots
-			.filter((spot) => value >= spot.price)
-			.slice(-1)[0];
-		setCurrentDiscount(applicableSpot.discountPercentage);
-		setCurrentTokens(applicableSpot.tokens);
-		setActiveSpot(applicableSpot.key);
-	}, [value]);
+		console.log('Component mounted with props:', { isOpen, user });
+	}, [isOpen, user]);
 
-	useEffect(() => {
-		const handleKeyDown = (e) => {
-			if (e.key === 'Escape' && isOpen) {
-				onClose();
+	const handlePayment = async () => {
+		console.log('Starting payment process:', {
+			selectedPackage: selectedPackage?.id,
+			amount: selectedPackage?.price,
+			tokens: selectedPackage?.tokens,
+		});
+
+		if (!selectedPackage) {
+			console.log('No package selected');
+			toast.error('Please select a package');
+			return;
+		}
+
+		if (!user?.userId) {
+			console.error('No user ID available');
+			toast.error('Authentication error');
+			return;
+		}
+
+		try {
+			setIsProcessing(true);
+
+			console.log('Making API request to create session');
+
+			const response = await fetch('/api/payment/stripe', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					amount: selectedPackage.price,
+					userId: user.userId,
+					tokenAmount: selectedPackage.tokens,
+				}),
+			});
+
+			const { sessionId, error } = await response.json();
+
+			if (error) {
+				toast.error(error);
+				return;
 			}
-		};
-		document.addEventListener('keydown', handleKeyDown);
-		return () => document.removeEventListener('keydown', handleKeyDown);
-	}, [isOpen, onClose]);
 
-	const min = discountSpots[0].price;
-	const max = discountSpots[discountSpots.length - 1].price;
+			// Load Stripe with error handling
+			const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+			console.log('Initializing Stripe client:', {
+				hasKey: !!stripePublicKey,
+				keyLength: stripePublicKey?.length,
+			});
 
-	const marks = discountSpots.reduce((acc, spot) => {
-		const isActive = value >= spot.price;
-		acc[spot.price] = {
-			label: spot.discountPercentage > 0 && (
-				<div
-					className={`flex flex-col place-items-center place-content-center text-center select-none transition-all mt-2 ${
-						isActive ? 'text-blue-600 scale-110 animate-pulse' : 'text-gray-500'
-					}`}>
-					<span className='text-2xl mb-2'>{spot.icon}</span>
-					<span className='text-xs'>{spot.discountPercentage}%</span>
-					<span className='text-xs mx-auto text-center '>Off</span>
-					{/* <span className='text-xs'>{spot.tokens}</span> */}
-				</div>
-			),
-			style: { color: isActive ? '#3b82f6' : '#9ca3af' },
-		};
-		return acc;
-	}, {});
+			if (!stripePublicKey) {
+				toast.error('Payment configuration error');
+				console.error('Missing Stripe publishable key');
+				return;
+			}
 
-	const discountedAmount = (value * (1 - currentDiscount / 100)).toFixed(2);
-	const savings = (value - discountedAmount).toFixed(2);
+			const stripe = window.Stripe(stripePublicKey);
+			const { error: stripeError } = await stripe.redirectToCheckout({
+				sessionId,
+			});
+
+			if (stripeError) {
+				toast.error(stripeError.message);
+			}
+		} catch (error) {
+			console.error('Payment error:', error);
+			toast.error('Payment failed. Please try again.');
+		} finally {
+			setIsProcessing(false);
+		}
+	};
 
 	if (!isOpen) return null;
 
 	return (
-		<div className='inset-0 z-50 flex items-center justify-center select-none transition-opacity duration-300 ease-in-out'>
-			<div
-				ref={modalRef}
-				className={`flex flex-col gap-8 rounded-lg p-6 w-full max-w-md relative overflow-hidden transform transition-transform duration-300 ease-in-out ${
-					isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
-				}`}>
-				<h2 className='text-2xl font-semibold  text-center text-gray-800 dark:text-gray-100'>
-					{dict.global.purchaseTokens}
-				</h2>
-				<div className='mb-8 px-4 flex flex-col gap-1 place-content-center text-center'>
-					<span className='font-semibold'>{dict.global.sliderTitle}</span>
-					<Slider
-						min={min}
-						max={max}
-						marks={marks}
-						step={1}
-						value={value}
-						onChange={setValue}
-						dotStyle={{}}
-						activeDotStyle={{}}
-					/>
-				</div>
-				<div className='space-y-6 mt-8'>
-					<div className='bg-gray-100 dark:bg-gray-700 rounded-xl shadow-inner p-4 flex justify-between items-center'>
-						<div>
-							<p className='text-sm text-gray-500 dark:text-gray-300'>
-								{dict.global.selectedAmount}
-							</p>
-							<div className='relative mt-1'>
-								<span className='absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500'>
-									$
-								</span>
-								<input
-									type='number'
-									value={value}
-									onChange={(e) =>
-										setValue(Math.min(Math.max(e.target.value, min), max))
-									}
-									className='block w-full pl-7 pr-12 py-2 text-lg font-semibold text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-								/>
-							</div>
-						</div>
-						<div className='text-right'>
-							<p className='text-sm text-gray-500 dark:text-gray-300'>
-								{dict.global.discount}
-							</p>
-							<p className='text-lg font-semibold text-gray-800 dark:text-gray-100'>
-								{currentDiscount}% OFF
-							</p>
-						</div>
-					</div>
-
-					<div className='bg-gradient-to-r from-blue-100 to-blue-200 dark:from-gray-600 dark:to-gray-700 rounded-xl shadow-inner p-4 flex justify-between items-center'>
-						<div>
-							<p className='text-sm text-gray-500 dark:text-gray-300'>
-								{dict.global.discount}
-							</p>
-							<p className='text-xl font-bold text-green-600 dark:text-green-400'>
-								${savings}
-							</p>
-						</div>
-
-						<div className='text-right'>
-							<p className='text-sm text-gray-500 dark:text-gray-300'>
-								{dict.global.finalPrice}
-							</p>
-							<p className='text-xl font-bold text-blue-600 dark:text-blue-400'>
-								${discountedAmount}
-							</p>
-						</div>
-					</div>
-
-					<div className='bg-gradient-to-r from-purple-100 to-purple-200 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-inner p-4 flex justify-between items-center'>
-						<div>
-							<p className='text-sm text-gray-500 dark:text-gray-300'>
-								{dict.global.tokens}
-							</p>
-							<p className='text-xl font-bold text-purple-600 dark:text-purple-400'>
-								{currentTokens} tokens
-							</p>
-						</div>
-					</div>
-
+		<AnimatePresence>
+			<StripeScript />
+			<motion.div
+				className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70'
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				exit={{ opacity: 0 }}>
+				<motion.div
+					className='bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 w-full max-w-4xl mx-4 relative'
+					initial={{ scale: 0.8 }}
+					animate={{ scale: 1 }}
+					exit={{ scale: 0.8 }}>
 					<button
-						className='w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-lg hover:from-blue-700 hover:to-purple-700 transition-colors duration-300 focus:outline-none'
-						onClick={() => {
-							alert(
-								`You have selected to purchase ${currentTokens} tokens for $${discountedAmount} (${currentDiscount}% discount)!`
-							);
-							onClose();
-						}}>
-						{dict.global.purchase}
+						onClick={onClose}
+						className='absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'>
+						<FaTimes size={24} />
 					</button>
-				</div>
-			</div>
-		</div>
+
+					<div className='text-center mb-8'>
+						<h2 className='text-3xl font-bold text-gray-900 dark:text-white mb-2'>
+							Choose Your Package
+						</h2>
+						<p className='text-gray-600 dark:text-gray-400'>
+							Select the token package that best suits your needs
+						</p>
+					</div>
+
+					<div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
+						{packages.map((pkg) => (
+							<TokenPackage
+								key={pkg.id}
+								pkg={pkg}
+								selected={selectedPackage?.id === pkg.id}
+								onSelect={setSelectedPackage}
+							/>
+						))}
+					</div>
+
+					<motion.button
+						whileHover={{ scale: 1.02 }}
+						whileTap={{ scale: 0.98 }}
+						onClick={handlePayment}
+						disabled={isProcessing || !selectedPackage}
+						className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg 
+              ${
+								selectedPackage
+									? 'bg-gradient-to-r ' + selectedPackage.color
+									: 'bg-gray-400 cursor-not-allowed'
+							} 
+              ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}
+            `}>
+						{isProcessing
+							? 'Processing...'
+							: selectedPackage
+							? `Get ${selectedPackage.tokens.toLocaleString()} Tokens for $${
+									selectedPackage.price
+							  }`
+							: 'Select a Package'}
+					</motion.button>
+				</motion.div>
+			</motion.div>
+		</AnimatePresence>
 	);
 };
 

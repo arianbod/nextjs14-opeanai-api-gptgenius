@@ -28,7 +28,7 @@ model User {
   updatedAt        DateTime        @updatedAt
   loginAttempts    Int             @default(0)
   lastLoginAttempt DateTime?
-
+  payments Payment[]
   // Renamed this field to userPreferences (lowerCamelCase)
   userPreferences  UserPreferences?
 
@@ -50,7 +50,6 @@ model User {
   // Security tracking
   lastIpAddress    String?
   lastUserAgent    String?
-
   // Audit trail: single JSON column each, storing array data
   statusHistory    Json?           @default("[]")
   loginHistory     Json?           @default("[]")
@@ -122,6 +121,80 @@ model FileMetadata {
   contentSummary  String?  @db.Text
   processingStatus String  @default("pending")
   analysisResult  Json?
+}
+
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+// Payment Type enum for different payment categories
+enum PaymentType {
+  TOKEN_PURCHASE
+  SUBSCRIPTION
+  REFUND
+  OTHER
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  userId            String        // Removed @unique to allow multiple payments
+  user              User          @relation(fields: [userId], references: [id])
+  
+  // Payment details
+  type              PaymentType   @default(TOKEN_PURCHASE)
+  packageName       String?       // e.g., "Basic", "Premium", "Pro"
+  amount            Float         // Amount user is paying in USD
+  tokenAmount       Int          // Number of tokens being purchased
+  currency          String        @default("usd")
+  paymentMethod     String?       // Payment method used (e.g., "card")
+  
+  // Balance tracking
+  previousBalance   Int          // User's token balance before payment
+  expectedBalance   Int          // Expected balance after payment (previousBalance + tokenAmount)
+  finalBalance      Int?         // Actual final balance after payment completion
+  
+  // Stripe-specific fields
+  stripeSessionId   String?       @unique
+  paymentIntentId   String?       @unique
+  stripeCustomerId  String?       // Store Stripe customer ID if available
+  
+  // Status and error handling
+  status            PaymentStatus @default(PENDING)
+  error             String?       // Error message if payment failed
+  errorCode         String?       // Error code for categorization
+  
+  // Security and tracking
+  ipAddress         String?       // IP address of the payment attempt
+  userAgent         String?       // User agent of the payment attempt
+  countryCode       String?       // Country where payment was initiated
+  
+  // Timestamps
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  completedAt       DateTime?     // When payment was completed
+  expiresAt         DateTime?     // When pending payment expires
+  
+  // Additional metadata
+  metadata          Json?         @default("{}")
+  notes             String?       // Admin notes or comments
+  refundReason      String?       // Reason if payment was refunded
+  
+  // For refunds, reference to original payment
+  refundForId       String?       // ID of the original payment if this is a refund
+  refundFor         Payment?      @relation("RefundRelation", fields: [refundForId], references: [id])
+  refunds           Payment[]     @relation("RefundRelation")
+
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@index([stripeSessionId])
+  @@map("payments")
 }
 
 enum type {

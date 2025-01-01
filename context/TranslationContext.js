@@ -1,11 +1,12 @@
 'use client'
 
+import { RTL_LANGUAGES } from '@/lib/supportedLanguages';
 import React, { createContext, useContext } from 'react'
 
 const TranslationsContext = createContext()
 
 // RTL languages list
-const RTL_LANGUAGES = ['fa', 'ar'];
+
 
 export function TranslationsProvider({ children, translations, lang }) {
     const isRTL = RTL_LANGUAGES.includes(lang);

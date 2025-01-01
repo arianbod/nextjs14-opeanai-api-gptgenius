@@ -1,0 +1,479 @@
+{
+	"global": {
+		"title": "BabaGPT",
+		"description": "",
+		"conversations": "Conversas",
+		"tokenBalance": "Saldo de Tokens",
+		"purchaseTokens": "Comprar Tokens",
+		"selectedAmount": "Quantidade Selecionada",
+		"discount": "Desconto",
+		"finalPrice": "Preço Final",
+		"purchase": "Comprar",
+		"tokens": "Tokens",
+		"sliderTitle": "Magia de Desconto do Slider"
+	},
+	"sidebar": {
+		"conversations": "Conversas"
+	},
+	"auth": {
+		"welcome": {
+			"title": "Bem-vindo ao BabaGPT",
+			"description": "Seu companheiro de IA inteligente para conversas e análises sem esforço. Experimente interações seguras e anônimas com tecnologia avançada de IA.",
+			"features": {
+				"title": "Recursos Principais",
+				"list": {
+					"conversations": "Conversas e Análises Avançadas de IA",
+					"language": "Suporte Multilíngue",
+					"security": "Autenticação Segura Baseada em Tokens",
+					"email": "Integração de Email Opcional"
+				}
+			}
+		},
+		"register": {
+			"title": "Registrar",
+			"email": "Email",
+			"emailPlaceholder": "seu@email.com",
+			"buttonText": "Começar",
+			"submitting": "Registrando...",
+			"successMessage": "Registro bem-sucedido!",
+			"failureMessage": "Registro falhou. Por favor, tente novamente.",
+			"switchToLogin": "Já tem uma conta? Faça login",
+			"info": "Crie sua conta selecionando 3 animais em ordem. Lembre-se desta sequência - é seu padrão de segurança único.",
+			"submit": "Começar",
+			"emailOptional": "Seu email é opcional."
+		},
+		"login": {
+			"title": "Entrar",
+			"token": "Token de Autenticação",
+			"tokenPlaceholder": "Digite seu token de autenticação",
+			"email": "Email",
+			"emailPlaceholder": "seu@email.com",
+			"buttonText": "Entrar",
+			"submitting": "Entrando...",
+			"successMessage": "Login bem-sucedido!",
+			"failureMessage": "Login falhou. Por favor, tente novamente.",
+			"switchToRegister": "Precisa de uma conta? Registrar",
+			"info": "Digite seu token e selecione seus 3 animais na mesma ordem escolhida durante o registro.",
+			"submit": "Entrar"
+		},
+		"redirecting": "Redirecionando para a página principal...",
+		"selectThreeAnimalsInOrder": "Por favor, selecione exatamente 3 animais",
+		"selectedAnimalsOrder": "Ordem selecionada:",
+		"selectNext": "Selecionar próximo animal",
+		"selectAnimalsInOrder": "Você deve selecionar 3 animais e lembrar a ordem como sua senha",
+		"orderMatters": "Lembre-se: A ordem de seleção dos animais é importante!",
+		"tokenCopied": "Token copiado para a área de transferência",
+		"saveToken": "Salve seu token",
+		"tokenImportant": "Importante: Salve este token - você precisará dele para entrar.",
+		"rememberAnimalOrder": "Lembre-se da ordem dos seus animais:",
+		"understood": "Salvei meu token",
+		"verifyEmail": "Verifique seu email",
+		"verificationSent": "Um email de verificação foi enviado para {email}. Por favor, verifique sua caixa de entrada.",
+		"verificationReminder": "Por favor, verifique seu endereço de email para ativar todos os recursos da conta",
+		"optional": "Opcional",
+		"confirmTokenSaved": "Salvei meu token com segurança",
+		"continue": "Continuar",
+		"verificationSuccess": "Seu email foi verificado. Redirecionando para a página da sua conta...",
+		"verificationFailed": "Verificação falhou",
+		"continueWithoutEmail": "Continuar sem email",
+		"emailLater": "Você pode adicionar seu email mais tarde.",
+		"addEmail": "Adicionar Email",
+		"skip": "Pular",
+		"back": "Voltar",
+		"emailBenefits": {
+			"title": "Benefícios de Adicionar seu Email",
+			"recovery": "Recuperação de Senha",
+			"security": "Segurança Aprimorada",
+			"updates": "Receba Atualizações Importantes"
+		},
+		"errors": {
+			"generic": "Ocorreu um erro. Por favor, tente novamente.",
+			"network": "Erro de rede. Por favor, verifique sua conexão.",
+			"animals": {
+				"selectThree": "Por favor, selecione exatamente 3 animais."
+			},
+			"email": {
+				"invalid": "Por favor, insira um endereço de email válido.",
+				"required": "Email é obrigatório.",
+				"alreadyVerified": "Este email já foi verificado por outra conta.",
+				"verificationFailed": "A verificação do email falhou."
+			},
+			"register": {
+				"generic": "Registro falhou. Por favor, tente novamente.",
+				"emailTaken": "Este email já está registrado."
+			},
+			"login": {
+				"generic": "Login falhou. Por favor, tente novamente.",
+				"tokenRequired": "Token de autenticação é necessário.",
+				"invalidToken": "Token de autenticação inválido.",
+				"incorrectSequence": "Sequência de animais incorreta. Restam {attempts} tentativas.",
+				"accountLocked": "Conta está bloqueada. Por favor, tente novamente após {minutes} minutos.",
+				"tooManyAttempts": "Muitas tentativas falhas. Por favor, tente novamente mais tarde.",
+				"accountInactive": "Esta conta está atualmente inativa.",
+				"accountDeleted": "Esta conta foi deletada."
+			}
+		},
+		"animalList": [
+			{ "key": "dog", "label": "Cachorro", "category": "domestic" },
+			{ "key": "cat", "label": "Gato", "category": "domestic" },
+			{ "key": "elephant", "label": "Elefante", "category": "wild" },
+			{ "key": "lion", "label": "Leão", "category": "wild" },
+			{ "key": "tiger", "label": "Tigre", "category": "wild" },
+			{ "key": "bear", "label": "Urso", "category": "wild" },
+			{ "key": "monkey", "label": "Macaco", "category": "wild" },
+			{ "key": "giraffe", "label": "Girafa", "category": "wild" },
+			{ "key": "zebra", "label": "Zebra", "category": "wild" },
+			{ "key": "penguin", "label": "Pinguim", "category": "unique" },
+			{ "key": "kangaroo", "label": "Canguru", "category": "wild" },
+			{ "key": "koala", "label": "Coala", "category": "wild" }
+		],
+		"animalCategories": {
+			"domestic": "Amigos Domésticos",
+			"wild": "Maravilhas Selvagens",
+			"unique": "Criaturas Únicas"
+		},
+		"accountManagement": {
+			"accountSetting": "Configurações da Conta",
+			"logout": "Sair"
+		}
+	},
+	"personas": {
+		"names": {
+			"babagpt": "BabaGPT",
+			"claude": "Claude",
+			"o1Preview": "o1-Preview",
+			"o1Mini": "o1-Mini",
+			"chatgpt4": "4o"
+		},
+		"roles": {
+			"searchEngine": "Motor de Busca ao Vivo",
+			"chatgpt": "Chat GPT",
+			"analyticalAssistant": "Assistente Analítico",
+			"visualAnalysisAssistant": "Assistente de Análise Visual",
+			"versatileAIAssistant": "Assistente de IA Versátil"
+		},
+		"descriptions": {
+			"babagpt": "Mixtral fornece análises técnicas e de dados de forma amigável e acessível, com formatação numérica clara e apresentação atraente.",
+			"claude": "Claude se destaca por fornecer insights analíticos claros e concisos, ideal para tomada de decisões baseadas em dados e explicações precisas.",
+			"o1Preview": "o1-Preview é projetado para gerar respostas completas e precisas, adequado para análises profundas e conversas longas.",
+			"o1Mini": "o1-Mini oferece respostas rápidas e eficientes, ideal para consultas curtas e interações rápidas.",
+			"chatgpt4": "4o é um assistente analítico capaz de ajustar a criatividade e o comprimento das respostas, adequado para conversas personalizadas e precisas.",
+			"x": "X é um assistente analítico avançado projetado para interações gerais de IA.",
+			"gemini": "Gemini é um assistente de IA versátil que combina compreensão de linguagem natural com capacidades visuais.",
+			"perplexity": "Perplexity é um motor de busca alimentado por IA que fornece buscas em tempo real com respostas concisas e precisas e apresentação atraente."
+		},
+		"categories": {
+			"all": "Todos os Modelos",
+			"creative": "Criativo",
+			"analytical": "Analítico",
+			"coding": "Programação",
+			"chat": "Chat",
+			"searchEngine": "Motor de Busca",
+			"vision": "Visão",
+			"complex_reasoning": "Raciocínio Complexo",
+			"unique": "Modelos Únicos",
+			"internet_search": "Busca na Internet"
+		},
+		"features": {
+			"suitableFor": {
+				"content_creation": "Criação de Conteúdo",
+				"academic_research": "Pesquisa Acadêmica",
+				"coding_assistance": "Assistência de Programação",
+				"data_analysis": "Análise de Dados",
+				"quick_queries": "Consultas Rápidas",
+				"customer_support": "Suporte ao Cliente",
+				"creative_projects": "Projetos Criativos",
+				"image_analysis": "Análise de Imagens",
+				"visual_description": "Descrição Visual",
+				"document_understanding": "Compreensão de Documentos",
+				"image_understanding": "Compreensão de Imagens",
+				"multi_modal_interaction": "Interação Multimodal",
+				"detailed_visual_analysis": "Análise Visual Detalhada",
+				"interactive_coding": "Programação Interativa",
+				"technical_support": "Suporte Técnico",
+				"adaptive_communication": "Comunicação Adaptativa",
+				"advanced_security": "Segurança Avançada",
+				"real_time_collaboration": "Colaboração em Tempo Real"
+			},
+			"bestFor": {
+				"detailed_explanations": "Explicações Detalhadas",
+				"concise_summaries": "Resumos Concisos",
+				"interactive_assistance": "Assistência Interativa",
+				"data_driven_decisions": "Decisões Baseadas em Dados",
+				"user_friendly_explanations": "Explicações Amigáveis ao Usuário",
+				"technical_accuracy": "Precisão Técnica",
+				"live_real_data": "Dados Reais em Tempo Real",
+				"accurate": "Preciso",
+				"visual_content_analysis": "Análise de Conteúdo Visual",
+				"image_based_queries": "Consultas Baseadas em Imagens",
+				"visual_problem_solving": "Resolução de Problemas Visuais",
+				"fast_responses": "Respostas Rápidas",
+				"visual_analysis": "Análise Visual",
+				"in_depth_analysis": "Análise Profunda",
+				"customized_learning": "Aprendizado Personalizado",
+				"interactive_coding": "Programação Interativa"
+			},
+			"specificFeatures": {
+				"language_support": "Suporte a Idiomas",
+				"customization": "Personalização",
+				"security_features": "Recursos de Segurança",
+				"high_performance": "Alto Desempenho",
+				"real_time_collaboration": "Colaboração em Tempo Real",
+				"engaging_outputs": "Resultados Engajadores",
+				"integration_capabilities": "Capacidades de Integração",
+				"code_generation": "Geração de Código"
+			}
+		},
+		"labels": {
+			"pro": "PRO",
+			"new": "Novo",
+			"rating": "Avaliação",
+			"speed": "Velocidade",
+			"speedValues": {
+				"very_fast": "Muito Rápido",
+				"fast": "Rápido",
+				"slow": "Lento"
+			},
+			"recentlyUsed": "Usado Recentemente"
+		}
+	},
+	"modelSelection": {
+		"needHelp": "Precisa de ajuda?",
+		"backButton": "Voltar",
+		"chooseAgain": "Escolher Novamente",
+		"searchPlaceholder": "Pesquisar por recurso, nome ou descrição...",
+		"recent": "Recente",
+		"allModels": "Todos os Modelos",
+		"noModelsFound": "Nenhum modelo encontrado que corresponda à sua pesquisa.",
+		"categories": {
+			"all": "Todos os Modelos",
+			"creative": "Criativo",
+			"analytical": "Analítico",
+			"coding": "Programação",
+			"chat": "Chat",
+			"searchEngine": "Motor de Busca",
+			"vision": "Visão",
+			"complex_reasoning": "Raciocínio Complexo",
+			"unique": "Modelos Únicos",
+			"internet_search": "Busca na Internet"
+		}
+	},
+	"modelCard": {
+		"capabilities": {
+			"vision": "Visão",
+			"analytical": "Analítico",
+			"coding": "Programação",
+			"chat": "Chat"
+		}
+	},
+	"personaSuggester": {
+		"needHelp": "Precisa de ajuda?",
+		"progress": {
+			"step1": "Faltam apenas três perguntas para encontrar a melhor solução para você.",
+			"step2": "Quase lá, faltam apenas duas perguntas.",
+			"step3": "Estamos encontrando a melhor solução, falta apenas uma pergunta.",
+			"step4": "Concluído! Aqui está a sua lista."
+		},
+		"questions": {
+			"useCase": {
+				"title": "1. Para que você está usando o BabaGPT atualmente?",
+				"options": {
+					"writing_assistance": "Assistência de Escrita",
+					"research_and_analysis": "Pesquisa e Análise",
+					"coding_help": "Ajuda com Programação",
+					"data_insights": "Insights de Dados",
+					"creative_projects": "Projetos Criativos"
+				}
+			},
+			"responseType": {
+				"title": "2. Que tipo de respostas você considera úteis?",
+				"options": {
+					"in_depth_explanations": "Explicações Detalhadas",
+					"quick_summaries": "Resumos Rápidos",
+					"code_examples": "Exemplos de Código",
+					"visual_representations": "Representações Visuais",
+					"interactive_guidance": "Orientação Interativa"
+				}
+			},
+			"features": {
+				"title": "3. Você precisa de algum recurso específico?",
+				"options": {
+					"multi_language_support": "Suporte Multilíngue",
+					"tool_integration": "Integração de Ferramentas",
+					"customizable_settings": "Configurações Personalizáveis",
+					"real_time_collaboration": "Colaboração em Tempo Real",
+					"enhanced_security": "Segurança Aprimorada"
+				}
+			}
+		},
+		"results": {
+			"title": "Concluído! Aqui estão suas personas sugeridas:",
+			"noResults": "Nenhuma persona adequada encontrada.",
+			"chooseAgain": "Escolher Novamente"
+		}
+	},
+	"account": {
+		"title": "Configurações da Conta",
+		"subtitle": "Gerencie as configurações e preferências da sua conta",
+		"userInfo": "Informações do Usuário",
+		"email": "Endereço de Email",
+		"updateEmail": "Atualizar Email",
+		"addEmail": "Adicionar Email",
+		"newEmailPlaceholder": "Digite o novo endereço de email",
+		"save": "Salvar Alterações",
+		"updating": "Atualizando...",
+		"cancel": "Cancelar",
+		"noEmail": "Nenhum endereço de email definido",
+		"tokenBalance": "Saldo de Tokens",
+		"authToken": "Token de Autenticação",
+		"showToken": "Mostrar Token",
+		"hideToken": "Ocultar Token",
+		"tokenCopied": "Token copiado para a área de transferência",
+		"security": "Segurança",
+		"securityInfo": "Mantenha seu token e sequência de animais seguros. Eles são necessários para autenticação e não podem ser recuperados se perdidos.",
+		"logout": "Sair",
+		"emailUpdated": "Email atualizado com sucesso",
+		"updateFailed": "Atualização do email falhou",
+		"invalidEmail": "Por favor, insira um endereço de email válido",
+		"verified": "Verificado",
+		"unverified": "Não Verificado",
+		"verificationPending": "Verificação de email pendente",
+		"resendVerification": "Reenviar Email de Verificação",
+		"errors": {
+			"emailTaken": "Este email já está em uso",
+			"invalidFormat": "Formato de email inválido",
+			"updateFailed": "Atualização do email falhou",
+			"notAuthenticated": "Por favor, faça login para atualizar as configurações",
+			"verificationExpired": "O link de verificação expirou",
+			"verificationInvalid": "Link de verificação inválido"
+		}
+	},
+	"chatInterface": {
+		"searchInModels": "Selecione um Modelo de IA",
+		"greetings": {
+			"askAnythingTitle": "👋 Pergunte o que quiser!",
+			"askAnythingSubtitle": "De perguntas rápidas a discussões profundas, estou aqui para você.",
+			"sparkCreativityTitle": "💡 Desperte sua Criatividade",
+			"sparkCreativitySubtitle": "Precisa de novas ideias? Vamos fazer um brainstorming e inovar.",
+			"researchExplainTitle": "📚 Pesquise e Explique",
+			"researchExplainSubtitle": "De resumos a explicações detalhadas, basta perguntar.",
+			"getInsightsTitle": "🔍 Obtenha Insights Específicos",
+			"getInsightsSubtitle": "Desdobre tópicos difíceis passo a passo para melhor compreensão.",
+			"boostProductivityTitle": "💪 Aumente sua Produtividade",
+			"boostProductivitySubtitle": "Desde a criação de textos até dicas de programação — vamos fazer isso.",
+			"startWritingHere": "Comece a Escrever Aqui!"
+		},
+		"suggestions": {
+			"machineLearning": "Explique a diferença entre aprendizado de máquina e aprendizado profundo",
+			"writeEmail": "Ajude-me a escrever um email curto para minha equipe sobre atualizações do projeto",
+			"timeManagement": "Dê-me algumas dicas para melhorar minhas habilidades de gestão de tempo"
+		},
+		"perplexityQuestions": {
+			"weatherNY": "previsão do tempo em Nova York para os próximos 5 dias em graus Celsius",
+			"restaurantsAntalya": "melhores restaurantes perto de Antalya, Turquia abertos agora",
+			"getToTimesSquare": "como chegar à Times Square a partir do JFK",
+			"resetIphone": "como resetar o iPhone sem senha",
+			"easyChickenRecipes": "receitas fáceis de frango para o jantar desta noite",
+			"loseBellyFat": "a maneira mais rápida de perder gordura abdominal em casa",
+			"iphoneVsSamsung": "iPhone 15 vs Samsung S24 qual é melhor",
+			"bestWashingMachine": "melhor máquina de lavar por menos de 500",
+			"amazonPrimeDeals": "ofertas do Amazon Prime Day 2024"
+		},
+		"postSelectionHint": {
+			"greatChoice": "Ótima escolha! 🎉",
+			"youSelected": "Você selecionou:",
+			"refineRequest": "Agora, sinta-se à vontade para refinar sua solicitação na caixa de texto abaixo e pressione o",
+			"sendIcon": "ícone para enviá-la!"
+		},
+		"perplexityGreeting": {
+			"needInspiration": "Precisa de inspiração?",
+			"clickExample": "Clique em qualquer exemplo ou digite sua própria pergunta!",
+			"followUp": "Você pode fazer perguntas de acompanhamento ou refinar sua solicitação a qualquer momento!"
+		},
+		"standardGreeting": {
+			"needIdeas": "Precisa de algumas ideias? Tente uma destas:",
+			"ready": "Pronto quando você estiver!"
+		},
+		"errors": {
+			"failedToLoadImage": "Falha ao carregar a imagem",
+			"fileSizeExceeded": "O tamanho do arquivo deve ser menor que 20MB",
+			"unsupportedFileType": "Tipo de arquivo não suportado. Tipos permitidos:",
+			"failedToReadFile": "Falha ao ler o arquivo",
+			"fileProcessingError": "Erro ao processar o arquivo. Por favor, tente novamente.",
+			"enterMessageOrFile": "Por favor, insira uma mensagem ou faça upload de um arquivo",
+			"selectModelFirst": "Por favor, selecione um modelo primeiro",
+			"sendMessageError": "Falha ao enviar a mensagem",
+			"uploadCanceled": "Upload de arquivo cancelado.",
+			"fileRemoved": "Arquivo removido."
+		},
+		"fileTypes": {
+			"TXT": "TXT",
+			"PDF": "PDF",
+			"DOC": "DOC",
+			"DOCX": "DOCX",
+			"CSV": "CSV",
+			"XLS": "XLS",
+			"XLSX": "XLSX",
+			"JPEG": "JPEG",
+			"PNG": "PNG",
+			"GIF": "GIF",
+			"WEBP": "WEBP",
+			"SVG": "SVG",
+			"HTML": "HTML",
+			"CSS": "CSS",
+			"JS": "JS",
+			"JSON": "JSON",
+			"MD": "MD"
+		},
+		"messageInput": {
+			"writingStatus": {
+				"thinking": "pensando...",
+				"startYourMessageHere": "Comece a escrever aqui!",
+				"writeYourResponseHere": "Escreva sua resposta aqui"
+			},
+			"dropFileMessage": "Solte seu arquivo aqui",
+			"footerMessage": "Os modelos de IA podem cometer erros. Por favor, verifique as respostas."
+		},
+		"uploadSuccess": "Arquivo {fileName} enviado com sucesso!",
+		"defaultModelName": "IA",
+		"messageSent": "Mensagem enviada com sucesso!",
+		"blackFridaySpecial": "Oferta Especial de Black Friday!",
+		"exclusiveOffer": "Aproveite 50% DE DESCONTO exclusivo em todas as recargas de tokens. Corra, a oferta termina em breve!",
+		"rechargeNowWithDiscount": "Recarregar Agora com Desconto de Black Friday"
+	},
+	"memberProfile": {
+		"global": {
+			"rechargeNow": "Recarregar Agora",
+			"rechargeTokens": "Recarregar Tokens",
+			"fiftyPercentOff": "50% DE DESCONTO",
+			"blackFridaySpecial": "Oferta Especial de Black Friday!",
+			"exclusiveOffer": "Aproveite 50% DE DESCONTO exclusivo em todas as recargas de tokens. Corra, a oferta termina em breve!",
+			"rechargeNowWithDiscount": "Recarregar Agora com Desconto de Black Friday"
+		},
+		"ariaLabels": {
+			"hideToken": "Ocultar token",
+			"showToken": "Mostrar token",
+			"copyToken": "Copiar token",
+			"logout": "Sair",
+			"logoutAccount": "Sair da sua conta",
+			"rechargeTokens": "Recarregar Tokens",
+			"rechargeNowWithDiscount": "Recarregar Agora com Desconto de Black Friday"
+		},
+		"buttons": {
+			"logout": "Sair",
+			"rechargeNow": "Recarregar Agora",
+			"rechargeNowWithDiscount": "Recarregar Agora com Desconto de Black Friday"
+		},
+		"modal": {
+			"title": "Oferta Especial de Black Friday!",
+			"description": "Aproveite 50% DE DESCONTO exclusivo em todas as recargas de tokens. Corra, a oferta termina em breve!"
+		},
+		"successMessages": {
+			"copyToken": "Token copiado!"
+		},
+		"errorMessages": {
+			"copyTokenFailed": "Falha ao copiar o token."
+		},
+		"infoText": "Por favor, copie e salve seu token com segurança. Você precisará dele para futuros logins."
+	}
+}

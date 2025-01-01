@@ -1,9 +1,9 @@
-// middleware.ts
+// src/middleware.ts
+
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { supportedLanguages } from './lib/supportedLanguages';
 
-const RTL_LANGUAGES = ['fa', 'ar'] as const;
-const supportedLanguages = ['en', 'fa', 'tr', 'gr', 'ar', 'it', 'fr', 'he'];
 const defaultLanguage = 'en';
 
 // Define public routes that don't require authentication

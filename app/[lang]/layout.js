@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import en from '@/lib/dic/en.json';
 import { getDictionary } from '@/lib/dictionary';
 import { Vazirmatn, Noto_Sans_Arabic } from 'next/font/google';
+import { supportedLanguages, RTL_LANGUAGES } from '@/lib/supportedLanguages';
 
 // Initialize the fonts
 const vazirmatn = Vazirmatn({
@@ -25,10 +26,9 @@ const notoSansArabic = Noto_Sans_Arabic({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
 });
 
-const RTL_LANGUAGES = ['fa', 'ar'];
 
 export async function generateStaticParams() {
-  return [{ lang: 'en' }, { lang: 'fa' }, { lang: 'tr' }, { lang: 'ar' }, { lang: 'it' }, { lang: 'fr' }]
+  return supportedLanguages.map(lang => ({ lang }));
 }
 
 export const metadata = {

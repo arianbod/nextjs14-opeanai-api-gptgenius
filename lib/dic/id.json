@@ -1,0 +1,479 @@
+{
+	"global": {
+		"title": "BabaGPT",
+		"description": "",
+		"conversations": "Percakapan",
+		"tokenBalance": "Saldo Token",
+		"purchaseTokens": "Beli Token",
+		"selectedAmount": "Jumlah Terpilih",
+		"discount": "Diskon",
+		"finalPrice": "Harga Akhir",
+		"purchase": "Beli",
+		"tokens": "Token",
+		"sliderTitle": "Keajaiban Diskon Slider"
+	},
+	"sidebar": {
+		"conversations": "Percakapan"
+	},
+	"auth": {
+		"welcome": {
+			"title": "Selamat Datang di BabaGPT",
+			"description": "Teman AI cerdas Anda untuk percakapan dan analisis tanpa usaha. Rasakan interaksi yang aman dan anonim dengan teknologi AI canggih.",
+			"features": {
+				"title": "Fitur Utama",
+				"list": {
+					"conversations": "Percakapan dan Analisis AI Lanjutan",
+					"language": "Dukungan Multibahasa",
+					"security": "Otentikasi Aman Berbasis Token",
+					"email": "Integrasi Email Opsional"
+				}
+			}
+		},
+		"register": {
+			"title": "Daftar",
+			"email": "Email",
+			"emailPlaceholder": "anda@contoh.com",
+			"buttonText": "Mulai",
+			"submitting": "Mendaftar...",
+			"successMessage": "Pendaftaran berhasil!",
+			"failureMessage": "Pendaftaran gagal. Silakan coba lagi.",
+			"switchToLogin": "Sudah memiliki akun? Masuk",
+			"info": "Buat akun Anda dengan memilih 3 hewan secara berurutan. Ingat urutan ini - ini adalah pola keamanan unik Anda.",
+			"submit": "Mulai",
+			"emailOptional": "Email Anda opsional."
+		},
+		"login": {
+			"title": "Masuk",
+			"token": "Token Otentikasi",
+			"tokenPlaceholder": "Masukkan token otentikasi Anda",
+			"email": "Email",
+			"emailPlaceholder": "anda@contoh.com",
+			"buttonText": "Masuk",
+			"submitting": "Masuk...",
+			"successMessage": "Masuk berhasil!",
+			"failureMessage": "Masuk gagal. Silakan coba lagi.",
+			"switchToRegister": "Butuh akun? Daftar",
+			"info": "Masukkan token Anda dan pilih 3 hewan Anda dalam urutan yang sama seperti saat pendaftaran.",
+			"submit": "Masuk"
+		},
+		"redirecting": "Mengalihkan ke halaman utama...",
+		"selectThreeAnimalsInOrder": "Silakan pilih tepat 3 hewan",
+		"selectedAnimalsOrder": "Urutan yang Anda pilih:",
+		"selectNext": "Pilih Hewan Berikutnya",
+		"selectAnimalsInOrder": "Anda harus memilih 3 hewan dan mengingat urutan mereka sebagai kata sandi Anda",
+		"orderMatters": "Ingat: Urutan pemilihan hewan penting!",
+		"tokenCopied": "Token disalin ke clipboard",
+		"saveToken": "Simpan token Anda",
+		"tokenImportant": "Penting: Simpan token ini - Anda akan membutuhkannya untuk masuk.",
+		"rememberAnimalOrder": "Ingat urutan hewan Anda:",
+		"understood": "Saya telah menyimpan token saya",
+		"verifyEmail": "Verifikasi email Anda",
+		"verificationSent": "Email verifikasi telah dikirim ke {email}. Silakan periksa kotak masuk Anda.",
+		"verificationReminder": "Silakan verifikasi alamat email Anda untuk mengaktifkan semua fitur akun",
+		"optional": "Opsional",
+		"confirmTokenSaved": "Saya telah menyimpan token saya dengan aman",
+		"continue": "Lanjutkan",
+		"verificationSuccess": "Email Anda telah diverifikasi. Mengalihkan ke halaman akun Anda...",
+		"verificationFailed": "Verifikasi gagal",
+		"continueWithoutEmail": "Lanjutkan tanpa email",
+		"emailLater": "Anda dapat menambahkan email Anda nanti.",
+		"addEmail": "Tambahkan Email",
+		"skip": "Lewati",
+		"back": "Kembali",
+		"emailBenefits": {
+			"title": "Manfaat Menambahkan Email Anda",
+			"recovery": "Pemulihan Kata Sandi",
+			"security": "Keamanan yang Ditingkatkan",
+			"updates": "Terima Pembaruan Penting"
+		},
+		"errors": {
+			"generic": "Terjadi kesalahan. Silakan coba lagi.",
+			"network": "Kesalahan jaringan. Silakan periksa koneksi Anda.",
+			"animals": {
+				"selectThree": "Silakan pilih tepat 3 hewan."
+			},
+			"email": {
+				"invalid": "Silakan masukkan alamat email yang valid.",
+				"required": "Email diperlukan.",
+				"alreadyVerified": "Email ini sudah diverifikasi oleh akun lain.",
+				"verificationFailed": "Verifikasi email gagal."
+			},
+			"register": {
+				"generic": "Pendaftaran gagal. Silakan coba lagi.",
+				"emailTaken": "Email ini sudah terdaftar."
+			},
+			"login": {
+				"generic": "Masuk gagal. Silakan coba lagi.",
+				"tokenRequired": "Token otentikasi diperlukan.",
+				"invalidToken": "Token otentikasi tidak valid.",
+				"incorrectSequence": "Urutan hewan salah. {attempts} percobaan tersisa.",
+				"accountLocked": "Akun terkunci. Silakan coba lagi setelah {minutes} menit.",
+				"tooManyAttempts": "Terlalu banyak percobaan gagal. Silakan coba lagi nanti.",
+				"accountInactive": "Akun ini saat ini tidak aktif.",
+				"accountDeleted": "Akun ini telah dihapus."
+			}
+		},
+		"animalList": [
+			{ "key": "dog", "label": "Anjing", "category": "domestic" },
+			{ "key": "cat", "label": "Kucing", "category": "domestic" },
+			{ "key": "elephant", "label": "Gajah", "category": "wild" },
+			{ "key": "lion", "label": "Singa", "category": "wild" },
+			{ "key": "tiger", "label": "Harimau", "category": "wild" },
+			{ "key": "bear", "label": "Beruang", "category": "wild" },
+			{ "key": "monkey", "label": "Monyet", "category": "wild" },
+			{ "key": "giraffe", "label": "Jerapah", "category": "wild" },
+			{ "key": "zebra", "label": "Zebra", "category": "wild" },
+			{ "key": "penguin", "label": "Pinguin", "category": "unique" },
+			{ "key": "kangaroo", "label": "Kangguru", "category": "wild" },
+			{ "key": "koala", "label": "Koala", "category": "wild" }
+		],
+		"animalCategories": {
+			"domestic": "Teman Domestik",
+			"wild": "Keajaiban Liar",
+			"unique": "Makhluk Unik"
+		},
+		"accountManagement": {
+			"accountSetting": "Pengaturan Akun",
+			"logout": "Keluar"
+		}
+	},
+	"personas": {
+		"names": {
+			"babagpt": "BabaGPT",
+			"claude": "Claude",
+			"o1Preview": "o1-Preview",
+			"o1Mini": "o1-Mini",
+			"chatgpt4": "4o"
+		},
+		"roles": {
+			"searchEngine": "Mesin Pencari Langsung",
+			"chatgpt": "Chat GPT",
+			"analyticalAssistant": "Asisten Analitik",
+			"visualAnalysisAssistant": "Asisten Analisis Visual",
+			"versatileAIAssistant": "Asisten AI Serbaguna"
+		},
+		"descriptions": {
+			"babagpt": "Mixtral menyediakan analisis teknis dan data dengan cara yang ramah dan mudah diakses dengan format angka yang jelas dan presentasi yang menarik.",
+			"claude": "Claude unggul dalam memberikan wawasan analitik yang jelas dan ringkas, ideal untuk pengambilan keputusan berbasis data dan penjelasan yang tepat.",
+			"o1Preview": "o1-Preview dirancang untuk menghasilkan respons yang komprehensif dan akurat, cocok untuk analisis mendalam dan percakapan panjang.",
+			"o1Mini": "o1-Mini menawarkan respons yang cepat dan efisien, ideal untuk pertanyaan singkat dan interaksi cepat.",
+			"chatgpt4": "4o adalah asisten analitik yang mampu menyesuaikan kreativitas dan panjang respons, cocok untuk percakapan yang disesuaikan dan tepat.",
+			"x": "X adalah asisten analitik canggih yang dirancang untuk interaksi AI umum.",
+			"gemini": "Gemini adalah asisten AI serbaguna yang menggabungkan pemahaman bahasa alami dengan kemampuan visual.",
+			"perplexity": "Perplexity adalah mesin pencari bertenaga AI yang menyediakan pencarian waktu nyata dengan respons yang ringkas dan akurat serta presentasi yang menarik."
+		},
+		"categories": {
+			"all": "Semua Model",
+			"creative": "Kreatif",
+			"analytical": "Analitik",
+			"coding": "Pemrograman",
+			"chat": "Obrolan",
+			"searchEngine": "Mesin Pencari",
+			"vision": "Visi",
+			"complex_reasoning": "Pemikiran Kompleks",
+			"unique": "Model Unik",
+			"internet_search": "Pencarian Internet"
+		},
+		"features": {
+			"suitableFor": {
+				"content_creation": "Pembuatan Konten",
+				"academic_research": "Penelitian Akademik",
+				"coding_assistance": "Bantuan Pemrograman",
+				"data_analysis": "Analisis Data",
+				"quick_queries": "Pertanyaan Cepat",
+				"customer_support": "Dukungan Pelanggan",
+				"creative_projects": "Proyek Kreatif",
+				"image_analysis": "Analisis Gambar",
+				"visual_description": "Deskripsi Visual",
+				"document_understanding": "Pemahaman Dokumen",
+				"image_understanding": "Pemahaman Gambar",
+				"multi_modal_interaction": "Interaksi Multi-modal",
+				"detailed_visual_analysis": "Analisis Visual Mendalam",
+				"interactive_coding": "Pemrograman Interaktif",
+				"technical_support": "Dukungan Teknis",
+				"adaptive_communication": "Komunikasi Adaptif",
+				"advanced_security": "Keamanan Lanjutan",
+				"real_time_collaboration": "Kolaborasi Waktu Nyata"
+			},
+			"bestFor": {
+				"detailed_explanations": "Penjelasan Mendalam",
+				"concise_summaries": "Ringkasan Singkat",
+				"interactive_assistance": "Bantuan Interaktif",
+				"data_driven_decisions": "Keputusan Berbasis Data",
+				"user_friendly_explanations": "Penjelasan Ramah Pengguna",
+				"technical_accuracy": "Akurasi Teknis",
+				"live_real_data": "Data Nyata Waktu Nyata",
+				"accurate": "Akurat",
+				"visual_content_analysis": "Analisis Konten Visual",
+				"image_based_queries": "Pertanyaan Berbasis Gambar",
+				"visual_problem_solving": "Pemecahan Masalah Visual",
+				"fast_responses": "Respons Cepat",
+				"visual_analysis": "Analisis Visual",
+				"in_depth_analysis": "Analisis Mendalam",
+				"customized_learning": "Pembelajaran yang Disesuaikan",
+				"interactive_coding": "Pemrograman Interaktif"
+			},
+			"specificFeatures": {
+				"language_support": "Dukungan Bahasa",
+				"customization": "Kustomisasi",
+				"security_features": "Fitur Keamanan",
+				"high_performance": "Performa Tinggi",
+				"real_time_collaboration": "Kolaborasi Waktu Nyata",
+				"engaging_outputs": "Output Menarik",
+				"integration_capabilities": "Kemampuan Integrasi",
+				"code_generation": "Pembuatan Kode"
+			}
+		},
+		"labels": {
+			"pro": "PRO",
+			"new": "Baru",
+			"rating": "Rating",
+			"speed": "Kecepatan",
+			"speedValues": {
+				"very_fast": "Sangat Cepat",
+				"fast": "Cepat",
+				"slow": "Lambat"
+			},
+			"recentlyUsed": "Baru Saja Digunakan"
+		}
+	},
+	"modelSelection": {
+		"needHelp": "Butuh bantuan?",
+		"backButton": "Kembali",
+		"chooseAgain": "Pilih Lagi",
+		"searchPlaceholder": "Cari berdasarkan fitur, nama, atau deskripsi...",
+		"recent": "Terbaru",
+		"allModels": "Semua Model",
+		"noModelsFound": "Tidak ada model yang cocok dengan pencarian Anda.",
+		"categories": {
+			"all": "Semua Model",
+			"creative": "Kreatif",
+			"analytical": "Analitik",
+			"coding": "Pemrograman",
+			"chat": "Obrolan",
+			"searchEngine": "Mesin Pencari",
+			"vision": "Visi",
+			"complex_reasoning": "Pemikiran Kompleks",
+			"unique": "Model Unik",
+			"internet_search": "Pencarian Internet"
+		}
+	},
+	"modelCard": {
+		"capabilities": {
+			"vision": "Visi",
+			"analytical": "Analitik",
+			"coding": "Pemrograman",
+			"chat": "Obrolan"
+		}
+	},
+	"personaSuggester": {
+		"needHelp": "Butuh bantuan?",
+		"progress": {
+			"step1": "Hanya tersisa tiga pertanyaan untuk menemukan solusi terbaik untuk Anda.",
+			"step2": "Hampir selesai, hanya tersisa dua pertanyaan.",
+			"step3": "Kami sedang mencari solusi terbaik, hanya tersisa satu pertanyaan.",
+			"step4": "Selesai! Berikut adalah daftar Anda."
+		},
+		"questions": {
+			"useCase": {
+				"title": "1. Untuk apa Anda saat ini menggunakan BabaGPT?",
+				"options": {
+					"writing_assistance": "Bantuan Menulis",
+					"research_and_analysis": "Penelitian dan Analisis",
+					"coding_help": "Bantuan Pemrograman",
+					"data_insights": "Wawasan Data",
+					"creative_projects": "Proyek Kreatif"
+				}
+			},
+			"responseType": {
+				"title": "2. Jenis respons apa yang Anda anggap berguna?",
+				"options": {
+					"in_depth_explanations": "Penjelasan Mendalam",
+					"quick_summaries": "Ringkasan Cepat",
+					"code_examples": "Contoh Kode",
+					"visual_representations": "Representasi Visual",
+					"interactive_guidance": "Panduan Interaktif"
+				}
+			},
+			"features": {
+				"title": "3. Apakah Anda membutuhkan fitur khusus?",
+				"options": {
+					"multi_language_support": "Dukungan Multibahasa",
+					"tool_integration": "Integrasi Alat",
+					"customizable_settings": "Pengaturan yang Dapat Dikustomisasi",
+					"real_time_collaboration": "Kolaborasi Waktu Nyata",
+					"enhanced_security": "Keamanan yang Ditingkatkan"
+				}
+			}
+		},
+		"results": {
+			"title": "Selesai! Berikut adalah persona yang disarankan untuk Anda:",
+			"noResults": "Tidak ditemukan persona yang sesuai.",
+			"chooseAgain": "Pilih Lagi"
+		}
+	},
+	"account": {
+		"title": "Pengaturan Akun",
+		"subtitle": "Kelola pengaturan dan preferensi akun Anda",
+		"userInfo": "Informasi Pengguna",
+		"email": "Alamat Email",
+		"updateEmail": "Perbarui Email",
+		"addEmail": "Tambahkan Email",
+		"newEmailPlaceholder": "Masukkan alamat email baru",
+		"save": "Simpan Perubahan",
+		"updating": "Memperbarui...",
+		"cancel": "Batal",
+		"noEmail": "Tidak ada alamat email yang disetel",
+		"tokenBalance": "Saldo Token",
+		"authToken": "Token Otentikasi",
+		"showToken": "Tampilkan Token",
+		"hideToken": "Sembunyikan Token",
+		"tokenCopied": "Token disalin ke clipboard",
+		"security": "Keamanan",
+		"securityInfo": "Jaga token dan urutan hewan Anda tetap aman. Mereka diperlukan untuk otentikasi dan tidak dapat dipulihkan jika hilang.",
+		"logout": "Keluar",
+		"emailUpdated": "Email berhasil diperbarui",
+		"updateFailed": "Pembaruan email gagal",
+		"invalidEmail": "Silakan masukkan alamat email yang valid",
+		"verified": "Terverifikasi",
+		"unverified": "Belum Terverifikasi",
+		"verificationPending": "Verifikasi email sedang diproses",
+		"resendVerification": "Kirim Ulang Email Verifikasi",
+		"errors": {
+			"emailTaken": "Email ini sudah digunakan",
+			"invalidFormat": "Format email tidak valid",
+			"updateFailed": "Pembaruan email gagal",
+			"notAuthenticated": "Silakan masuk untuk memperbarui pengaturan",
+			"verificationExpired": "Tautan verifikasi telah kedaluwarsa",
+			"verificationInvalid": "Tautan verifikasi tidak valid"
+		}
+	},
+	"chatInterface": {
+		"searchInModels": "Pilih Model AI",
+		"greetings": {
+			"askAnythingTitle": "👋 Tanyakan Apa Saja!",
+			"askAnythingSubtitle": "Dari pertanyaan cepat hingga diskusi mendalam, saya di sini untuk Anda.",
+			"sparkCreativityTitle": "💡 Semangati Kreativitas",
+			"sparkCreativitySubtitle": "Butuh ide baru? Mari kita brainstorming dan berinovasi.",
+			"researchExplainTitle": "📚 Riset dan Jelaskan",
+			"researchExplainSubtitle": "Dari ringkasan hingga penjelasan mendalam, cukup tanya.",
+			"getInsightsTitle": "🔍 Dapatkan Wawasan Spesifik",
+			"getInsightsSubtitle": "Uraikan topik sulit langkah demi langkah untuk pemahaman yang lebih baik.",
+			"boostProductivityTitle": "💪 Tingkatkan Produktivitas",
+			"boostProductivitySubtitle": "Dari menulis teks hingga tips pemrograman—ayo selesaikan.",
+			"startWritingHere": "Mulai Menulis Di Sini!"
+		},
+		"suggestions": {
+			"machineLearning": "Jelaskan perbedaan antara pembelajaran mesin dan pembelajaran mendalam",
+			"writeEmail": "Bantu saya menulis email singkat kepada tim tentang pembaruan proyek",
+			"timeManagement": "Berikan beberapa tips untuk meningkatkan keterampilan manajemen waktu saya"
+		},
+		"perplexityQuestions": {
+			"weatherNY": "cuaca New York 5 hari ke depan dalam derajat Celsius",
+			"restaurantsAntalya": "restoran terbaik dekat Antalya, Turki buka sekarang",
+			"getToTimesSquare": "cara menuju Times Square dari JFK",
+			"resetIphone": "cara reset iPhone tanpa kata sandi",
+			"easyChickenRecipes": "resep ayam mudah untuk makan malam malam ini",
+			"loseBellyFat": "cara tercepat mengurangi lemak perut di rumah",
+			"iphoneVsSamsung": "iPhone 15 vs Samsung S24 mana yang lebih baik",
+			"bestWashingMachine": "mesin cuci terbaik di bawah 500",
+			"amazonPrimeDeals": "penawaran Amazon Prime Day 2024"
+		},
+		"postSelectionHint": {
+			"greatChoice": "Pilihan Hebat! 🎉",
+			"youSelected": "Anda memilih:",
+			"refineRequest": "Sekarang, silakan perbaiki permintaan Anda di kotak teks di bawah ini dan tekan",
+			"sendIcon": "ikon untuk mengirimkannya!"
+		},
+		"perplexityGreeting": {
+			"needInspiration": "Butuh Inspirasi?",
+			"clickExample": "Klik salah satu contoh atau ketik pertanyaan Anda sendiri!",
+			"followUp": "Anda dapat mengajukan pertanyaan lanjutan atau memperbaiki prompt Anda kapan saja!"
+		},
+		"standardGreeting": {
+			"needIdeas": "Butuh beberapa ide? Coba salah satu dari ini:",
+			"ready": "Siap kapan pun Anda siap!"
+		},
+		"errors": {
+			"failedToLoadImage": "Gagal memuat gambar",
+			"fileSizeExceeded": "Ukuran file harus kurang dari 20MB",
+			"unsupportedFileType": "Jenis file tidak didukung. Jenis yang diizinkan:",
+			"failedToReadFile": "Gagal membaca file",
+			"fileProcessingError": "Kesalahan saat memproses file. Silakan coba lagi.",
+			"enterMessageOrFile": "Silakan masukkan pesan atau unggah file",
+			"selectModelFirst": "Silakan pilih model terlebih dahulu",
+			"sendMessageError": "Gagal mengirim pesan",
+			"uploadCanceled": "Pengunggahan file dibatalkan.",
+			"fileRemoved": "File dihapus."
+		},
+		"fileTypes": {
+			"TXT": "TXT",
+			"PDF": "PDF",
+			"DOC": "DOC",
+			"DOCX": "DOCX",
+			"CSV": "CSV",
+			"XLS": "XLS",
+			"XLSX": "XLSX",
+			"JPEG": "JPEG",
+			"PNG": "PNG",
+			"GIF": "GIF",
+			"WEBP": "WEBP",
+			"SVG": "SVG",
+			"HTML": "HTML",
+			"CSS": "CSS",
+			"JS": "JS",
+			"JSON": "JSON",
+			"MD": "MD"
+		},
+		"messageInput": {
+			"writingStatus": {
+				"thinking": "sedang berpikir...",
+				"startYourMessageHere": "Mulai Menulis Di Sini!",
+				"writeYourResponseHere": "Tulis respons Anda di sini"
+			},
+			"dropFileMessage": "Taruh file Anda di sini",
+			"footerMessage": "Model AI bisa membuat kesalahan. Silakan periksa kembali respons."
+		},
+		"uploadSuccess": "File {fileName} berhasil diunggah!",
+		"defaultModelName": "AI",
+		"messageSent": "Pesan berhasil dikirim!",
+		"blackFridaySpecial": "Penawaran Spesial Black Friday!",
+		"exclusiveOffer": "Nikmati diskon eksklusif 50% untuk semua pengisian ulang token. Cepat, penawaran segera berakhir!",
+		"rechargeNowWithDiscount": "Isi Ulang Sekarang dengan Diskon Black Friday"
+	},
+	"memberProfile": {
+		"global": {
+			"rechargeNow": "Isi Ulang Sekarang",
+			"rechargeTokens": "Isi Ulang Token",
+			"fiftyPercentOff": "50% DISKON",
+			"blackFridaySpecial": "Penawaran Spesial Black Friday!",
+			"exclusiveOffer": "Nikmati diskon eksklusif 50% untuk semua pengisian ulang token. Cepat, penawaran segera berakhir!",
+			"rechargeNowWithDiscount": "Isi Ulang Sekarang dengan Diskon Black Friday"
+		},
+		"ariaLabels": {
+			"hideToken": "Sembunyikan token",
+			"showToken": "Tampilkan token",
+			"copyToken": "Salin token",
+			"logout": "Keluar",
+			"logoutAccount": "Keluar dari akun Anda",
+			"rechargeTokens": "Isi Ulang Token",
+			"rechargeNowWithDiscount": "Isi Ulang Sekarang dengan Diskon Black Friday"
+		},
+		"buttons": {
+			"logout": "Keluar",
+			"rechargeNow": "Isi Ulang Sekarang",
+			"rechargeNowWithDiscount": "Isi Ulang Sekarang dengan Diskon Black Friday"
+		},
+		"modal": {
+			"title": "Penawaran Spesial Black Friday!",
+			"description": "Nikmati diskon eksklusif 50% untuk semua pengisian ulang token. Cepat, penawaran segera berakhir!"
+		},
+		"successMessages": {
+			"copyToken": "Token berhasil disalin!"
+		},
+		"errorMessages": {
+			"copyTokenFailed": "Gagal menyalin token."
+		},
+		"infoText": "Silakan salin dan simpan token Anda dengan aman. Anda akan membutuhkannya untuk login di masa mendatang."
+	}
+}

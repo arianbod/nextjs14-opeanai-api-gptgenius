@@ -1,0 +1,479 @@
+{
+	"global": {
+		"title": "BabaGPT",
+		"description": "",
+		"conversations": "对话",
+		"tokenBalance": "代币余额",
+		"purchaseTokens": "购买代币",
+		"selectedAmount": "选择金额",
+		"discount": "折扣",
+		"finalPrice": "最终价格",
+		"purchase": "购买",
+		"tokens": "代币",
+		"sliderTitle": "滑块折扣魔法"
+	},
+	"sidebar": {
+		"conversations": "对话"
+	},
+	"auth": {
+		"welcome": {
+			"title": "欢迎来到BabaGPT",
+			"description": "您的智能AI伙伴，用于轻松的对话和分析。体验先进AI技术带来的安全和匿名互动。",
+			"features": {
+				"title": "主要功能",
+				"list": {
+					"conversations": "高级AI对话和分析",
+					"language": "多语言支持",
+					"security": "基于代币的安全认证",
+					"email": "可选的电子邮件集成"
+				}
+			}
+		},
+		"register": {
+			"title": "注册",
+			"email": "电子邮件",
+			"emailPlaceholder": "你的@邮箱.com",
+			"buttonText": "开始",
+			"submitting": "正在注册...",
+			"successMessage": "注册成功！",
+			"failureMessage": "注册失败。请再试一次。",
+			"switchToLogin": "已有账号？登录",
+			"info": "通过按顺序选择3只动物来创建您的账户。记住这个顺序 - 这是您的独特安全模式。",
+			"submit": "开始",
+			"emailOptional": "您的电子邮件是可选的。"
+		},
+		"login": {
+			"title": "登录",
+			"token": "认证代币",
+			"tokenPlaceholder": "请输入您的认证代币",
+			"email": "电子邮件",
+			"emailPlaceholder": "你的@邮箱.com",
+			"buttonText": "登录",
+			"submitting": "正在登录...",
+			"successMessage": "登录成功！",
+			"failureMessage": "登录失败。请再试一次。",
+			"switchToRegister": "需要账号？注册",
+			"info": "输入您的代币并按注册时选择的顺序选择3只动物。",
+			"submit": "登录"
+		},
+		"redirecting": "正在重定向到主页...",
+		"selectThreeAnimalsInOrder": "请选择恰好3只动物",
+		"selectedAnimalsOrder": "您选择的顺序：",
+		"selectNext": "选择下一只动物",
+		"selectAnimalsInOrder": "您需要选择3只动物并记住它们的顺序作为您的密码",
+		"orderMatters": "注意：选择动物的顺序很重要！",
+		"tokenCopied": "代币已复制到剪贴板",
+		"saveToken": "保存您的代币",
+		"tokenImportant": "重要：请保存此代币 - 您登录时需要它。",
+		"rememberAnimalOrder": "记住您的动物顺序：",
+		"understood": "我已保存我的代币",
+		"verifyEmail": "验证您的电子邮件",
+		"verificationSent": "验证邮件已发送至 {email}。请检查您的收件箱。",
+		"verificationReminder": "请验证您的电子邮件地址以激活所有账户功能",
+		"optional": "可选",
+		"confirmTokenSaved": "我已安全保存我的代币",
+		"continue": "继续",
+		"verificationSuccess": "您的电子邮件已验证。正在重定向到您的账户页面...",
+		"verificationFailed": "验证失败",
+		"continueWithoutEmail": "无需电子邮件继续",
+		"emailLater": "您可以稍后添加您的电子邮件。",
+		"addEmail": "添加电子邮件",
+		"skip": "跳过",
+		"back": "返回",
+		"emailBenefits": {
+			"title": "添加您的电子邮件的好处",
+			"recovery": "密码恢复",
+			"security": "增强的安全性",
+			"updates": "接收重要更新"
+		},
+		"errors": {
+			"generic": "发生错误。请再试一次。",
+			"network": "网络错误。请检查您的连接。",
+			"animals": {
+				"selectThree": "请选择恰好3只动物。"
+			},
+			"email": {
+				"invalid": "请输入有效的电子邮件地址。",
+				"required": "电子邮件是必需的。",
+				"alreadyVerified": "此电子邮件已由另一个账户验证。",
+				"verificationFailed": "电子邮件验证失败。"
+			},
+			"register": {
+				"generic": "注册失败。请再试一次。",
+				"emailTaken": "此电子邮件已注册。"
+			},
+			"login": {
+				"generic": "登录失败。请再试一次。",
+				"tokenRequired": "需要认证代币。",
+				"invalidToken": "无效的认证代币。",
+				"incorrectSequence": "动物顺序错误。剩余 {attempts} 次尝试。",
+				"accountLocked": "账户已锁定。请 {minutes} 分钟后再试。",
+				"tooManyAttempts": "尝试次数过多。请稍后再试。",
+				"accountInactive": "此账户当前不活跃。",
+				"accountDeleted": "此账户已被删除。"
+			}
+		},
+		"animalList": [
+			{ "key": "dog", "label": "狗", "category": "domestic" },
+			{ "key": "cat", "label": "猫", "category": "domestic" },
+			{ "key": "elephant", "label": "大象", "category": "wild" },
+			{ "key": "lion", "label": "狮子", "category": "wild" },
+			{ "key": "tiger", "label": "老虎", "category": "wild" },
+			{ "key": "bear", "label": "熊", "category": "wild" },
+			{ "key": "monkey", "label": "猴子", "category": "wild" },
+			{ "key": "giraffe", "label": "长颈鹿", "category": "wild" },
+			{ "key": "zebra", "label": "斑马", "category": "wild" },
+			{ "key": "penguin", "label": "企鹅", "category": "unique" },
+			{ "key": "kangaroo", "label": "袋鼠", "category": "wild" },
+			{ "key": "koala", "label": "考拉", "category": "wild" }
+		],
+		"animalCategories": {
+			"domestic": "家养伙伴",
+			"wild": "野生奇观",
+			"unique": "独特生物"
+		},
+		"accountManagement": {
+			"accountSetting": "账户设置",
+			"logout": "登出"
+		}
+	},
+	"personas": {
+		"names": {
+			"babagpt": "BabaGPT",
+			"claude": "Claude",
+			"o1Preview": "o1-预览",
+			"o1Mini": "o1-迷你",
+			"chatgpt4": "4o"
+		},
+		"roles": {
+			"searchEngine": "实时搜索引擎",
+			"chatgpt": "聊天GPT",
+			"analyticalAssistant": "分析助手",
+			"visualAnalysisAssistant": "视觉分析助手",
+			"versatileAIAssistant": "多功能AI助手"
+		},
+		"descriptions": {
+			"babagpt": "Mixtral以友好和易于访问的方式提供技术和数据分析，具有清晰的数字格式和吸引人的展示。",
+			"claude": "Claude擅长提供清晰简洁的分析洞察，适用于基于数据的决策和精确解释。",
+			"o1Preview": "o1-预览旨在生成全面且准确的响应，适用于深入分析和长对话。",
+			"o1Mini": "o1-迷你提供快速高效的响应，适用于简短查询和快速互动。",
+			"chatgpt4": "4o是一款分析助手，能够调整创造力和响应长度，适用于定制和精确的对话。",
+			"x": "X是一款先进的分析助手，旨在用于一般AI互动。",
+			"gemini": "Gemini是一款多功能AI助手，结合了自然语言理解和视觉能力。",
+			"perplexity": "Perplexity是一款由AI驱动的搜索引擎，提供实时搜索，具有简洁准确的响应和吸引人的展示。"
+		},
+		"categories": {
+			"all": "所有模型",
+			"creative": "创意",
+			"analytical": "分析",
+			"coding": "编程",
+			"chat": "聊天",
+			"searchEngine": "搜索引擎",
+			"vision": "视觉",
+			"complex_reasoning": "复杂推理",
+			"unique": "独特模型",
+			"internet_search": "互联网搜索"
+		},
+		"features": {
+			"suitableFor": {
+				"content_creation": "内容创建",
+				"academic_research": "学术研究",
+				"coding_assistance": "编程协助",
+				"data_analysis": "数据分析",
+				"quick_queries": "快速查询",
+				"customer_support": "客户支持",
+				"creative_projects": "创意项目",
+				"image_analysis": "图像分析",
+				"visual_description": "视觉描述",
+				"document_understanding": "文档理解",
+				"image_understanding": "图像理解",
+				"multi_modal_interaction": "多模态互动",
+				"detailed_visual_analysis": "详细视觉分析",
+				"interactive_coding": "互动编程",
+				"technical_support": "技术支持",
+				"adaptive_communication": "自适应沟通",
+				"advanced_security": "高级安全性",
+				"real_time_collaboration": "实时协作"
+			},
+			"bestFor": {
+				"detailed_explanations": "详细解释",
+				"concise_summaries": "简明摘要",
+				"interactive_assistance": "互动协助",
+				"data_driven_decisions": "数据驱动决策",
+				"user_friendly_explanations": "用户友好解释",
+				"technical_accuracy": "技术准确性",
+				"live_real_data": "实时真实数据",
+				"accurate": "准确",
+				"visual_content_analysis": "视觉内容分析",
+				"image_based_queries": "基于图像的查询",
+				"visual_problem_solving": "视觉问题解决",
+				"fast_responses": "快速响应",
+				"visual_analysis": "视觉分析",
+				"in_depth_analysis": "深入分析",
+				"customized_learning": "定制学习",
+				"interactive_coding": "互动编程"
+			},
+			"specificFeatures": {
+				"language_support": "语言支持",
+				"customization": "自定义",
+				"security_features": "安全功能",
+				"high_performance": "高性能",
+				"real_time_collaboration": "实时协作",
+				"engaging_outputs": "吸引人的输出",
+				"integration_capabilities": "集成能力",
+				"code_generation": "代码生成"
+			}
+		},
+		"labels": {
+			"pro": "PRO",
+			"new": "新",
+			"rating": "评分",
+			"speed": "速度",
+			"speedValues": {
+				"very_fast": "非常快",
+				"fast": "快",
+				"slow": "慢"
+			},
+			"recentlyUsed": "最近使用"
+		}
+	},
+	"modelSelection": {
+		"needHelp": "需要帮助？",
+		"backButton": "返回",
+		"chooseAgain": "重新选择",
+		"searchPlaceholder": "按功能、名称或描述搜索...",
+		"recent": "最近",
+		"allModels": "所有模型",
+		"noModelsFound": "未找到符合您搜索的模型。",
+		"categories": {
+			"all": "所有模型",
+			"creative": "创意",
+			"analytical": "分析",
+			"coding": "编程",
+			"chat": "聊天",
+			"searchEngine": "搜索引擎",
+			"vision": "视觉",
+			"complex_reasoning": "复杂推理",
+			"unique": "独特模型",
+			"internet_search": "互联网搜索"
+		}
+	},
+	"modelCard": {
+		"capabilities": {
+			"vision": "视觉",
+			"analytical": "分析",
+			"coding": "编程",
+			"chat": "聊天"
+		}
+	},
+	"personaSuggester": {
+		"needHelp": "需要帮助？",
+		"progress": {
+			"step1": "还剩三个问题，帮助您找到最佳解决方案。",
+			"step2": "快完成了，还剩两个问题。",
+			"step3": "我们正在寻找最佳解决方案，只剩一个问题。",
+			"step4": "完成！这是您的列表。"
+		},
+		"questions": {
+			"useCase": {
+				"title": "1. 您目前使用BabaGPT的用途是什么？",
+				"options": {
+					"writing_assistance": "写作协助",
+					"research_and_analysis": "研究与分析",
+					"coding_help": "编程帮助",
+					"data_insights": "数据洞察",
+					"creative_projects": "创意项目"
+				}
+			},
+			"responseType": {
+				"title": "2. 您认为哪种类型的回答有用？",
+				"options": {
+					"in_depth_explanations": "深入解释",
+					"quick_summaries": "快速摘要",
+					"code_examples": "代码示例",
+					"visual_representations": "视觉展示",
+					"interactive_guidance": "互动指导"
+				}
+			},
+			"features": {
+				"title": "3. 您需要哪些特定功能吗？",
+				"options": {
+					"multi_language_support": "多语言支持",
+					"tool_integration": "工具集成",
+					"customizable_settings": "可定制设置",
+					"real_time_collaboration": "实时协作",
+					"enhanced_security": "增强安全性"
+				}
+			}
+		},
+		"results": {
+			"title": "完成！这是为您推荐的人物设定：",
+			"noResults": "未找到合适的人物设定。",
+			"chooseAgain": "重新选择"
+		}
+	},
+	"account": {
+		"title": "账户设置",
+		"subtitle": "管理您的账户设置和偏好",
+		"userInfo": "用户信息",
+		"email": "电子邮件地址",
+		"updateEmail": "更新电子邮件",
+		"addEmail": "添加电子邮件",
+		"newEmailPlaceholder": "输入新的电子邮件地址",
+		"save": "保存更改",
+		"updating": "正在更新...",
+		"cancel": "取消",
+		"noEmail": "未设置电子邮件地址",
+		"tokenBalance": "代币余额",
+		"authToken": "认证代币",
+		"showToken": "显示代币",
+		"hideToken": "隐藏代币",
+		"tokenCopied": "代币已复制到剪贴板",
+		"security": "安全",
+		"securityInfo": "请妥善保管您的代币和动物顺序。它们是用于认证的必要信息，丢失后无法恢复。",
+		"logout": "登出",
+		"emailUpdated": "电子邮件更新成功",
+		"updateFailed": "电子邮件更新失败",
+		"invalidEmail": "请输入有效的电子邮件地址",
+		"verified": "已验证",
+		"unverified": "未验证",
+		"verificationPending": "电子邮件验证待处理",
+		"resendVerification": "重新发送验证邮件",
+		"errors": {
+			"emailTaken": "此电子邮件已被使用",
+			"invalidFormat": "电子邮件格式无效",
+			"updateFailed": "电子邮件更新失败",
+			"notAuthenticated": "请登录以更新设置",
+			"verificationExpired": "验证链接已过期",
+			"verificationInvalid": "验证链接无效"
+		}
+	},
+	"chatInterface": {
+		"searchInModels": "选择AI模型",
+		"greetings": {
+			"askAnythingTitle": "👋 问任何问题！",
+			"askAnythingSubtitle": "从快速问题到深入讨论，我在这里为您服务。",
+			"sparkCreativityTitle": "💡 激发创造力",
+			"sparkCreativitySubtitle": "需要新点子？让我们一起头脑风暴，创新吧。",
+			"researchExplainTitle": "📚 研究与解释",
+			"researchExplainSubtitle": "从摘要到详细解释，只需提问。",
+			"getInsightsTitle": "🔍 获取具体见解",
+			"getInsightsSubtitle": "逐步分解复杂主题，以便更好地理解。",
+			"boostProductivityTitle": "💪 提高生产力",
+			"boostProductivitySubtitle": "从撰写文本到编程技巧——让我们完成它。",
+			"startWritingHere": "在这里开始写作！"
+		},
+		"suggestions": {
+			"machineLearning": "解释机器学习和深度学习的区别",
+			"writeEmail": "帮助我为团队撰写一封关于项目更新的简短电子邮件",
+			"timeManagement": "给我一些提高时间管理技能的建议"
+		},
+		"perplexityQuestions": {
+			"weatherNY": "纽约未来5天的天气（摄氏度）",
+			"restaurantsAntalya": "安塔利亚，土耳其附近的最佳餐厅现在开放",
+			"getToTimesSquare": "如何从JFK到时代广场",
+			"resetIphone": "如何在没有密码的情况下重置iPhone",
+			"easyChickenRecipes": "今晚晚餐的简单鸡肉食谱",
+			"loseBellyFat": "在家中最快减少腹部脂肪的方法",
+			"iphoneVsSamsung": "iPhone 15对比Samsung S24哪个更好",
+			"bestWashingMachine": "500以下的最佳洗衣机",
+			"amazonPrimeDeals": "亚马逊Prime Day 2024优惠"
+		},
+		"postSelectionHint": {
+			"greatChoice": "绝佳选择！🎉",
+			"youSelected": "您选择了：",
+			"refineRequest": "现在，请在下面的文本框中完善您的请求并点击",
+			"sendIcon": "图标以发送！"
+		},
+		"perplexityGreeting": {
+			"needInspiration": "需要灵感吗？",
+			"clickExample": "点击任何示例或输入您自己的问题！",
+			"followUp": "您可以随时提出后续问题或完善您的提示！"
+		},
+		"standardGreeting": {
+			"needIdeas": "需要一些点子？尝试以下之一：",
+			"ready": "随时准备好！"
+		},
+		"errors": {
+			"failedToLoadImage": "加载图片失败",
+			"fileSizeExceeded": "文件大小必须小于20MB",
+			"unsupportedFileType": "不支持的文件类型。允许的类型：",
+			"failedToReadFile": "读取文件失败",
+			"fileProcessingError": "处理文件时出错。请再试一次。",
+			"enterMessageOrFile": "请输入消息或上传文件",
+			"selectModelFirst": "请先选择模型",
+			"sendMessageError": "发送消息失败",
+			"uploadCanceled": "文件上传已取消。",
+			"fileRemoved": "文件已移除。"
+		},
+		"fileTypes": {
+			"TXT": "TXT",
+			"PDF": "PDF",
+			"DOC": "DOC",
+			"DOCX": "DOCX",
+			"CSV": "CSV",
+			"XLS": "XLS",
+			"XLSX": "XLSX",
+			"JPEG": "JPEG",
+			"PNG": "PNG",
+			"GIF": "GIF",
+			"WEBP": "WEBP",
+			"SVG": "SVG",
+			"HTML": "HTML",
+			"CSS": "CSS",
+			"JS": "JS",
+			"JSON": "JSON",
+			"MD": "MD"
+		},
+		"messageInput": {
+			"writingStatus": {
+				"thinking": "思考中...",
+				"startYourMessageHere": "在这里开始输入您的消息！",
+				"writeYourResponseHere": "在这里编写您的回复"
+			},
+			"dropFileMessage": "将您的文件拖放到这里",
+			"footerMessage": "AI模型可能会出错。请仔细检查回复。"
+		},
+		"uploadSuccess": "文件 {fileName} 上传成功！",
+		"defaultModelName": "AI",
+		"messageSent": "消息发送成功！",
+		"blackFridaySpecial": "黑色星期五特惠！",
+		"exclusiveOffer": "享受所有代币充值的50%独家折扣。赶快，优惠即将结束！",
+		"rechargeNowWithDiscount": "立即以黑色星期五折扣充值"
+	},
+	"memberProfile": {
+		"global": {
+			"rechargeNow": "立即充值",
+			"rechargeTokens": "充值代币",
+			"fiftyPercentOff": "50% 折扣",
+			"blackFridaySpecial": "黑色星期五特惠！",
+			"exclusiveOffer": "享受所有代币充值的50%独家折扣。赶快，优惠即将结束！",
+			"rechargeNowWithDiscount": "立即以黑色星期五折扣充值"
+		},
+		"ariaLabels": {
+			"hideToken": "隐藏代币",
+			"showToken": "显示代币",
+			"copyToken": "复制代币",
+			"logout": "登出",
+			"logoutAccount": "登出您的账户",
+			"rechargeTokens": "充值代币",
+			"rechargeNowWithDiscount": "立即以黑色星期五折扣充值"
+		},
+		"buttons": {
+			"logout": "登出",
+			"rechargeNow": "立即充值",
+			"rechargeNowWithDiscount": "立即以黑色星期五折扣充值"
+		},
+		"modal": {
+			"title": "黑色星期五特惠！",
+			"description": "享受所有代币充值的50%独家折扣。赶快，优惠即将结束！"
+		},
+		"successMessages": {
+			"copyToken": "代币已复制！"
+		},
+		"errorMessages": {
+			"copyTokenFailed": "复制代币失败。"
+		},
+		"infoText": "请安全复制并保存您的代币。您未来登录时需要它。"
+	}
+}

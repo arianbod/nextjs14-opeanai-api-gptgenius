@@ -1,3 +1,5 @@
+// src/components/LanguageToggle.jsx
+
 'use client';
 
 import React, { useState, useRef, useEffect, memo } from 'react';
@@ -7,49 +9,12 @@ import { IoGlobe, IoChevronDown } from 'react-icons/io5';
 import { usePreferences } from '@/context/preferencesContext';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from '@/context/TranslationContext';
+import {
+	supportedLanguages,
+	languageMetadata,
+	RTL_LANGUAGES,
+} from '@/lib/supportedLanguages';
 
-const languages = [
-	{
-		code: 'en',
-		name: 'English',
-		flag: '🇬🇧',
-	},
-	{
-		code: 'fa',
-		name: 'فارسی',
-		flag: '🇮🇷',
-	},
-	{
-		code: 'tr',
-		name: 'Türkçe',
-		flag: '🇹🇷',
-	},
-	{
-		code: 'gr',
-		name: 'Ελληνικά',
-		flag: '🇬🇷',
-	},
-	{
-		code: 'ar',
-		name: 'العربية',
-		flag: '🇦🇪',
-	},
-	{
-		code: 'fr',
-		name: 'Français',
-		flag: '🇫🇷',
-	},
-	{
-		code: 'it',
-		name: 'Italiano',
-		flag: '🇮🇹',
-	},
-	{
-		code: 'he',
-		name: 'עברית',
-		flag: '🇮🇱',
-	},
-];
 const LanguageToggle = () => {
 	const router = useRouter();
 	const pathname = usePathname();
@@ -61,16 +26,17 @@ const LanguageToggle = () => {
 	const { isRTL } = useTranslations();
 
 	// Determine current language from URL first, then preferences or temp storage
-	const currentLanguage =
-		languages.find((l) => l.code === lang) || languages[0];
+	const currentLanguage = supportedLanguages.includes(lang)
+		? { code: lang, ...languageMetadata[lang] }
+		: { code: 'en', ...languageMetadata['en'] };
 
 	const changeLanguage = async (newLang) => {
-		if (newLang === lang) {
+		if (newLang === currentLanguage.code) {
 			setIsOpen(false);
 			return;
 		}
 
-		const langDetails = languages.find((l) => l.code === newLang);
+		const langDetails = languageMetadata[newLang];
 		if (!langDetails) {
 			setIsOpen(false);
 			return;
@@ -79,7 +45,7 @@ const LanguageToggle = () => {
 		// Only try to update preferences if user is authenticated
 		if (user?.userId) {
 			try {
-				await setLanguage(langDetails.code, langDetails.name);
+				await setLanguage(newLang, langDetails.name);
 			} catch (error) {
 				console.error('Failed to update language preference:', error);
 				// Continue with route change even if preference update fails
@@ -87,7 +53,10 @@ const LanguageToggle = () => {
 		}
 
 		// Always update the route
-		const newPathname = pathname.replace(`/${lang}`, `/${newLang}`);
+		const newPathname = pathname.startsWith(`/${currentLanguage.code}`)
+			? pathname.replace(`/${currentLanguage.code}`, `/${newLang}`)
+			: `/${newLang}${pathname}`;
+
 		router.push(newPathname);
 		setIsOpen(false);
 	};
@@ -111,7 +80,7 @@ const LanguageToggle = () => {
 					.slice(0, 3)
 					.map((lang) => ({
 						...lang,
-						details: languages.find((l) => l.code === lang.code),
+						details: languageMetadata[lang.code],
 					}))
 					.filter((lang) => lang.details)
 			: [];
@@ -154,7 +123,6 @@ const LanguageToggle = () => {
 											: 'text-base-content'
 									}`}
 									onClick={() => changeLanguage(code)}>
-									{/* <span>{details.flag}</span> */}
 									<span className={isRTL ? 'mr-3' : 'ml-3'}>
 										{details.name}
 									</span>
@@ -168,17 +136,18 @@ const LanguageToggle = () => {
 					<div className='px-4 py-1 text-xs text-base-content/50'>
 						All Languages
 					</div>
-					{languages.map((language) => (
+					{supportedLanguages.map((language) => (
 						<button
-							key={language.code}
+							key={language}
 							className={`flex items-center w-full px-4 py-2 text-sm text-left hover:bg-base-200 transition-colors duration-150 ${
-								language.code === currentLanguage.code
+								language === currentLanguage.code
 									? 'bg-primary/10 text-primary'
 									: 'text-base-content'
 							}`}
-							onClick={() => changeLanguage(language.code)}>
-							{/* <span>{language.flag}</span> */}
-							<span className={isRTL ? 'mr-3' : 'ml-3'}>{language.name}</span>
+							onClick={() => changeLanguage(language)}>
+							<span className={isRTL ? 'mr-3' : 'ml-3'}>
+								{languageMetadata[language].name}
+							</span>
 						</button>
 					))}
 				</div>

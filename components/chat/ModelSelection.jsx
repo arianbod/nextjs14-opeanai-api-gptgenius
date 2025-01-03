@@ -126,7 +126,7 @@ const ModelSelection = () => {
 						</div>
 					)}
 
-				<PersonaSuggester />
+				<PersonaSuggester onSelect={handleModelSelect} />
 
 				{/* Categories */}
 				<div className='mb-8 overflow-x-auto mx-auto flex place-items-center place-content-center'>

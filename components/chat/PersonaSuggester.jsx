@@ -1,4 +1,5 @@
 // components/chat/PersonaSuggester.jsx
+
 import React, { useState, useEffect } from 'react';
 import { AIPersonas } from '@/lib/Personas';
 import { FaTimes } from 'react-icons/fa';
@@ -86,13 +87,13 @@ const PersonaSuggester = ({ onSelect }) => {
 			);
 		}
 
-		// If no matches found, suggest 'o1-mini'
+		// If no matches found, suggest Chat GPT 4o
 		if (recommendations.length === 0) {
-			const o1Mini = AIPersonas.find(
-				(persona) => persona.key === 'chatgpt4' // Adjust key as per en.json
+			const chatGpt4o = AIPersonas.find(
+				(persona) => persona.key === 'chatgpt-4o-latest'
 			);
-			if (o1Mini) {
-				recommendations = [o1Mini];
+			if (chatGpt4o) {
+				recommendations = [chatGpt4o];
 			}
 		}
 

@@ -369,8 +369,8 @@
 			"timeManagement": "Donnez-moi quelques conseils pour améliorer mes compétences en gestion du temps"
 		},
 		"perplexityQuestions": {
-			"weatherNy": "météo New York les 5 prochains jours en degrés Celsius",
-			"restaurantsAntalya": "meilleurs restaurants près d'Antalya, Turquie ouverts maintenant",
+			"weatherNY": "météo New York les 5 prochains jours en degrés Celsius",
+			"restaurantsDubai": "meilleurs restaurants près d'Dubai, Turquie ouverts maintenant",
 			"getToTimesSquare": "comment se rendre à Times Square depuis JFK",
 			"resetIphone": "comment réinitialiser un iPhone sans mot de passe",
 			"easyChickenRecipes": "recettes de poulet faciles pour le dîner ce soir",

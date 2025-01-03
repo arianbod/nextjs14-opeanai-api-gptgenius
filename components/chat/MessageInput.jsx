@@ -204,7 +204,6 @@ const MessageInput = ({
 								<Upload className='w-8 h-8 animate-bounce' />
 								<p className='text-sm font-medium'>
 									{dict.chatInterface.messageInput.dropFileMessage}
-									
 								</p>
 							</div>
 						</div>
@@ -316,8 +315,11 @@ const MessageInput = ({
 					</div>
 
 					{/* Footer Message */}
-					<div className='text-center w-full text-[11px] text-white/70 py-1 font-medium'>
-						<h2>{dict.chatInterface.messageInput.footerMessage}</h2>
+					<div
+						className={`text-center w-full text-[11px] text-white/70 py-1 font-medium`}>
+						<h2 style={{ direction: `${isRTL ? 'rtl' : 'ltr'}` }}>
+							{dict.chatInterface.messageInput.footerMessage}
+						</h2>
 					</div>
 				</div>
 			</div>

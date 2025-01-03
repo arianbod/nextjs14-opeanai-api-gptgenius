@@ -65,7 +65,7 @@ const ChatInterface = () => {
 	const perplexityQuestions = [
 		[
 			t('chatInterface.perplexityQuestions.weatherNY'),
-			t('chatInterface.perplexityQuestions.restaurantsAntalya'),
+			t('chatInterface.perplexityQuestions.restaurantsDubai'),
 			t('chatInterface.perplexityQuestions.getToTimesSquare'),
 		],
 		[

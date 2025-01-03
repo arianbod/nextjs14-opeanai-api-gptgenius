@@ -4,15 +4,23 @@ import React, { forwardRef, useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslations } from '@/context/TranslationContext';
 
-// Helper function to detect RTL
-const isRTL = (text) => {
-	if (!text || typeof text !== 'string') return false;
+/**
+ * Updated helper function to detect if the line should be RTL.
+ * If there's no text, it returns the user's default preference (defaultIsRTL).
+ * Otherwise, it checks if the first character is from an RTL range.
+ */
+const isRTLLine = (text, defaultIsRTL) => {
+	if (!text || !text.trim()) {
+		// If there's no text, fallback to user’s default preference
+		return defaultIsRTL;
+	}
+
 	const rtlRegex =
 		/[\u0591-\u07FF\u200F\u202B\u202E\uFB1D-\uFDFD\uFE70-\uFEFC]/;
 	return rtlRegex.test(text.trim()[0]);
 };
 
-// Helper function to detect language
+/** Helper function to detect language */
 const detectLanguage = (text) => {
 	if (!text || typeof text !== 'string') return 'default';
 	const persianRegex = /[\u0600-\u06FF]/;
@@ -38,8 +46,10 @@ const TextInputComponent = forwardRef(
 		},
 		ref
 	) => {
-		const { dict } = useTranslations();
+		const { dict, isRTL } = useTranslations();
 		const textareaRef = ref || useRef(null);
+
+		// States
 		const [maxHeight, setMaxHeight] = useState('none');
 		const [isMobileDevice, setIsMobileDevice] = useState(false);
 		const [cursorPosition, setCursorPosition] = useState(0);
@@ -47,9 +57,14 @@ const TextInputComponent = forwardRef(
 			top: 0,
 			left: 0,
 		});
-		const [textDirection, setTextDirection] = useState('ltr');
+
+		// Initialize direction to user preference (if isRTL is true, start with 'rtl')
+		const [textDirection, setTextDirection] = useState(isRTL ? 'rtl' : 'ltr');
 		const [textLanguage, setTextLanguage] = useState('default');
 
+		/**
+		 * Helper function to detect if device is mobile.
+		 */
 		const isMobile = () => {
 			const width = window.innerWidth < 768;
 			const userAgent =
@@ -59,26 +74,39 @@ const TextInputComponent = forwardRef(
 			return width || userAgent;
 		};
 
+		/**
+		 * Calculate max height for the textarea, different on mobile vs. desktop.
+		 */
 		const calculateMaxHeight = () => {
 			const vh = window.innerHeight;
 			return isMobile() ? `${vh * 0.4}px` : `${vh * 0.25}px`;
 		};
 
+		/**
+		 * Dynamically resize the textarea up to maxHeight.
+		 */
 		const resizeTextarea = () => {
 			const textarea = textareaRef.current;
 			if (!textarea) return;
 
 			textarea.style.height = 'auto';
-			const newHeight = Math.min(textarea.scrollHeight, parseInt(maxHeight));
+			const newHeight = Math.min(
+				textarea.scrollHeight,
+				parseInt(maxHeight, 10) || Infinity
+			);
 			textarea.style.height = `${newHeight}px`;
 		};
 
+		/**
+		 * Update the cursor position in the text (for the bouncing cursor indicator).
+		 */
 		const updateCursorPosition = () => {
 			if (!textareaRef.current) return;
 
 			const cursorPos = textareaRef.current.selectionStart;
 			setCursorPosition(cursorPos);
 
+			// Create an offscreen measurement div
 			const measureDiv = document.createElement('div');
 			measureDiv.style.cssText = window.getComputedStyle(
 				textareaRef.current
@@ -89,25 +117,29 @@ const TextInputComponent = forwardRef(
 			measureDiv.style.whiteSpace = 'pre-wrap';
 			measureDiv.style.wordWrap = 'break-word';
 
+			// Get text up to current cursor
 			const textBeforeCursor = inputText.substring(0, cursorPos);
 			const textLine = textBeforeCursor.split('\n').pop();
 
 			measureDiv.textContent = textLine;
 			document.body.appendChild(measureDiv);
+
+			// Measured width of the text up to cursor
 			const textWidth = measureDiv.offsetWidth;
 			document.body.removeChild(measureDiv);
 
+			// Extract relevant styles
 			const computedStyle = window.getComputedStyle(textareaRef.current);
-			const paddingLeft = parseInt(computedStyle.paddingLeft);
-			const paddingRight = parseInt(computedStyle.paddingRight);
-			const paddingTop = parseInt(computedStyle.paddingTop);
-			const lineHeight = parseInt(computedStyle.lineHeight);
+			const paddingLeft = parseInt(computedStyle.paddingLeft, 10);
+			const paddingRight = parseInt(computedStyle.paddingRight, 10);
+			const paddingTop = parseInt(computedStyle.paddingTop, 10);
+			const lineHeight = parseInt(computedStyle.lineHeight, 10);
 			const lines = textBeforeCursor.split('\n').length;
 
-			// Adjust cursor position based on text direction
-			const isRtl = textDirection === 'rtl';
+			// If this line is RTL, position the cursor indicator from the right
+			const isRtlLine = textDirection === 'rtl';
 			setCursorCoordinates({
-				left: isRtl
+				left: isRtlLine
 					? textareaRef.current.offsetWidth -
 					  paddingRight -
 					  (textWidth % textareaRef.current.offsetWidth) -
@@ -117,14 +149,22 @@ const TextInputComponent = forwardRef(
 			});
 		};
 
-		// Update text direction and language when input changes
+		/**
+		 * Update direction & language whenever `inputText` changes.
+		 * - If there's no text, fallback to `isRTL`.
+		 * - If there is text, detect from first character.
+		 */
 		useEffect(() => {
-			const rtl = isRTL(inputText);
-			const lang = detectLanguage(inputText);
-			setTextDirection(rtl ? 'rtl' : 'ltr');
-			setTextLanguage(lang);
-		}, [inputText]);
+			const direction = isRTLLine(inputText, isRTL);
+			setTextDirection(direction ? 'rtl' : 'ltr');
 
+			const lang = detectLanguage(inputText);
+			setTextLanguage(lang);
+		}, [inputText, isRTL]);
+
+		/**
+		 * Set up event listeners for window resizing to recalc maxHeight & isMobile.
+		 */
 		useEffect(() => {
 			const updateDimensions = () => {
 				const newMaxHeight = calculateMaxHeight();
@@ -135,35 +175,59 @@ const TextInputComponent = forwardRef(
 
 			updateDimensions();
 			window.addEventListener('resize', updateDimensions);
-			return () => window.removeEventListener('resize', updateDimensions);
+
+			return () => {
+				window.removeEventListener('resize', updateDimensions);
+			};
 		}, []);
 
+		/**
+		 * Resize & update cursor position if `inputText` or `maxHeight` changes.
+		 */
 		useEffect(() => {
 			resizeTextarea();
 			updateCursorPosition();
 		}, [inputText, maxHeight]);
 
+		/**
+		 * Auto-focus the textarea on mount.
+		 */
 		useEffect(() => {
 			textareaRef.current?.focus();
 		}, []);
 
+		/**
+		 * Handle key presses.
+		 * - Enter triggers handleSubmit if SHIFT is not pressed on desktop,
+		 *   or SHIFT is pressed on mobile.
+		 */
 		const handleKeyDown = (e) => {
 			const currentIsMobile = isMobile();
 			if (e.key === 'Enter') {
 				if (currentIsMobile && e.shiftKey) {
+					// On mobile, SHIFT+Enter should produce a newline
 					return;
 				} else if (!currentIsMobile && !e.shiftKey) {
+					// On desktop, Enter alone triggers submit
 					e.preventDefault();
 					handleSubmit(e);
 				}
 			}
 		};
 
-		let placeholder = isPending
-			? `${modelName} ${dict.chatInterface.messageInput.writingStatus.thinking} `
-			: msgLen < 1
-			? dict.chatInterface.messageInput.writingStatus.startYourMessageHere
-			: dict.chatInterface.messageInput.writingStatus.writeYourResponseHere;
+		/**
+		 * Choose a placeholder.
+		 */
+		let placeholder;
+		if (isPending) {
+			placeholder = `${modelName} ${dict.chatInterface.messageInput.writingStatus.thinking} `;
+		} else if (msgLen < 1) {
+			placeholder =
+				dict.chatInterface.messageInput.writingStatus.startYourMessageHere;
+		} else {
+			placeholder =
+				dict.chatInterface.messageInput.writingStatus.writeYourResponseHere;
+		}
 
 		return (
 			<div className='flex-1 p-4 relative'>
@@ -179,20 +243,21 @@ const TextInputComponent = forwardRef(
 					onKeyDown={handleKeyDown}
 					disabled={isPending || disabled}
 					rows={1}
-					className={`w-full bg-transparent text-white placeholder-gray-300
-                               resize-none focus:outline-none transition-all duration-200 
-                               ease-in-out leading-relaxed
-                               ${
-																	textLanguage === 'persian'
-																		? 'font-persian'
-																		: ''
-																}
-								                               ${textLanguage === 'arabic' ? 'font-arabic' : ''}
-								                               ${
-																									textDirection === 'rtl'
-																										? 'text-right'
-																										: 'text-left'
-																								}`}
+					className={`
+            w-full
+            bg-transparent
+            text-white
+            placeholder-gray-300
+            resize-none
+            focus:outline-none
+            transition-all
+            duration-200
+            ease-in-out
+            leading-relaxed
+            ${textLanguage === 'persian' ? 'font-persian' : ''}
+            ${textLanguage === 'arabic' ? 'font-arabic' : ''}
+            ${textDirection === 'rtl' ? 'text-right' : 'text-left'}
+          `}
 					style={{
 						maxHeight,
 						height: 'auto',
@@ -200,6 +265,8 @@ const TextInputComponent = forwardRef(
 					}}
 					placeholder={placeholder}
 				/>
+
+				{/* This is the bouncing cursor indicator (for demonstration). */}
 				{textareaRef.current && (
 					<div
 						className='absolute pointer-events-none'

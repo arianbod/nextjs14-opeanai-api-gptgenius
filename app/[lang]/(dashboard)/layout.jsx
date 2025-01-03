@@ -1,24 +1,16 @@
 // DashboardLayout.jsx
 'use client';
 import Sidebar from '@/components/sidebar/Sidebar';
+import { usePreferences } from '@/context/preferencesContext';
 import { useTranslations } from '@/context/TranslationContext';
-import React, { useState } from 'react';
+import React from 'react';
 
 export default function DashboardLayout({ children }) {
 	const { isRTL } = useTranslations();
-	const [isPinned, setIsPinned] = useState(true);
-	const [isHovered, setIsHovered] = useState(false);
-
-	const showSidebar = isPinned || isHovered;
-
+	const { showSidebar } = usePreferences();
 	return (
 		<>
-			<Sidebar
-				isPinned={isPinned}
-				setIsPinned={setIsPinned}
-				isHovered={isHovered}
-				setIsHovered={setIsHovered}
-			/>
+			<Sidebar />
 			<main
 				className={`flex-1 mx-0 p-0 md:pt-0 max-w-full transition-all duration-300 ${
 					showSidebar

@@ -5,7 +5,6 @@ import React, { memo, useState } from 'react';
 import Link from 'next/link';
 import SidebarHeader from './SidebarHeader';
 import MobileHeader from './MobileHeader'; // New component for mobile
-import AccountSection from './TokenSection'; // New component
 import TokenSection from './TokenSection'; // New component
 import { useAuth } from '@/context/AuthContext';
 import { FaBars } from 'react-icons/fa';
@@ -20,7 +19,16 @@ import MemberProfile from './member-profile/MemberProfile';
 import { PenBoxIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import LocaleLink from '../hoc/LocalLink';
-const Sidebar = ({ isPinned, setIsPinned, isHovered, setIsHovered }) => {
+import { usePreferences } from '@/context/preferencesContext';
+
+const Sidebar = () => {
+	const {
+		isPinned,
+		setIsHovered,
+		isHovered,
+		showSidebar,
+		setSidebarPinned, // ← Make sure to destructure setSidebarPinned here
+	} = usePreferences();
 	const { user } = useAuth();
 	const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 	const { chatList, resetChat } = useChat();
@@ -112,7 +120,7 @@ const Sidebar = ({ isPinned, setIsPinned, isHovered, setIsHovered }) => {
 						className={`hidden lg:flex absolute top-4 ${
 							isRTL ? 'left-4' : 'right-4'
 						} items-center justify-center hover:bg-base-300 rounded-full transition-colors p-2 z-50`}
-						onClick={() => setIsPinned(!isPinned)}
+						onClick={() => setSidebarPinned(!isPinned)} // <-- Use setSidebarPinned
 						title={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}>
 						{isPinned ? (
 							<BsPinAngleFill className='w-5 h-5' />
@@ -136,7 +144,7 @@ const Sidebar = ({ isPinned, setIsPinned, isHovered, setIsHovered }) => {
 							<LocaleLink
 								onClick={() => resetChat()}
 								href={`/chat`}
-								className='flex items-center gap-4 text-blue-500  hover:bg-base-300 rounded-full transition-colors p-2'>
+								className='flex items-center gap-4 text-blue-500 hover:bg-base-300 rounded-full transition-colors p-2'>
 								<PenBoxIcon className='w-6 h-6' />
 							</LocaleLink>
 						</div>
@@ -161,8 +169,7 @@ const Sidebar = ({ isPinned, setIsPinned, isHovered, setIsHovered }) => {
 						</ul>
 					</div>
 
-					{/* Account Section - More Prominent */}
-					{/* <AccountSection className='mt-auto' /> */}
+					{/* Account Section */}
 					<MemberProfile />
 				</div>
 			</div>

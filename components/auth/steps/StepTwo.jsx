@@ -55,28 +55,14 @@ const StepTwo = ({
 		</div>
 	);
 
-	// Group animals by their category
-	const groupedAnimals = dict.auth.animalList.reduce((groups, animal) => {
-		const { category } = animal;
-		if (!groups[category]) {
-			groups[category] = [];
-		}
-		groups[category].push(animal);
-		return groups;
-	}, {});
+	// Filter animals by search
+	const filteredAnimals = dict.auth.animalList.filter(
+		(animal) =>
+			animal.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			animal.key.toLowerCase().includes(searchTerm.toLowerCase())
+	);
 
-	const categoryStyles = {
-		domestic: 'bg-yellow-100 dark:bg-yellow-900/20',
-		wild: 'bg-green-100 dark:bg-green-900/20',
-		unique: 'bg-blue-100 dark:bg-blue-900/20',
-	};
-
-	const categoryGradients = {
-		domestic: 'from-yellow-500/10 to-transparent',
-		wild: 'from-green-500/10 to-transparent',
-		unique: 'from-blue-500/10 to-transparent',
-	};
-
+	// Mapping from animal key to emoji for display
 	const emojiMapping = {
 		dog: '🐶',
 		cat: '🐱',
@@ -91,21 +77,6 @@ const StepTwo = ({
 		kangaroo: '🦘',
 		koala: '🐨',
 	};
-
-	const filteredGroups = Object.entries(groupedAnimals).reduce(
-		(acc, [category, animals]) => {
-			const filtered = animals.filter(
-				(animal) =>
-					animal.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					animal.key.toLowerCase().includes(searchTerm.toLowerCase())
-			);
-			if (filtered.length > 0) {
-				acc[category] = filtered;
-			}
-			return acc;
-		},
-		{}
-	);
 
 	return (
 		<div className='md:space-y-6'>
@@ -130,7 +101,8 @@ const StepTwo = ({
 						animate={{ opacity: 1, height: 'auto' }}
 						exit={{ opacity: 0, height: 0 }}
 						className='lg:space-y-6'>
-						{/* <div className='relative mx-auto max-w-md'>
+						{/* Search Bar */}
+						{/* <div className='relative mx-auto max-w-md mb-4'>
 							<Search
 								className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'
 								size={20}
@@ -141,59 +113,43 @@ const StepTwo = ({
 								onChange={(e) => setSearchTerm(e.target.value)}
 								placeholder='Search animals...'
 								className='w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 
-                         bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                  bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent'
 							/>
 						</div> */}
 
-						<div className='grid gap-1 lg:gap-6'>
-							{Object.entries(filteredGroups).map(([category, animals]) => (
-								<motion.div
-									key={category}
-									className='space-y-3'
-									initial={{ opacity: 0 }}
-									animate={{ opacity: 1 }}>
-									{/* <h3 className='text-sm font-semibold text-gray-700 dark:text-gray-200 pl-2'>
-										{dict.auth.animalCategories[category]}
-									</h3> */}
-									<div
-										className={`p-4 rounded-xl bg-gradient-to-b ${categoryGradients[category]}`}>
-										<div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3'>
-											{animals.map((animal) => {
-												const isSelected = selectedAnimals.find(
-													(a) => a.key === animal.key
-												);
-												const isDisabled =
-													selectedAnimals.length >= 3 && !isSelected;
+						{/* Animals in a single grid (no groups) */}
+						<div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3'>
+							{filteredAnimals.map((animal) => {
+								const isSelected = selectedAnimals.find(
+									(a) => a.key === animal.key
+								);
+								const isDisabled = selectedAnimals.length >= 3 && !isSelected;
 
-												return (
-													<motion.button
-														key={animal.key}
-														onClick={() => onAnimalSelect(animal.key)}
-														disabled={isDisabled}
-														className={`aspect-square rounded-xl p-2 md:p-4 relative select-none
-                              ${
-																isSelected
-																	? `ring-2 ring-blue-500 ${categoryStyles[category]}`
-																	: isDisabled
-																	? 'bg-gray-100 dark:bg-gray-700 opacity-50 cursor-not-allowed'
-																	: `bg-white dark:bg-gray-700 hover:ring-2 hover:ring-blue-500`
-															}
-                              transform transition-all duration-200 shadow-sm hover:shadow-md`}
-														whileHover={!isDisabled ? { scale: 1.05 } : {}}
-														whileTap={!isDisabled ? { scale: 0.95 } : {}}
-														aria-label={`Select ${animal.label}`}>
-														<div className='w-full h-full flex items-center justify-center'>
-															<span className='text-2xl md:text-4xl'>
-																{emojiMapping[animal.key] || '🐾'}
-															</span>
-														</div>
-													</motion.button>
-												);
-											})}
+								return (
+									<motion.button
+										key={animal.key}
+										onClick={() => onAnimalSelect(animal.key)}
+										disabled={isDisabled}
+										className={`aspect-square rounded-xl p-2 md:p-4 relative select-none
+                      ${
+												isSelected
+													? 'ring-2 ring-blue-500 bg-white dark:bg-gray-700'
+													: isDisabled
+													? 'bg-gray-100 dark:bg-gray-700 opacity-50 cursor-not-allowed'
+													: 'bg-white dark:bg-gray-700 hover:ring-2 hover:ring-blue-500'
+											}
+                      transform transition-all duration-200 shadow-sm hover:shadow-md`}
+										whileHover={!isDisabled ? { scale: 1.05 } : {}}
+										whileTap={!isDisabled ? { scale: 0.95 } : {}}
+										aria-label={`Select ${animal.label}`}>
+										<div className='w-full h-full flex items-center justify-center'>
+											<span className='text-2xl md:text-4xl'>
+												{emojiMapping[animal.key] || '🐾'}
+											</span>
 										</div>
-									</div>
-								</motion.div>
-							))}
+									</motion.button>
+								);
+							})}
 						</div>
 					</motion.div>
 				)}

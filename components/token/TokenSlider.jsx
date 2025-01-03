@@ -177,21 +177,15 @@ const TokenSlider = ({ isOpen, onClose }) => {
 		<AnimatePresence>
 			<StripeScript />
 			<motion.div
-				className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70'
+				className='inset-0 z-50 flex items-center justify-center  bg-opacity-70'
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				exit={{ opacity: 0 }}>
 				<motion.div
-					className='bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 w-full max-w-4xl mx-4 relative'
+					className='rounded-2xl p-8 w-full max-w-4xl  relative'
 					initial={{ scale: 0.8 }}
 					animate={{ scale: 1 }}
 					exit={{ scale: 0.8 }}>
-					<button
-						onClick={onClose}
-						className='absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'>
-						<FaTimes size={24} />
-					</button>
-
 					<div className='text-center mb-8'>
 						<h2 className='text-3xl font-bold text-gray-900 dark:text-white mb-2'>
 							Choose Your Package

@@ -160,9 +160,7 @@ const MessageInput = ({
 		<form
 			onSubmit={onSubmit}
 			onPaste={handlePaste}
-			className={`fixed bottom-0 left-0 right-0 mx-auto  lg:${
-				isRTL ? 'mr-40' : 'ml-40'
-			} px-4 w-full`}
+			className={` lg:${isRTL ? 'mr-40' : 'ml-40'} px-4 w-full`}
 			onDragEnter={handleDragEnter}
 			onDragLeave={handleDragLeave}
 			onDragOver={handleDragOver}

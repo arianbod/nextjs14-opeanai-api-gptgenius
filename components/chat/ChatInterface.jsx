@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { FaSearch, FaRegLightbulb } from 'react-icons/fa';
 import { ArrowUp } from 'lucide-react';
 import { useTranslations } from '@/context/TranslationContext';
+import { usePreferences } from '@/context/preferencesContext';
 
 const IMAGE_TYPES = [
 	'image/jpeg',
@@ -31,7 +32,7 @@ const ChatInterface = () => {
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const abortControllerRef = useRef(null);
 	const { dict, t } = useTranslations();
-
+	const { showSidebar } = usePreferences();
 	// Greetings and suggestions configuration
 	const standardGreetings = [
 		{
@@ -430,7 +431,7 @@ const ChatInterface = () => {
 	};
 
 	return (
-		<div className='w-full max-w-3xl mx-auto rounded-xl no-scrollbar min-h-screen relative'>
+		<div className=' w-full max-w-3xl mx-auto rounded-xl no-scrollbar min-h-screen relative'>
 			<div className='absolute inset-0 bg-gradient-to-br from-gray-100 to-blue-50 dark:from-gray-900 dark:to-gray-800 -z-10'></div>
 			<div className='relative flex flex-col transition-colors duration-300 min-h-screen'>
 				<Header msgLen={messages.length} />
@@ -465,7 +466,11 @@ const ChatInterface = () => {
 						</div>
 					</div>
 				)}
-				<div className='sticky bottom-0 w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700'>
+				<div
+					className={`
+						fixed bottom-0 left-0 right-0 mx-auto 
+					${showSidebar ? '' : ''}
+					`}>
 					<MessageInput
 						msgLen={messages.length}
 						inputText={inputText}

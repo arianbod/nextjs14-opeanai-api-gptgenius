@@ -160,7 +160,7 @@ const TextInputComponent = forwardRef(
 		};
 
 		let placeholder = isPending
-			? `${modelName} ${dict.chatInterface.messageInput.thinking} `
+			? `${modelName} ${dict.chatInterface.messageInput.writingStatus.thinking} `
 			: msgLen < 1
 			? dict.chatInterface.messageInput.writingStatus.startYourMessageHere
 			: dict.chatInterface.messageInput.writingStatus.writeYourResponseHere;

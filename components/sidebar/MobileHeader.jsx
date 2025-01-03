@@ -6,6 +6,7 @@ import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
 import { useChat } from '@/context/ChatContext';
 import { useTranslations } from '@/context/TranslationContext';
+import LocaleLink from '../hoc/LocalLink';
 
 const MobileHeader = () => {
 	const { resetChat } = useChat();
@@ -15,7 +16,7 @@ const MobileHeader = () => {
 		<div className='p-2'>
 			<div className='flex flex-col place-items-center justify-between mb-2'>
 				{/* Logo and Title */}
-				<Link
+				<LocaleLink
 					onClick={() => resetChat()}
 					href='/chat'
 					className='relative flex items-center gap-2'>
@@ -29,7 +30,7 @@ const MobileHeader = () => {
 						/>
 					</div>
 					<span className='font-semibold text-lg'>{dict.global.title}</span>
-				</Link>
+				</LocaleLink>
 
 				{/* Theme and Language Toggles */}
 				<div className='flex gap-1 place-items-center'>

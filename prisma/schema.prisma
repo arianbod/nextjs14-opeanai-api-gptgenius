@@ -22,7 +22,7 @@ model User {
   token            String          @unique
   animalSelection  String
   email            String?         @unique
-  tokenBalance     Int             @default(3000)
+  tokenBalance     Int             @default(100)
   chats            Chat[]
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt

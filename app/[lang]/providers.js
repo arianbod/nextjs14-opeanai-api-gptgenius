@@ -10,6 +10,7 @@ import { ThemeProvider } from 'next-themes';
 import { TranslationsProvider } from '@/context/TranslationContext'
 import ErrorBoundary from '@/components/ErrorBoundry'
 import { PreferencesProvider } from '@/context/preferencesContext'
+import { PaymentProvider } from '@/context/PaymentContext'
 
 const Providers = ({ children, translations, lang }) => {
 
@@ -32,11 +33,13 @@ const Providers = ({ children, translations, lang }) => {
                     <PreferencesProvider>
 
                         <TranslationsProvider translations={translations} lang={lang}>
-                            <ChatProvider>
-                                <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
-                                    {children}
-                                </ThemeProvider>
-                            </ChatProvider>
+                            <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
+                                <ChatProvider>
+                                    <PaymentProvider>
+                                        {children}
+                                    </PaymentProvider>
+                                </ChatProvider>
+                            </ThemeProvider>
                         </TranslationsProvider>
                     </PreferencesProvider>
                 </AuthProvider>

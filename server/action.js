@@ -23,7 +23,7 @@ export const subtractTokens = async (userId, tokens) => {
         where: { userId },
         data: { tokens: { decrement: tokens } },
     });
-    revalidatePath('/profile');
+    revalidatePath('/');
     return { tokens: result.tokens };
 };
 
@@ -212,6 +212,6 @@ export const rechargeTokens = async (userId, amount) => {
         where: { userId },
         data: { tokens: { increment: amount } },
     });
-    revalidatePath('/profile');
+    revalidatePath('/');
     return result.tokens;
 };

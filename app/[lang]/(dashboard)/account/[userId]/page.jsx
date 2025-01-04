@@ -1,5 +1,7 @@
 'use client';
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
 	FaUser,
 	FaEnvelope,
@@ -14,6 +16,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslations } from '@/context/TranslationContext';
+import { getUserPaymentHistory } from '@/server/payments';
 
 const EmailSection = ({ isRTL, dict }) => {
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -158,10 +161,83 @@ const EmailSection = ({ isRTL, dict }) => {
 	);
 };
 
+const TransactionHistory = ({ transactions, isRTL }) => {
+	const formatDate = (dateString) => {
+		return new Date(dateString).toLocaleDateString();
+	};
+
+	const formatStatus = (status) => {
+		const statusStyles = {
+			COMPLETED:
+				'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+			PENDING:
+				'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+			FAILED: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+		};
+
+		return (
+			<span
+				className={`px-2 py-1 rounded-full text-xs ${
+					statusStyles[status] || ''
+				}`}>
+				{status}
+			</span>
+		);
+	};
+
+	return (
+		<div className='overflow-x-auto'>
+			<table className='w-full'>
+				<thead className='text-sm text-gray-700 dark:text-gray-300'>
+					<tr className='border-b dark:border-gray-700'>
+						<th className='px-4 py-2 text-left'>Date</th>
+						<th className='px-4 py-2 text-left'>Type</th>
+						<th className='px-4 py-2 text-left'>Amount</th>
+						<th className='px-4 py-2 text-left'>Status</th>
+					</tr>
+				</thead>
+				<tbody className='text-sm'>
+					{transactions.map((tx) => (
+						<tr
+							key={tx.id}
+							className='border-b dark:border-gray-700'>
+							<td className='px-4 py-2'>{formatDate(tx.createdAt)}</td>
+							<td className='px-4 py-2'>{tx.type}</td>
+							<td className='px-4 py-2'>
+								<span
+									className={
+										tx.type === 'REFUND' ? 'text-red-500' : 'text-green-500'
+									}>
+									{tx.type === 'REFUND' ? '-' : '+'}${Math.abs(tx.amount)}
+								</span>
+							</td>
+							<td className='px-4 py-2'>{formatStatus(tx.status)}</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</div>
+	);
+};
+
 const AccountPage = () => {
+	const router = useRouter();
 	const { user, tokenBalance, logout } = useAuth();
 	const { dict, isRTL } = useTranslations();
 	const [showToken, setShowToken] = useState(false);
+	const [transactions, setTransactions] = useState([]);
+
+	useEffect(() => {
+		const loadTransactions = async () => {
+			if (user?.userId) {
+				const result = await getUserPaymentHistory(user.userId);
+				if (result.success) {
+					setTransactions(result.payments);
+				}
+			}
+		};
+		loadTransactions();
+	}, [user?.userId]);
 
 	const copyToken = () => {
 		if (user?.token) {
@@ -201,7 +277,7 @@ const AccountPage = () => {
 								dict={dict}
 							/>
 
-							{/* Token Balance */}
+							{/* Token Balance with Recharge Button */}
 							<div className='p-4 bg-gray-50 dark:bg-gray-700 rounded-lg'>
 								<div
 									className={`flex items-center justify-between ${
@@ -216,7 +292,16 @@ const AccountPage = () => {
 											{dict.account.tokenBalance}
 										</span>
 									</div>
-									<span className='text-lg font-semibold'>{tokenBalance}</span>
+									<div className='flex items-center gap-4'>
+										<span className='text-lg font-semibold'>
+											{tokenBalance}
+										</span>
+										<button
+											onClick={() => router.push('/token')}
+											className='px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm'>
+											Recharge Tokens
+										</button>
+									</div>
 								</div>
 							</div>
 
@@ -251,7 +336,7 @@ const AccountPage = () => {
 									</div>
 								</div>
 								{showToken ? (
-									<div className='bg-gray-100 dark:bg-gray-600 p-2 rounded break-all  text-sm'>
+									<div className='bg-gray-100 dark:bg-gray-600 p-2 rounded break-all text-sm'>
 										{user?.token}
 									</div>
 								) : (
@@ -275,6 +360,23 @@ const AccountPage = () => {
 								<p className='text-sm text-gray-600 dark:text-gray-300'>
 									{dict.account.securityInfo}
 								</p>
+							</div>
+
+							{/* Transaction History */}
+							<div className='space-y-4'>
+								<h2 className='text-lg font-semibold'>Transaction History</h2>
+								<div className='bg-gray-50 dark:bg-gray-700 rounded-lg p-4'>
+									{transactions.length > 0 ? (
+										<TransactionHistory
+											transactions={transactions}
+											isRTL={isRTL}
+										/>
+									) : (
+										<p className='text-center text-gray-500 dark:text-gray-400 py-4'>
+											No transactions yet
+										</p>
+									)}
+								</div>
 							</div>
 						</div>
 

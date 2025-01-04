@@ -196,9 +196,9 @@ const TokenSlider = ({ isOpen, onClose }) => {
 					</div>
 
 					<div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
-						{packages.map((pkg) => (
+						{packages.map((pkg,i) => (
 							<TokenPackage
-								key={pkg.id}
+								key={i}
 								pkg={pkg}
 								selected={selectedPackage?.id === pkg.id}
 								onSelect={setSelectedPackage}

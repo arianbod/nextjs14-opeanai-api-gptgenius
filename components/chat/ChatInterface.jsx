@@ -468,8 +468,8 @@ const ChatInterface = () => {
 				)}
 				<div
 					className={`
-						fixed bottom-0 left-0 right-0 mx-auto 
-					${showSidebar ? '' : ''}
+						fixed bottom-0 transition-all left-0 right-0 mx-auto 
+					${showSidebar ? 'translate-x-60' : ''}
 					`}>
 					<MessageInput
 						msgLen={messages.length}

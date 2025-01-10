@@ -234,6 +234,11 @@
 				"fast": "Fast",
 				"slow": "Slow"
 			},
+			"priceGroup": "price",
+			"priceGroupValues": {
+				"expensive": "expensive",
+				"fair": "fair"
+			},
 			"recentlyUsed": "Recently Used"
 		}
 	},

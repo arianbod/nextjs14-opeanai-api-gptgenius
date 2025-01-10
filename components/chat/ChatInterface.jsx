@@ -293,7 +293,7 @@ const ChatInterface = () => {
 			setSelectedSuggestion(null);
 			setUploadedFile(null);
 			setUploadProgress(0);
-			toast.success(t('chatInterface.messageSent'));
+			// toast.success(t('chatInterface.messageSent'));
 		} catch (error) {
 			console.error(t('chatInterface.errors.sendMessageError'), error);
 			toast.error(t('chatInterface.errors.sendMessageError'));

@@ -11,6 +11,8 @@ import {
 	Brain,
 	Code,
 	MessagesSquare,
+	DollarSign,
+	Coins,
 } from 'lucide-react';
 import { useTranslations } from '@/context/TranslationContext';
 
@@ -144,6 +146,18 @@ const ModelCard = ({ persona, onSelect, isSelected }) => {
 							<span className='text-xs'>
 								{t(
 									`personas.labels.speedValues.${persona.speed
+										.toLowerCase()
+										.replace(/\s+/g, '_')}`
+								)}
+							</span>
+						</div>
+					)}
+					{persona.price_group && (
+						<div className='flex place-items-center gap-1 text-base-content/60'>
+							<Coins className='w-4 h-4' />
+							<span className='text-xs capitalize'>
+								{t(
+									`personas.labels.priceGroupValues.${persona.price_group
 										.toLowerCase()
 										.replace(/\s+/g, '_')}`
 								)}

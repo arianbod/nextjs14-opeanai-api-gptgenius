@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useParams, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -57,6 +57,7 @@ const formatLaTeXContent = (content) => {
 
     return content;
 };
+
 export const ChatProvider = ({ children }) => {
     const params = useParams();
     const { user } = useAuth();
@@ -85,6 +86,10 @@ export const ChatProvider = ({ children }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchFilter, setSearchFilter] = useState('all');
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+    // Message tracking refs
+    const messageQueueRef = useRef(new Set());
+    const pendingMessagesRef = useRef(new Map());
 
     const reformatExistingMessages = useCallback(() => {
         setMessages(prevMessages => prevMessages.map(msg => ({
@@ -276,12 +281,20 @@ export const ChatProvider = ({ children }) => {
             return;
         }
 
+        const messageId = nanoid();
+        if (messageQueueRef.current.has(messageId)) {
+            console.warn('Message already in queue:', messageId);
+            return;
+        }
+
         setIsGenerating(true);
-        const userMessageId = nanoid();
-        const assistantMessageId = nanoid();
-        let chatId = activeChat.id;
+        messageQueueRef.current.add(messageId);
+        pendingMessagesRef.current.set(messageId, content.trim());
 
         try {
+            let chatId = activeChat.id;
+            let newChat = false;
+
             // If no active chat, create one first
             if (!chatId) {
                 const modelData = {
@@ -301,25 +314,47 @@ export const ChatProvider = ({ children }) => {
                     }),
                 });
 
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || 'Failed to create chat');
+                if (!response.ok) {
+                    throw new Error('Failed to create chat');
+                }
 
+                const data = await response.json();
                 chatId = data.data.id;
+                newChat = true;
                 setActiveChat(prev => ({ ...prev, id: chatId }));
                 window.history.pushState(null, '', `/chat/${chatId}`);
             }
 
-            // Add the user message to local state
-            const formattedContent = formatLaTeXContent(content.trim());
+            // Only add user message if not a new chat
+            if (!newChat) {
+                const userMessageResponse = await fetch('/api/chat/addMessage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: user.userId,
+                        chatId,
+                        content: content.trim(),
+                        role: 'user',
+                        messageId
+                    }),
+                });
+
+                if (!userMessageResponse.ok) {
+                    throw new Error('Failed to add user message');
+                }
+            }
+
+            // Add user message to local state
             const userMessage = {
-                id: userMessageId,
+                id: messageId,
                 role: 'user',
-                content: formattedContent,
+                content: formatLaTeXContent(content.trim()),
                 timestamp: new Date().toISOString(),
             };
             setMessages(prev => [...prev, userMessage]);
 
             // Add empty assistant message that will be updated with the stream
+            const assistantMessageId = nanoid();
             const assistantMessage = {
                 id: assistantMessageId,
                 role: 'assistant',
@@ -328,19 +363,7 @@ export const ChatProvider = ({ children }) => {
             };
             setMessages(prev => [...prev, assistantMessage]);
 
-            // First, ensure the user message is saved to the database
-            await fetch('/api/chat/addMessage', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId: user.userId,
-                    chatId,
-                    content: formattedContent,
-                    role: 'user'
-                }),
-            });
-
-            // Then send request for AI response
+            // Send request for AI response
             const messageResponse = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
@@ -349,15 +372,19 @@ export const ChatProvider = ({ children }) => {
                 body: JSON.stringify({
                     userId: user.userId,
                     chatId,
-                    content: formattedContent,
+                    content: content.trim(),
                     persona: activeChat.model,
                     provider: activeChat.provider,
-                    file: fileData
+                    file: fileData,
+                    messageId
                 }),
             });
 
-            if (!messageResponse.ok) throw new Error('Failed to send message');
+            if (!messageResponse.ok) {
+                throw new Error('Failed to generate response');
+            }
 
+            // Handle streaming response
             const reader = messageResponse.body.getReader();
             const decoder = new TextDecoder();
             let accumulatedContent = '';
@@ -373,16 +400,12 @@ export const ChatProvider = ({ children }) => {
                     if (line.startsWith('data: ')) {
                         try {
                             const data = JSON.parse(line.slice(6));
-                            if (
-                                data.content &&
-                                typeof data.content === 'string' &&
+                            if (data.content && typeof data.content === 'string' &&
                                 !data.content.includes('streaming_started') &&
                                 !data.content.includes('streaming_completed') &&
-                                !data.content.includes('stream_ended')
-                            ) {
+                                !data.content.includes('stream_ended')) {
                                 accumulatedContent += data.content;
-                                const formattedContent = formatLaTeXContent(accumulatedContent);
-                                updateMessage(assistantMessageId, formattedContent);
+                                updateMessage(assistantMessageId, formatLaTeXContent(accumulatedContent));
                             }
                         } catch (error) {
                             console.error('Error parsing SSE data:', error);
@@ -393,10 +416,12 @@ export const ChatProvider = ({ children }) => {
 
             await fetchChats();
         } catch (error) {
-            console.error('Error generating response:', error);
-            setMessages(prev => prev.filter(msg => msg.id !== assistantMessageId && msg.id !== userMessageId));
-            toast.error(`Failed to generate response: ${error.message}`);
+            console.error('Error in message flow:', error);
+            setMessages(prev => prev.filter(msg => msg.id !== messageId));
+            toast.error(`Failed to process message: ${error.message}`);
         } finally {
+            messageQueueRef.current.delete(messageId);
+            pendingMessagesRef.current.delete(messageId);
             setIsGenerating(false);
         }
     };

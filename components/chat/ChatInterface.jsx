@@ -26,10 +26,12 @@ const ChatInterface = () => {
 		messages,
 		setMessages,
 		isGenerating,
-		generateResponse,
-		model,
 		user,
 		activeChat,
+		model,
+		processUserMessage,
+		imageGeneration,
+		forceImageGeneration,
 	} = useChat();
 
 	const [inputText, setInputText] = useState('');
@@ -42,17 +44,9 @@ const ChatInterface = () => {
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const abortControllerRef = useRef(null);
 	const { dict, t, isRTL } = useTranslations();
-	const { showSidebar,isMobile } = usePreferences();
+	const { showSidebar, isMobile } = usePreferences();
 
-	// Add new state for image generation
-	const [imageGeneration, setImageGeneration] = useState({
-		isGenerating: false,
-		url: null,
-		error: null,
-		prompt: null,
-	});
-
-	// Greetings and suggestions configuration
+	// Greeting logic
 	const standardGreetings = [
 		{
 			title: t('chatInterface.greetings.askAnythingTitle'),
@@ -106,27 +100,6 @@ const ChatInterface = () => {
 			: model.provider === 'perplexity'
 			? perplexityQuestions
 			: standardGreetings;
-
-	// Added function to detect image generation prompts
-	const isImageGenerationPrompt = (text) => {
-		const imageKeywords = [
-			'generate image',
-			'create image',
-			'make image',
-			'draw',
-			'generate picture',
-			'create picture',
-			'generate a picture',
-			'create an image',
-			'generate an image',
-			'draw a picture',
-			'dall-e',
-		];
-
-		return imageKeywords.some((keyword) =>
-			text.toLowerCase().includes(keyword)
-		);
-	};
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -185,9 +158,7 @@ const ChatInterface = () => {
 		if (selectedSuggestion) {
 			return renderPostSelectionHint(selectedSuggestion);
 		}
-
 		const currentQuestions = greetings[greetingIndex];
-
 		return (
 			<div className='flex flex-col space-y-6 w-full max-w-xl mx-auto px-4 pt-64'>
 				<div className='text-center space-y-2'>
@@ -199,7 +170,6 @@ const ChatInterface = () => {
 						{t('chatInterface.perplexityGreeting.clickExample')}
 					</p>
 				</div>
-
 				<div className='space-y-4'>
 					<div className='space-y-2'>
 						{currentQuestions.map((question, idx) => (
@@ -215,7 +185,6 @@ const ChatInterface = () => {
 						))}
 					</div>
 				</div>
-
 				<div className='text-center text-sm text-gray-500 dark:text-gray-400'>
 					{t('chatInterface.perplexityGreeting.followUp')}
 				</div>
@@ -227,9 +196,7 @@ const ChatInterface = () => {
 		if (selectedSuggestion) {
 			return renderPostSelectionHint(selectedSuggestion);
 		}
-
 		const currentGreeting = greetings[greetingIndex];
-
 		return (
 			<div className='flex flex-col items-center justify-center space-y-6 text-center px-4 max-w-xl mx-auto pt-64'>
 				<div className='space-y-4'>
@@ -240,7 +207,6 @@ const ChatInterface = () => {
 						{currentGreeting.subtitle}
 					</p>
 				</div>
-
 				<div className='space-y-2 w-full'>
 					<p className='text-sm text-gray-600 dark:text-gray-400'>
 						{t('chatInterface.standardGreeting.needIdeas')}
@@ -257,7 +223,6 @@ const ChatInterface = () => {
 						</button>
 					))}
 				</div>
-
 				<div className='mt-4 text-sm text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2'>
 					<span className='w-2 h-2 bg-green-500 rounded-full animate-pulse'></span>
 					{t('chatInterface.standardGreeting.ready')}
@@ -271,38 +236,32 @@ const ChatInterface = () => {
 			setUploadedFile(null);
 			return;
 		}
-
 		if (file.size > MAX_FILE_SIZE) {
 			toast.error(t('chatInterface.errors.fileSizeExceeded'));
 			return;
 		}
-
 		try {
 			setIsUploading(true);
 			setUploadProgress(0);
 			abortControllerRef.current = new AbortController();
 
 			const reader = new FileReader();
-
 			reader.onprogress = (event) => {
 				if (event.lengthComputable) {
 					const progress = (event.loaded / event.total) * 100;
 					setUploadProgress(progress);
 				}
 			};
-
 			const fileContent = await new Promise((resolve, reject) => {
 				reader.onloadend = () => resolve(reader.result);
 				reader.onerror = () =>
 					reject(new Error(t('chatInterface.errors.failedToReadFile')));
-
 				if (file.type.startsWith('text/')) {
 					reader.readAsText(file);
 				} else {
 					reader.readAsDataURL(file);
 				}
 			});
-
 			setUploadedFile({
 				name: file.name,
 				type: file.type,
@@ -310,7 +269,6 @@ const ChatInterface = () => {
 				extension: file.name.split('.').pop().toLowerCase(),
 				isText: file.type.startsWith('text/'),
 			});
-
 			setIsUploading(false);
 			setUploadProgress(100);
 			toast.success(t('chatInterface.uploadSuccess', { fileName: file.name }));
@@ -340,115 +298,18 @@ const ChatInterface = () => {
 		toast.success(t('chatInterface.errors.fileRemoved'));
 	};
 
-	// Modified handleSubmit with image generation support
+	// Instead of showing the question after the user clicks Send,
+	// we just call "processUserMessage" on submit. If forceImageGeneration
+	// is on, it will do generateImage; otherwise, it does text-based response.
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (!inputText.trim() && !uploadedFile) {
-			toast.error(t('chatInterface.errors.enterMessageOrFile'));
-			return;
-		}
+		processUserMessage(inputText, uploadedFile);
 
-		if (!model) {
-			toast.error(t('chatInterface.errors.selectModelFirst'));
-			return;
-		}
-
-		const messageContent = inputText.trim();
+		// Clear local states
 		setInputText('');
-
-		try {
-			let fileData = null;
-			if (uploadedFile) {
-				fileData = {
-					name: uploadedFile.name,
-					type: uploadedFile.type,
-					content: uploadedFile.content,
-				};
-			}
-
-			// Check if this is an image generation request
-			if (isImageGenerationPrompt(messageContent)) {
-				// Add user message to chat
-				const userMessage = {
-					id: nanoid(),
-					role: 'user',
-					content: messageContent,
-					timestamp: new Date().toISOString(),
-				};
-				setMessages((prev) => [...prev, userMessage]);
-
-				// Start image generation
-				setImageGeneration({
-					isGenerating: true,
-					url: null,
-					error: null,
-					prompt: messageContent,
-				});
-
-				try {
-					const response = await fetch('/api/chat/generateImage', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({
-							prompt: messageContent,
-							userId: user.userId,
-							chatId: activeChat.id,
-						}),
-					});
-
-					const data = await response.json();
-
-					if (data.error) {
-						throw new Error(data.error);
-					}
-
-					// Add assistant message with the generated image
-					const assistantMessage = {
-						id: nanoid(),
-						role: 'assistant',
-						content: `![Generated Image](${data.imageUrl})\n\nHere's the image I generated based on your prompt: "${messageContent}"`,
-						timestamp: new Date().toISOString(),
-					};
-					setMessages((prev) => [...prev, assistantMessage]);
-
-					setImageGeneration({
-						isGenerating: false,
-						url: data.imageUrl,
-						error: null,
-						prompt: messageContent,
-					});
-				} catch (error) {
-					console.error('Image generation error:', error);
-					setImageGeneration({
-						isGenerating: false,
-						url: null,
-						error: error.message,
-						prompt: messageContent,
-					});
-
-					// Add error message to chat
-					const errorMessage = {
-						id: nanoid(),
-						role: 'assistant',
-						content: `I apologize, but I encountered an error while generating the image: ${error.message}`,
-						timestamp: new Date().toISOString(),
-					};
-					setMessages((prev) => [...prev, errorMessage]);
-				}
-			} else {
-				// Handle normal chat message
-				await generateResponse(messageContent, fileData);
-			}
-
-			setSelectedSuggestion(null);
-			setUploadedFile(null);
-			setUploadProgress(0);
-		} catch (error) {
-			console.error(t('chatInterface.errors.sendMessageError'), error);
-			toast.error(t('chatInterface.errors.sendMessageError'));
-		}
+		setUploadedFile(null);
+		setUploadProgress(0);
+		setSelectedSuggestion(null);
 	};
 
 	return (

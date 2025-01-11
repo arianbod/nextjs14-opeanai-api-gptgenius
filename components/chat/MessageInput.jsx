@@ -124,7 +124,7 @@ const MessageInput = ({
 			setShowRealTimePrompt(false);
 			clearTimer();
 			if (forceImageGeneration) {
-				setForceImageGeneration(false);
+				// setForceImageGeneration(false);
 			}
 		}
 	}, [inputText, allowed.send.image, forceImageGeneration]);
@@ -331,8 +331,7 @@ const MessageInput = ({
             ${imageModeStyles}
             ${shimmerClass}
           `}
-					dir={textDirection}
-					style={{ overflow: 'hidden' }}>
+					dir={textDirection}>
 					<div
 						className={`
               ${

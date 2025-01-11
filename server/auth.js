@@ -130,7 +130,7 @@ export async function createUser(animalSelection, email = null, ipAddress = null
             token: hashedToken,
             animalSelection: hashedAnimalSelection,
             email, // Optional email
-            tokenBalance: 3000,
+            // tokenBalance: 3000,
             loginAttempts: 0,
             status: 'ACTIVE',
             statusReason: 'Account created',

@@ -250,7 +250,7 @@ export function PreferencesProvider({ children }) {
 	useEffect
 		(() => {
 			// Initial check
-			const checkIsMobile = () => { setIsMobile(window.innerWidth < 768); };
+			const checkIsMobile = () => { setIsMobile(window.innerWidth < 1024); };
 			// Check on mount
 			checkIsMobile();
 

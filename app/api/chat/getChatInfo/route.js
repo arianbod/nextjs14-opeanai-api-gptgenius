@@ -18,11 +18,11 @@ export async function POST(request) {
         }
 
         const chatDataInfo = await getChatInfo(chatId)
+        console.log("getChatInfo is fine *****************************", chatDataInfo)
         if (chatDataInfo?.id) {
-            console.log("getChatInfo is fine", chatDataInfo)
             return NextResponse.json({ chatDataInfo }, { status: 200 })
         }
-        return NextResponse.json({ error: "Chat not found" }, { status: 404 })
+        return NextResponse.json({ error: "Chat not found" }, { status: 504 })
     } catch (error) {
         console.error("getChatInfo faced an error:", error);
         return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 })

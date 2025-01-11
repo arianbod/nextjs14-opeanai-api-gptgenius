@@ -5,7 +5,10 @@ import { revalidatePath } from 'next/cache'
 import prisma from '@/prisma/db';
 import { getUserById } from './auth';
 import { getChatProvider } from '@/lib/ai-providers/server';
-
+import OpenAI from 'openai';
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 // server/chat.js (relevant part)
 // server/chat.js (relevant part)
 async function generateChatTitle(initialMessage) {
@@ -263,56 +266,74 @@ export async function generateChatResponse(messages, persona) {
     }
 }
 
-export async function generateImage(userId, prompt, chatId) {
-    console.log('Generating image for user:', userId, 'in chat:', chatId);
-    const user = await getUserById(userId);
-    if (!user) {
-        console.error('User not found:', userId);
-        throw new Error('User not authenticated');
-    }
-
-    const chatIdString = Array.isArray(chatId) ? chatId[0] : chatId;
+export async function generateImage(userId, prompt, chatId, options = {}) {
+    console.log('Starting server-side image generation:', { userId, chatId, prompt });
 
     try {
-        const requiredTokens = 50;
-        if (user.tokenBalance < requiredTokens) {
-            throw new Error('Insufficient tokens for image generation');
+        // Manage tokens first
+        await manageUserTokens(userId, -50); // Deduct tokens for image generation
+
+        const response = await openai.images.generate({
+            model: "dall-e-3",
+            prompt: prompt,
+            n: 1,
+            size: options.size || "1024x1024",
+            quality: options.quality || "standard",
+            style: options.style || "vivid"
+        });
+
+        console.log('DALL-E response:', JSON.stringify(response.data, null, 2));
+
+        if (!response.data?.[0]?.url) {
+            throw new Error('No image URL in response');
         }
 
-        // Update token balance
-        await manageUserTokens(userId, -requiredTokens);
-
-        // Get default image provider
-        const provider = getChatProvider('openai');
-        const response = await provider.generateImage(prompt);
-
-        if (response.url) {
-            // Add image message to chat
-            await addMessageToChat(user.id, chatIdString, response.url, 'assistant');
-            return { imageUrl: response.url };
-        } else {
-            throw new Error('Image URL not found in the response');
+        // Verify the URL is accessible
+        try {
+            const urlCheck = await fetch(response.data[0].url);
+            console.log('URL check status:', urlCheck.status);
+            if (!urlCheck.ok) {
+                throw new Error('Generated image URL is not accessible');
+            }
+        } catch (urlError) {
+            console.error('URL verification failed:', urlError);
+            throw new Error('Generated image URL verification failed');
         }
+
+        return {
+            imageUrl: response.data[0].url,
+            metadata: {
+                prompt,
+                timestamp: new Date().toISOString(),
+                ...options
+            }
+        };
     } catch (error) {
-        console.error('Error in generateImage:', error);
-        // Refund tokens if generation failed
-        if (error.message !== 'Insufficient tokens for image generation') {
-            await manageUserTokens(userId, requiredTokens);
-        }
-        return { error: 'Failed to generate image. Please try again later.' };
+        console.error('Image generation error:', error);
+        throw error;
     }
 }
+
+// server/chat.js - Update getChatInfo function
 export async function getChatInfo(chatId) {
     try {
-
-        const chatInfo = await prisma.chat.findUnique({ where: { id: chatId }, select: { id: true, provider: true, model: true, modelCodeName: true, title: true } })
-        // console.log("chatInfo", chatInfo);
-        return chatInfo
+        const chatInfo = await prisma.chat.findUnique({
+            where: { id: chatId },
+            select: {
+                id: true,
+                provider: true,
+                model: true,
+                modelCodeName: true,
+                title: true
+            }
+        });
+        console.log("chat info from chat server:", chatInfo)
+        // Add chatInfo wrapper for consistency
+        return chatInfo;
     } catch (error) {
-        console.error("there is an error on getchatinfo", error);
-        throw new Error(error)
+        console.error("Error getting chat info:", error);
+        throw error;
     }
-
 }
 
 export async function updateChatMetadata(chatId, metadata) {

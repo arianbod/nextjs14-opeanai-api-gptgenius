@@ -9,6 +9,8 @@ import { FaSearch, FaRegLightbulb } from 'react-icons/fa';
 import { ArrowUp } from 'lucide-react';
 import { useTranslations } from '@/context/TranslationContext';
 import { usePreferences } from '@/context/preferencesContext';
+import ImageGenerationDisplay from './ImageGeneartionDisplay';
+import { nanoid } from 'nanoid';
 
 const IMAGE_TYPES = [
 	'image/jpeg',
@@ -20,19 +22,36 @@ const IMAGE_TYPES = [
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
 const ChatInterface = () => {
-	const { messages, isGenerating, generateResponse, model } = useChat();
+	const {
+		messages,
+		setMessages,
+		isGenerating,
+		generateResponse,
+		model,
+		user,
+		activeChat,
+	} = useChat();
+
 	const [inputText, setInputText] = useState('');
 	const [uploadedFile, setUploadedFile] = useState(null);
 	const messagesEndRef = useRef(null);
 	const [greetingIndex, setGreetingIndex] = useState(0);
 	const [showGreeting, setShowGreeting] = useState(true);
 	const [selectedSuggestion, setSelectedSuggestion] = useState(null);
-
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const abortControllerRef = useRef(null);
-	const { dict, t } = useTranslations();
-	const { showSidebar } = usePreferences();
+	const { dict, t, isRTL } = useTranslations();
+	const { showSidebar,isMobile } = usePreferences();
+
+	// Add new state for image generation
+	const [imageGeneration, setImageGeneration] = useState({
+		isGenerating: false,
+		url: null,
+		error: null,
+		prompt: null,
+	});
+
 	// Greetings and suggestions configuration
 	const standardGreetings = [
 		{
@@ -88,6 +107,27 @@ const ChatInterface = () => {
 			? perplexityQuestions
 			: standardGreetings;
 
+	// Added function to detect image generation prompts
+	const isImageGenerationPrompt = (text) => {
+		const imageKeywords = [
+			'generate image',
+			'create image',
+			'make image',
+			'draw',
+			'generate picture',
+			'create picture',
+			'generate a picture',
+			'create an image',
+			'generate an image',
+			'draw a picture',
+			'dall-e',
+		];
+
+		return imageKeywords.some((keyword) =>
+			text.toLowerCase().includes(keyword)
+		);
+	};
+
 	useEffect(() => {
 		const interval = setInterval(() => {
 			if (!selectedSuggestion) {
@@ -112,193 +152,6 @@ const ChatInterface = () => {
 			scrollToBottom();
 		}
 	}, [messages]);
-
-	const validateImageDimensions = async (file) => {
-		return new Promise((resolve, reject) => {
-			const img = new Image();
-			img.onload = () => {
-				URL.revokeObjectURL(img.src);
-				const dimensions = {
-					width: img.width,
-					height: img.height,
-					megapixels: (img.width * img.height) / 1000000,
-				};
-				resolve(dimensions);
-			};
-			img.onerror = () => {
-				URL.revokeObjectURL(img.src);
-				reject(new Error(t('chatInterface.errors.failedToLoadImage')));
-			};
-			img.src = URL.createObjectURL(file);
-		});
-	};
-
-	const handleFileUpload = async (file) => {
-		if (!file) {
-			setUploadedFile(null);
-			return;
-		}
-
-		if (file.size > MAX_FILE_SIZE) {
-			toast.error(t('chatInterface.errors.fileSizeExceeded'));
-			return;
-		}
-
-		const allowedTypes = {
-			// Documents
-			'text/plain': t('chatInterface.fileTypes.TXT'),
-			'application/pdf': t('chatInterface.fileTypes.PDF'),
-			'application/msword': t('chatInterface.fileTypes.DOC'),
-			'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-				t('chatInterface.fileTypes.DOCX'),
-			'text/csv': t('chatInterface.fileTypes.CSV'),
-			'application/vnd.ms-excel': t('chatInterface.fileTypes.XLS'),
-			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': t(
-				'chatInterface.fileTypes.XLSX'
-			),
-			// Images
-			'image/jpeg': t('chatInterface.fileTypes.JPEG'),
-			'image/png': t('chatInterface.fileTypes.PNG'),
-			'image/gif': t('chatInterface.fileTypes.GIF'),
-			'image/webp': t('chatInterface.fileTypes.WEBP'),
-			'image/svg+xml': t('chatInterface.fileTypes.SVG'),
-			// Web files
-			'text/html': t('chatInterface.fileTypes.HTML'),
-			'text/css': t('chatInterface.fileTypes.CSS'),
-			'application/javascript': t('chatInterface.fileTypes.JS'),
-			'application/json': t('chatInterface.fileTypes.JSON'),
-			'text/markdown': t('chatInterface.fileTypes.MD'),
-		};
-
-		const fileExtension = file.name.split('.').pop().toLowerCase();
-		const mimeType = file.type.toLowerCase();
-
-		if (
-			!allowedTypes[mimeType] &&
-			!Object.values(allowedTypes).includes(fileExtension.toUpperCase())
-		) {
-			toast.error(
-				`${t('chatInterface.errors.unsupportedFileType')} ${Object.values(
-					allowedTypes
-				)
-					.map((type) => type.toUpperCase())
-					.join(', ')}`
-			);
-			return;
-		}
-
-		try {
-			setIsUploading(true);
-			setUploadProgress(0);
-			abortControllerRef.current = new AbortController();
-
-			// Additional image validation for Claude's requirements
-			// if (IMAGE_TYPES.includes(mimeType)) {
-			//     const dimensions = await validateImageDimensions(file);
-
-			//     if (dimensions.width > 1568 || dimensions.height > 1568) {
-			//         toast.error(t('chatInterface.errors.imageDimensionsExceeded'));
-			//         setIsUploading(false);
-			//         return;
-			//     }
-
-			//     if (dimensions.megapixels > 1.15) {
-			//         toast.error(t('chatInterface.errors.imageMegapixelsExceeded'));
-			//         setIsUploading(false);
-			//         return;
-			//     }
-			// }
-
-			const reader = new FileReader();
-
-			reader.onprogress = (event) => {
-				if (event.lengthComputable) {
-					const progress = (event.loaded / event.total) * 100;
-					setUploadProgress(progress);
-				}
-			};
-
-			const fileContent = await new Promise((resolve, reject) => {
-				reader.onloadend = () => resolve(reader.result);
-				reader.onerror = () =>
-					reject(new Error(t('chatInterface.errors.failedToReadFile')));
-
-				if (
-					mimeType.startsWith('text/') ||
-					mimeType.includes('javascript') ||
-					mimeType.includes('json') ||
-					mimeType.includes('xml')
-				) {
-					reader.readAsText(file);
-				} else {
-					reader.readAsDataURL(file);
-				}
-			});
-
-			setUploadedFile({
-				name: file.name,
-				type: file.type,
-				size: file.size,
-				content: fileContent.split(',')[1] || fileContent,
-				extension: file.name.split('.').pop().toLowerCase(),
-				isText:
-					mimeType.startsWith('text/') ||
-					mimeType.includes('javascript') ||
-					mimeType.includes('json') ||
-					mimeType.includes('xml'),
-			});
-
-			setIsUploading(false);
-			setUploadProgress(100);
-			toast.success(t('chatInterface.uploadSuccess', { fileName: file.name }));
-		} catch (error) {
-			if (abortControllerRef.current) {
-				console.log(t('chatInterface.errors.uploadCanceled'));
-			} else {
-				console.error(t('chatInterface.errors.fileProcessingError'), error);
-				toast.error(t('chatInterface.errors.fileProcessingError'));
-			}
-			setIsUploading(false);
-			setUploadProgress(0);
-			setUploadedFile(null);
-		}
-	};
-
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		if (!inputText.trim() && !uploadedFile) {
-			toast.error(t('chatInterface.errors.enterMessageOrFile'));
-			return;
-		}
-
-		if (!model) {
-			toast.error(t('chatInterface.errors.selectModelFirst'));
-			return;
-		}
-
-		const messageContent = inputText.trim();
-		setInputText('');
-
-		try {
-			let fileData = null;
-			if (uploadedFile) {
-				fileData = {
-					name: uploadedFile.name,
-					type: uploadedFile.type,
-					content: uploadedFile.content,
-				};
-			}
-
-			await generateResponse(messageContent, fileData);
-			setSelectedSuggestion(null);
-			setUploadedFile(null);
-			setUploadProgress(0);
-			// toast.success(t('chatInterface.messageSent'));
-		} catch (error) {
-			console.error(t('chatInterface.errors.sendMessageError'), error);
-			toast.error(t('chatInterface.errors.sendMessageError'));
-		}
-	};
 
 	const handleQuestionClick = (question) => {
 		setInputText(question);
@@ -413,6 +266,63 @@ const ChatInterface = () => {
 		);
 	};
 
+	const handleFileUpload = async (file) => {
+		if (!file) {
+			setUploadedFile(null);
+			return;
+		}
+
+		if (file.size > MAX_FILE_SIZE) {
+			toast.error(t('chatInterface.errors.fileSizeExceeded'));
+			return;
+		}
+
+		try {
+			setIsUploading(true);
+			setUploadProgress(0);
+			abortControllerRef.current = new AbortController();
+
+			const reader = new FileReader();
+
+			reader.onprogress = (event) => {
+				if (event.lengthComputable) {
+					const progress = (event.loaded / event.total) * 100;
+					setUploadProgress(progress);
+				}
+			};
+
+			const fileContent = await new Promise((resolve, reject) => {
+				reader.onloadend = () => resolve(reader.result);
+				reader.onerror = () =>
+					reject(new Error(t('chatInterface.errors.failedToReadFile')));
+
+				if (file.type.startsWith('text/')) {
+					reader.readAsText(file);
+				} else {
+					reader.readAsDataURL(file);
+				}
+			});
+
+			setUploadedFile({
+				name: file.name,
+				type: file.type,
+				content: fileContent.split(',')[1] || fileContent,
+				extension: file.name.split('.').pop().toLowerCase(),
+				isText: file.type.startsWith('text/'),
+			});
+
+			setIsUploading(false);
+			setUploadProgress(100);
+			toast.success(t('chatInterface.uploadSuccess', { fileName: file.name }));
+		} catch (error) {
+			console.error('Error uploading file:', error);
+			toast.error(t('chatInterface.errors.fileProcessingError'));
+			setIsUploading(false);
+			setUploadProgress(0);
+			setUploadedFile(null);
+		}
+	};
+
 	const cancelUpload = () => {
 		if (abortControllerRef.current) {
 			setIsUploading(false);
@@ -430,8 +340,119 @@ const ChatInterface = () => {
 		toast.success(t('chatInterface.errors.fileRemoved'));
 	};
 
+	// Modified handleSubmit with image generation support
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (!inputText.trim() && !uploadedFile) {
+			toast.error(t('chatInterface.errors.enterMessageOrFile'));
+			return;
+		}
+
+		if (!model) {
+			toast.error(t('chatInterface.errors.selectModelFirst'));
+			return;
+		}
+
+		const messageContent = inputText.trim();
+		setInputText('');
+
+		try {
+			let fileData = null;
+			if (uploadedFile) {
+				fileData = {
+					name: uploadedFile.name,
+					type: uploadedFile.type,
+					content: uploadedFile.content,
+				};
+			}
+
+			// Check if this is an image generation request
+			if (isImageGenerationPrompt(messageContent)) {
+				// Add user message to chat
+				const userMessage = {
+					id: nanoid(),
+					role: 'user',
+					content: messageContent,
+					timestamp: new Date().toISOString(),
+				};
+				setMessages((prev) => [...prev, userMessage]);
+
+				// Start image generation
+				setImageGeneration({
+					isGenerating: true,
+					url: null,
+					error: null,
+					prompt: messageContent,
+				});
+
+				try {
+					const response = await fetch('/api/chat/generateImage', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({
+							prompt: messageContent,
+							userId: user.userId,
+							chatId: activeChat.id,
+						}),
+					});
+
+					const data = await response.json();
+
+					if (data.error) {
+						throw new Error(data.error);
+					}
+
+					// Add assistant message with the generated image
+					const assistantMessage = {
+						id: nanoid(),
+						role: 'assistant',
+						content: `![Generated Image](${data.imageUrl})\n\nHere's the image I generated based on your prompt: "${messageContent}"`,
+						timestamp: new Date().toISOString(),
+					};
+					setMessages((prev) => [...prev, assistantMessage]);
+
+					setImageGeneration({
+						isGenerating: false,
+						url: data.imageUrl,
+						error: null,
+						prompt: messageContent,
+					});
+				} catch (error) {
+					console.error('Image generation error:', error);
+					setImageGeneration({
+						isGenerating: false,
+						url: null,
+						error: error.message,
+						prompt: messageContent,
+					});
+
+					// Add error message to chat
+					const errorMessage = {
+						id: nanoid(),
+						role: 'assistant',
+						content: `I apologize, but I encountered an error while generating the image: ${error.message}`,
+						timestamp: new Date().toISOString(),
+					};
+					setMessages((prev) => [...prev, errorMessage]);
+				}
+			} else {
+				// Handle normal chat message
+				await generateResponse(messageContent, fileData);
+			}
+
+			setSelectedSuggestion(null);
+			setUploadedFile(null);
+			setUploadProgress(0);
+		} catch (error) {
+			console.error(t('chatInterface.errors.sendMessageError'), error);
+			toast.error(t('chatInterface.errors.sendMessageError'));
+		}
+	};
+
 	return (
-		<div className=' w-full max-w-3xl mx-auto rounded-xl no-scrollbar min-h-screen relative'>
+		<div className='w-full max-w-3xl mx-auto rounded-xl no-scrollbar min-h-screen relative'>
 			<div className='absolute inset-0 bg-gradient-to-br from-gray-100 to-blue-50 dark:from-gray-900 dark:to-gray-800 -z-10'></div>
 			<div className='relative flex flex-col transition-colors duration-300 min-h-screen'>
 				<Header msgLen={messages.length} />
@@ -442,9 +463,17 @@ const ChatInterface = () => {
 							isLoading={isGenerating || isUploading}
 							messagesEndRef={messagesEndRef}
 						/>
-						{(isGenerating || isUploading) && (
+						{(isGenerating || isUploading || imageGeneration.isGenerating) && (
 							<div className='mx-4 my-2'>
 								<AILoadingIndicator />
+							</div>
+						)}
+						{imageGeneration.isGenerating && (
+							<div className='mx-4 my-2'>
+								<ImageGenerationDisplay
+									isLoading={true}
+									prompt={imageGeneration.prompt}
+								/>
 							</div>
 						)}
 					</div>
@@ -467,17 +496,27 @@ const ChatInterface = () => {
 					</div>
 				)}
 				<div
-					className={`
-						fixed bottom-0 transition-all left-0 right-0 mx-auto 
-					${showSidebar ? 'translate-x-60' : ''}
-					`}>
+					className={`fixed bottom-0 transition-all left-0 right-0 mx-auto ${
+						!isMobile && showSidebar
+							? isRTL
+								? '-translate-x-60'
+								: 'translate-x-60'
+							: ''
+					}`}>
 					<MessageInput
 						msgLen={messages.length}
 						inputText={inputText}
 						setInputText={setInputText}
 						handleSubmit={handleSubmit}
-						isPending={isGenerating || isUploading}
-						disabled={!model || isGenerating || isUploading}
+						isPending={
+							isGenerating || isUploading || imageGeneration.isGenerating
+						}
+						disabled={
+							!model ||
+							isGenerating ||
+							isUploading ||
+							imageGeneration.isGenerating
+						}
 						modelName={model?.name || t('chatInterface.defaultModelName')}
 						onFileUpload={handleFileUpload}
 						uploadProgress={uploadProgress}

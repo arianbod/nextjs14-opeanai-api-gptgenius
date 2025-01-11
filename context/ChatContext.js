@@ -5,8 +5,10 @@ import toast from 'react-hot-toast';
 import { AIPersonas } from '@/lib/Personas';
 import { getProviderConfig } from '@/lib/ai-providers';
 import { nanoid } from 'nanoid';
+import { serverLogger } from '@/server/logger';
 
 const ChatContext = createContext();
+
 
 const formatLaTeXContent = (content) => {
     if (!content) return content;
@@ -57,7 +59,6 @@ const formatLaTeXContent = (content) => {
 
     return content;
 };
-
 export const ChatProvider = ({ children }) => {
     const params = useParams();
     const { user } = useAuth();
@@ -86,6 +87,19 @@ export const ChatProvider = ({ children }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchFilter, setSearchFilter] = useState('all');
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+    // Image generation states
+    const [imageGeneration, setImageGeneration] = useState({
+        isGenerating: false,
+        prompt: null,
+        url: null,
+        error: null,
+        options: {
+            size: 'small',
+            style: 'vivid',
+            quality: 'standard'
+        }
+    });
 
     // Message tracking refs
     const messageQueueRef = useRef(new Set());
@@ -155,7 +169,12 @@ export const ChatProvider = ({ children }) => {
                 body: JSON.stringify({ userId: user.userId, chatId })
             });
 
+            // if (!response.ok) {
+            //     throw new Error('Failed to fetch chat data');
+            // }
+
             const { chatDataInfo } = await response.json();
+            serverLogger("chatDataInfo in client side:",chatDataInfo)
             if (!chatDataInfo?.modelCodeName) {
                 throw new Error('Invalid chat info received');
             }
@@ -426,6 +445,133 @@ export const ChatProvider = ({ children }) => {
         }
     };
 
+    const generateImage = async (prompt, options = {}) => {
+        console.log('Starting image generation with:', {
+            prompt,
+            options,
+            userId: user?.userId,
+            chatId: activeChat?.id
+        });
+
+        if (!user?.userId || !activeChat?.id) {
+            console.error('Missing required parameters:', {
+                hasUserId: !!user?.userId,
+                hasChatId: !!activeChat?.id
+            });
+            toast.error('Please ensure you are logged in and have an active chat');
+            return null;
+        }
+
+        try {
+            setImageGeneration({
+                isGenerating: true,
+                prompt,
+                url: null,
+                error: null,
+                options: {
+                    ...imageGeneration.options,
+                    ...options
+                }
+            });
+
+            // Add user message for image request
+            const userMessage = {
+                id: nanoid(),
+                role: 'user',
+                content: `Generate image: ${prompt}`,
+                timestamp: new Date().toISOString()
+            };
+            setMessages(prev => [...prev, userMessage]);
+
+            const response = await fetch('/api/chat/generateImage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prompt,
+                    options: imageGeneration.options,
+                    userId: user.userId,
+                    chatId: activeChat.id
+                })
+            });
+
+            const data = await response.json();
+            console.log('Image generation response:', data);
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to generate image');
+            }
+
+            // Note: The API returns data.imageUrl, not data.url
+            if (data.imageUrl) {
+                // Add assistant message with generated image using proper markdown
+                const assistantMessage = {
+                    id: nanoid(),
+                    role: 'assistant',
+                    content: [
+                        '**Generated Image:**\n\n',
+                        `![Generated Image](${data.imageUrl})\n\n`,
+                        `I've generated an image based on your prompt: "${prompt}"`
+                    ].join(''),
+                    timestamp: new Date().toISOString()
+                };
+
+                console.log('Adding image message:', assistantMessage);
+                setMessages(prev => [...prev, assistantMessage]);
+
+                setImageGeneration(prev => ({
+                    ...prev,
+                    isGenerating: false,
+                    url: data.imageUrl,
+                    error: null
+                }));
+
+                return data.imageUrl;
+            } else {
+                throw new Error('No image URL in response');
+            }
+
+        } catch (error) {
+            console.error('Image generation error:', {
+                message: error.message,
+                stack: error.stack
+            });
+
+            setImageGeneration(prev => ({
+                ...prev,
+                isGenerating: false,
+                error: error.message
+            }));
+
+            // Add error message to chat
+            const errorMessage = {
+                id: nanoid(),
+                role: 'assistant',
+                content: `I apologize, but I encountered an error while generating the image: ${error.message}`,
+                timestamp: new Date().toISOString()
+            };
+            setMessages(prev => [...prev, errorMessage]);
+
+            toast.error('Failed to generate image');
+            return null;
+        }
+    };
+
+    const retryImageGeneration = async () => {
+        if (imageGeneration.prompt) {
+            return generateImage(imageGeneration.prompt, imageGeneration.options);
+        }
+    };
+
+    const updateImageOptions = (newOptions) => {
+        setImageGeneration(prev => ({
+            ...prev,
+            options: {
+                ...prev.options,
+                ...newOptions
+            }
+        }));
+    };
+
     const toggleSearch = useCallback(() => setIsSearchOpen(prev => !prev), []);
 
     const filteredMessages = useCallback(() => {
@@ -465,6 +611,7 @@ export const ChatProvider = ({ children }) => {
         activeChat,
         setActiveChat,
         messages,
+        setMessages,
         chatList,
         isLoading,
         isGenerating,
@@ -482,6 +629,12 @@ export const ChatProvider = ({ children }) => {
         generateResponse,
         toggleSearch,
         filteredMessages,
+        // Image generation values
+        imageGeneration,
+        generateImage,
+        retryImageGeneration,
+        updateImageOptions,
+        user
     };
 
     return <ChatContext.Provider value={values}>{children}</ChatContext.Provider>;
@@ -494,3 +647,5 @@ export const useChat = () => {
     }
     return context;
 };
+
+export default ChatContext;

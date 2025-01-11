@@ -41,7 +41,7 @@ export function PreferencesProvider({ children }) {
 	const [initialized, setInitialized] = useState(false);
 	const [isPinned, setIsPinned] = useState(true);
 	const [isHovered, setIsHovered] = useState(false);
-
+	const [isMobile, setIsMobile] = useState(false)
 	// Show sidebar if pinned OR hovered
 	const showSidebar = isPinned || isHovered;
 
@@ -246,6 +246,25 @@ export function PreferencesProvider({ children }) {
 		};
 	}, [debouncedSave]);
 
+
+	useEffect
+		(() => {
+			// Initial check
+			const checkIsMobile = () => { setIsMobile(window.innerWidth < 768); };
+			// Check on mount
+			checkIsMobile();
+
+
+			// Add event listener for resize
+
+			window
+				.addEventListener('resize', checkIsMobile);
+			// Cleanup
+			return () => { window.removeEventListener('resize', checkIsMobile); };
+		}, []);
+	// Empty dependency array since we only want to set this up once
+
+
 	return (
 		<PreferencesContext.Provider
 			value={{
@@ -260,6 +279,7 @@ export function PreferencesProvider({ children }) {
 				recordUserAgent,
 				reloadPreferences: loadPreferences,
 				setIsHovered,
+				isMobile
 			}}
 		>
 			{children}

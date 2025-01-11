@@ -1,12 +1,13 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
 const AuthContext = createContext();
 
 export const SESSION_DURATION = 10 * 24 * 60 * 60 * 1000; // 10 days in milliseconds
+const TOKEN_SYNC_INTERVAL = 60 * 1000; // Sync every minute
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -14,6 +15,39 @@ export const AuthProvider = ({ children }) => {
     const [isEmailVerified, setIsEmailVerified] = useState(false);
     const [accountStatus, setAccountStatus] = useState('ACTIVE');
     const router = useRouter();
+
+    // New function to fetch token balance from server
+    const syncTokenBalance = useCallback(async () => {
+        if (!user?.userId) return;
+
+        try {
+            const response = await fetch('/api/tokens/balance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.userId }),
+            });
+
+            if (response.ok) {
+                const { balance } = await response.json();
+                setTokenBalance(balance);
+
+                // Update localStorage with new balance
+                const storedUser = JSON.parse(localStorage.getItem("user"));
+                if (storedUser) {
+                    storedUser.tokenBalance = balance;
+                    localStorage.setItem("user", JSON.stringify(storedUser));
+                }
+            }
+        } catch (error) {
+            console.error('Error syncing token balance:', error);
+        }
+    }, [user?.userId]);
+
+    // Function to verify token balance before operations
+    const verifyTokenBalance = async (requiredTokens) => {
+        await syncTokenBalance(); // Ensure we have the latest balance
+        return tokenBalance >= requiredTokens;
+    };
 
     const checkAuth = () => {
         try {
@@ -28,7 +62,6 @@ export const AuthProvider = ({ children }) => {
                 return false;
             }
 
-            // Check account status
             if (userData.status === 'DELETED' || userData.status === 'INACTIVE') {
                 logout();
                 return false;
@@ -47,7 +80,6 @@ export const AuthProvider = ({ children }) => {
             const userDataToStore = {
                 userId: userData.userId,
                 token: userData.token,
-                tokenBalance: userData.tokenBalance,
                 timestamp,
                 animalSelection: userData.animalSelection,
                 email: userData.email,
@@ -55,14 +87,12 @@ export const AuthProvider = ({ children }) => {
                 status: userData.status || 'ACTIVE'
             };
 
-            // Set local storage and cookie
             localStorage.setItem("user", JSON.stringify(userDataToStore));
             const expires = new Date(timestamp + SESSION_DURATION).toUTCString();
             document.cookie = `user=${encodeURIComponent(JSON.stringify(userDataToStore))}; path=/; expires=${expires}; SameSite=Lax`;
 
-            // Update state
             setUser(userDataToStore);
-            setTokenBalance(userData.tokenBalance);
+            await syncTokenBalance(); // Fetch initial token balance from server
             setIsEmailVerified(userData.isEmailVerified || false);
             setAccountStatus(userData.status || 'ACTIVE');
 
@@ -111,12 +141,10 @@ export const AuthProvider = ({ children }) => {
                 };
             }
 
-            // Handle successful registration
             if (data.success) {
                 const result = await setCookieAndStorage({
                     userId: data.userId,
                     token: data.token,
-                    tokenBalance: data.tokenBalance,
                     animalSelection,
                     email,
                     isEmailVerified: false,
@@ -130,7 +158,6 @@ export const AuthProvider = ({ children }) => {
                     };
                 }
 
-                // Send verification email immediately if email is provided
                 if (email) {
                     try {
                         await fetch('/api/auth/manage-email', {
@@ -145,7 +172,7 @@ export const AuthProvider = ({ children }) => {
                         console.error('Error sending verification email:', error);
                     }
                 }
-                // If email was provided, show verification notice
+
                 if (email && data.emailVerification?.required) {
                     toast.success('Please check your email to verify your account');
                 }
@@ -168,7 +195,6 @@ export const AuthProvider = ({ children }) => {
             };
         }
     };
-
     const verifyEmail = async (token) => {
         if (!user?.userId) {
             return { success: false, error: "User not authenticated" };
@@ -184,11 +210,9 @@ export const AuthProvider = ({ children }) => {
             const data = await response.json();
 
             if (data.success) {
-                // Update local state
                 setIsEmailVerified(true);
                 setUser(prev => ({ ...prev, isEmailVerified: true }));
 
-                // Update stored data
                 const storedUser = JSON.parse(localStorage.getItem("user"));
                 storedUser.isEmailVerified = true;
                 localStorage.setItem("user", JSON.stringify(storedUser));
@@ -225,11 +249,9 @@ export const AuthProvider = ({ children }) => {
             const data = await response.json();
 
             if (response.ok) {
-                // Update local state
                 setUser(prev => ({ ...prev, email: newEmail, isEmailVerified: false }));
                 setIsEmailVerified(false);
 
-                // Update stored data
                 const storedUser = JSON.parse(localStorage.getItem("user"));
                 storedUser.email = newEmail;
                 storedUser.isEmailVerified = false;
@@ -301,7 +323,6 @@ export const AuthProvider = ({ children }) => {
                 const result = await setCookieAndStorage({
                     userId: data.userId,
                     token: data.token,
-                    tokenBalance: data.tokenBalance,
                     animalSelection,
                     email: data.email,
                     isEmailVerified: data.isEmailVerified,
@@ -315,7 +336,6 @@ export const AuthProvider = ({ children }) => {
                     };
                 }
 
-                // Show email verification reminder if needed
                 if (data.emailVerification?.required) {
                     toast.info('Please verify your email address');
                 }
@@ -337,7 +357,6 @@ export const AuthProvider = ({ children }) => {
                     errorMessage = `${data.error} Try again in ${data.remainingLockoutTime} minutes.`;
                 }
 
-                // Handle account status errors
                 if (data.accountStatus) {
                     errorMessage = `Account ${data.accountStatus.status.toLowerCase()}: ${data.accountStatus.reason}`;
                 }
@@ -391,6 +410,19 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // Set up periodic token balance sync
+    useEffect(() => {
+        if (user?.userId) {
+            // Initial sync
+            syncTokenBalance();
+
+            // Set up interval for periodic sync
+            const intervalId = setInterval(syncTokenBalance, TOKEN_SYNC_INTERVAL);
+
+            return () => clearInterval(intervalId);
+        }
+    }, [user?.userId, syncTokenBalance]);
+
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
@@ -401,13 +433,13 @@ export const AuthProvider = ({ children }) => {
                     return;
                 }
 
-                // Set initial state from localStorage
                 setUser(parsedUser);
-                setTokenBalance(parsedUser.tokenBalance);
                 setIsEmailVerified(parsedUser.isEmailVerified || false);
                 setAccountStatus(parsedUser.status || 'ACTIVE');
 
-                // Check current verification status
+                // Initial token balance sync
+                syncTokenBalance();
+
                 const checkVerificationStatus = async () => {
                     try {
                         const response = await fetch('/api/auth/check-verification', {
@@ -419,12 +451,10 @@ export const AuthProvider = ({ children }) => {
                         if (response.ok) {
                             const { isEmailVerified } = await response.json();
 
-                            // Update state if verification status has changed
                             if (isEmailVerified !== parsedUser.isEmailVerified) {
                                 setIsEmailVerified(isEmailVerified);
                                 setUser(prev => ({ ...prev, isEmailVerified }));
 
-                                // Update localStorage
                                 const storedUserData = JSON.parse(localStorage.getItem("user"));
                                 storedUserData.isEmailVerified = isEmailVerified;
                                 localStorage.setItem("user", JSON.stringify(storedUserData));
@@ -457,6 +487,8 @@ export const AuthProvider = ({ children }) => {
         resendVerificationEmail,
         setUser,
         checkAuth,
+        verifyTokenBalance,
+        syncTokenBalance,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

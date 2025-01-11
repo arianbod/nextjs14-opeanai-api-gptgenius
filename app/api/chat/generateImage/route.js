@@ -1,4 +1,8 @@
 // app/api/chat/generateImage/route.js
+
+export const maxDuration = 30;      // up to 30 seconds
+export const dynamic = 'force-dynamic';
+
 import { NextResponse } from 'next/server';
 import { generateImage } from '@/server/chat';
 
@@ -16,13 +20,9 @@ export async function POST(request) {
         const result = await generateImage(userId, prompt, chatId, options);
 
         if (result.error) {
-            return NextResponse.json(
-                { error: result.error },
-                { status: 500 }
-            );
+            return NextResponse.json({ error: result.error }, { status: 500 });
         }
 
-        // Return consistent response format
         return NextResponse.json({
             imageUrl: result.url || result.imageUrl,
             metadata: result.metadata

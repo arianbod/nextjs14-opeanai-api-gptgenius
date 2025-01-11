@@ -66,7 +66,9 @@ const Message = ({ role, content, timestamp }) => {
 
 	const copyToClipboard = (text) => {
 		navigator.clipboard.writeText(text);
-		toast.success('Copied to clipboard');
+		toast.success(
+			`${isUser ? 'your' : activeChat.model.name} message Copied to clipboard`
+		);
 	};
 
 	const formatTimestamp = (timestamp) => {

@@ -291,7 +291,7 @@ const MessageInput = ({
               mb-2 px-3 py-2
               backdrop-blur-md bg-white/10
               border border-white/30
-              rounded-md flex items-center justify-between
+              rounded-full flex items-center justify-start
               text-gray-700 dark:text-gray-100
               transition-all duration-300 shadow-md
             `}>
@@ -306,7 +306,7 @@ const MessageInput = ({
 								setShowRealTimePrompt(false);
 								clearTimer();
 							}}
-							className='border border-white/60 text-white hover:bg-white/20 px-3 py-1 rounded-full text-sm transition-all duration-200'
+							className='border border-black/60 text-black dark:text-white dark:border-white-60 hover:bg-white/20 px-3 py-1 rounded-full text-sm transition-all duration-200'
 							title='Yes, switch to image generation mode'>
 							Yes
 						</button>

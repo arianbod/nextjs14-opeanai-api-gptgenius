@@ -7,16 +7,5 @@
 				"installCommand": "npm install --legacy-peer-deps --force --production=false"
 			}
 		}
-	],
-	"functions": {
-		"app/api/**/*.js": {
-			"maxDuration": 30
-		},
-		"app/api/**/*.ts": {
-			"maxDuration": 30
-		},
-		"app/api/chat/generateImage/route.js": {
-			"maxDuration": 30
-		}
-	}
+	]
 }

@@ -1,6 +1,16 @@
 import React, { useState, memo, useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { ArrowUp, Camera, Paperclip, X, Upload, ImageIcon } from 'lucide-react';
+import {
+	ArrowUp,
+	Camera,
+	Paperclip,
+	X,
+	Upload,
+	ImageIcon,
+	Mic as MicIcon,
+	StopCircle as StopIcon,
+} from 'lucide-react';
+
 import TextInputComponent from './TextInputComponent';
 import FileUploadComponent from './FileUploadComponent';
 import FilePreviewComponent, { IMAGE_TYPES } from './FilePreviewComponent';
@@ -8,9 +18,10 @@ import { useChat } from '@/context/ChatContext';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useTranslations } from '@/context/TranslationContext';
 
-/**
- * Detect RTL text
- */
+// === Our voice hook
+import useVoiceToText from '@/hooks/useVoiceToText';
+
+// ====== Helper: Detect RTL text ======
 const isRTLText = (text) => {
 	if (!text || typeof text !== 'string') return false;
 	const rtlRegex =
@@ -18,9 +29,7 @@ const isRTLText = (text) => {
 	return rtlRegex.test(text.trim()[0]);
 };
 
-/**
- * Detect language
- */
+// ====== Helper: Detect language ======
 const detectLanguage = (text) => {
 	if (!text || typeof text !== 'string') return 'default';
 	const persianRegex = /[\u0600-\u06FF]/;
@@ -31,12 +40,9 @@ const detectLanguage = (text) => {
 	return 'default';
 };
 
-/**
- * Keywords for an image prompt
- */
+// ====== Image keywords ======
 const imageKeywords = [
 	'generate image',
-	'generate photo',
 	'create image',
 	'make image',
 	'draw',
@@ -71,58 +77,58 @@ const MessageInput = ({
 
 	const { activeChat, forceImageGeneration, setForceImageGeneration } =
 		useChat();
-
 	const { isRTL, dict } = useTranslations();
 
+	// Allowed features
 	const allowed = activeChat?.modelAllowed || {
 		send: { text: true, file: false, image: false },
 		receive: { text: true, file: false, image: false },
 	};
 
-	// Real-time “Want an image?” prompt
+	// Real-time "image prompt" logic
 	const [showRealTimePrompt, setShowRealTimePrompt] = useState(false);
-	// We'll store a reference to the 20-second timer that auto-hides the prompt
 	const hidePromptTimerRef = useRef(null);
 
 	// For the textarea
 	const textareaRef = useRef(null);
 
-	// =============== Effects ===============
+	// Voice to text (single toggle)
+	const handleFinalVoiceText = useCallback(
+		(finalText) => {
+			setInputText((prev) => (prev ? prev + finalText : finalText));
+		},
+		[setInputText]
+	);
 
-	// On each keystroke, detect language + text direction
-	useEffect(() => {
-		const rtl = isRTLText(inputText);
-		const lang = detectLanguage(inputText);
-		setTextDirection(rtl ? 'rtl' : 'ltr');
-		setTextLanguage(lang);
-	}, [inputText]);
+	const { isListening, partialTranscript, startListening, stopListening } =
+		useVoiceToText(handleFinalVoiceText);
 
-	// Check for image keywords
+	// Single function that toggles start/stop
+	const toggleRecording = () => {
+		if (!isListening) {
+			startListening();
+		} else {
+			stopListening();
+		}
+	};
+
+	// If user typed image keywords => show prompt
 	useEffect(() => {
 		const lower = inputText.toLowerCase();
 		const foundImageWord = imageKeywords.some((k) => lower.includes(k));
 		const canGenerateImages = allowed.send.image;
-
 		if (foundImageWord && canGenerateImages) {
 			setShowRealTimePrompt(true);
-			// If the prompt is shown, start/refresh a 20s timer to auto-dismiss
 			resetOrStartTimer();
 		} else {
 			setShowRealTimePrompt(false);
 			clearTimer();
-			// If user typed keywords but removed them, reset forceImage
 			if (forceImageGeneration) {
 				setForceImageGeneration(false);
 			}
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [inputText, allowed.send.image]);
+	}, [inputText, allowed.send.image, forceImageGeneration]);
 
-	// =============== Timers ===============
-
-	/**
-	 * Clears old timer
-	 */
 	const clearTimer = useCallback(() => {
 		if (hidePromptTimerRef.current) {
 			clearTimeout(hidePromptTimerRef.current);
@@ -130,9 +136,6 @@ const MessageInput = ({
 		}
 	}, []);
 
-	/**
-	 * Sets a 20-second timer to auto-hide the prompt if user doesn't click "Yes"
-	 */
 	const resetOrStartTimer = useCallback(() => {
 		clearTimer();
 		hidePromptTimerRef.current = setTimeout(() => {
@@ -141,12 +144,25 @@ const MessageInput = ({
 		}, 20000);
 	}, [clearTimer, setForceImageGeneration]);
 
-	// Cleanup on unmount
 	useEffect(() => {
 		return () => clearTimer();
 	}, [clearTimer]);
 
-	// =============== Drag / Drop ===============
+	// Shimmer + image highlight
+	const shimmerClass = isPending ? 'animate-shimmer' : '';
+	const imageModeStyles = forceImageGeneration
+		? 'bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 p-[2px]'
+		: '';
+
+	// Determine text direction
+	useEffect(() => {
+		const rtl = isRTLText(inputText);
+		const lang = detectLanguage(inputText);
+		setTextDirection(rtl ? 'rtl' : 'ltr');
+		setTextLanguage(lang);
+	}, [inputText]);
+
+	// Drag & Drop
 	const handleDragEnter = (e) => {
 		e.preventDefault();
 		e.stopPropagation();
@@ -194,6 +210,7 @@ const MessageInput = ({
 		}
 	};
 
+	// Clipboard images
 	const handlePaste = async (e) => {
 		if (!allowed.send.image) return;
 		const items = e.clipboardData?.items;
@@ -211,7 +228,7 @@ const MessageInput = ({
 		}
 	};
 
-	// =============== Submitting ===============
+	// Submit
 	const onSubmit = (e) => {
 		e.preventDefault();
 		if (!allowed.send.text && !uploadedFile) {
@@ -221,7 +238,7 @@ const MessageInput = ({
 		handleSubmit(e);
 	};
 
-	// =============== Clicking the form ===============
+	// Click blank => focus
 	const handleFormClick = (e) => {
 		if (
 			e.target.tagName.toLowerCase() === 'button' ||
@@ -234,16 +251,14 @@ const MessageInput = ({
 		}
 	};
 
-	// =============== Shimmer for Pending State ===============
-	// We'll add a CSS class with a shimmer animation if isPending is true
-	const shimmerClass = isPending ? 'animate-shimmer' : '';
+	// Decide button icon & label
+	const micButtonIcon = isListening ? (
+		<StopIcon className='w-5 h-5' />
+	) : (
+		<MicIcon className='w-5 h-5' />
+	);
+	const micButtonLabel = isListening ? 'Stop' : 'Mic';
 
-	// If we’re generating an image, add a subtle gradient border
-	const imageModeStyles = forceImageGeneration
-		? 'bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 p-[2px]'
-		: '';
-
-	// =============== Render ===============
 	return (
 		<form
 			onSubmit={onSubmit}
@@ -270,23 +285,16 @@ const MessageInput = ({
 					</Alert>
 				)}
 
-				{/* The real-time prompt: minimal with only a "Yes" button */}
 				{showRealTimePrompt && (
 					<div
 						className={`
-      mb-2 px-3 py-2
-      backdrop-blur-md
-      bg-white/10
-      border border-white/30
-      rounded-md
-      flex items-center
-      justify-between
-      text-gray-700 dark:text-gray-100
-      transition-all
-      duration-300
-      shadow-md
-    `}
-						style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
+              mb-2 px-3 py-2
+              backdrop-blur-md bg-white/10
+              border border-white/30
+              rounded-md flex items-center justify-between
+              text-gray-700 dark:text-gray-100
+              transition-all duration-300 shadow-md
+            `}>
 						<span className='text-sm mr-2'>
 							{dict.chatInterface?.imagePromptMessage ||
 								'Looks like you might want an image.'}
@@ -296,7 +304,7 @@ const MessageInput = ({
 							onClick={() => {
 								setForceImageGeneration(true);
 								setShowRealTimePrompt(false);
-								clearTimer(); // stop the 20s countdown
+								clearTimer();
 							}}
 							className='border border-white/60 text-white hover:bg-white/20 px-3 py-1 rounded-full text-sm transition-all duration-200'
 							title='Yes, switch to image generation mode'>
@@ -305,13 +313,18 @@ const MessageInput = ({
 					</div>
 				)}
 
-				{/* The container for the input area */}
 				<div
-					className={`relative  rounded-3xl  min-h-[96px]  flex flex-col   ${
-						isDragging
-							? 'border-blue-500 dark:border-blue-500'
-							: 'border-white/50'
-					}
+					className={`
+            relative
+            rounded-3xl
+            min-h-[96px]
+            flex flex-col
+            dark:border-2
+            ${
+							isDragging
+								? 'border-blue-500 dark:border-blue-500'
+								: 'border-white/50'
+						}
             transition-colors duration-200
             ${textLanguage === 'persian' ? 'font-persian' : ''}
             ${textLanguage === 'arabic' ? 'font-arabic' : ''}
@@ -320,7 +333,6 @@ const MessageInput = ({
           `}
 					dir={textDirection}
 					style={{ overflow: 'hidden' }}>
-					{/* Inner wrapper with the actual background, so the gradient border shows around it */}
 					<div
 						className={`
               ${
@@ -332,7 +344,7 @@ const MessageInput = ({
               transition-all duration-300
             `}>
 						{isDragging && (
-							<div className='absolute inset-0 bg-blue-500 bg-opacity-10 rounded-3xl flex items-center justify-center'>
+							<div className='absolute inset-0 bg-blue-500 bg-opacity-10 rounded-3xl flex items-center justify-center z-50'>
 								<div className='flex flex-col items-center gap-2 text-blue-500'>
 									<Upload className='w-8 h-8 animate-bounce' />
 									<p className='text-sm font-medium'>
@@ -343,7 +355,7 @@ const MessageInput = ({
 							</div>
 						)}
 
-						{/* If uploading a file, show progress */}
+						{/* If uploading => show progress */}
 						{isUploading && (
 							<div className='px-4 pt-2'>
 								<div className='flex items-center gap-2 text-gray-300'>
@@ -377,7 +389,7 @@ const MessageInput = ({
 							</div>
 						)}
 
-						{/* Show file preview if any */}
+						{/* File preview */}
 						{!isUploading && uploadedFile && (
 							<FilePreviewComponent
 								file={uploadedFile}
@@ -385,7 +397,7 @@ const MessageInput = ({
 							/>
 						)}
 
-						{/* If we can send text, render the text input */}
+						{/* If text allowed => text input */}
 						{allowed.send.text && (
 							<TextInputComponent
 								ref={textareaRef}
@@ -401,90 +413,176 @@ const MessageInput = ({
 							/>
 						)}
 
-						{/* Action buttons row:
-                - LEFT: upload, image toggle
-                - RIGHT: send
-            */}
+						{/* Show partial transcript overlay if isListening and partialTranscript */}
+						{isListening && partialTranscript && (
+							<div
+								className={`
+                  absolute bottom-full right-4 mb-2
+                  px-4 py-2
+                  bg-green-800/90 text-green-100
+                  text-sm rounded-lg shadow-lg
+                  animate-fadeIn
+                `}>
+								<strong>Voice:</strong> {partialTranscript}
+							</div>
+						)}
+
+						{/* Buttons row */}
 						<div className='flex items-center p-3 pt-0 justify-between'>
-							<div className='flex items-center gap-2'>
-								{/* Upload / file button(s) */}
+							<div className='flex items-center gap-2 relative z-50'>
+								{/* File Upload */}
 								{(allowed.send.file || allowed.send.image) && (
-									<FileUploadComponent
-										onFileUpload={onFileUpload}
-										isUploading={isUploading}
-										onCancelUpload={onCancelUpload}
-										handleDragEnter={handleDragEnter}
-										handleDragLeave={handleDragLeave}
-										handleDragOver={handleDragOver}
-										handleDrop={handleDrop}
-										isDragging={isDragging}
-										accept={`${allowed.send.image ? 'image/*,' : ''}${
-											allowed.send.file ? '*' : ''
-										}`}
-									/>
+									<div className='relative group'>
+										<FileUploadComponent
+											onFileUpload={onFileUpload}
+											isUploading={isUploading}
+											onCancelUpload={onCancelUpload}
+											handleDragEnter={handleDragEnter}
+											handleDragLeave={handleDragLeave}
+											handleDragOver={handleDragOver}
+											handleDrop={handleDrop}
+											isDragging={isDragging}
+											accept={`${allowed.send.image ? 'image/*,' : ''}${
+												allowed.send.file ? '*' : ''
+											}`}
+											style={{ zIndex: 50 }}
+										/>
+										<span
+											className={`
+                        tooltip absolute left-1/2 -translate-x-1/2 top-full mt-1
+                        px-2 py-1 text-sm rounded-md bg-black text-white
+                        opacity-0 group-hover:opacity-100 pointer-events-none
+                        transition-opacity
+                      `}>
+											{dict.chatInterface.messageInput.uploadTooltip ||
+												'Upload file'}
+										</span>
+									</div>
 								)}
 
-								{/* Force image toggle */}
-								{allowed.send.image && (
+								{/* Single toggle record button with wave animation if isListening */}
+								<div className='relative group'>
 									<button
 										type='button'
-										onClick={() =>
-											setForceImageGeneration(!forceImageGeneration)
-										}
+										onClick={toggleRecording}
 										className={`
                       p-2 rounded-full transition-all duration-200
                       ${
-												forceImageGeneration
-													? 'bg-blue-600 text-white'
-													: 'bg-gray-700 text-gray-400 hover:text-white hover:bg-gray-600'
+												isListening
+													? 'bg-red-600 text-white recording-wave'
+													: 'bg-gray-700 text-gray-300 hover:text-white hover:bg-gray-600'
 											}
                     `}
-										title={
-											forceImageGeneration
-												? 'Turn OFF image generation'
-												: 'Force ON image generation'
-										}>
-										<ImageIcon className='w-5 h-5' />
+										title='Start/Stop Recording'>
+										{isListening ? (
+											<StopIcon className='w-5 h-5' />
+										) : (
+											<MicIcon className='w-5 h-5' />
+										)}
 									</button>
+									<span
+										className={`
+                      tooltip absolute left-1/2 -translate-x-1/2 top-full mt-1
+                      px-2 py-1 text-sm rounded-md bg-black text-white opacity-0
+                      group-hover:opacity-100 pointer-events-none transition-opacity
+                    `}>
+										{isListening
+											? dict.chatInterface.messageInput.micActive ||
+											  'Recording...'
+											: dict.chatInterface.messageInput.micTooltip ||
+											  'Voice to text'}
+									</span>
+								</div>
+
+								{/* Force image toggle */}
+								{allowed.send.image && (
+									<div className='relative group'>
+										<button
+											type='button'
+											onClick={() =>
+												setForceImageGeneration(!forceImageGeneration)
+											}
+											className={`
+                        p-2 rounded-full transition-all duration-200
+                        ${
+													forceImageGeneration
+														? 'bg-blue-600 text-white'
+														: 'bg-gray-700 text-gray-400 hover:text-white hover:bg-gray-600'
+												}
+                      `}
+											title={
+												forceImageGeneration
+													? 'Turn OFF image generation'
+													: 'Force ON image generation'
+											}>
+											<ImageIcon className='w-5 h-5' />
+										</button>
+										<span
+											className={`
+                        tooltip absolute left-1/2 -translate-x-1/2 top-full mt-1
+                        px-2 py-1 text-sm rounded-md bg-black text-white opacity-0
+                        group-hover:opacity-100 pointer-events-none transition-opacity
+                      `}>
+											{dict.chatInterface.messageInput.imageToggleTooltip ||
+												(forceImageGeneration
+													? 'Image gen on'
+													: 'Image gen off')}
+										</span>
+									</div>
 								)}
 							</div>
 
-							{/* Send button on the right side */}
-							<button
-								type='submit'
-								className={`p-2 rounded-full transition-all duration-200 
-                  ${
+							{/* Send button */}
+							<div className='relative group'>
+								<button
+									type='submit'
+									className={`
+                    p-2 rounded-full transition-all duration-200
+                    ${
+											isPending ||
+											disabled ||
+											(!inputText.trim() && !uploadedFile) ||
+											isUploading ||
+											(!allowed.send.text && !uploadedFile)
+												? 'text-gray-500 bg-gray-700/50 cursor-not-allowed'
+												: 'text-white bg-blue-600 hover:bg-blue-500 shadow-lg'
+										}
+                  `}
+									disabled={
 										isPending ||
 										disabled ||
 										(!inputText.trim() && !uploadedFile) ||
 										isUploading ||
 										(!allowed.send.text && !uploadedFile)
-											? 'text-gray-500 bg-gray-700/50 cursor-not-allowed'
-											: 'text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 shadow-lg'
 									}
-                `}
-								disabled={
-									isPending ||
-									disabled ||
-									(!inputText.trim() && !uploadedFile) ||
-									isUploading ||
-									(!allowed.send.text && !uploadedFile)
-								}
-								aria-label='Send Message'
-								title={
-									forceImageGeneration
-										? 'Send as an image request'
-										: 'Send as text/message'
-								}>
-								{forceImageGeneration ? (
-									<Camera className='w-6 h-6' />
-								) : (
-									<ArrowUp className='w-6 h-6' />
-								)}
-							</button>
+									aria-label='Send Message'
+									title={
+										forceImageGeneration
+											? 'Send as an image request'
+											: 'Send as text/message'
+									}>
+									{forceImageGeneration ? (
+										<Camera className='w-6 h-6' />
+									) : (
+										<ArrowUp className='w-6 h-6' />
+									)}
+								</button>
+								<span
+									className={`
+                    tooltip absolute left-1/2 -translate-x-1/2 top-full mt-1
+                    px-2 py-1 text-sm rounded-md bg-black text-white opacity-0
+                    group-hover:opacity-100 pointer-events-none transition-opacity
+                  `}>
+									{forceImageGeneration
+										? dict.chatInterface.messageInput.sendAsImage ||
+										  'Send as image'
+										: dict.chatInterface.messageInput.sendAsText ||
+										  'Send message'}
+								</span>
+							</div>
 						</div>
 
-						{/* Footer message */}
+						{/* Footer text */}
 						<div className='text-center w-full text-[11px] text-white/70 py-1 font-medium'>
 							<h2 style={{ direction: `${isRTL ? 'rtl' : 'ltr'}` }}>
 								{dict.chatInterface.messageInput.footerMessage ||
@@ -495,7 +593,7 @@ const MessageInput = ({
 				</div>
 			</div>
 
-			{/* Shimmer animation CSS - can be placed globally or here */}
+			{/* Additional CSS */}
 			<style jsx>{`
 				@keyframes shimmer {
 					0% {
@@ -514,6 +612,43 @@ const MessageInput = ({
 					);
 					background-size: 1000px 100%;
 					animation: shimmer 2s infinite linear;
+				}
+
+				@keyframes fadeIn {
+					0% {
+						opacity: 0;
+						transform: translateY(4px);
+					}
+					100% {
+						opacity: 1;
+						transform: translateY(0);
+					}
+				}
+				.animate-fadeIn {
+					animation: fadeIn 0.3s ease-in-out forwards;
+				}
+
+				.tooltip {
+					white-space: nowrap;
+					font-size: 0.85rem;
+					z-index: 9999;
+				}
+
+				/* A purely cosmetic wave/pulse effect for the "recording" button. */
+				@keyframes wave {
+					0% {
+						box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4);
+					}
+					70% {
+						box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+					}
+					100% {
+						box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+					}
+				}
+
+				.recording-wave {
+					animation: wave 1.5s infinite;
 				}
 			`}</style>
 		</form>

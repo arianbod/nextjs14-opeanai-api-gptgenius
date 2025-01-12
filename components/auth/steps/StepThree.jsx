@@ -1,9 +1,16 @@
-// components/auth/steps/StepThree.jsx
 'use client';
 
 import React, { memo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMail, FiArrowRight, FiCheckCircle } from 'react-icons/fi';
+import {
+	FiMail,
+	FiArrowRight,
+	FiCheckCircle,
+	FiGift,
+	FiClock,
+	FiPercent,
+} from 'react-icons/fi';
+import SkipConfirmationModal from './SkipConfirmationModal';
 
 const StepThree = ({
 	email,
@@ -14,24 +21,29 @@ const StepThree = ({
 	isSubmitting = false,
 }) => {
 	const [showCopyConfirmation, setShowCopyConfirmation] = useState(false);
+	const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		onNext();
 	};
 
-	const handleShare = () => {
-		const sequence = email;
-		navigator.clipboard.writeText(sequence).then(() => {
-			setShowCopyConfirmation(true);
-			setTimeout(() => setShowCopyConfirmation(false), 3000);
-		});
+	const handleSkip = () => {
+		setShowSkipConfirmation(true);
+	};
+
+	const handleConfirmSkip = () => {
+		setShowSkipConfirmation(false);
+		onNext();
+	};
+
+	const handleCancelSkip = () => {
+		setShowSkipConfirmation(false);
 	};
 
 	return (
 		<>
-			{/* Form Container */}
-			<div className='space-y-8'>
+			<div className='space-y-8 max-w-md w-full'>
 				{/* Header Section */}
 				<div className='text-center'>
 					<motion.h2
@@ -50,11 +62,76 @@ const StepThree = ({
 					</motion.p>
 				</div>
 
+				{/* Benefits Cards */}
+				<div className='grid gap-4 mb-6'>
+					<motion.div
+						className='p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800'
+						initial={{ opacity: 0, x: -20 }}
+						animate={{ opacity: 1, x: 0 }}
+						transition={{ delay: 0.2 }}>
+						<div className='flex items-start gap-3'>
+							<FiGift
+								className='text-blue-500 mt-1'
+								size={24}
+							/>
+							<div>
+								<h3 className='font-semibold text-blue-700 dark:text-blue-300'>
+									30x More Tokens
+								</h3>
+								<p className='text-sm text-blue-600 dark:text-blue-400'>
+									Get 3000 tokens instead of 100 after email verification
+								</p>
+							</div>
+						</div>
+					</motion.div>
+
+					<motion.div
+						className='p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800'
+						initial={{ opacity: 0, x: -20 }}
+						animate={{ opacity: 1, x: 0 }}
+						transition={{ delay: 0.3 }}>
+						<div className='flex items-start gap-3'>
+							<FiPercent
+								className='text-green-500 mt-1'
+								size={24}
+							/>
+							<div>
+								<h3 className='font-semibold text-green-700 dark:text-green-300'>
+									10% Bonus
+								</h3>
+								<p className='text-sm text-green-600 dark:text-green-400'>
+									Get 10% extra tokens on every future recharge
+								</p>
+							</div>
+						</div>
+					</motion.div>
+
+					<motion.div
+						className='p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800'
+						initial={{ opacity: 0, x: -20 }}
+						animate={{ opacity: 1, x: 0 }}
+						transition={{ delay: 0.4 }}>
+						<div className='flex items-start gap-3'>
+							<FiClock
+								className='text-purple-500 mt-1'
+								size={24}
+							/>
+							<div>
+								<h3 className='font-semibold text-purple-700 dark:text-purple-300'>
+									Early Access
+								</h3>
+								<p className='text-sm text-purple-600 dark:text-purple-400'>
+									Get early access to new features and updates
+								</p>
+							</div>
+						</div>
+					</motion.div>
+				</div>
+
 				{/* Form Section */}
 				<form
 					onSubmit={handleSubmit}
 					className='space-y-6'>
-					{/* Email Input */}
 					<div className='relative'>
 						<motion.input
 							type='email'
@@ -62,20 +139,18 @@ const StepThree = ({
 							onChange={(e) => onEmailChange(e.target.value)}
 							placeholder={dict.auth.register.emailPlaceholder}
 							className={`w-full px-4 py-3 pl-12 rounded-lg border transition duration-300 
-                ${
-									error
-										? 'border-red-500 focus:border-red-500 focus:ring-red-200'
-										: 'border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-200'
-								} 
-                bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 
-                placeholder-gray-400 dark:placeholder-gray-500 
-                outline-none`}
-							whileFocus={{ scale: 1.02 }}
+                                ${
+																	error
+																		? 'border-red-500 focus:border-red-500 focus:ring-red-200'
+																		: 'border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-200'
+																} 
+                                bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 
+                                placeholder-gray-400 dark:placeholder-gray-500 
+                                outline-none`}
 						/>
 						<FiMail className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500' />
 					</div>
 
-					{/* Error Message */}
 					<AnimatePresence>
 						{error && (
 							<motion.p
@@ -92,7 +167,7 @@ const StepThree = ({
 					<div className='flex flex-col sm:flex-row gap-4'>
 						<motion.button
 							type='button'
-							onClick={() => onNext()}
+							onClick={handleSkip}
 							className='flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition duration-300'
 							whileHover={{ scale: 1.05 }}
 							whileTap={{ scale: 0.95 }}>
@@ -103,7 +178,11 @@ const StepThree = ({
 							type='submit'
 							disabled={isSubmitting}
 							className={`flex-1 px-6 py-3 bg-blue-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-blue-600 transition duration-300 
-                ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                ${
+																	isSubmitting
+																		? 'opacity-50 cursor-not-allowed'
+																		: ''
+																}`}
 							whileHover={!isSubmitting ? { scale: 1.05 } : {}}
 							whileTap={!isSubmitting ? { scale: 0.95 } : {}}>
 							{isSubmitting ? (
@@ -115,49 +194,21 @@ const StepThree = ({
 							)}
 						</motion.button>
 					</div>
-
-					{/* Decorative Separator */}
-					<hr className='border-gray-300 dark:border-gray-600' />
-
-					{/* Benefits Section */}
-					<div className='mt-4'>
-						<h3 className='text-sm font-medium text-gray-700 dark:text-gray-300 mb-4'>
-							{dict.auth.emailBenefits.title}
-						</h3>
-						<ul className='grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-500 dark:text-gray-400'>
-							<li className='flex items-start gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded transition duration-300'>
-								<FiCheckCircle className='mt-1 text-green-500' />{' '}
-								{dict.auth.emailBenefits.recovery}
-							</li>
-							<li className='flex items-start gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded transition duration-300'>
-								<FiCheckCircle className='mt-1 text-green-500' />{' '}
-								{dict.auth.emailBenefits.security}
-							</li>
-							<li className='flex items-start gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded transition duration-300'>
-								<FiCheckCircle className='mt-1 text-green-500' />{' '}
-								{dict.auth.emailBenefits.updates}
-							</li>
-						</ul>
-					</div>
 				</form>
-
-				{/* Share Confirmation */}
-				<AnimatePresence>
-					{showCopyConfirmation && (
-						<motion.div
-							className='fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg flex items-center gap-2'
-							initial={{ opacity: 0, y: 50 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: 50 }}
-							transition={{ duration: 0.5 }}>
-							<FiCheckCircle /> {dict.auth.shareConfirmation}
-						</motion.div>
-					)}
-				</AnimatePresence>
 			</div>
+
+			{/* Skip Confirmation Modal */}
+			<AnimatePresence>
+				{showSkipConfirmation && (
+					<SkipConfirmationModal
+						onConfirm={handleConfirmSkip}
+						onCancel={handleCancelSkip}
+						dict={dict}
+					/>
+				)}
+			</AnimatePresence>
 		</>
 	);
 };
 
-// Export the memoized component to prevent unnecessary re-renders
 export default memo(StepThree);

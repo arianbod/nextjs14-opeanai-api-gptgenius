@@ -125,12 +125,15 @@ export async function createUser(animalSelection, email = null, ipAddress = null
         const hashedAnimalSelection = await hashValue(animalSelection.join('|'));
         const verificationToken = email ? await generateToken('verify') : null;
 
+        // Set initial token balance based on email presence
+        const initialTokenBalance = 100; // Default token balance
+
         console.log("Preparing data for database insertion...");
         const userData = {
             token: hashedToken,
             animalSelection: hashedAnimalSelection,
-            email, // Optional email
-            // tokenBalance: 3000,
+            email,
+            tokenBalance: initialTokenBalance,
             loginAttempts: 0,
             status: 'ACTIVE',
             statusReason: 'Account created',
@@ -171,8 +174,6 @@ export async function createUser(animalSelection, email = null, ipAddress = null
             }
         };
 
-        console.log("Final prepared user data:", JSON.stringify(userData, null, 2));
-
         console.log("Creating user in database...");
         const user = await prisma.user.create({
             data: userData,
@@ -189,11 +190,10 @@ export async function createUser(animalSelection, email = null, ipAddress = null
             animalSelection,
             verificationToken,
             verificationTokenExpiry: user.verificationTokenExpiry,
-            preferences: user.UserPreferences
+            preferences: user.userPreferences
         };
     } catch (error) {
         console.error("createUser error message:", error?.message);
-        // or console.error("createUser error:", String(error));
         throw error;
     }
 }
@@ -332,7 +332,8 @@ export async function verifyEmail(userId, token) {
             verificationToken: true,
             verificationTokenExpiry: true,
             email: true,
-            isEmailVerified: true
+            isEmailVerified: true,
+            tokenBalance: true
         }
     });
 
@@ -356,22 +357,31 @@ export async function verifyEmail(userId, token) {
         return { success: false, message: 'Verification token has expired' };
     }
 
+    // Calculate new token balance (3000 tokens for verified users)
+    const verifiedTokenBalance = 3000;
+
     await prisma.user.update({
         where: { id: userId },
         data: {
             isEmailVerified: true,
             verificationToken: null,
             verificationTokenExpiry: null,
+            tokenBalance: verifiedTokenBalance,
             statusHistory: {
                 push: [{
                     action: 'EMAIL_VERIFIED',
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    details: 'Token balance increased to 3000'
                 }]
             }
         }
     });
 
-    return { success: true, message: 'Email verified successfully' };
+    return {
+        success: true,
+        message: 'Email verified successfully! You have received 3000 tokens.',
+        newBalance: verifiedTokenBalance
+    };
 }
 
 // New function to update user status

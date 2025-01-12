@@ -16,6 +16,28 @@
 		"conversations": "Conversations"
 	},
 	"auth": {
+		"emailBenefits": {
+			"title": "Benefits of Email Verification",
+			"recovery": "Get 3000 tokens instantly upon verification",
+			"security": "Secure your account and tokens",
+			"updates": "Get 10% bonus on future recharges"
+		},
+		"verifyEmail": {
+			"title": "Verify Your Email",
+			"description": "We've sent a verification code to {email}",
+			"codePlaceholder": "Enter verification code",
+			"verify": "Verify Email",
+			"verifying": "Verifying...",
+			"skip": "I'll do this later",
+			"tokenBonus": "Unlock Your Token Bonus!",
+			"tokenBonusDescription": "Verify your email to receive 3000 tokens and get 10% extra on future recharges!"
+		},
+		"skipEmailTitle": "Are you sure you want to skip adding your email?",
+		"skipEmailReasons1": "• Join our promotions list for early announcements.",
+		"skipEmailReasons2": "• Get early access to new features.",
+		"skipEmailReasons3": "• Earn significantly more tokens by verifying your email.",
+		"cancel": "Cancel",
+		"skipAnyway": "Skip Anyway",
 		"welcome": {
 			"title": "Welcome to BabaGPT",
 			"description": "Your intelligent AI companion for effortless conversations and analyses. Experience secure and anonymous interactions with advanced AI technology.",
@@ -67,7 +89,6 @@
 		"tokenImportant": "Important: Save this token - you will need it to log in.",
 		"rememberAnimalOrder": "Remember your animal order:",
 		"understood": "I have saved my token",
-		"verifyEmail": "Verify your email",
 		"verificationSent": "A verification email has been sent to {email}. Please check your inbox.",
 		"verificationReminder": "Please verify your email address to activate all account features",
 		"optional": "Optional",
@@ -80,12 +101,7 @@
 		"addEmail": "Add Email",
 		"skip": "Skip",
 		"back": "Back",
-		"emailBenefits": {
-			"title": "Benefits of Adding Your Email",
-			"recovery": "Password Recovery",
-			"security": "Enhanced Security",
-			"updates": "Receive Important Updates"
-		},
+
 		"errors": {
 			"generic": "An error occurred. Please try again.",
 			"network": "Network error. Please check your connection.",

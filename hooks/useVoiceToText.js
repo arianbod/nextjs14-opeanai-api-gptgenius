@@ -23,7 +23,7 @@ export default function useVoiceToText(onFinalResult) {
 
         const recognition = new SpeechRecognition();
         recognition.continuous = true;      // keep capturing
-        recognition.interimResults = true;  // partial results
+        recognition.interimResults = false;  // partial results
         recognition.lang = 'en-US';
 
         recognition.onresult = (event) => {

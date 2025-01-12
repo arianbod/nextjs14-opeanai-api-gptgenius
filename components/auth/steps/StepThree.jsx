@@ -63,7 +63,8 @@ const StepThree = ({
 				</div>
 
 				{/* Benefits Cards */}
-				<div className='grid gap-4 mb-6'>
+				<div className='grid gap-4 mb-6 border-slate-600/50 border-2 p-2 rounded-lg'>
+					<span>provide email to:</span>
 					<motion.div
 						className='p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800'
 						initial={{ opacity: 0, x: -20 }}

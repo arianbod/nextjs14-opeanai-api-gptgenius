@@ -108,7 +108,7 @@ const StepLayout = ({
 		<div className=' min-h-screen w-full max-w-4xl flex flex-col place-content-center mx-auto place-items-center p-4 relative overflow-hidden'>
 			<AnimatedBackground />
 
-			<div className='z-50 fixed top-2 left-1/2 transform -translate-x-1/2 flex place-items-center gap-2 transition-all'>
+			<div className='z-50 w-full fixed top-0 left-1/2 transform -translate-x-1/2 flex place-items-center gap-2 transition-all bg-white dark:bg-black place-content-center text-center'>
 				<ThemeToggle />
 				<LanguageToggle />
 				<StepIndicator
@@ -128,7 +128,7 @@ const StepLayout = ({
 					</motion.button>
 				)}
 
-				<div className=' rounded-2xl p-8 flex flex-col place-items-center place-content-center m-auto '>
+				<div className=' rounded-2xl p-8 pt-12 flex flex-col place-items-center place-content-center m-auto '>
 					<AnimatePresence mode='wait'>
 						<motion.div
 							key={currentStep}
